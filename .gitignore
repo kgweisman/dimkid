@@ -1,0 +1,26 @@
+auth.json
+mturk-and-gmail.txt
+my-own-auth.json
+*_raw.*
+turk/*/production-results/
+turk/*/sandbox-results/
+.RData
+.Rhistory
+stimulus development/
+preregistration/
+qualtrics/
+results/
+mturk/
+preregistration/
+images/
+*MESSY*
+*.xlsx
+data/
+.Rproj.user
+*.Rproj
+*messy*
+plots/
+*.png
+*.jpg
+*.jpeg
+*.zip
