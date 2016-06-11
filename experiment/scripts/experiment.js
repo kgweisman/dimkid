@@ -1,5 +1,4 @@
 function makeExperiment() {
-	var date = new Date();
 
 	experiment = {
 		// array for making each new trial
@@ -10,8 +9,9 @@ function makeExperiment() {
 
 			// session information
 			subid: "",
-			dateOfTest: date.getMonth()+1+"/"+date.getDate()+"/"+date.getFullYear(),
-			timeOfTest: date.getHours()+":"+date.getMinutes(),
+			dateOfTest: "",
+			startTime: "",
+			endTime: "",
 			testingSite: "",
 			experimenter: "",
 			character: "",
@@ -53,11 +53,14 @@ function makeExperiment() {
 			    // add subject-level info
 			    for (trial in objArray) {
 
+			    	var date = new Date();
+
 			    	// auto-filled
 			    	objArray[trial].character = experiment.allData.character.charName;
 			    	objArray[trial].subid = experiment.allData.subid;
 			    	objArray[trial].dateOfTest = experiment.allData.dateOfTest;
-			    	objArray[trial].timeOfTest = experiment.allData.timeOfTest;
+			    	objArray[trial].startTime = experiment.allData.startTime;
+			    	objArray[trial].endTime = date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
 
 			    	// manually entered (later)
 			    	objArray[trial].testingSite = experiment.allData.testingSite;
@@ -82,7 +85,8 @@ function makeExperiment() {
 			    	character: "character",
 			    	subid: "subid",
 			    	dateOfTest: "dateOfTest",
-			    	timeOfTest: "timeOfTest",
+			    	startTime: "startTime",
+			    	endTime: "endTime",
 
 			    	// manually entered (later) subject-level info
 			    	testingSite: "testingSite",
@@ -153,11 +157,11 @@ function makeExperiment() {
 				showSlide("stage");
 
 				// record response and rt
-				var startTime = (new Date()).getTime();
+				var trialStart = (new Date()).getTime();
 
 				var clickHandler = function(event) {
-					var endTime = (new Date()).getTime();
-					data.rt = endTime - startTime;
+					var trialEnd = (new Date()).getTime();
+					data.rt = trialEnd - trialStart;
 					experiment.allData.trialData.push(data);
 				};
 
