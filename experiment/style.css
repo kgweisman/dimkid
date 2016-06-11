@@ -54,6 +54,36 @@ h1 {
 	margin: 20px;
 }
 
+a {
+	font-style: normal;
+	color: black;
+	text-decoration: none;	
+}
+
+a:link {
+	font-style: normal;
+	color: black;
+	text-decoration: none;
+}
+
+a:visited {
+	font-style: normal;
+	color: black;
+	text-decoration: none;
+}
+
+a:hover {
+	font-style: normal;
+	color: #666699;
+	text-decoration: none;
+}
+
+a:active {
+	font-style: normal;
+	color: #666699;
+	text-decoration: none;
+}
+
 .controls {
 	text-align: left;
 	margin-top: 20px;
@@ -117,3 +147,4 @@ img {
 #end img {
 	border: none;
 }
+

@@ -40,7 +40,8 @@ function startStudy() {
 			experiment.allData.dateOfTest = date.getMonth()+1+"/"+date.getDate()+"/"+date.getFullYear();
 			experiment.allData.startTime = date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
 		}
-	})
+	});
+
 }
 
 startStudy();

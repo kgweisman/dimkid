@@ -153,6 +153,14 @@ function makeExperiment() {
 				// set text for this trial
 				$("span#question").text(data.wording);
 
+				// set tooltip definition for this trial
+				if (data.trialNum === 1) {
+					$('[data-toggle="tooltip"]').tooltip({title: chosenCap.definition, placement: "bottom"}); 
+				} else {
+				    $('#definition').attr('data-original-title', chosenCap.definition);
+				}
+
+
 				// display progress bar
 				var percentComplete = (data.trialNum - 1)/(capListLength + 1) * 100;
 				var percentCompleteRounded = Math.round(percentComplete);
