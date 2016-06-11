@@ -84,6 +84,7 @@ function makeExperiment() {
 			    	capacity: "capacity",
 			    	wording: "wording",
 			    	response: "response",
+			    	responseNum: "responseNum",
 			    	rt: "rt",
 
 			    	// auto-filled subject-level info
