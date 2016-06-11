@@ -140,6 +140,7 @@ function makeExperiment() {
 					capacity: "",
 					wording: "",
 					response: "",
+					responseNum: NaN,
 					rt: NaN
 				};
 
@@ -148,6 +149,9 @@ function makeExperiment() {
 				data.capacity = chosenCap.capName;
 				data.wording = chosenCap.wording;
 
+				// set text for this trial
+				$("span#question").text(data.wording);
+
 				// display progress bar
 				var percentComplete = (data.trialNum - 1)/(capListLength + 1) * 100;
 				var percentCompleteRounded = Math.round(percentComplete);
@@ -155,12 +159,12 @@ function makeExperiment() {
 				$("#stage .progress-bar").attr("aria-valuenow", percentComplete.toString());
 				$("#stage .progress-bar").css("width", percentComplete.toString()+"%");
 
-				// set text for this trial
-				$("span#question").text(data.wording);
-
-				// change the background color
+				// change the background color and progress bar color
 				data.bgColor = randomElementNR(bgColors);
 				document.body.style.backgroundColor = data.bgColor;
+				if (data.trialNum !== 1) {
+					$(".progress-bar").css("background-color", data.bgColor);
+				}
 
 				// show trial
 				showSlide("stage");
@@ -179,13 +183,38 @@ function makeExperiment() {
 					data.response = $(this).attr("id");
 
 					// recode response as number
-					// XX
+					switch(data.response) {
+						case "no":
+							data.responseNum = 0;
+							break;
+						case "kinda":
+							data.responseNum = 0.5;
+							break;
+						case "yes":
+							data.responseNum = 1;
+							break;
+						default:
+							data.responseNum = "NA";
+					}
 
 					// end trial
 					clickHandler();
 					$(".slide#stage button").unbind().blur();
 					window.scrollTo(0, 0);
 					experiment.next();
+				})
+
+				$(".slide#stage button#bail").click(function() { 
+					// record response
+					data.response = $(this).attr("id");
+
+					// recode response as number
+					data.responseNum = "NA";
+
+					// end experiment
+					$(".slide#stage button").unbind().blur();
+					window.scrollTo(0, 0);
+					experiment.end();
 				})
 
 			}

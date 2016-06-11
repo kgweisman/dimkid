@@ -69,16 +69,31 @@ label {
 	margin-bottom: 0.5em;
 }
 
-.slide#stage {
-	font-size: 36px;
-}
-
 #question {
 	font-weight: bold;
 }
 
-/*progress bar*/
+/*tables*/
+table {
+	width: 920px;
+}
 
+/*progress bar*/
+#progress-and-bail {
+	padding-bottom: 0!important;
+	vertical-align: top!important;
+	margin-bottom: 0!important;
+}
+
+.progress {
+	height: 10px;
+}
+
+.progress-bar {
+	/*transition: none;*/
+	text-align: center;
+	/*background-color: #c4fcf0;*/
+}
 
 /*buttons*/
 .button {
