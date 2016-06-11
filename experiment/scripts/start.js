@@ -29,7 +29,10 @@ function startStudy() {
 				experiment.allData.character = characters[chosenChar];
 			}
 
-			// set up introduction slide
+			// set up introduction and stage slides
+			$("span#pronounChar").text(experiment.allData.character.pronoun+" "+experiment.allData.character.charName);
+			$("span#pluralChar").text(experiment.allData.character.plural);
+			$("#stage #charImage").attr("src", experiment.allData.character.imageSource);
 			showSlide("introduction");
 			
 			// record date and start time

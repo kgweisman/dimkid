@@ -9,6 +9,7 @@
 		<script src="scripts/helper.js"></script>
 		<script src="dependencies/mmturkey.js"></script>
 		<link href="dependencies/bootstrap.min.css" rel="stylesheet">
+		<link href='https://fonts.googleapis.com/css?family=Asap:400,700' rel='stylesheet' type='text/css'>
 		<link href="style.css" rel="stylesheet"/>
 	
 	</head>
@@ -19,13 +20,13 @@
 
 		<div class="slide" id="front">
 
-			<p>This is the front slide.</p>
+			<h1>40 Questions Game</h1>
 
             <div class="session-info">
                 <div class="control-group">
                     <div class="controls">
                         <label for="subid">subid:</label>
-                        <input type="text" class="form-control" id="subid" name="subid" placeholder="e.g., p01, c27 (*required*)"> 
+                        <input type="text" class="form-control" id="subid" name="subid" placeholder="e.g., kp01 for kara pilot #1; k27 for kara participant #27 (*required*)"> 
                     </div>
                 </div>
                 <div class="control-group">
@@ -46,7 +47,12 @@
 
 		<div class="slide" id="introduction">
 
-			<p>This is the introduction slide.</p>
+			<h1>How to Play</h1>
+
+			<p>This game is about <b><span id="pluralChar">{{}}</span></b>.</p>
+			<p>I want to know what you think <span id="pluralChar">{{}}</span> <b>can</b> do,</br>and what you think they <b>can not</b> do.</p>
+			<p>I'm not sure what the right answers are to some of these questions, so I just really want to know what <b>you</b> think. You can guess if you're not sure.</p>
+			<p>Are you ready?</p>
 
 			<div class="button">
 				<button type="submit" class="btn btn-default">Let's play!</button>
@@ -57,14 +63,12 @@
 <!-- study: "stage" slide -->
 
 		<div class="slide" id="stage">
-
-			<p>This is the stage slide.</p>
 			
 			<img id="charImage"/>
 
-			<p id="question">{{}}</p>
+			<p>Do you think <span id="pronounChar">{{}}</span> can</br><span id="question">{{}}</span>?</p>
 
-			<p align="center">
+			<p>
 				<button type="submit" class="btn btn-default" id="no">no</button>
 				<button type="submit" class="btn btn-default" id="kinda">kinda</button>
 				<button type="submit" class="btn btn-default" id="yes">yes</button>
@@ -76,7 +80,9 @@
 
 		<div class="slide" id="end">
 
-			<p>This is the end slide.</p>
+		<img src="smiley.png"/>
+			<h1>THE END</h1>
+			<p>Thanks for playing!</p>
 			
 		</div>
 

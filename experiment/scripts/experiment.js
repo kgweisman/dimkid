@@ -1,5 +1,9 @@
 function makeExperiment() {
 
+	// make color palette
+	// using http://tools.medialab.sciences-po.fr/iwanthue/
+	var bgColors = ["#d1f3c2", "#edddf6", "#d1ffa1", "#d9e3f5", "#c3f094", "#f6dce3", "#37fcea", "#f5ed92", "#64f8f4", "#f4e7a7", "#8bf3f4", "#dff29b", "#c2e9f5", "#a4f6a7", "#fddbd0", "#7bf8d4", "#f2e1bc", "#99f6bb", "#f2e9d6", "#c3f8af", "#a9eef5", "#e0fab6", "#9bf3e1", "#d1eca8", "#d4efe9", "#b3f1bb", "#c4fcf0", "#b3f1bb", "#b6eee2", "#b3f1bb", "#e2eecc", "#9bf3e1", "#b3f1bb", "#9bf3e1", "#c8f4d6", "#9bf3e1", "#a9f2ce", "#9bf3e1", "#9bf3e1", "#9bf3e1"]
+
 	experiment = {
 		// array for making each new trial
 		trials: capList,
@@ -76,6 +80,7 @@ function makeExperiment() {
 			    objArray.unshift({
 			    	// auto-filled trial-level info
 			    	trialNum: "trialNum",
+			    	bgColor: "bgColor",
 			    	capacity: "capacity",
 			    	wording: "wording",
 			    	response: "response",
@@ -131,6 +136,7 @@ function makeExperiment() {
 				// create place to store data for this trial
 				var data = {
 					trialNum: (capListLength + 1) - this.trials.length,
+					bgColor: "",
 					capacity: "",
 					wording: "",
 					response: "",
@@ -149,9 +155,12 @@ function makeExperiment() {
 				$("#stage .progress-bar").attr("aria-valuenow", percentComplete.toString());
 				$("#stage .progress-bar").css("width", percentComplete.toString()+"%");
 
-				// set text and images for this trial
-				$(".slide#stage #question").text("Do you think "+experiment.allData.character.plural+" can "+data.wording+"?");
-				$("#stage #charImage").attr("src", experiment.allData.character.imageSource);
+				// set text for this trial
+				$("span#question").text(data.wording);
+
+				// change the background color
+				data.bgColor = randomElementNR(bgColors);
+				document.body.style.backgroundColor = data.bgColor;
 
 				// show trial
 				showSlide("stage");

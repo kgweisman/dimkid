@@ -6,22 +6,99 @@ body {
      -moz-user-select: -moz-none;
       -ms-user-select: none;
           user-select: none;
+
+    background-color: #c4fcf0;
+	padding: 30px;
 }
 
 /*general style for slides*/
+.slide {
+	/*pad the inside of the slide*/
+	padding: 30px;
+	padding-top: 60px;
+	padding-bottom: 40px;
 
+    /*make slide border*/
+    border: 5px solid;
+    width: 1000px;
+
+    /*center slide within the window*/
+	margin: auto auto;
+
+	/*style text*/
+    text-align: center;
+	font-family: 'Asap', sans-serif;
+	font-size: 32px;
+    background-color: rgb(255,255,255);
+}
+
+#front {
+	padding-left: 130px;
+	padding-right: 130px;
+	margin-top: 60px;
+}
+
+#introduction {
+	padding-left: 130px;
+	padding-right: 130px;
+}
+
+#end {
+	margin-top: 40px;
+}
 
 /*text*/
+h1 {
+	font-size: 36px;
+	font-weight: bold;
+	margin: 20px;
+}
 
+.controls {
+	text-align: left;
+	margin-top: 20px;
+}
 
-/*stables*/
+label {
+	font-weight: normal;
+	font-size: 32px;
+}
 
+#introduction p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.slide#stage {
+	font-size: 36px;
+}
+
+#question {
+	font-weight: bold;
+}
 
 /*progress bar*/
 
 
 /*buttons*/
-
+.button {
+	margin: 20px;
+/*	position: absolute;
+	right: 4%;
+	bottom: 5%;*/
+}
 
 /*images*/
+img {
+	display: block;
+	margin-top: 10px;
+	margin-bottom: 30px;
+	margin-left: auto;
+	margin-right: auto;
+	height: 270px;
+	border: solid black 3px;
+}
 
+#end img {
+	border: none;
+}
