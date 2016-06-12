@@ -19,9 +19,7 @@ function makeExperiment() {
 			testingSite: "",
 			experimenter: "",
 			character: "",
-
-			// randomly assign character (condition)
-			// character: randomElementNR(charList),
+			charWording: "",
 
 			// demographic information about participant
 			gender: "",
@@ -61,6 +59,7 @@ function makeExperiment() {
 
 			    	// auto-filled
 			    	objArray[trial].character = experiment.allData.character.charName;
+			    	objArray[trial].charWording = $("span#pronounChar").text();
 			    	objArray[trial].subid = experiment.allData.subid;
 			    	objArray[trial].dateOfTest = experiment.allData.dateOfTest;
 			    	objArray[trial].startTime = experiment.allData.startTime;
@@ -82,7 +81,7 @@ function makeExperiment() {
 			    	trialNum: "trialNum",
 			    	bgColor: "bgColor",
 			    	capacity: "capacity",
-			    	wording: "wording",
+			    	capWording: "capWording",
 			    	response: "response",
 			    	responseNum: "responseNum",
 			    	hoverTime: "hoverTime",
@@ -90,6 +89,7 @@ function makeExperiment() {
 
 			    	// auto-filled subject-level info
 			    	character: "character",
+			    	charWording: "charWording",
 			    	subid: "subid",
 			    	dateOfTest: "dateOfTest",
 			    	startTime: "startTime",
@@ -140,7 +140,7 @@ function makeExperiment() {
 					trialNum: (capListLength + 1) - this.trials.length,
 					bgColor: "",
 					capacity: "",
-					wording: "",
+					capWording: "",
 					response: "",
 					responseNum: NaN,
 					hoverTime: 0,
@@ -150,10 +150,10 @@ function makeExperiment() {
 				// assign capacity
 				var chosenCap = randomElementNR(this.trials);
 				data.capacity = chosenCap.capName;
-				data.wording = chosenCap.wording;
+				data.capWording = chosenCap.wording;
 
 				// set text for this trial
-				$("span#question").text(data.wording);
+				$("span#question").text(data.capWording);
 
 				// set tooltip definition for this trial
 				if (data.trialNum === 1) {
