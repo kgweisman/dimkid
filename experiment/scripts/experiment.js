@@ -85,6 +85,7 @@ function makeExperiment() {
 			    	wording: "wording",
 			    	response: "response",
 			    	responseNum: "responseNum",
+			    	hoverTime: "hoverTime",
 			    	rt: "rt",
 
 			    	// auto-filled subject-level info
@@ -142,6 +143,7 @@ function makeExperiment() {
 					wording: "",
 					response: "",
 					responseNum: NaN,
+					hoverTime: 0,
 					rt: NaN
 				};
 
@@ -160,6 +162,15 @@ function makeExperiment() {
 				    $('#definition').attr('data-original-title', chosenCap.definition);
 				}
 
+				// record tooltip shown events
+				var hoverTime = 0;
+				$('#definition').on('shown.bs.tooltip', function () {
+					var hoverStart = (new Date()).getTime();
+					$('#definition').on('hidden.bs.tooltip', function () {
+						var hoverEnd = (new Date()).getTime();
+						hoverTime = hoverTime + (hoverEnd - hoverStart);
+					});
+				});
 
 				// display progress bar
 				var percentComplete = (data.trialNum - 1)/(capListLength + 1) * 100;
@@ -184,6 +195,7 @@ function makeExperiment() {
 				var clickHandler = function(event) {
 					var trialEnd = (new Date()).getTime();
 					data.rt = trialEnd - trialStart;
+					data.hoverTime = hoverTime;
 					experiment.allData.trialData.push(data);
 				};
 
