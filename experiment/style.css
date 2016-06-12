@@ -146,11 +146,8 @@ table#button-table {
     width: 80px;
 }
 
-.btn-bottom {
-    color: #333;
-    background-color: #fff;
-    border-color: #ccc;
-    width: 120px;
+.btn-default#wide {
+	width: 120px;
 }
 
 .button {
