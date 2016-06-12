@@ -32,7 +32,19 @@ function startStudy() {
 			// set up introduction and stage slides
 			$("span#pronounChar").text(experiment.allData.character.pronoun+" "+experiment.allData.character.charName);
 			$("span#pluralChar").text(experiment.allData.character.plural);
-			$("#stage #charImage").attr("src", experiment.allData.character.imageSource);
+			$("img#charImage").attr("src", experiment.allData.character.imageSource);
+			
+			// set image size depending on character
+			switch(experiment.allData.character.charName) {
+				case "beetle":
+					$('img#charImage').width(270);
+					$('img#charImage').height(180);
+					break;
+				case "robot":
+					$('img#charImage').width(180);
+					$('img#charImage').height(270);
+			}
+
 			showSlide("introduction");
 			
 			// record date and start time
