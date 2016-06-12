@@ -16,6 +16,7 @@ function makeExperiment() {
 			dateOfTest: "",
 			startTime: "",
 			endTime: "",
+			sessionDuration: "",
 			testingSite: "",
 			experimenter: "",
 			character: "",
@@ -56,6 +57,7 @@ function makeExperiment() {
 			    for (trial in objArray) {
 
 			    	var date = new Date();
+			    	var endTimeMS = date.getTime();
 
 			    	// auto-filled
 			    	objArray[trial].character = experiment.allData.character.charName;
@@ -64,6 +66,7 @@ function makeExperiment() {
 			    	objArray[trial].dateOfTest = experiment.allData.dateOfTest;
 			    	objArray[trial].startTime = experiment.allData.startTime;
 			    	objArray[trial].endTime = date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
+			    	objArray[trial].sessionDuration = (endTimeMS - startTimeMS)/60000;
 
 			    	// manually entered (later)
 			    	objArray[trial].testingSite = experiment.allData.testingSite;
@@ -94,6 +97,7 @@ function makeExperiment() {
 			    	dateOfTest: "dateOfTest",
 			    	startTime: "startTime",
 			    	endTime: "endTime",
+			    	sessionDuration: "sessionDuration",
 
 			    	// manually entered (later) subject-level info
 			    	testingSite: "testingSite",
