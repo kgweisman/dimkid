@@ -32,13 +32,13 @@ function makeCapacities() {
 	addCapacity("hungry", "get hungry", "like when you feel like you need to eat something");
 	addCapacity("tired", "feel tired", "like when you feel like you need to go to sleep");
 	addCapacity("pain", "feel pain", "like when something hurts");
-	addCapacity("nauseated", "feel sick", "like when you feel like you might sneeze or throw up");
+	addCapacity("nauseated", "feel sick", "like when you feel like you might throw up or you have a sore throat");
 	addCapacity("safe", "feel safe", "like when you know that you're okay and you're not in danger");
-	addCapacity("love", "feel love", "like when you really really love somebody");
+	addCapacity("love", "feel love", "like when you really like somebody and care about them a lot");
 	addCapacity("recognizing", "recognize somebody else", "like when you know who somebody is");
 	addCapacity("communicating", "communicate with somebody else", "like when you're talking with somebody");
 	addCapacity("guilt", "feel guilty", "like when you feel bad because you did something mean");
-	addCapacity("disrespected", "get hurt feelings", "like when you feel bad because somebody did something mean to you");
+	addCapacity("disrespected", "get hurt feelings", "like when you feel bad because somebody insulted you or said something mean about you");
 	addCapacity("free_will", "decide what to do", "like when you choose to do something or not to do it");
 	addCapacity("choices", "make choices", "like when you choose between different things");
 	addCapacity("self_restraint", "control itself", "like when you're in control of what you're doing");
@@ -48,12 +48,14 @@ function makeCapacities() {
 	addCapacity("self_aware", "be aware of itself", "like when you are thinking about yourself");
 	addCapacity("desires", "have desires", "like when you really want something");
 	addCapacity("embarrassed", "feel embarrassed", "like when you feel embarrassed about something that happened to you");
-	addCapacity("emo_recog", "understand how somebody else is feeling", "like when somebody gets hurts and you know how they're feeling");
+	addCapacity("emo_recog", "understand how somebody else is feeling", "like when you can tell whether somebody is happy or sad");
 	addCapacity("joy", "feel joy", "like when you're feeling really, really, really happy");
 	addCapacity("morality", "know what's nice and what's mean", "like when you know what would be nice to do and what would be mean to do");
-	addCapacity("personality", "have a personality", "like what makes you you");
+	addCapacity("personality", "have a personality", "like when somebody is a shy person, or a silly person");
 	addCapacity("pleasure", "feel pleasure", "like when something feels really good");
 	addCapacity("pride", "feel proud", "like when you feel really good about something you did");
+	addCapacity("CATCH_y", "move around", "like moving its legs or its head");
+	addCapacity("CATCH_n", "can turn into a dog", "like maybe in a few years it will be a dog instead");
 
 	// make list of capacities
 	capList = Object.keys(capacities).map(function (key) {return capacities[key]});

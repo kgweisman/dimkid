@@ -2,7 +2,7 @@ function makeExperiment() {
 
 	// make color palette
 	// using http://tools.medialab.sciences-po.fr/iwanthue/
-	var bgColors = ["#d1f3c2", "#edddf6", "#d1ffa1", "#d9e3f5", "#c3f094", "#f6dce3", "#37fcea", "#f5ed92", "#64f8f4", "#f4e7a7", "#8bf3f4", "#dff29b", "#c2e9f5", "#a4f6a7", "#fddbd0", "#7bf8d4", "#f2e1bc", "#99f6bb", "#f2e9d6", "#c3f8af", "#a9eef5", "#e0fab6", "#9bf3e1", "#d1eca8", "#d4efe9", "#b3f1bb", "#c4fcf0", "#b3f1bb", "#b6eee2", "#b3f1bb", "#e2eecc", "#9bf3e1", "#b3f1bb", "#9bf3e1", "#c8f4d6", "#9bf3e1", "#a9f2ce", "#9bf3e1", "#9bf3e1", "#9bf3e1"]
+	var bgColors = ["#94ebda", "#f3c5fa", "#bce98d", "#d5d0fa", "#97eca5", "#ead1ec", "#d1e48e", "#bfd6fa", "#f0d27e", "#3eeaef", "#fdcc93", "#64f8f4", "#fde096", "#79e3f9", "#e3df8e", "#a7dcf9", "#b5eaa1", "#f3d0d9", "#5ef2da", "#f2cdb9", "#8cf2c3", "#fddbd0", "#84eced", "#f0d9a2", "#b4dbe7", "#cae5a1", "#d2dcee", "#aceab4", "#c2e9f5", "#dedfa2", "#a9e7e4", "#f2e1bc", "#9be4c0", "#e3d3af", "#a9f2ce", "#e3dbc8", "#c3e5b5", "#cde8e2", "#d0d9ae", "#bae6c8", "#dee7bc", "#d0e0c8"]
 
 	experiment = {
 		// array for making each new trial
@@ -179,9 +179,6 @@ function makeExperiment() {
 				// display progress bar
 				var percentComplete = (data.trialNum - 1)/(capListLength + 1) * 100;
 				var percentCompleteRounded = Math.round(percentComplete);
-				$("#trial-num").text("trial "+data.trialNum.toString()+" of 78: "+percentCompleteRounded+"% complete");
-				$("#stage .progress-bar").attr("aria-valuenow", percentComplete.toString());
-				$("#stage .progress-bar").css("width", percentComplete.toString()+"%");
 
 				// change the background color and progress bar color
 				data.bgColor = randomElementNR(bgColors);
