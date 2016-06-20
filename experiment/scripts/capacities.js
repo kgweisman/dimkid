@@ -54,8 +54,8 @@ function makeCapacities() {
 	addCapacity("personality", "have a personality", "like when somebody is shy, or silly, or brave");
 	addCapacity("pleasure", "feel pleasure", "like when something feels really good");
 	addCapacity("pride", "feel proud", "like when you feel really good about something you did");
-	addCapacity("CATCH_y", "move around", "like moving its legs or its head");
-	addCapacity("CATCH_n", "be in two places at the same time", "like being right here and also in Spain at the exact same time");
+	// addCapacity("CATCH_y", "move around", "like moving its legs or its head");
+	// addCapacity("CATCH_n", "be in two places at the same time", "like being right here and also in Spain at the exact same time");
 
 	// make list of capacities
 	capList = Object.keys(capacities).map(function (key) {return capacities[key]});
