@@ -179,6 +179,8 @@ function makeExperiment() {
 				// display progress bar
 				var percentComplete = (data.trialNum - 1)/(capListLength + 1) * 100;
 				var percentCompleteRounded = Math.round(percentComplete);
+				$("#stage .progress-bar").attr("aria-valuenow", percentComplete.toString());
+				$("#stage .progress-bar").css("width", percentComplete.toString()+"%");
 
 				// change the background color and progress bar color
 				data.bgColor = randomElementNR(bgColors);
