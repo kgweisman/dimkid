@@ -51,7 +51,7 @@ function makeCapacities() {
 	addCapacity("emo_recog", "understand how somebody else is feeling", "like when you can tell whether somebody is happy or sad");
 	addCapacity("joy", "feel joy", "like when you're feeling really, really, really happy");
 	addCapacity("morality", "know what's nice and what's mean", "like when you know what would be nice to do and what would be mean to do");
-	addCapacity("personality", "have a personality", "like when somebody is shy, or silly, or brave");
+	addCapacity("personality", "have a personality", "Like what makes you 'you' - like being shy, or silly, or brave");
 	addCapacity("pleasure", "feel pleasure", "like when something feels really good");
 	addCapacity("pride", "feel proud", "like when you feel really good about something you did");
 	// addCapacity("CATCH_y", "move around", "like moving its legs or its head");
