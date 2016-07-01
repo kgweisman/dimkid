@@ -200,6 +200,8 @@ function makeExperiment() {
 					data.rt = trialEnd - trialStart;
 					data.hoverTime = hoverTime;
 					experiment.allData.trialData.push(data);
+				    $('#definition').attr('data-original-title', " ");
+					// $('[data-toggle="tooltip"]').tooltip({title: "", placement: "bottom"}); 
 				};
 
 				$(".slide#stage button").click(function() { 

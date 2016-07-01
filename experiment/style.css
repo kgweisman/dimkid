@@ -109,6 +109,7 @@ label {
 /*tables*/
 table {
 	width: 100%;
+	margin-top: 15px;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -117,8 +118,13 @@ table#intro-table {
 	width: 90%;
 }
 
+table#question-table {
+	margin-top: 10px!important;
+
+}
+
 table#button-table {
-	margin-top: 40px;
+	margin-top: 30px;
 }
 
 /*progress bar*/
