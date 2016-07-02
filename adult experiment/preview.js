@@ -38,7 +38,7 @@ var previewSlide = {
 }
 
 // create unique turker id
-var ut_id = "dimkid01";
+var ut_id = "ggw-mod2";
 // var ut_id = "dummy0202"
 
 // show preview slide
