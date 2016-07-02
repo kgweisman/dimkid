@@ -19,16 +19,9 @@ function startStudy() {
 			// record subid in experiment object
 			experiment.allData.subid = $('input#subid').val();
 
-			// record or randomly select character
-			if ($('input#character').val() === "random") {
-				experiment.allData.character = randomElementNR(charList);
-			} else if (["beetle","robot"].indexOf($('input#character').val()) === -1) {
-				window.alert("Please choose: beetle, robot, or random.");
-			} else {
-				var chosenChar = $('input#character').val();
-				experiment.allData.character = characters[chosenChar];
-			}
-
+			// randomly select character
+			experiment.allData.character = randomElementNR(charList);
+			
 			// set up introduction and stage slides
 			$("span#pronounChar").text(experiment.allData.character.pronoun+" "+experiment.allData.character.charName);
 			$("span#pluralChar").text(experiment.allData.character.plural);
