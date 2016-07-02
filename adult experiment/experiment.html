@@ -167,19 +167,262 @@
 
 		</div>
 
+<!-- post-study: demographics -->
+
+<!-- demographics survey ("demographics" slide) -->
+
+	<div class="slide" id="demographics">
+		
+		<h1>Demographic Survey</h1>
+		
+		<p class="fun-text" id="survey-descrip">Before recording your responses, we would like to know a little more about your background.</p>
+
+		<form role="form" id="demographicsForm">
+
+			<div class="control-group">
+				<label for="age">Age:</label>
+				<div class="controls">
+					<input type="text" class="form-control" id="age" name="age" placeholder="Type your age here (in years)" required> 
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label for="gender">Gender:</label>
+				<div class="controls">
+					<div class="radio">
+						<label class="radio" for="gender-0"><input type="radio" name="gender" id="gender-0" value="female">Female</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="gender-1"><input type="radio" name="gender" id="gender-1" value="male">Male</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="gender-2"><input type="radio" name="gender" id="gender-2" value="other_prefNo">Other/prefer not to say</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label for="job">What is your job/occupation?</label>
+				<div class="controls">
+					<input type="text" class="form-control" id="job" name="job" placeholder="Type your job/occupation here" input type="text">
+				</div>
+			</div>      
+
+			<div class="control-group">
+				<label for="education">Please select the category that best represents the amount of education you have completed.</label>
+				<div class="controls">
+					<div class="radio">
+						<label class="radio" for="education-0"><input type="radio" name="education" id="education-0" value="hs_none">Less than 9th grade</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="education-1"><input type="radio" name="education" id="education-1" value="hs_some">Some high school, no diploma</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="education-2"><input type="radio" name="education" id="education-2" value="hs_diploma">High school diploma or equivalent (e.g., GED)</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="education-3"><input type="radio" name="education" id="education-3" value="college_some">Some college, no degree</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="education-4"><input type="radio" name="education" id="education-4" value="college_assocDegree">Associate's degree</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="education-5"><input type="radio" name="education" id="education-5" value="college_bachDegree">Bacehlor's degree (e.g., BA, BS)</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="education-6"><input type="radio" name="education" id="education-6" value="grad_some">Some graduate or professional school, no degree</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="education-7"><input type="radio" name="education" id="education-7" value="grad_degree">Graduate or professional degree (e.g., MA, MS, PhD, MD, JD)</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="education-8"><input type="radio" name="education" id="education-8" value="other_prefNo">Other/prefer not to say</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label for="ethnicity">How would you describe your ethnicity? (Choose one or more options.)</label>
+				<div class="controls">
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="asian_eastAsian">Asian: East Asian</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="asian_southAsian">Asian: South Asian</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="asian_otherAsian">Asian: Other Asian</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="black">Black or African American</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="hispanicLatino">Hispanic or Latino/a</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="middleEastern">Middle Eastern</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="nativeAmerican">Native American, American Indian, or Alaska Native</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="nativeHawaiianPI">Native Hawaiian or other Pacific Islander</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="white">White or European American</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="other_prefNo">Other/prefer not to say</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label for="religionChild">With what religion(s), if any, were you raised? (Choose one or more options.)</label>
+				<div class="controls">
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="buddhism">Buddhism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="christianity_catholic">Christianity: Catholic</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="christianity_evangelical">Christianity: Evangelical</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="christianity_protestant">Christianity: Protestant (mainline/mainstream)</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="christianity_morman">Christianity: LDS/Mormon</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="christianity_other">Christianity: Other Christian</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="hinduism">Hinduism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="islam">Islam</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="jainism">Jainism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="judaism">Judaism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="sikhism">Sikhism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="other">Other religion</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="none">No religion</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="prefNo">Prefer not to say</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label for="religionNow">With what religious organization(s), if any, do you identify now? (Choose one or more options.)</label>
+				<div class="controls">
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="buddhism">Buddhism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="christianity_catholic">Christianity: Catholic</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="christianity_evangelical">Christianity: Evangelical</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="christianity_protestant">Christianity: Protestant (mainline/mainstream)</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="christianity_mormon">Christianity: LDS/Mormon</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="christianity_other">Christianity: Other Christian</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="hinduism">Hinduism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="islam">Islam</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="jainism">Jainism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="judaism">Judaism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="sikhism">Sikhism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="other">Other religion</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="none">No religion</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="prefNo">Prefer not to say</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label for="country">In what country do you currently live?</label>
+				<div class="controls">
+					<input type="text" class="form-control" id="country" name="country" placeholder="Type your current country of residence here"> 
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label for="englishNative">Is English your native language?</label>
+				<div class="controls">
+					<div class="radio">
+						<label class="radio" for="englishNative-0"><input type="radio" name="englishNative" id="englishNative-0" value="yes_only">Yes, English is my <b>only</b> native language</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="englishNative-1"><input type="radio" name="englishNative" id="englishNative-1" value="yes_multiple">Yes, English is one of <b>multiple</b> native languages for me</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="englishNative-2"><input type="radio" name="englishNative" id="englishNative-2" value="no">No, English is <b>not</b> my native language</label>
+					</div>
+				</div>
+			</div>      
+
+		<div class="control-group">
+			<label class="control-label" for="comments">Comments</label>
+			<div class="controls">
+				<p>Do you have anything you'd like to share with the researcher - e.g., notes on problems with the survey, ways to improve your experience of taking the survey, etc.?  (You can also email the researcher directly at <a href="mailto:kweisman@stanford.edu">kweisman@stanford.edu</a>.) We really appreciate your feedback!</p>
+				<textarea class="form-control" rows="3" id="comments" name="comments"></textarea>
+			</div>
+		</div>
+		</form>
+
+				<div class="button">
+					<button type="submit" class="btn btn-default" id="wide">Submit</button>
+				</div>
+
+	</div>
+
 <!-- post-study: the end -->
 
-		<div class="slide" id="end">
+	<div class="slide" id="end">
 
-			<div class="container" id="text-block">
-								
-				<h1>You're finished - thanks for participating!</h1>
+		<div class="container" id="text-block">
+							
+			<h1>You're finished - thanks for participating!</h1>
 
-				<p>The HIT has been automatically submitted, and you will be paid within 10 minutes. This HIT does <b>not</b> require completion codes. You may close this window at any time.</p>
-				
-			</div>
+			<p>The HIT has been automatically submitted, and you will be paid within 10 minutes. This HIT does <b>not</b> require completion codes. You may close this window at any time.</p>
 			
 		</div>
+		
+	</div>
 
 <!-- include javascript files -->
 
@@ -187,6 +430,7 @@
     <script src="dependencies/bootstrap.min.js"></script>
 
     <!-- my experiment -->
+    <script src="scripts/demographics.js"></script>
     <script src="scripts/characters.js"></script>
     <script src="scripts/capacities.js"></script>
     <script src="scripts/experiment.js"></script>
@@ -194,7 +438,7 @@
 
     <!-- fingerprinting -->
     <script src="dependencies/store.js"></script>
-    <!-- <script src="dependencies/fingerprint.js"></script> -->
+    <script src="dependencies/fingerprint.js"></script>
 
 	</body>
 
