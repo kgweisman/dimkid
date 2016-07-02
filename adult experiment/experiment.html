@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+	<head>
+	
+		<title>40 Questions Game</title>
+		<script src="dependencies/jquery-2.1.3.min.js"></script>
+		<script src="scripts/helper.js"></script>
+		<script src="dependencies/mmturkey.js"></script>
+		<link href="dependencies/bootstrap.min.css" rel="stylesheet">
+		<link href='https://fonts.googleapis.com/css?family=Asap:400,700' rel='stylesheet' type='text/css'>
+		<link href="style.css" rel="stylesheet"/>
+	
+	</head>
+
+	<body>
+
+<!-- pre-study: front page -->
+
+		<div class="slide" id="front">
+
+			<div class="container">
+
+				<h1>40 Questions Game</h1>
+
+	            <div class="session-info">
+	                <div class="control-group">
+	                    <div class="controls">
+	                        <label for="subid">subid:</label>
+	                        <input type="text" class="form-control" id="subid" name="subid" placeholder="e.g., kp01 for kara pilot #1; k27 for kara participant #27 (*required*)"> 
+	                    </div>
+	                </div>
+	                <div class="control-group">
+	                    <div class="controls">
+	                        <label for="character">character:</label>
+	                        <input type="text" class="form-control" id="character" name="character" value="random"> 
+	                    </div>
+	                </div>
+	            </div>
+
+				<div class="button">
+					<button type="submit" class="btn btn-default" id="wide">Start the game</button>
+				</div>
+
+			</div>
+
+		</div>
+
+<!-- pre-study: introduction -->
+
+		<div class="slide" id="introduction">
+
+			<div class="container">
+
+				<h1>How to play</h1>
+
+	<!-- 			<img id="charImage"/>
+
+				<p>This game is about <b><span id="pluralChar">{{}}</span></b>. I want to know what you think <span id="pluralChar">{{}}</span> <b>can</b> do, and what you think they <b>can not</b> do.</p>
+				
+				<p>I don't know the answers to most of these questions, so I really want to know what <b>you</b> think! You can guess if you're not sure, and if you want to stop playing, just let me know.</p>
+	 -->
+				<table id="intro-table">
+					<colgroup>
+						<col style="width:30%">
+						<col style="width:5%">
+						<col style="width:65%">
+					</colgroup>
+					<tbody>
+						<tr>
+							<td>
+								<img style="vertical-align:middle; margin:auto" id="charImage"/>
+							</td>
+							<td></td>
+							<td style="text-align:left">
+								<p>This game is about <b><span id="pluralChar">{{}}</span></b>. I want to know what you think <span id="pluralChar">{{}}</span> <b>can</b> do and <b>can not</b> do.</p>
+								<p>I don't know the answers to most of these questions, so I really want to know what <b>you</b> think. You can guess if you're not sure, and if you don't know what a word means, that's ok! Just ask me. If you ever want to stop playing, let me know.</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<h1>Are you ready?</h1>
+
+				<div class="button">
+					<button type="submit" class="btn btn-default" id="wide">Let's play!</button>
+				</div>
+
+			</div>
+			
+		</div>
+
+<!-- study: "stage" slide -->
+
+		<div class="slide" id="stage">
+
+			<div class="progress">
+				<div class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>
+			</div>			
+
+			<div class="container">
+
+				<table>
+					<colgroup>
+						<col style="width:8%">
+						<col style="width:84%">
+						<col style="width:8%">
+					</colgroup>
+					<tbody>
+						<tr style="vertical-align:top">
+							<td></td>
+							<td>
+								<img id="charImage"/>
+							</td>
+							<td style="text-align:right">
+								<button type="end" class="btn btn-default" id="bail" align="right">end</button>		
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<table id="question-table">
+					<colgroup>
+						<col style="width:8%">
+						<col style="width:84%">
+						<col style="width:8%">
+					</colgroup>
+					<tbody>
+						<tr style="height:125px!important; vertical-align:top!important">
+							<td></td>
+							<td>
+								<p>Do you think <span id="pronounChar">{{}}</span> can</br><a id="definition" href="#" data-toggle="tooltip"><span id="question">{{}}</span></a>?</p>
+							</td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+				
+				<!-- <p>Do you think <span id="pronounChar">{{}}</span> can</br><a id="definition" href="#" data-toggle="tooltip"><span id="question">{{}}</span></a>?</p> -->
+
+				<table id="button-table">
+					<colgroup>
+						<col style="width:8%">
+						<col style="width:84%">
+						<col style="width:8%">
+					</colgroup>
+					<tbody>
+						<tr>
+							<td></td>
+							<td>
+								<button type="submit" class="btn btn-default" id="no">NO</button>
+								<button type="submit" class="btn btn-default" id="kinda">KINDA</button>
+								<button type="submit" class="btn btn-default" id="yes">YES</button>							
+							</td>
+							<td style="text-align:right">
+								<button type="submit" class="btn btn-default" id="skip">(skip)</button>				
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			
+			</div>
+
+		</div>
+
+<!-- post-study: the end -->
+
+		<div class="slide" id="end">
+
+			<div class="container">
+
+				<img id="smiley" src="smiley.png"/>
+				
+				<h1>THE END</h1>
+				
+				<p>Thanks for playing!</p>
+				
+				<button type="restart" class="btn btn-default" id="wide" align="right">Start over</button>		
+
+			</div>
+			
+		</div>
+
+<!-- include javascript files -->
+
+    <!-- bootstrap -->
+    <script src="dependencies/bootstrap.min.js"></script>
+
+    <!-- my experiment -->
+    <script src="scripts/characters.js"></script>
+    <script src="scripts/capacities.js"></script>
+    <script src="scripts/experiment.js"></script>
+	<script src="scripts/start.js"></script>
+
+    <!-- fingerprinting -->
+    <script src="dependencies/store.js"></script>
+    <!-- <script src="dependencies/fingerprint.js"></script> -->
+
+	</body>
+
+</html>
