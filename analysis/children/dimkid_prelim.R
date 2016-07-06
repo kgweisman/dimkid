@@ -65,8 +65,10 @@ plot(cluster)
 
 VSS.scree(cor4)
 fa(cor4, nfactors = 13, rotate = "none")
+fa(cor4, nfactors = 4, rotate = "none")
 fa(cor4, nfactors = 3, rotate = "none")
 fa(cor4, nfactors = 13, rotate = "varimax")
+fa(cor4, nfactors = 4, rotate = "varimax")
 fa(cor4, nfactors = 3, rotate = "varimax")
 fa.sort(fa(cor4, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
 fa.sort(fa(cor4, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
@@ -76,6 +78,7 @@ fa.sort(fa(cor4, nfactors = 3, rotate = "varimax")$loadings[]) %>% round(2) %>% 
 
 fa.sort(fa(cor4, nfactors = 4, rotate = "varimax")$loadings[]) %>% round(2) %>% data.frame() %>% rownames_to_column() %>% View()
 
+fa.sort(fa(cor4, nfactors = 7, rotate = "varimax")$loadings[]) %>% round(2) %>% data.frame() %>% rownames_to_column() %>% View()
 
 
 # loadings <- fa(cor4, nfactors = 3, rotate = "varimax")$loadings[] %>% data.frame() %>% rownames_to_column() %>% mutate(rowname = factor(rowname)) %>% arrange(rowname)
