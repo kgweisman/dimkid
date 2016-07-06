@@ -56,7 +56,7 @@ cor3 <- cor(d2, method = "spearman", use = "complete.obs")
 cor4 <- cor3
 cor4[is.na(cor4)] <- 1
 
-m <- as.matrix(d3)
+m <- as.matrix(d2)
 heatmap(m)
 
 cluster <- hclust(dist(t(m)))
