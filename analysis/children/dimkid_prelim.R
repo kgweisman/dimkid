@@ -2,6 +2,8 @@ library(dplyr)
 library(tidyr)
 library(stats)
 library(psych)
+library(ggplot2)
+library(tibble)
 
 # # children
 # d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/compiled/dimkid_p01-14_2016-04-01.csv")
@@ -44,7 +46,15 @@ library(psych)
 # adults
 d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv")          
 
-d1 <- d %>%
+# plot log(rts)
+qplot(d$rt, bins = 100) + 
+  scale_x_log10(breaks = seq(0, 1000, 100)) +
+  geom_vline(xintercept = 250, color = "red")
+
+d0 <- d %>%
+  filter(rt >= 250)
+
+d1 <- d0 %>%
   select(capWording, responseNum, subid) %>%
   spread(capWording, responseNum)
 
@@ -65,11 +75,11 @@ plot(cluster)
 
 VSS.scree(cor4)
 fa(cor4, nfactors = 13, rotate = "none")
-fa(cor4, nfactors = 4, rotate = "none")
-fa(cor4, nfactors = 3, rotate = "none")
+# fa(cor4, nfactors = 4, rotate = "none")
+# fa(cor4, nfactors = 3, rotate = "none")
 fa(cor4, nfactors = 13, rotate = "varimax")
-fa(cor4, nfactors = 4, rotate = "varimax")
-fa(cor4, nfactors = 3, rotate = "varimax")
+# fa(cor4, nfactors = 4, rotate = "varimax")
+# fa(cor4, nfactors = 3, rotate = "varimax")
 fa.sort(fa(cor4, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
 fa.sort(fa(cor4, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 # fa.sort(fa(cor4, nfactors = 2, rotate = "varimax")$loadings[]) %>% View()
@@ -85,4 +95,9 @@ fa.sort(fa(cor4, nfactors = 7, rotate = "varimax")$loadings[]) %>% round(2) %>% 
 # capacities <- data.frame(rowname = levels(d$capWording)) %>% arrange(rowname)
 # 
 # full_join(loadings, capacities) %>% View() 
+
+
+
+
+plot(fa(cor4, nfactors = 4, rotate = "varimax"))
 
