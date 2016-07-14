@@ -39,8 +39,6 @@ d1 <- d0 %>%
 d2 <- data.frame(d1[,-1], row.names = d1[,1])
 
 cor3 <- cor(d2, method = "spearman", use = "complete.obs")
-cor4 <- cor3
-cor4[is.na(cor4)] <- 1
 
 m <- as.matrix(d2)
 heatmap(m)
@@ -48,12 +46,12 @@ heatmap(m)
 cluster <- hclust(dist(t(m)))
 plot(cluster)
 
-VSS.scree(cor4)
-fa(cor4, nfactors = 13, rotate = "none")
-fa(cor4, nfactors = 3, rotate = "none")
-fa(cor4, nfactors = 13, rotate = "varimax")
-fa(cor4, nfactors = 3, rotate = "varimax")
-fa.sort(fa(cor4, nfactors = 4, rotate = "varimax")$loadings)
-fa.sort(fa(cor4, nfactors = 3, rotate = "varimax")$loadings)
-fa.sort(fa(cor4, nfactors = 2, rotate = "varimax")$loadings)
+VSS.scree(cor3)
+fa(cor3, nfactors = 13, rotate = "none")
+fa(cor3, nfactors = 3, rotate = "none")
+fa(cor3, nfactors = 13, rotate = "varimax")
+fa(cor3, nfactors = 3, rotate = "varimax")
+fa.sort(fa(cor3, nfactors = 4, rotate = "varimax")$loadings)
+fa.sort(fa(cor3, nfactors = 3, rotate = "varimax")$loadings)
+fa.sort(fa(cor3, nfactors = 2, rotate = "varimax")$loadings)
 
