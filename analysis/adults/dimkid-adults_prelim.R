@@ -97,7 +97,7 @@ fa(cor3b, nfactors = 13, rotate = "varimax")
 fa.sort(fa(cor3b, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 # fa.sort(fa(cor3b, nfactors = 2, rotate = "varimax")$loadings[]) %>% View()
 
-# remove (a priori) "substnantially reworded" agency items
+# remove (a priori) "substnantially reworded" agency items (see Mental capacity items 2016-06-30.doc)
 d3c <- d2 %>%
   select (-do.math, -be.aware.of.things, -feel.sad, -sense.whether.something.is.close.by.or.far.away, -get.hurt.feelings, -feel.scared, -decide.what.to.do, -make.plans, -know.what.s.nice.and.what.s.mean, -feel.sick....like.when.you.feel.like.you.might.throw.up, -smell.things, -figure.out.how.to.do.things, -be.aware.of.itself, -have.self.control....like.when.you.stop.yourself.from.doing.something.you.shouldn.t.do, -hear.sounds)
 
