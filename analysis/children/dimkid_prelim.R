@@ -5,18 +5,16 @@ library(psych)
 library(ggplot2)
 library(tibble)
 
-# children
+# kara pilot
+d_pilot <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/compiled/dimkid_p01-14_2016-04-01.csv")
 
-# # kara pilot
-# d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/compiled/dimkid_p01-14_2016-04-01.csv")
-# 
-# d1 <- d %>%
-#   select(cap_short, response_coded, subid) %>%
-#   mutate(response_coded = as.numeric(ifelse(response_coded %in% c(0, 0.5, 1),
-#                                             as.numeric(as.character(response_coded)),
-#                                             NA))) %>%
-#   filter(cap_short != "na") %>%
-#   spread(cap_short, response_coded)
+d1_pilot <- d_pilot %>%
+  select(cap_short, response_coded, subid) %>%
+  mutate(response_coded = as.numeric(ifelse(response_coded %in% c(0, 0.5, 1),
+                                            as.numeric(as.character(response_coded)),
+                                            NA))) %>%
+  filter(cap_short != "na") %>%
+  spread(cap_short, response_coded)
 
 # lydia, olivia, allie run
 
@@ -36,6 +34,40 @@ d1 <- d0 %>%
 
 # names(d1) <- gsub(" ", "\\.", names(d1))
 # names(d1) <- gsub("\\-", "\\.", names(d1))
+
+# if merging
+d1_combo <- d1_pilot %>%
+  rename(communicating = communicate,
+         computations = math,
+         depressed = sad,
+         disrespected = hurt_feelings,
+         fear = scared,
+         guilt = guilty,
+         nauseated = sick,
+         odors = smells,
+         pride = proud,
+         reasoning = thinking,
+         recognizing = recognize,
+         remembering = remember,
+         seeing = see,
+         self_restraint = self_control,
+         temperature = temperatures) %>%
+  mutate(conscious = ifelse(!is.na(conscious), consious,
+                            ifelse(!is.na(aware), aware,
+                                   NA)),
+         free_will = ifelse(!is.na(free_will), consious,
+                            ifelse(!is.na(decide), decide,
+                                   NA)),
+         intentions = ifelse(!is.na(intentions), consious,
+                            ifelse(!is.na(plan), plan,
+                                   NA))) %>%
+  select(-aware, -decide, -plan) %>%
+  gather(item, response, -subid) %>%
+  mutate(response = response * 2) %>%
+  spread(item, response) %>%
+  full_join(d1)
+
+# d1 <- d1_combo
 
 # continue
 
