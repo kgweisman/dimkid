@@ -201,7 +201,7 @@ function makeExperiment() {
 					data.hoverTime = hoverTime;
 					experiment.allData.trialData.push(data);
 				    $('#definition').attr('data-original-title', " ");
-					// $('[data-toggle="tooltip"]').tooltip({title: "", placement: "bottom"}); 
+					// $('[data-toggle="tooltip"]').tooltip({title: "", placement: "bottom"});
 				};
 
 				$(".slide#stage button").click(function() { 
@@ -222,6 +222,14 @@ function makeExperiment() {
 						default:
 							data.responseNum = "NA";
 					}
+
+					// disable all buttons for 250ms
+					$(".slide#stage button").prop("disabled", true);
+					// var btn = $(this);
+    	// 			btn.prop('disabled', true);
+    				setTimeout(function(){
+    					$(".slide#stage button").prop('disabled', false);
+    				}, 250);
 
 					// end trial
 					clickHandler();
