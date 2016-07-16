@@ -75,17 +75,18 @@ d2 <- data.frame(d1[,-1], row.names = d1[,1])
 
 cor3 <- cor(d2, method = "spearman", use = "complete.obs")
 
-m <- as.matrix(d2)
-heatmap(m)
-
-cluster <- hclust(dist(t(m)))
-plot(cluster)
+# m <- as.matrix(d2)
+# heatmap(m)
+# 
+# cluster <- hclust(dist(t(m)))
+# plot(cluster)
 
 VSS.scree(cor3)
 fa(cor3, nfactors = 13, rotate = "none")
 fa(cor3, nfactors = 3, rotate = "none")
 fa(cor3, nfactors = 13, rotate = "varimax")
 fa(cor3, nfactors = 3, rotate = "varimax")
+fa.sort(fa(cor3, nfactors = 7, rotate = "varimax")$loadings)
 fa.sort(fa(cor3, nfactors = 4, rotate = "varimax")$loadings)
 fa.sort(fa(cor3, nfactors = 3, rotate = "varimax")$loadings)
 fa.sort(fa(cor3, nfactors = 2, rotate = "varimax")$loadings)
