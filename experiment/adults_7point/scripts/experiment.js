@@ -123,6 +123,12 @@ function makeExperiment() {
 					// record response
 					data.response = $(this).attr("id");
 
+					// disable all buttons for 250ms
+					$(".slide#stage button").prop("disabled", true);
+					setTimeout(function(){
+						$(".slide#stage button").prop('disabled', false);
+					}, 250);
+
 					// end trial
 					clickHandler();
 					$(".slide#stage button").unbind().blur();
