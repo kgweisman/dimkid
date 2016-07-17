@@ -60,7 +60,7 @@ plot(fa(d2, nfactors = 4, rotate = "varimax"))
 # remove items with mandatory definitions
 d3a <- d2[!grepl("\\.\\.\\.", names(d2))]
 
-d3a <- cor(d3a, method = "spearman", use = "complete.obs")
+cor3a <- cor(d3a, method = "spearman", use = "complete.obs")
 
 VSS.scree(d3a)
 fa(d3a, nfactors = 13, rotate = "none")
@@ -80,7 +80,7 @@ fa.sort(fa(d3a, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 d3b <- d2 %>%
   select (-decide.what.to.do, -figure.out.how.to.do.things, -have.self.control....like.when.you.stop.yourself.from.doing.something.you.shouldn.t.do)
 
-d3b <- cor(d3b, method = "spearman", use = "complete.obs")
+cor3b <- cor(d3b, method = "spearman", use = "complete.obs")
 
 VSS.scree(d3b)
 fa(d3b, nfactors = 13, rotate = "none")
@@ -98,7 +98,7 @@ fa.sort(fa(d3b, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 d3c <- d2 %>%
   select (-do.math, -be.aware.of.things, -feel.sad, -sense.whether.something.is.close.by.or.far.away, -get.hurt.feelings, -feel.scared, -decide.what.to.do, -make.plans, -know.what.s.nice.and.what.s.mean, -feel.sick....like.when.you.feel.like.you.might.throw.up, -smell.things, -figure.out.how.to.do.things, -be.aware.of.itself, -have.self.control....like.when.you.stop.yourself.from.doing.something.you.shouldn.t.do, -hear.sounds)
 
-d3c <- cor(d3c, method = "spearman", use = "complete.obs")
+cor3c <- cor(d3c, method = "spearman", use = "complete.obs")
 
 VSS.scree(d3c)
 fa(d3c, nfactors = 13, rotate = "none")

@@ -83,12 +83,10 @@ cor3 <- cor(d2, method = "spearman", use = "complete.obs")
 # plot(cluster)
 
 VSS.scree(d2)
-fa(d2, nfactors = 13, rotate = "none")
-# fa(d2, nfactors = 3, rotate = "none")
-fa(d2, nfactors = 13, rotate = "varimax")
-# fa(d2, nfactors = 3, rotate = "varimax")
-fa.sort(fa(d2, nfactors = 7, rotate = "varimax")$loadings)
-fa.sort(fa(d2, nfactors = 4, rotate = "varimax")$loadings)
-fa.sort(fa(d2, nfactors = 3, rotate = "varimax")$loadings)
-fa.sort(fa(d2, nfactors = 2, rotate = "varimax")$loadings)
+fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
+fa(r = d2, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cor")
+fa.sort(fa(d2, nfactors = 7, rotate = "varimax")$loadings[]) %>% View()
+fa.sort(fa(d2, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
+fa.sort(fa(d2, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
+
 
