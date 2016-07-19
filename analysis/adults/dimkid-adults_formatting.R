@@ -76,10 +76,11 @@ jsonFormat = function(wd, runName) {
         jd$answers$data$allData$job),
       
       # subject-level data: open-ended responses
-      comments = ifelse(
-        is.null(jd$answers$data$allData$comments) | 
-          jd$answers$data$allData$comments == "", NA,
-        jd$answers$data$allData$comments),
+      comments = as.character(
+        ifelse(
+          is.null(jd$answers$data$allData$comments) |
+            jd$answers$data$allData$comments == "", NA,
+          jd$answers$data$allData$comments)),
       
       # trial-level data:
       trialNum = jd$answers$data$allData$trialData$trialNum,
@@ -111,11 +112,22 @@ d_us_run_01b = jsonFormat(
   wd = "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/turk/us_run-01b/",
   runName = "us_run_01b")
 
+# US run 02 (2016-07-19, 7-point scale)
+d_us_run_02 = jsonFormat(
+  wd = "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/turk/us_run-02/",
+  runName = "us_run_02")
+
+# US run 02 (2016-07-19, 7-point scale)
+d_us_run_02b = jsonFormat(
+  wd = "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/turk/us_run-02b/",
+  runName = "us_run_02b")
+
 # --- TIDYING -----------------------------------------------------------------
 
 # clean up variables
 d_tidy = full_join(d_us_run_01, d_us_run_01b) %>%
-  # full_join(d_us_run_02) %>%
+  full_join(d_us_run_02) %>%
+  full_join(d_us_run_02b) %>%
   mutate(
     run = factor(run),
     subid = factor(subid),
@@ -139,17 +151,39 @@ d_tidy = full_join(d_us_run_01, d_us_run_01b) %>%
 
 glimpse(d_tidy)
 
+# study 1
+d1 <- d_tidy %>%
+  filter(run %in% c("us_run_01", "us_run_01b")) %>%
+  mutate(responseNum = as.numeric(
+    ifelse(response == "no", "0",
+           ifelse(response == "kinda", "0.5",
+                  ifelse(response == "yes", "1", NA)))))
+
+d2 <- d_tidy %>%
+  filter(run %in% c("us_run_02", "us_run_02b")) %>%
+  mutate(responseNum = as.numeric(as.character(response)))
+
 # --- WRITING ANONYMIZED CSV --------------------------------------------------
 
-# write to de-identified csv file
-write.csv(d_tidy, "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv")
+# write run 01 to de-identified csv file
+write.csv(d1, "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv")
 
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv")          
-          
+d1 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv")          
+
+# write run 02 to de-identified csv file
+write.csv(d2, "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-02_2016-07-19_anonymized.csv")
+
+d2 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-02_2016-07-19_anonymized.csv")          
+
 # view comments
-comments = d %>%
+comments_01 = d1 %>%
   select(comments, charName, subid) %>%
   distinct() %>%
   filter(comments != "NA")
 
-View(comments)
+comments_02 = d2 %>%
+  select(comments, charName, subid) %>%
+  distinct() %>%
+  filter(comments != "NA")
+
+View(comments_02)
