@@ -6,7 +6,12 @@ library(ggplot2)
 library(tibble)
 
 # adults
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv")          
+
+# # run 01
+# d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv")          
+
+# run 02
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-02_2016-07-19_anonymized.csv")          
 
 # plot log(rts)
 qplot(d$rt, bins = 100) + 
@@ -32,6 +37,7 @@ cor3 <- cor(d2, method = "spearman", use = "complete.obs")
 
 
 VSS.scree(d2)
+fa.parallel(d2)
 fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
 fa(r = d2, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cor")
 fa.sort(fa(d2, nfactors = 7, rotate = "varimax")$loadings[]) %>% View()
