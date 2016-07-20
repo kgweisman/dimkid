@@ -19,7 +19,7 @@ d1_pilot <- d_pilot %>%
 
 # lydia, olivia, allie run
 
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-07-15_anonymized.csv")
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-07-19_anonymized.csv")
 
 qplot(d$rt, bins = 100) +
   scale_x_log10(breaks = seq(0, 1000, 100)) +
@@ -83,10 +83,14 @@ cor3 <- cor(d2, method = "spearman", use = "complete.obs")
 # plot(cluster)
 
 VSS.scree(d2)
+fa.parallel(d2)
 fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
 fa(r = d2, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cor")
 fa.sort(fa(d2, nfactors = 7, rotate = "varimax")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
+
+fa.parallel(d2, cor = "poly")
+fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 
