@@ -19,7 +19,7 @@ d1_pilot <- d_pilot %>%
 
 # lydia, olivia, allie run
 
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-07-26_anonymized.csv")
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-07-27_anonymized.csv")
 
 qplot(d$rt, bins = 100) +
   scale_x_log10(breaks = seq(0, 1000, 100)) +
@@ -82,7 +82,7 @@ cor3 <- cor(d2, method = "spearman", use = "complete.obs")
 # cluster <- hclust(dist(t(m)))
 # plot(cluster)
 
-VSS.scree(d2)
+# VSS.scree(d2)
 fa.parallel(d2)
 fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
 fa(r = d2, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cor")
@@ -90,8 +90,29 @@ fa.sort(fa(d2, nfactors = 7, rotate = "varimax")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
-
 fa.parallel(d2, cor = "poly")
 fa.sort(fa(d2, nfactors = 5, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+
+# by condition
+d1_robot <- d0 %>%
+  filter(character == "robot") %>%
+  select(capacity, responseNum, subid) %>%
+  filter(capacity != "na") %>%
+  spread(capacity, responseNum)
+d2_robot <- data.frame(d1_robot[,-1], row.names = d1_robot[,1])
+fa.parallel(d2_robot)
+
+fa.sort(fa(d2_robot, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
+
+d1_beetle <- d0 %>%
+  filter(character == "beetle") %>%
+  select(capacity, responseNum, subid) %>%
+  filter(capacity != "na") %>%
+  spread(capacity, responseNum)
+d2_beetle <- data.frame(d1_beetle[,-1], row.names = d1_beetle[,1])
+fa.parallel(d2_beetle)
+
+fa.sort(fa(d2_beetle, nfactors = 2, rotate = "varimax")$loadings[]) %>% View()
+
 
