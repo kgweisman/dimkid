@@ -19,7 +19,7 @@ d1_pilot <- d_pilot %>%
 
 # lydia, olivia, allie run
 
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-07-19_anonymized.csv")
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-07-26_anonymized.csv")
 
 qplot(d$rt, bins = 100) +
   scale_x_log10(breaks = seq(0, 1000, 100)) +
@@ -92,5 +92,6 @@ fa.sort(fa(d2, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
 
 fa.parallel(d2, cor = "poly")
+fa.sort(fa(d2, nfactors = 5, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 
