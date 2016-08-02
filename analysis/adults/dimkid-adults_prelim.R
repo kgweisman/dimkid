@@ -8,10 +8,10 @@ library(tibble)
 # adults
 
 # # run 01
-# d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv")          
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv")
 
 # run 02
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-02_2016-07-19_anonymized.csv")          
+# d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-02_2016-07-19_anonymized.csv")          
 
 # plot log(rts)
 qplot(d$rt, bins = 100) + 
@@ -36,13 +36,20 @@ cor3 <- cor(d2, method = "spearman", use = "complete.obs")
 # plot(cluster)
 
 
-VSS.scree(d2)
+# VSS.scree(d2)
 fa.parallel(d2)
 fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
 fa(r = d2, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cor")
 fa.sort(fa(d2, nfactors = 7, rotate = "varimax")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
+
+fa.parallel(d2, cor = "poly")
+fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "poly")
+fa(r = d2, nfactors = 13, rotate = "varimax", fm = "minres", cor = "poly")
+fa.sort(fa(d2, nfactors = 7, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+fa.sort(fa(d2, nfactors = 4, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 
 # fa.sort(fa(d2, nfactors = 3, rotate = "varimax")$loadings[]) %>% round(2) %>% data.frame() %>% rownames_to_column() %>% View()
 # 
@@ -56,7 +63,7 @@ fa.sort(fa(d2, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 # 
 # full_join(loadings, capacities) %>% View() 
 
-plot(fa(d2, nfactors = 4, rotate = "varimax"))
+# plot(fa(d2, nfactors = 4, rotate = "varimax"))
 
 
 

@@ -19,7 +19,7 @@ d1_pilot <- d_pilot %>%
 
 # lydia, olivia, allie run
 
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-07-29_anonymized.csv")
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-08-01_anonymized.csv")
 
 qplot(d$rt, bins = 100) +
   scale_x_log10(breaks = seq(0, 1000, 100)) +
