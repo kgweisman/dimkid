@@ -191,12 +191,15 @@ ggplot(d1_bycond_mb,
            group = character, color = character, shape = character,
            label = capWordingShort)) +
   facet_grid(. ~ factorName) +
-  geom_text(aes(y = -0.18, hjust = 0), color = d1_bycond_mb$textColor, size = 6) +
+  geom_hline(yintercept = 0, lty = 3) +
+  geom_hline(yintercept = 0.5, lty = 3) +
+  geom_hline(yintercept = 1, lty = 3) +
   geom_point(stat = "identity", position = position_dodge(width = .75), size = 4) +
   scale_shape_manual(values = c(19, 15)) +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
                 position = position_dodge(width = .75), width = 0) +
-  labs(title = "Responses, by child-derived factors",
+  geom_text(aes(y = -0.18, hjust = 0), color = d1_bycond_mb$textColor, size = 6) +
+  labs(title = "Children's responses, by child-derived factors",
        y = "\nMean response (0 = NO, 0.5 = KINDA, 1 = YES)",
        x = "Capacity\n",
        color = "Character: ", shape = "Character: ") +
@@ -248,12 +251,15 @@ ggplot(d1_bycond_ADULT_mb,
            group = character, color = character, shape = character,
            label = capWordingShort)) +
   facet_grid(. ~ factorName) +
-  geom_text(aes(y = -0.18, hjust = 0), color = d1_bycond_ADULT_mb$textColor, size = 6) +
+  geom_hline(yintercept = 0, lty = 3) +
+  geom_hline(yintercept = 0.5, lty = 3) +
+  geom_hline(yintercept = 1, lty = 3) +
   geom_point(stat = "identity", position = position_dodge(width = .75), size = 4) +
   scale_shape_manual(values = c(19, 15)) +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
                 position = position_dodge(width = .75), width = 0) +
-  labs(title = "Responses, by adult-derived factors",
+  geom_text(aes(y = -0.18, hjust = 0), color = d1_bycond_ADULT_mb$textColor, size = 6) +
+  labs(title = "Children's responses, by adult-derived factors",
        y = "\nMean response (0 = NO, 0.5 = KINDA, 1 = YES)",
        x = "Capacity\n",
        color = "Character: ", shape = "Character: ") +

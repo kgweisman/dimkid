@@ -59,6 +59,91 @@ fa.sort(fa(d2, nfactors = 6, rotate = "varimax", cor = "poly")$loadings[]) %>% V
 fa.sort(fa(d2, nfactors = 4, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 
+# PLOTTING --------------------------------------------------------------------
+# make factor assignments
+factors <- fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) 
+
+factors2 <- factors %>%
+  data.frame() %>%
+  rownames_to_column(var = "capacity") %>%
+  mutate(MR1_abs = abs(MR1),
+         MR2_abs = abs(MR2),
+         MR3_abs = abs(MR3),
+         loading_abs = pmax(MR1_abs, MR2_abs, MR3_abs),
+         loading = ifelse(loading_abs == abs(MR1), MR1,
+                          ifelse(loading_abs == abs(MR2), MR2,
+                                 ifelse(loading_abs == abs(MR3), MR3,
+                                        NA))),
+         factor = ifelse(loading == MR1, "MR1",
+                         ifelse(loading == MR2, "MR2",
+                                ifelse(loading == MR3, "MR3",
+                                       NA))),
+         factorName = ifelse(loading == MR1, "F1: Social-emotional",
+                             ifelse(loading == MR2, "F2: Physiological",
+                                    ifelse(loading == MR3, "F3: Perceptual",
+                                           NA)))) %>%
+  arrange(factor, desc(loading_abs)) %>%
+  select(capacity, factor, factorName, loading, loading_abs)
+
+factors3 <- 
+  full_join(factors2 %>%
+              filter(factor == "MR1") %>%
+              rownames_to_column(var = "order") %>%
+              mutate(order = as.numeric(order)),
+            factors2 %>%
+              filter(factor == "MR2") %>%
+              rownames_to_column(var = "order") %>%
+              mutate(order = as.numeric(order))) %>%
+  full_join(factors2 %>%
+              filter(factor == "MR3") %>%
+              rownames_to_column(var = "order") %>%
+              mutate(order = as.numeric(order))) %>%
+  mutate(posneg = factor(ifelse(loading < 0, "neg", "pos")),
+         textColor = ifelse(loading < 0, "black", "dodgerblue3"))
+
+# by condition
+d1_bycond <- d0 %>%
+  select(charName, capacity, capWording, responseNum, subid) %>%
+  filter(capacity != "na", is.na(responseNum) == F) %>%
+  mutate(capWordingShort = gsub(" --.*", "", capWording)) %>%
+  select(-capWording)
+
+library(langcog)
+d1_bycond_mb <- multi_boot(d1_bycond,
+                           column = "responseNum",
+                           summary_groups = c("charName", "capacity", "capWordingShort"),
+                           statistics_functions = c("mean", "ci_lower", "ci_upper")) %>% 
+  full_join(factors3) %>%
+  arrange(charName, factor, desc(loading_abs)) %>%
+  rownames_to_column(var = "full_order") %>%
+  mutate(full_order = as.numeric(full_order)) %>%
+  arrange(factorName, full_order)
+
+ggplot(d1_bycond_mb, 
+       aes(x = desc(order*2), y = mean,
+           group = charName, color = charName, shape = charName,
+           label = capWordingShort)) +
+  facet_grid(. ~ factorName) +
+  geom_hline(yintercept = 0, lty = 3) +
+  geom_hline(yintercept = 0.5, lty = 3) +
+  geom_hline(yintercept = 1, lty = 3) +
+  geom_point(stat = "identity", position = position_dodge(width = .75), size = 4) +
+  scale_shape_manual(values = c(19, 15)) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
+                position = position_dodge(width = .75), width = 0) +
+  geom_text(aes(y = -0.18, hjust = 0), color = d1_bycond_mb$textColor, size = 6) +
+  labs(title = "Adults' responses, by adult-derived factors",
+       y = "\nMean response (0 = NO, 0.5 = KINDA, 1 = YES)",
+       x = "Capacity\n",
+       color = "Character: ", shape = "Character: ") +
+  coord_flip() +
+  theme_bw() +
+  theme(text = element_text(size = 24),
+        # axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "top")
+
 # EXPORT LOADINGS -------------------------------------------------------------
 
 # make factor assignments: polychoric correlations, varimax rotation, 3 factors
