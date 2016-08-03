@@ -143,9 +143,13 @@ factors2 <- factors %>%
          factor = ifelse(loading == MR1, "MR1",
                          ifelse(loading == MR2, "MR2",
                                 ifelse(loading == MR3, "MR3",
-                                       NA)))) %>%
+                                       NA))),
+         factorName = ifelse(loading == MR1, "F1: Social-emotional",
+                             ifelse(loading == MR2, "F2: Physiological",
+                                    ifelse(loading == MR3, "F3: Self(?)",
+                                           NA)))) %>%
   arrange(factor, desc(loading_abs)) %>%
-  select(capacity, factor, loading, loading_abs)
+  select(capacity, factor, factorName, loading, loading_abs)
 
 factors3 <- 
   full_join(factors2 %>%
@@ -160,37 +164,46 @@ factors3 <-
               filter(factor == "MR3") %>%
               rownames_to_column(var = "order") %>%
               mutate(order = as.numeric(order))) %>%
-  mutate(posneg = factor(ifelse(loading < 0, "neg", "pos")))
+  mutate(posneg = factor(ifelse(loading < 0, "neg", "pos")),
+         textColor = ifelse(loading < 0, "black", "dodgerblue3"))
 
 # by condition
 d1_bycond <- d0 %>%
-  select(character, capacity, responseNum, subid) %>%
-  filter(capacity != "na", is.na(responseNum) == F)
+  select(character, capacity, capWording, responseNum, subid) %>%
+  filter(capacity != "na", is.na(responseNum) == F) %>%
+  mutate(capWordingShort = gsub(" --.*", "", capWording)) %>%
+  select(-capWording)
 
 library(langcog)
 d1_bycond_mb <- multi_boot(d1_bycond,
                            column = "responseNum",
-                           summary_groups = c("character", "capacity"),
+                           summary_groups = c("character", "capacity", "capWordingShort"),
                            statistics_functions = c("mean", "ci_lower", "ci_upper")) %>% 
   full_join(factors3) %>%
   arrange(character, factor, desc(loading_abs)) %>%
   rownames_to_column(var = "full_order") %>%
-  mutate(full_order = as.numeric(full_order))
+  mutate(full_order = as.numeric(full_order)) %>%
+  arrange(factorName, full_order)
 
 ggplot(d1_bycond_mb, 
-       aes(x = desc(order), y = mean,
-           group = character, color = character,
-           label = paste0(capacity, ": ", 
-                          formatC(round(loading, 2), 
-                                  format = "f",
-                                  digits = 2)))) +
-  facet_grid(. ~ factor) +
-  geom_point(stat = "identity", position = position_dodge(width = 1)) +
+       aes(x = desc(order*2), y = mean,
+           group = character, color = character, shape = character,
+           label = capWordingShort)) +
+  facet_grid(. ~ factorName) +
+  geom_text(aes(y = -0.18, hjust = 0), color = d1_bycond_mb$textColor, size = 6) +
+  geom_point(stat = "identity", position = position_dodge(width = .75), size = 4) +
+  scale_shape_manual(values = c(19, 15)) +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
-                position = position_dodge(width = 1), width = 0) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+                position = position_dodge(width = .75), width = 0) +
+  labs(y = "\nMean response (0 = NO, 0.5 = KINDA, 1 = YES",
+       x = "Capacity\n",
+       color = "Character: ", shape = "Character: ") +
+  coord_flip() +
   theme_bw() +
-  geom_text(aes(y = -0.18, hjust = 0, color = posneg)) +
-  coord_flip()
-
+  theme(text = element_text(size = 24),
+        # axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "top")
+  
 # USING ADULT FACTOR LOADINGS -------------------------------------------------
