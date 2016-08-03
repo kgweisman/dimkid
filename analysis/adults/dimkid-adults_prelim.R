@@ -5,13 +5,15 @@ library(psych)
 library(ggplot2)
 library(tibble)
 
-# adults
+# READ IN DATA ----------------------------------------------------------------
 
 # # run 01
 d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv")
 
 # run 02
 # d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-02_2016-07-19_anonymized.csv")          
+
+# TIDY DATA -------------------------------------------------------------------
 
 # plot log(rts)
 qplot(d$rt, bins = 100) + 
@@ -29,13 +31,17 @@ d2 <- data.frame(d1[,-1], row.names = d1[,1])
 
 cor3 <- cor(d2, method = "spearman", use = "complete.obs")
 
+# HEATMAP, CLUSTERING ---------------------------------------------------------
+
 # m <- as.matrix(d2)
 # heatmap(m)
 # 
 # cluster <- hclust(dist(t(m)))
 # plot(cluster)
 
+# FACTOR ANALYSIS -------------------------------------------------------------
 
+# pearson correlations
 # VSS.scree(d2)
 fa.parallel(d2)
 fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
@@ -44,6 +50,7 @@ fa.sort(fa(d2, nfactors = 7, rotate = "varimax")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
+# polychoric correlations
 fa.parallel(d2, cor = "poly")
 fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "poly")
 fa(r = d2, nfactors = 13, rotate = "varimax", fm = "minres", cor = "poly")
@@ -51,24 +58,7 @@ fa.sort(fa(d2, nfactors = 7, rotate = "varimax", cor = "poly")$loadings[]) %>% V
 fa.sort(fa(d2, nfactors = 4, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 
-# fa.sort(fa(d2, nfactors = 3, rotate = "varimax")$loadings[]) %>% round(2) %>% data.frame() %>% rownames_to_column() %>% View()
-# 
-# fa.sort(fa(d2, nfactors = 4, rotate = "varimax")$loadings[]) %>% round(2) %>% data.frame() %>% rownames_to_column() %>% View()
-# 
-# fa.sort(fa(d2, nfactors = 7, rotate = "varimax")$loadings[]) %>% round(2) %>% data.frame() %>% rownames_to_column() %>% View()
-
-
-# loadings <- fa(d2, nfactors = 3, rotate = "varimax")$loadings[] %>% data.frame() %>% rownames_to_column() %>% mutate(rowname = factor(rowname)) %>% arrange(rowname)
-# capacities <- data.frame(rowname = levels(d$capWording)) %>% arrange(rowname)
-# 
-# full_join(loadings, capacities) %>% View() 
-
-# plot(fa(d2, nfactors = 4, rotate = "varimax"))
-
-
-
-
-# #### EXPLORATORY
+# #### EXPLORATORY ------------------------------------------------------------
 # 
 # # remove items with mandatory definitions
 # d3a <- d2[!grepl("\\.\\.\\.", names(d2))]
