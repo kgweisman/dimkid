@@ -92,17 +92,38 @@ cor3 <- cor(d2, method = "spearman", use = "complete.obs")
 
 # pearson correlations
 # VSS.scree(d2)
-fa.parallel(d2)
-fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
-fa(r = d2, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cor")
-fa.sort(fa(d2, nfactors = 7, rotate = "varimax")$loadings[]) %>% View()
-fa.sort(fa(d2, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
-fa.sort(fa(d2, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
+# fa.parallel(d2)
+# fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
+# fa(r = d2, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cor")
+# fa.sort(fa(d2, nfactors = 7, rotate = "varimax")$loadings[]) %>% View()
+# fa.sort(fa(d2, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
+# fa.sort(fa(d2, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
 # polychoric correlations
-fa.parallel(d2, cor = "poly")
-fa.sort(fa(d2, nfactors = 6, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# fa.parallel(d2, cor = "poly")
+# fa.sort(fa(d2, nfactors = 6, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+
+# separate by character
+d1_robot <- d0 %>%
+  filter(character == "robot") %>%
+  select(capacity, responseNum, subid) %>%
+  filter(capacity != "na") %>%
+  spread(capacity, responseNum)
+d2_robot <- data.frame(d1_robot[,-1], row.names = d1_robot[,1])
+fa.parallel(d2_robot)
+
+# fa.sort(fa(d2_robot, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
+
+d1_beetle <- d0 %>%
+  filter(character == "beetle") %>%
+  select(capacity, responseNum, subid) %>%
+  filter(capacity != "na") %>%
+  spread(capacity, responseNum)
+d2_beetle <- data.frame(d1_beetle[,-1], row.names = d1_beetle[,1])
+fa.parallel(d2_beetle)
+
+# fa.sort(fa(d2_beetle, nfactors = 2, rotate = "varimax")$loadings[]) %>% View()
 
 # PLOTTING --------------------------------------------------------------------
 # make factor assignments
@@ -172,25 +193,4 @@ ggplot(d1_bycond_mb,
   geom_text(aes(y = -0.18, hjust = 0, color = posneg)) +
   coord_flip()
 
-# separate by character
-d1_robot <- d0 %>%
-  filter(character == "robot") %>%
-  select(capacity, responseNum, subid) %>%
-  filter(capacity != "na") %>%
-  spread(capacity, responseNum)
-d2_robot <- data.frame(d1_robot[,-1], row.names = d1_robot[,1])
-fa.parallel(d2_robot)
-
-fa.sort(fa(d2_robot, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
-
-d1_beetle <- d0 %>%
-  filter(character == "beetle") %>%
-  select(capacity, responseNum, subid) %>%
-  filter(capacity != "na") %>%
-  spread(capacity, responseNum)
-d2_beetle <- data.frame(d1_beetle[,-1], row.names = d1_beetle[,1])
-fa.parallel(d2_beetle)
-
-fa.sort(fa(d2_beetle, nfactors = 2, rotate = "varimax")$loadings[]) %>% View()
-
-
+# USING ADULT FACTOR LOADINGS -------------------------------------------------
