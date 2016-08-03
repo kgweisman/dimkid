@@ -55,8 +55,52 @@ fa.parallel(d2, cor = "poly")
 fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "poly")
 fa(r = d2, nfactors = 13, rotate = "varimax", fm = "minres", cor = "poly")
 fa.sort(fa(d2, nfactors = 7, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+fa.sort(fa(d2, nfactors = 6, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 4, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+
+# EXPORT LOADINGS -------------------------------------------------------------
+
+# make factor assignments: polychoric correlations, varimax rotation, 3 factors
+factors_poly_varimax_3f_0 <- fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>%
+  data.frame() %>%
+  rownames_to_column(var = "capacity") %>%
+  mutate(MR1_abs = abs(MR1),
+         MR2_abs = abs(MR2),
+         MR3_abs = abs(MR3),
+         loading_abs = pmax(MR1_abs, MR2_abs, MR3_abs),
+         loading = ifelse(loading_abs == abs(MR1), MR1,
+                          ifelse(loading_abs == abs(MR2), MR2,
+                                 ifelse(loading_abs == abs(MR3), MR3,
+                                        NA))),
+         factor = ifelse(loading == MR1, "MR1",
+                         ifelse(loading == MR2, "MR2",
+                                ifelse(loading == MR3, "MR3",
+                                       NA)))) %>%
+  arrange(factor, desc(loading_abs)) %>%
+  select(capacity, factor, loading, loading_abs)
+
+factors_poly_varimax_3f <- 
+  full_join(factors_poly_varimax_3f_0 %>%
+              filter(factor == "MR1") %>%
+              rownames_to_column(var = "order") %>%
+              mutate(order = as.numeric(order)),
+            factors_poly_varimax_3f_0 %>%
+              filter(factor == "MR2") %>%
+              rownames_to_column(var = "order") %>%
+              mutate(order = as.numeric(order))) %>%
+  full_join(factors_poly_varimax_3f_0 %>%
+              filter(factor == "MR3") %>%
+              rownames_to_column(var = "order") %>%
+              mutate(order = as.numeric(order))) %>%
+  mutate(posneg = factor(ifelse(loading < 0, "neg", "pos")),
+         factorName = factor(ifelse(factor == "MR1", "F1: Social-emotional",
+                                    ifelse(factor == "MR2", "F2: Physiological",
+                                           ifelse(factor == "MR3", "F3: Perceptual",
+                                                  NA)))))
+
+# export to csv
+write.csv(factors_poly_varimax_3f, "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/plots and tables/factors_poly_varimax_3f (adults)")
 
 # #### EXPLORATORY ------------------------------------------------------------
 # 
