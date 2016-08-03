@@ -6,6 +6,8 @@ library(ggplot2)
 library(tibble)
 library(GPArotation)
 
+# READ IN DATA ----------------------------------------------------------------
+
 # kara pilot
 d_pilot <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/compiled/dimkid_p01-14_2016-04-01.csv")
 
@@ -19,7 +21,9 @@ d1_pilot <- d_pilot %>%
 
 # lydia, olivia, allie run
 
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-08-01_anonymized.csv")
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-08-02_anonymized.csv")
+
+# TIDY DATA -------------------------------------------------------------------
 
 qplot(d$rt, bins = 100) +
   scale_x_log10(breaks = seq(0, 1000, 100)) +
@@ -76,12 +80,17 @@ d2 <- data.frame(d1[,-1], row.names = d1[,1])
 
 cor3 <- cor(d2, method = "spearman", use = "complete.obs")
 
+# HEATMAP, CLUSTERING ---------------------------------------------------------
+
 # m <- as.matrix(d2)
 # heatmap(m)
 # 
 # cluster <- hclust(dist(t(m)))
 # plot(cluster)
 
+# FACTOR ANALYSIS -------------------------------------------------------------
+
+# pearson correlations
 # VSS.scree(d2)
 fa.parallel(d2)
 fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
@@ -90,10 +99,12 @@ fa.sort(fa(d2, nfactors = 7, rotate = "varimax")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
+# polychoric correlations
 fa.parallel(d2, cor = "poly")
 fa.sort(fa(d2, nfactors = 6, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 
+# PLOTTING --------------------------------------------------------------------
 # make factor assignments
 factors <- fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) 
 
