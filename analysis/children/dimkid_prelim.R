@@ -126,6 +126,7 @@ fa.parallel(d2_beetle)
 # fa.sort(fa(d2_beetle, nfactors = 2, rotate = "varimax")$loadings[]) %>% View()
 
 # PLOTTING --------------------------------------------------------------------
+
 # make factor assignments
 factors <- fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) 
 
@@ -195,7 +196,8 @@ ggplot(d1_bycond_mb,
   scale_shape_manual(values = c(19, 15)) +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
                 position = position_dodge(width = .75), width = 0) +
-  labs(y = "\nMean response (0 = NO, 0.5 = KINDA, 1 = YES",
+  labs(title = "Responses, by child-derived factors",
+       y = "\nMean response (0 = NO, 0.5 = KINDA, 1 = YES",
        x = "Capacity\n",
        color = "Character: ", shape = "Character: ") +
   coord_flip() +
@@ -207,3 +209,58 @@ ggplot(d1_bycond_mb,
         legend.position = "top")
   
 # USING ADULT FACTOR LOADINGS -------------------------------------------------
+
+# read in adult loadings
+factors_poly_varimax_3f <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/plots and tables/factors_poly_varimax_3f (adults)") %>%
+  select(capacity, factor, factorName, loading, loading_abs) 
+
+# make factor assignments
+factors3_ADULT <- 
+  full_join(factors_poly_varimax_3f %>%
+              filter(factor == "MR1") %>%
+              rownames_to_column(var = "order") %>%
+              mutate(order = as.numeric(order)),
+            factors_poly_varimax_3f %>%
+              filter(factor == "MR2") %>%
+              rownames_to_column(var = "order") %>%
+              mutate(order = as.numeric(order))) %>%
+  full_join(factors_poly_varimax_3f %>%
+              filter(factor == "MR3") %>%
+              rownames_to_column(var = "order") %>%
+              mutate(order = as.numeric(order))) %>%
+  mutate(posneg = factor(ifelse(loading < 0, "neg", "pos")),
+         textColor = ifelse(loading < 0, "black", "dodgerblue3"))
+
+# by condition
+d1_bycond_ADULT_mb <- multi_boot(d1_bycond, # get from above
+                           column = "responseNum",
+                           summary_groups = c("character", "capacity", "capWordingShort"),
+                           statistics_functions = c("mean", "ci_lower", "ci_upper")) %>% 
+  full_join(factors3_ADULT) %>%
+  arrange(character, factor, desc(loading_abs)) %>%
+  rownames_to_column(var = "full_order") %>%
+  mutate(full_order = as.numeric(full_order)) %>%
+  arrange(factorName, full_order)
+
+ggplot(d1_bycond_ADULT_mb, 
+       aes(x = desc(order*2), y = mean,
+           group = character, color = character, shape = character,
+           label = capWordingShort)) +
+  facet_grid(. ~ factorName) +
+  geom_text(aes(y = -0.18, hjust = 0), color = d1_bycond_ADULT_mb$textColor, size = 6) +
+  geom_point(stat = "identity", position = position_dodge(width = .75), size = 4) +
+  scale_shape_manual(values = c(19, 15)) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
+                position = position_dodge(width = .75), width = 0) +
+  labs(title = "Responses, by adult-derived factors",
+       y = "\nMean response (0 = NO, 0.5 = KINDA, 1 = YES",
+       x = "Capacity\n",
+       color = "Character: ", shape = "Character: ") +
+  coord_flip() +
+  theme_bw() +
+  theme(text = element_text(size = 24),
+        # axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "top")
+
