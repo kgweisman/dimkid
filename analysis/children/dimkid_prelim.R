@@ -197,7 +197,7 @@ ggplot(d1_bycond_mb,
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
                 position = position_dodge(width = .75), width = 0) +
   labs(title = "Responses, by child-derived factors",
-       y = "\nMean response (0 = NO, 0.5 = KINDA, 1 = YES",
+       y = "\nMean response (0 = NO, 0.5 = KINDA, 1 = YES)",
        x = "Capacity\n",
        color = "Character: ", shape = "Character: ") +
   coord_flip() +
@@ -208,6 +208,7 @@ ggplot(d1_bycond_mb,
         axis.ticks.y = element_blank(),
         legend.position = "top")
   
+
 # USING ADULT FACTOR LOADINGS -------------------------------------------------
 
 # read in adult loadings
@@ -253,7 +254,7 @@ ggplot(d1_bycond_ADULT_mb,
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
                 position = position_dodge(width = .75), width = 0) +
   labs(title = "Responses, by adult-derived factors",
-       y = "\nMean response (0 = NO, 0.5 = KINDA, 1 = YES",
+       y = "\nMean response (0 = NO, 0.5 = KINDA, 1 = YES)",
        x = "Capacity\n",
        color = "Character: ", shape = "Character: ") +
   coord_flip() +
