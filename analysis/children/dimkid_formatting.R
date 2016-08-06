@@ -51,7 +51,21 @@ d_run_01 = jsonFormat(
 # --- TIDYING -----------------------------------------------------------------
 
 # read in ages
-ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2016-08-05.csv")
+ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2016-08-05.csv") %>%
+  select(-age_formula, -comments) %>%
+  mutate(ethnicityCat1 = 
+           factor(ifelse(is.na(ethnicity), NA,
+                         ifelse(ethnicity == "white, caucasian, or european american",
+                                "euro-american", "multicultural"))),
+         ethnicityCat2 = 
+           factor(ifelse(is.na(ethnicity), NA,
+                         ifelse(ethnicity == "white, caucasian, or european american",
+                                "euro-american",
+                                ifelse(grepl("east asian", ethnicity) |
+                                         grepl("south", ethnicity) |
+                                         grepl("chinese", ethnicity) |
+                                         grepl("filipino", ethnicity),
+                                       "asian", NA)))))
 
 # clean up variables
 d_tidy = d_run_01 %>%
@@ -67,7 +81,7 @@ d_tidy = d_run_01 %>%
     rt = as.numeric(rt),
     response = factor(response)) %>%
   select(-gender, -ethnicity) %>%
-  full_join(ages)
+  left_join(ages)
 
 glimpse(d_tidy)
 
