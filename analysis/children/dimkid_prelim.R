@@ -1,3 +1,5 @@
+# PRELIMINARIES ---------------------------------------------------------------
+
 library(dplyr)
 library(tidyr)
 library(stats)
@@ -5,6 +7,10 @@ library(psych)
 library(ggplot2)
 library(tibble)
 library(GPArotation)
+
+# clear environment
+rm(list=ls())
+graphics.off()
 
 # READ IN DATA ----------------------------------------------------------------
 
@@ -28,20 +34,20 @@ d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dim
 # examine and filter by RTs
 qplot(d$rt, bins = 100) +
   scale_x_log10(breaks = seq(0, 1000, 100)) +
-  geom_vline(xintercept = 250, color = "red")
+  geom_vline(xintercept = 350, color = "red")
 
 d0 <- d %>%
-  filter(rt >= 250)
+  filter(rt >= 350)
 
 # examine and filter by ages
 qplot(age, data = d %>% select(subid, age) %>% distinct()) +
   geom_vline(xintercept = 7, color = "red") +
   geom_vline(xintercept = 10, color = "red")
 
-d0b <- d0 %>%
-  filter(age >= 7, age <10)
+d0 <- d0 %>%
+  filter(is.na(age) | (age >= 6.5 & age <10.5))
 
-d1 <- d0b %>%
+d1 <- d0 %>%
   select(capacity, responseNum, subid) %>%
   filter(capacity != "na") %>%
   spread(capacity, responseNum)
@@ -281,6 +287,23 @@ ggplot(d1_bycond_ADULT_mb,
         legend.position = "top")
 
 # USING ADULT FACTOR LOADINGS, by age -----------------------------------------
+
+# read in ages
+ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2016-08-05.csv") %>%
+  select(-age_formula, -comments) %>%
+  mutate(ethnicityCat1 = 
+           factor(ifelse(is.na(ethnicity), NA,
+                         ifelse(ethnicity == "white, caucasian, or european american",
+                                "euro-american", "multicultural"))),
+         ethnicityCat2 = 
+           factor(ifelse(is.na(ethnicity), NA,
+                         ifelse(ethnicity == "white, caucasian, or european american",
+                                "euro-american",
+                                ifelse(grepl("east asian", ethnicity) |
+                                         grepl("south", ethnicity) |
+                                         grepl("chinese", ethnicity) |
+                                         grepl("filipino", ethnicity),
+                                       "asian", NA)))))
 
 # make age thing
 d1_bycond_age <- d1_bycond %>%
