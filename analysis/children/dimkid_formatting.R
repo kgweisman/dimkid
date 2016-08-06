@@ -50,6 +50,9 @@ d_run_01 = jsonFormat(
 
 # --- TIDYING -----------------------------------------------------------------
 
+# read in ages
+ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2016-08-05.csv")
+
 # clean up variables
 d_tidy = d_run_01 %>%
   # full_join(d_run_02) %>%
@@ -62,14 +65,16 @@ d_tidy = d_run_01 %>%
     bgColor = factor(bgColor),
     hoverTime = as.numeric(hoverTime),
     rt = as.numeric(rt),
-    response = factor(response))
+    response = factor(response)) %>%
+  select(-gender, -ethnicity) %>%
+  full_join(ages)
 
 glimpse(d_tidy)
 
 # --- WRITING ANONYMIZED CSV --------------------------------------------------
 
 # write to de-identified csv file
-write.csv(d_tidy, "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-08-02_anonymized.csv")
+write.csv(d_tidy, "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-08-05_anonymized.csv")
 
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-08-02_anonymized.csv")          
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-08-05_anonymized.csv")          
           
