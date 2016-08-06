@@ -72,7 +72,7 @@ d_tidy = d_run_01 %>%
   # full_join(d_run_02) %>%
   mutate(
     run = factor(run),
-    subid = factor(subid),
+    subid = toupper(as.character(subid)),
     character = factor(character),
     gender = factor(gender),
     ethnicity = factor(ethnicity),
@@ -81,7 +81,8 @@ d_tidy = d_run_01 %>%
     rt = as.numeric(rt),
     response = factor(response)) %>%
   select(-gender, -ethnicity) %>%
-  left_join(ages)
+  left_join(ages) %>%
+  mutate(subid = factor(subid))
 
 glimpse(d_tidy)
 
