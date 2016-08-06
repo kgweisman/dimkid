@@ -21,10 +21,11 @@ d1_pilot <- d_pilot %>%
 
 # lydia, olivia, allie run
 
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-08-02_anonymized.csv")
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-08-05_anonymized.csv")
 
 # TIDY DATA -------------------------------------------------------------------
 
+# examine and filter by RTs
 qplot(d$rt, bins = 100) +
   scale_x_log10(breaks = seq(0, 1000, 100)) +
   geom_vline(xintercept = 250, color = "red")
@@ -32,7 +33,15 @@ qplot(d$rt, bins = 100) +
 d0 <- d %>%
   filter(rt >= 250)
 
-d1 <- d0 %>%
+# examine and filter by ages
+qplot(age, data = d %>% select(subid, age) %>% distinct()) +
+  geom_vline(xintercept = 7, color = "red") +
+  geom_vline(xintercept = 10, color = "red")
+
+d0b <- d0 %>%
+  filter(age >= 7, age <10)
+
+d1 <- d0b %>%
   select(capacity, responseNum, subid) %>%
   filter(capacity != "na") %>%
   spread(capacity, responseNum)
@@ -259,6 +268,52 @@ ggplot(d1_bycond_ADULT_mb,
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
                 position = position_dodge(width = .75), width = 0) +
   geom_text(aes(y = -0.18, hjust = 0), color = d1_bycond_ADULT_mb$textColor, size = 6) +
+  labs(title = "Children's responses, by adult-derived factors",
+       y = "\nMean response (0 = NO, 0.5 = KINDA, 1 = YES)",
+       x = "Capacity\n",
+       color = "Character: ", shape = "Character: ") +
+  coord_flip() +
+  theme_bw() +
+  theme(text = element_text(size = 24),
+        # axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "top")
+
+# USING ADULT FACTOR LOADINGS, by age -----------------------------------------
+
+# make age thing
+d1_bycond_age <- d1_bycond %>%
+  left_join(ages %>% select(subid, age)) %>%
+  mutate(ageCat = ifelse(age < 8, "7", ifelse(age < 9, "8", ifelse(age < 10, "9", NA)))) %>%
+  select(-age) %>%
+  filter(!is.na(ageCat))
+
+# by condition
+d1_bycond_ADULT_AGE_mb <- multi_boot(d1_bycond_age, # get from above
+                                 column = "responseNum",
+                                 summary_groups = c("ageCat", 
+                                                    "character", "capacity", "capWordingShort"),
+                                 statistics_functions = c("mean", "ci_lower", "ci_upper")) %>% 
+  full_join(factors3_ADULT) %>%
+  arrange(character, factor, desc(loading_abs)) %>%
+  rownames_to_column(var = "full_order") %>%
+  mutate(full_order = as.numeric(full_order)) %>%
+  arrange(factorName, full_order)
+
+ggplot(d1_bycond_ADULT_AGE_mb, 
+       aes(x = desc(order*2), y = mean,
+           group = character, color = character, shape = character,
+           label = capWordingShort)) +
+  facet_grid(ageCat ~ factorName) +
+  geom_hline(yintercept = 0, lty = 3) +
+  geom_hline(yintercept = 0.5, lty = 3) +
+  geom_hline(yintercept = 1, lty = 3) +
+  geom_point(stat = "identity", position = position_dodge(width = .75), size = 4) +
+  scale_shape_manual(values = c(19, 15)) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
+                position = position_dodge(width = .75), width = 0) +
+  geom_text(aes(y = -0.18, hjust = 0), color = d1_bycond_ADULT_AGE_mb$textColor, size = 6) +
   labs(title = "Children's responses, by adult-derived factors",
        y = "\nMean response (0 = NO, 0.5 = KINDA, 1 = YES)",
        x = "Capacity\n",
