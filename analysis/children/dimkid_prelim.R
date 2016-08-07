@@ -286,6 +286,25 @@ ggplot(d1_bycond_ADULT_mb,
         axis.ticks.y = element_blank(),
         legend.position = "top")
 
+ggplot(d1_bycond %>% full_join(factors3_ADULT), 
+       aes(x = desc(order*2),
+           fill = factor(responseNum), 
+           label = capWordingShort)) +
+  facet_grid(character ~ factorName) +
+  geom_bar(position = "fill") +
+  geom_text(aes(y = 0, hjust = 0)) +
+  labs(title = "Children's responses, by adult-derived factors",
+       y = "\nProportion of responses",
+       x = "Capacity\n",
+       color = "Character: ", shape = "Character: ") +
+  coord_flip() +
+  theme_bw() +
+  theme(text = element_text(size = 24),
+        # axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "top")
+
 # USING ADULT FACTOR LOADINGS, by age -----------------------------------------
 
 # read in ages
@@ -308,14 +327,14 @@ ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/
 # make age thing
 d1_bycond_age <- d1_bycond %>%
   left_join(ages %>% select(subid, age)) %>%
-  mutate(ageCat = ifelse(age < 8, "7", ifelse(age < 9, "8", ifelse(age < 10, "9", NA)))) %>%
-  select(-age) %>%
-  filter(!is.na(ageCat))
+  filter(!is.na(age)) %>%
+  mutate(ageCat3 = ifelse(age < 8, "7", ifelse(age < 9, "8", ifelse(age < 10, "9", NA))),
+         ageCat2 = ifelse(age < median(age), "young", ifelse(age < 10, "old", NA)))
 
 # by condition
 d1_bycond_ADULT_AGE_mb <- multi_boot(d1_bycond_age, # get from above
                                  column = "responseNum",
-                                 summary_groups = c("ageCat", 
+                                 summary_groups = c("ageCat2", 
                                                     "character", "capacity", "capWordingShort"),
                                  statistics_functions = c("mean", "ci_lower", "ci_upper")) %>% 
   full_join(factors3_ADULT) %>%
@@ -328,7 +347,7 @@ ggplot(d1_bycond_ADULT_AGE_mb,
        aes(x = desc(order*2), y = mean,
            group = character, color = character, shape = character,
            label = capWordingShort)) +
-  facet_grid(ageCat ~ factorName) +
+  facet_grid(ageCat2 ~ factorName) +
   geom_hline(yintercept = 0, lty = 3) +
   geom_hline(yintercept = 0.5, lty = 3) +
   geom_hline(yintercept = 1, lty = 3) +
