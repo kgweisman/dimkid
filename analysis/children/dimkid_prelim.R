@@ -115,9 +115,9 @@ cor3 <- cor(d2, method = "spearman", use = "complete.obs")
 # fa.sort(fa(d2, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
 # polychoric correlations
-# fa.parallel(d2, cor = "poly")
-# fa.sort(fa(d2, nfactors = 6, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-# fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+fa.parallel(d2, cor = "poly")
+fa.sort(fa(d2, nfactors = 6, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 
 # separate by character
 d1_robot <- d0 %>%
@@ -126,7 +126,7 @@ d1_robot <- d0 %>%
   filter(capacity != "na") %>%
   spread(capacity, responseNum)
 d2_robot <- data.frame(d1_robot[,-1], row.names = d1_robot[,1])
-fa.parallel(d2_robot)
+# fa.parallel(d2_robot)
 
 # fa.sort(fa(d2_robot, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
@@ -136,7 +136,7 @@ d1_beetle <- d0 %>%
   filter(capacity != "na") %>%
   spread(capacity, responseNum)
 d2_beetle <- data.frame(d1_beetle[,-1], row.names = d1_beetle[,1])
-fa.parallel(d2_beetle)
+# fa.parallel(d2_beetle)
 
 # fa.sort(fa(d2_beetle, nfactors = 2, rotate = "varimax")$loadings[]) %>% View()
 
@@ -368,3 +368,29 @@ ggplot(d1_bycond_ADULT_AGE_mb,
         axis.ticks.y = element_blank(),
         legend.position = "top")
 
+# BASIC REGRESSION ANALYSES ---------------------------------------------------
+
+d_reg <- d1_bycond %>% 
+  full_join(factors3_ADULT) %>%
+  left_join(ages %>% select(subid, age)) %>%
+  mutate(ageCat3 = ifelse(age < 8, "7", ifelse(age < 9, "8", ifelse(age < 10, "9", NA))),
+         ageCat2 = ifelse(age < median(age), "young", ifelse(age < 10, "old", NA))) %>%
+  filter(posneg == "pos", !is.na(age))
+
+# set contrasts
+contrasts(d_reg$factor) <- cbind(socemo = c(0, 1, 0),
+                                 percog = c(0, 0, 1))
+# contrasts(d_reg$factor) <- cbind(Ph.v.UGM = c(1, 0, -1),
+#                                  SE.v.UGM = c(0, 1, -1))
+# contrasts(d_reg$factor) <- cbind(SEPC.v.Ph = c(-2, 1, 1),
+#                                  SE.v.PC = c(0, 1, -1))
+# contrasts(d_reg$character) <- cbind(robot = c(0, 1))
+contrasts(d_reg$character) <- cbind(robot = c(-1, 1))
+
+r1 <- lmer(responseNum ~ character * factor + (1 | subid) + (1 | capacity), d_reg)
+summary(r1)
+r2 <- lmer(responseNum ~ character * factor + scale(age) + (1 | subid) + (1 | capacity), d_reg)
+summary(r2)
+r3 <- lmer(responseNum ~ character * factor * scale(age) + (1 | subid) + (1 | capacity), d_reg)
+summary(r3)
+anova(r1, r2, r3)
