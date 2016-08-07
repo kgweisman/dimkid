@@ -95,6 +95,37 @@ d2 <- data.frame(d1[,-1], row.names = d1[,1])
 
 cor3 <- cor(d2, method = "spearman", use = "complete.obs")
 
+# DEMOGRAPHICS ----------------------------------------------------------------
+
+# age 
+d0 %>% 
+  select(subid, age) %>%
+  distinct(.keep_all = T) %>%
+  summarise(mean_age = mean(age, na.rm = T),
+            sd_age = sd(age, na.rm = T),
+            min_age = min(age, na.rm = T),
+            max_age = max(age, na.rm = T))
+
+# gender
+d0 %>%
+  select(subid, gender) %>%
+  distinct(.keep_all = T) %>%
+  count(gender)
+
+# ethnicity
+d0 %>% 
+  select(subid, ethnicity) %>%
+  mutate(east_asian = grepl("east asian", ethnicity) & !grepl("south", ethnicity),
+         white = grepl("white", ethnicity),
+         latino = grepl("latino", ethnicity),
+         middle_eastern = grepl("middle eastern", ethnicity),
+         native = grepl("native", ethnicity),
+         south_asian = grepl("south", ethnicity)) %>%
+  distinct(.keep_all = T) %>%
+  gather(ethnicityTF, TF, -subid, -ethnicity) %>%
+  filter(TF) %>%
+  count(ethnicityTF)
+
 # HEATMAP, CLUSTERING ---------------------------------------------------------
 
 # m <- as.matrix(d2)
