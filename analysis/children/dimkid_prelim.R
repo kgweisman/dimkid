@@ -126,6 +126,12 @@ d0 %>%
   filter(TF) %>%
   count(ethnicityTF)
 
+# condition
+d0 %>% 
+  select(subid, character) %>%
+  distinct(.keep_all = T) %>%
+  count(character)
+
 # HEATMAP, CLUSTERING ---------------------------------------------------------
 
 # m <- as.matrix(d2)
