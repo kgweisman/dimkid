@@ -28,10 +28,11 @@ jsonFormat = function(wd, runName) {
   d.raw = data.frame()
   
   for(i in 1:length(files)) {
-    
+
     # read in file
     d.temp <- read.csv(paste0("./individual sessions/", files[i])) %>%
-      mutate(run = runName)
+      mutate(run = runName) %>%
+      mutate_each(funs = "as.character")
     
     # bind into same dataframe
     d.raw = bind_rows(d.raw, d.temp)
@@ -51,7 +52,7 @@ d_run_01 = jsonFormat(
 # --- TIDYING -----------------------------------------------------------------
 
 # read in ages
-ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2016-08-05.csv") %>%
+ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2016-10-03.csv") %>%
   select(-age_formula, -comments) %>%
   mutate(ethnicityCat1 = 
            factor(ifelse(is.na(ethnicity), NA,
@@ -89,7 +90,7 @@ glimpse(d_tidy)
 # --- WRITING ANONYMIZED CSV --------------------------------------------------
 
 # write to de-identified csv file
-write.csv(d_tidy, "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-08-05_anonymized.csv")
+write.csv(d_tidy, "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-11-05_anonymized.csv")
 
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-08-05_anonymized.csv")          
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-11-05_anonymized.csv")          
           
