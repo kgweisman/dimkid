@@ -25,9 +25,9 @@ d1_pilot <- d_pilot %>%
   filter(cap_short != "na") %>%
   spread(cap_short, response_coded)
 
-# lydia, olivia, allie run
+# lydia, olivia, allie (summer 2016) + nicky, dru, ariel, olivia (fall 2016)
 
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-08-05_anonymized.csv")
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-11-05_anonymized.csv")
 
 # TIDY DATA -------------------------------------------------------------------
 
@@ -339,7 +339,7 @@ ggplot(d1_bycond %>% full_join(factors3_ADULT),
 # USING ADULT FACTOR LOADINGS, by age -----------------------------------------
 
 # read in ages
-ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2016-08-05.csv") %>%
+ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2016-10-03.csv") %>%
   select(-age_formula, -comments) %>%
   mutate(ethnicityCat1 = 
            factor(ifelse(is.na(ethnicity), NA,
