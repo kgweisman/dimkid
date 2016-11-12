@@ -27,7 +27,7 @@ d1_pilot <- d_pilot %>%
 
 # lydia, olivia, allie (summer 2016) + nicky, dru, ariel, olivia (fall 2016)
 
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-11-05_anonymized.csv")
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-11-10_anonymized.csv")
 
 # TIDY DATA -------------------------------------------------------------------
 
@@ -134,27 +134,29 @@ d0 %>%
 
 # HEATMAP, CLUSTERING ---------------------------------------------------------
 
-# m <- as.matrix(d2)
-# heatmap(m)
-# 
-# cluster <- hclust(dist(t(m)))
-# plot(cluster)
+m <- as.matrix(d2)
+heatmap(m)
+
+cluster <- hclust(dist(t(m)))
+plot(cluster)
 
 # FACTOR ANALYSIS -------------------------------------------------------------
 
 # pearson correlations
-# VSS.scree(d2)
-# fa.parallel(d2)
-# fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
-# fa(r = d2, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cor")
+VSS.scree(d2)
+fa.parallel(d2)
+fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
+fa(r = d2, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cor")
 # fa.sort(fa(d2, nfactors = 7, rotate = "varimax")$loadings[]) %>% View()
-# fa.sort(fa(d2, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
-# fa.sort(fa(d2, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
+fa.sort(fa(d2, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
+fa.sort(fa(d2, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
-# polychoric correlations
-fa.parallel(d2, cor = "poly")
-fa.sort(fa(d2, nfactors = 6, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# # polychoric correlations
+# fa.parallel(d2, cor = "poly")
+# fa(d2, nfactors = 13, rotate = "none", cor = "poly")
+# fa(d2, nfactors = 13, rotate = "varimax", cor = "poly")
+# fa.sort(fa(d2, nfactors = 7, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 
 # separate by character
 d1_robot <- d0 %>%
@@ -163,7 +165,7 @@ d1_robot <- d0 %>%
   filter(capacity != "na") %>%
   spread(capacity, responseNum)
 d2_robot <- data.frame(d1_robot[,-1], row.names = d1_robot[,1])
-# fa.parallel(d2_robot)
+fa.parallel(d2_robot)
 
 # fa.sort(fa(d2_robot, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
@@ -197,9 +199,9 @@ factors2 <- factors %>%
                          ifelse(loading == MR2, "MR2",
                                 ifelse(loading == MR3, "MR3",
                                        NA))),
-         factorName = ifelse(loading == MR1, "F1: Social-emotional",
-                             ifelse(loading == MR2, "F2: Physiological",
-                                    ifelse(loading == MR3, "F3: Self(?)",
+         factorName = ifelse(loading == MR1, "Factor 1",
+                             ifelse(loading == MR2, "Factor 2",
+                                    ifelse(loading == MR3, "Factor 3",
                                            NA)))) %>%
   arrange(factor, desc(loading_abs)) %>%
   select(capacity, factor, factorName, loading, loading_abs)
@@ -223,6 +225,7 @@ factors3 <-
 # by condition
 d1_bycond <- d0 %>%
   select(character, capacity, capWording, responseNum, subid) %>%
+  filter(character != "elephant") %>%
   filter(capacity != "na", is.na(responseNum) == F) %>%
   mutate(capWordingShort = gsub(" --.*", "", capWording)) %>%
   select(-capWording)
