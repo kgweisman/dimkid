@@ -147,6 +147,28 @@ heatmap(m)
 cluster <- hclust(dist(t(m)))
 plot(cluster)
 
+d2_young <- d1 %>%
+  filter(age < median(d1$age, na.rm = T)) %>%
+  select(capacity, responseNum, subid) %>%
+  filter(capacity != "na") %>%
+  spread(capacity, responseNum)
+d3_young <- data.frame(d2_young[,-1], row.names = d2_young[,1])
+m_young <- as.matrix(d3_young)
+cluster_young <- hclust(dist(t(m_young)))
+plot(cluster_young)
+d2_young %>% count()
+
+d2_old <- d1 %>%
+  filter(age >= median(d1$age, na.rm = T)) %>%
+  select(capacity, responseNum, subid) %>%
+  filter(capacity != "na") %>%
+  spread(capacity, responseNum)
+d3_old <- data.frame(d2_old[,-1], row.names = d2_old[,1])
+m_old <- as.matrix(d3_old)
+cluster_old <- hclust(dist(t(m_old)))
+plot(cluster_old)
+d2_old %>% count()
+
 # FACTOR ANALYSIS -------------------------------------------------------------
 
 # pearson correlations
