@@ -7,11 +7,11 @@ library(tibble)
 
 # READ IN DATA ----------------------------------------------------------------
 
-# # run 01
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv")
+# # run 01 (3-point scale)
+# d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv")
 
-# run 02
-# d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-02_2016-07-19_anonymized.csv")          
+# run 02 (7-point scale)
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-02_2016-07-19_anonymized.csv")
 
 # TIDY DATA -------------------------------------------------------------------
 
@@ -33,11 +33,11 @@ cor3 <- cor(d2, method = "spearman", use = "complete.obs")
 
 # HEATMAP, CLUSTERING ---------------------------------------------------------
 
-# m <- as.matrix(d2)
-# heatmap(m)
-# 
-# cluster <- hclust(dist(t(m)))
-# plot(cluster)
+m <- as.matrix(d2)
+heatmap(m)
+
+cluster <- hclust(dist(t(m)))
+plot(cluster)
 
 # FACTOR ANALYSIS -------------------------------------------------------------
 
@@ -55,7 +55,7 @@ fa.parallel(d2, cor = "poly")
 fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "poly")
 fa(r = d2, nfactors = 13, rotate = "varimax", fm = "minres", cor = "poly")
 # fa.sort(fa(d2, nfactors = 7, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-fa.sort(fa(d2, nfactors = 6, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+fa.sort(fa(d2, nfactors = 5, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 4, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 
@@ -78,9 +78,9 @@ factors2 <- factors %>%
                          ifelse(loading == MR2, "MR2",
                                 ifelse(loading == MR3, "MR3",
                                        NA))),
-         factorName = ifelse(loading == MR1, "F1: Social-emotional",
-                             ifelse(loading == MR2, "F2: Physiological",
-                                    ifelse(loading == MR3, "F3: Perceptual",
+         factorName = ifelse(loading == MR1, "Factor 1",
+                             ifelse(loading == MR2, "Factor 2",
+                                    ifelse(loading == MR3, "Factor 3",
                                            NA)))) %>%
   arrange(factor, desc(loading_abs)) %>%
   select(capacity, factor, factorName, loading, loading_abs)
@@ -99,7 +99,7 @@ factors3 <-
               rownames_to_column(var = "order") %>%
               mutate(order = as.numeric(order))) %>%
   mutate(posneg = factor(ifelse(loading < 0, "neg", "pos")),
-         textColor = ifelse(loading < 0, "black", "dodgerblue3"))
+         textColor = ifelse(loading < 0, "dodgerblue3", "black"))
 
 # by condition
 d1_bycond <- d0 %>%
