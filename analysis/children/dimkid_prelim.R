@@ -27,36 +27,40 @@ d1_pilot <- d_pilot %>%
 
 # lydia, olivia, allie (summer 2016) + nicky, dru, ariel, olivia (fall 2016)
 
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-11-10_anonymized.csv")
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-11-29_anonymized.csv")
 
 # TIDY DATA -------------------------------------------------------------------
 
+# filter by condition (no elephant!)
+d0 <- d %>%
+  filter(character %in% c("beetle", "robot"))
+
 # examine and filter by RTs
-qplot(d$rt, bins = 100) +
+qplot(d0$rt, bins = 100) +
   scale_x_log10(breaks = seq(0, 1000, 100)) +
   geom_vline(xintercept = 350, color = "red")
 
-d0 <- d %>%
+d0 <- d0 %>%
   filter(rt >= 350)
 
 # examine and filter by ages
-qplot(age, data = d %>% select(subid, age) %>% distinct()) +
+qplot(age, data = d0 %>% select(subid, age) %>% distinct()) +
   geom_vline(xintercept = 7, color = "red") +
   geom_vline(xintercept = 10, color = "red")
 
-d0 <- d0 %>%
+d1 <- d0 %>%
   filter(is.na(age) | (age >= 6.5 & age <10.5))
 
-d1 <- d0 %>%
+d2 <- d1 %>%
   select(capacity, responseNum, subid) %>%
   filter(capacity != "na") %>%
   spread(capacity, responseNum)
 
-# names(d1) <- gsub(" ", "\\.", names(d1))
-# names(d1) <- gsub("\\-", "\\.", names(d1))
+# names(d2) <- gsub(" ", "\\.", names(d2))
+# names(d2) <- gsub("\\-", "\\.", names(d2))
 
 # if merging
-d1_combo <- d1_pilot %>%
+d2_combo <- d2_pilot %>%
   rename(communicating = communicate,
          computations = math,
          depressed = sad,
@@ -85,35 +89,38 @@ d1_combo <- d1_pilot %>%
   gather(item, response, -subid) %>%
   mutate(response = response * 2) %>%
   spread(item, response) %>%
-  full_join(d1)
+  full_join(d2)
 
-# d1 <- d1_combo
+# d2 <- d2_combo
 
 # continue
 
-d2 <- data.frame(d1[,-1], row.names = d1[,1])
+d3 <- data.frame(d2[,-1], row.names = d2[,1])
 
-cor3 <- cor(d2, method = "spearman", use = "complete.obs")
+cor3 <- cor(d3, method = "spearman", use = "complete.obs")
 
 # DEMOGRAPHICS ----------------------------------------------------------------
 
 # age 
-d0 %>% 
+d1 %>% 
   select(subid, age) %>%
   distinct(.keep_all = T) %>%
   summarise(mean_age = mean(age, na.rm = T),
             sd_age = sd(age, na.rm = T),
+            median_age = median(age, na.rm = T),
             min_age = min(age, na.rm = T),
             max_age = max(age, na.rm = T))
 
+qplot(d1 %>% distinct(subid, .keep_all = T) %>% select(age), bins = 18)
+
 # gender
-d0 %>%
+d1 %>%
   select(subid, gender) %>%
   distinct(.keep_all = T) %>%
   count(gender)
 
 # ethnicity
-d0 %>% 
+d1 %>% 
   select(subid, ethnicity) %>%
   mutate(east_asian = grepl("east asian", ethnicity) & !grepl("south", ethnicity),
          white = grepl("white", ethnicity),
@@ -127,14 +134,14 @@ d0 %>%
   count(ethnicityTF)
 
 # condition
-d0 %>% 
+d1 %>% 
   select(subid, character) %>%
   distinct(.keep_all = T) %>%
   count(character)
 
 # HEATMAP, CLUSTERING ---------------------------------------------------------
 
-m <- as.matrix(d2)
+m <- as.matrix(d3)
 heatmap(m)
 
 cluster <- hclust(dist(t(m)))
@@ -143,20 +150,21 @@ plot(cluster)
 # FACTOR ANALYSIS -------------------------------------------------------------
 
 # pearson correlations
-VSS.scree(d2)
-fa.parallel(d2)
-fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
-fa(r = d2, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cor")
-# fa.sort(fa(d2, nfactors = 7, rotate = "varimax")$loadings[]) %>% View()
-fa.sort(fa(d2, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
-fa.sort(fa(d2, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
+VSS.scree(d3)
+fa.parallel(d3)
+fa(r = d3, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
+fa(r = d3, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cor")
+# fa.sort(fa(d3, nfactors = 7, rotate = "varimax")$loadings[]) %>% View()
+fa.sort(fa(d3, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
+fa.sort(fa(d3, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
-# # polychoric correlations
-# fa.parallel(d2, cor = "poly")
-# fa(d2, nfactors = 13, rotate = "none", cor = "poly")
-# fa(d2, nfactors = 13, rotate = "varimax", cor = "poly")
-# fa.sort(fa(d2, nfactors = 7, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-# fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# polychoric correlations
+fa.parallel(d3, cor = "poly")
+fa(d3, nfactors = 13, rotate = "none", cor = "poly")
+fa(d3, nfactors = 13, rotate = "varimax", cor = "poly")
+fa.sort(fa(d3, nfactors = 7, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+fa.sort(fa(d3, nfactors = 4, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+fa.sort(fa(d3, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 
 # separate by character
 d1_robot <- d0 %>%
@@ -164,25 +172,25 @@ d1_robot <- d0 %>%
   select(capacity, responseNum, subid) %>%
   filter(capacity != "na") %>%
   spread(capacity, responseNum)
-d2_robot <- data.frame(d1_robot[,-1], row.names = d1_robot[,1])
-fa.parallel(d2_robot)
+d3_robot <- data.frame(d1_robot[,-1], row.names = d1_robot[,1])
+fa.parallel(d3_robot)
 
-# fa.sort(fa(d2_robot, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
+# fa.sort(fa(d3_robot, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
 d1_beetle <- d0 %>%
   filter(character == "beetle") %>%
   select(capacity, responseNum, subid) %>%
   filter(capacity != "na") %>%
   spread(capacity, responseNum)
-d2_beetle <- data.frame(d1_beetle[,-1], row.names = d1_beetle[,1])
-# fa.parallel(d2_beetle)
+d3_beetle <- data.frame(d1_beetle[,-1], row.names = d1_beetle[,1])
+# fa.parallel(d3_beetle)
 
-# fa.sort(fa(d2_beetle, nfactors = 2, rotate = "varimax")$loadings[]) %>% View()
+# fa.sort(fa(d3_beetle, nfactors = 2, rotate = "varimax")$loadings[]) %>% View()
 
 # PLOTTING --------------------------------------------------------------------
 
 # make factor assignments
-factors <- fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) 
+factors <- fa.sort(fa(d3, nfactors = 3, rotate = "varimax", cor = "cor")$loadings[]) 
 
 factors2 <- factors %>%
   data.frame() %>%
@@ -220,7 +228,7 @@ factors3 <-
               rownames_to_column(var = "order") %>%
               mutate(order = as.numeric(order))) %>%
   mutate(posneg = factor(ifelse(loading < 0, "neg", "pos")),
-         textColor = ifelse(loading < 0, "black", "dodgerblue3"))
+         textColor = ifelse(loading < 0, "dodgerblue3", "black"))
 
 # by condition
 d1_bycond <- d0 %>%
@@ -288,7 +296,7 @@ factors3_ADULT <-
               rownames_to_column(var = "order") %>%
               mutate(order = as.numeric(order))) %>%
   mutate(posneg = factor(ifelse(loading < 0, "neg", "pos")),
-         textColor = ifelse(loading < 0, "black", "dodgerblue3"))
+         textColor = ifelse(loading < 0, "dodgerblue3", "black"))
 
 # by condition
 d1_bycond_ADULT_mb <- multi_boot(d1_bycond, # get from above
@@ -348,7 +356,7 @@ ggplot(d1_bycond %>% full_join(factors3_ADULT),
 # USING ADULT FACTOR LOADINGS, by age -----------------------------------------
 
 # read in ages
-ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2016-10-03.csv") %>%
+ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2016-11-14.csv") %>%
   select(-age_formula, -comments) %>%
   mutate(ethnicityCat1 = 
            factor(ifelse(is.na(ethnicity), NA,

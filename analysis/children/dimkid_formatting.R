@@ -52,7 +52,7 @@ d_run_01 = jsonFormat(
 # --- TIDYING -----------------------------------------------------------------
 
 # read in ages
-ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2016-10-03.csv") %>%
+ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2016-11-14.csv") %>%
   select(-age_formula, -comments) %>%
   mutate(ethnicityCat1 = 
            factor(ifelse(is.na(ethnicity), NA,
@@ -90,7 +90,7 @@ glimpse(d_tidy)
 # --- WRITING ANONYMIZED CSV --------------------------------------------------
 
 # write to de-identified csv file
-write.csv(d_tidy, "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-11-10_anonymized.csv")
+write.csv(d_tidy, "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-11-29_anonymized.csv")
 
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-11-10_anonymized.csv")          
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-11-29_anonymized.csv")          
           
