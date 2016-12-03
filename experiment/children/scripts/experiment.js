@@ -47,13 +47,47 @@ function makeExperiment() {
 			});
 
 			// export data to csv
-			var data = experiment.allData.trialData;
-	 
-			function DownloadJSON2CSV(objArray) { // code source: http://www.zachhunter.com/2010/11/download-json-to-csv-using-javascript/
-			    // get trial-level info
-			    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+			var dataForExport = experiment.allData.trialData;
 
-			    // add subject-level info
+			// code source: http://halistechnology.com/2015/05/28/use-javascript-to-export-your-data-as-csv/
+			function convertArrayOfObjectsToCSV(args) {
+				var result, ctr, keys, columnDelimiter, lineDelimiter, data;
+
+				data = args.data || null;
+				if (data == null || !data.length) {
+					return null;
+				}
+
+		        columnDelimiter = args.columnDelimiter || ',';
+		        lineDelimiter = args.lineDelimiter || '\n';
+
+		        keys = Object.keys(data[0]);
+
+		        result = '';
+		        result += keys.join(columnDelimiter);
+		        result += lineDelimiter;
+
+		        data.forEach(function(item) {
+		            ctr = 0;
+		            keys.forEach(function(key) {
+		                if (ctr > 0) result += columnDelimiter;
+
+		                result += item[key];
+		                ctr++;
+		            });
+		            result += lineDelimiter;
+		        });
+
+		        return result;
+		    }
+
+		    function downloadCSV(args) {
+		        var data, filename, link;
+
+		        // get trial-level info
+		        var objArray = experiment.allData.trialData
+
+		        // add subject-level info
 			    for (trial in objArray) {
 
 			    	var date = new Date();
@@ -78,60 +112,26 @@ function makeExperiment() {
 			    	objArray[trial].sessionComments = experiment.allData.sessionComments;
 			    };
 
-			    // add headers in a hacky way
-			    objArray.unshift({
-			    	// auto-filled trial-level info
-			    	trialNum: "trialNum",
-			    	bgColor: "bgColor",
-			    	capacity: "capacity",
-			    	capWording: "capWording",
-			    	response: "response",
-			    	responseNum: "responseNum",
-			    	hoverTime: "hoverTime",
-			    	rt: "rt",
+		        var csv = convertArrayOfObjectsToCSV({
+		            data: objArray
+		        });
+		        if (csv == null) return;
 
-			    	// auto-filled subject-level info
-			    	character: "character",
-			    	charWording: "charWording",
-			    	subid: "subid",
-			    	dateOfTest: "dateOfTest",
-			    	startTime: "startTime",
-			    	endTime: "endTime",
-			    	sessionDuration: "sessionDuration",
+		        filename = args.filename || 'export.csv';
 
-			    	// manually entered (later) subject-level info
-			    	testingSite: "testingSite",
-			    	experimenter: "experimenter",
-			    	gender: "gender",
-			    	dateOfBirth: "dateOfBirth",
-			    	ethnicity: "ethnicity",
-			    	trialComments: "trialComments",
-			    	sessionComments: "sessionComments"
-			    });
+		        if (!csv.match(/^data:text\/csv/i)) {
+		            csv = 'data:text/csv;charset=utf-8,' + csv;
+		        }
+		        data = encodeURI(csv);
 
-			    // convert to csv
-			    var str = '';
-			     
-			    for (var i = 0; i < array.length; i++) {
-			        var line = '';
-			        for (var index in array[i]) {
-			            if(line != '') line += ','
-			         
-			            line += array[i][index];
-			        }
-			 
-			        str += line + '\r\n';
-			    }
-			 
-			    if (navigator.appName != 'Microsoft Internet Explorer') {
-			        window.open('data:text/csv;charset=utf-8,' + escape(str));
-			    } else {
-			        var popup = window.open('','csv','');
-			        popup.document.body.innerHTML = '<pre>' + str + '</pre>';
-			    }          
-			}
+		        link = document.createElement('a');
+		        link.setAttribute('href', data);
+		        link.setAttribute('download', filename);
+		        link.click();
+		    }
 
-			DownloadJSON2CSV(data);
+		    downloadCSV({data: dataForExport, filename: experiment.allData.subid + ".csv" });
+
 		},
 
 		// set up each new trial
