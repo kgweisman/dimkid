@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+	<head>
+	
+		<title>40 Questions Game</title>
+		<script src="dependencies/jquery-2.1.3.min.js"></script>
+		<script src="scripts/helper.js"></script>
+		<script src="dependencies/mmturkey.js"></script>
+		<link href="dependencies/bootstrap.min.css" rel="stylesheet">
+		<link href='https://fonts.googleapis.com/css?family=Asap:400,700' rel='stylesheet' type='text/css'>
+		<link href="style.css" rel="stylesheet"/>
+	
+	</head>
+
+	<body>
+
+<!-- pre-study: consent form -->
+
+	<div class="slide" id="front">
+		
+		<div id="consent-text">
+
+			<h1 id='title-text'>Stanford University Department of Psychology</h1>
+
+			<p>Thank you for participating in our study!</p>
+			
+			<p>It should take you about 4-6 minutes to complete.</p>
+
+			<div class="button">
+				<button type="submit" class="btn btn-default" id="wide">Start the study</button>
+			</div>
+
+			<div id="legal">
+
+				<p><b>STANFORD UNIVERSITY RESEARCH INFORMATION SHEET</b></p>
+
+				<p><b>PROTOCOL TITLE</b>: Foundations of Social Reasoning</p>
+				
+				<p><b>PROTOCOL DIRECTOR</b>: Kara Weisman, graduate student in psychology; <b>FACULTY SPONSORS</b>: Ellen Markman, Ph.D.; Carol Dweck, Ph.D.</p>
+				
+				<p><b>PROTOCOL APPROVAL DATE</b>: December 20, 2013; <b>PROTOCOL EXPIRATION DATE</b>: December 20, 2016</p>
+				
+				<p><b>DESCRIPTION</b>: You are invited to participate in a research study on the basic foundations of social reasoning. We are interested in how children and adults reason about the social and physical world, and how basic concepts of sentience and animacy might relate to more complex kinds of social cognition (such as social interaction or moral evaluation). During this study, you may be exposed to sentences about the properties or capacities of unfamiliar objects (e.g., "This one is blue"; "This one can sing"), and/or or unfamiliar objects (or pictures or short video clips featuring unfamiliar objects), such as an unusual artifact. You may be asked to respond to questions about the stories or objects (e.g., "Do you think this one can jump up and down?"; "Please describe this object").</p>
+				
+				<p><b>TIME INVOLVEMENT</b>: Your participation in this experiment will take approximately 4-6 minutes.</p>
+				
+				<p><b>RISKS AND BENEFITS</b>: There are no foreseeable risks or benefits associated with participating in this study. We cannot and do not guarantee or promise that you will receive any benefits from this study.</p>
+				
+				<p><b>PAYMENTS</b>: You will receive reimbursement as described in the posting for this study as payment for your participation.
+				
+				<p><b>SUBJECT'S RIGHTS</b>: If you have read this form and have decided to participate in this project, please understand your participation is voluntary and you have the right to withdraw your consent or discontinue participation at any time without penalty or loss of benefits to which you are otherwise entitled. The alternative is not to participate. You have the right to refuse to answer particular questions. The results of this research study may be presented at scientific or professional meetings or published in scientific journals. Your individual privacy will be maintained in all published and written data resulting from the study.</p>
+				
+				<p><b>CONTACT INFORMATION</b>: Questions, Concerns, or Complaints: If you have any questions, concerns or complaints about this research study, its procedures, risks and benefits, you should ask the Protocol Director, Kara Weisman, <a href="mailto:kweisman@stanford.edu" target="_blank">kweisman@stanford.edu</a>. Independent Contact: If you are not satisfied with how this study is being conducted, or if you have any concerns, complaints, or general questions about the research or your rights as a participant, please contact the Stanford Institutional Review Board (IRB) to speak to someone independent of the research team at (650)-723-2480 or toll free at 1-866-680-2906. You can also write to the Stanford IRB, Stanford University, 3000 El Camino Real, 5 Palo Alto Square, 4th Floor, Palo Alto, CA 94306.</p>
+				
+				<p><b>Please print a copy of this page for your records.</b></p>
+
+			</div>
+
+		</div>
+
+	</div>
+
+<!-- pre-study: introduction -->
+
+		<div class="slide" id="introduction">
+
+			<div class="container">
+
+				<h1>How to play</h1>
+
+				<table id="intro-table">
+					<colgroup>
+						<col style="width:30%">
+						<col style="width:5%">
+						<col style="width:65%">
+					</colgroup>
+					<tbody>
+						<tr>
+							<td>
+								<img style="vertical-align:middle; margin:auto" id="charImage"/>
+							</td>
+							<td></td>
+							<td style="text-align:left">
+								<p>This study is about <b><span id="pluralChar">{{}}</span></b>. We want to know what you think <span id="pluralChar">{{}}</span> <b>can</b> do and <b>can not</b> do.</p>
+								<p>If you want more clarification about what we mean by a certain word or phrase, try hovering over it. Please note that we are conducting a similar study with children, so we will use simple language throughout the study.</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<div class="button">
+					<button type="submit" class="btn btn-default" id="wide">Continue</button>
+				</div>
+
+			</div>
+			
+		</div>
+
+<!-- study: "stage" slide -->
+
+		<div class="slide" id="stage">
+
+			<div class="progress">
+				<div class="progress-bar" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100"></div>
+			</div>			
+
+			<div class="container">
+
+				<table>
+					<colgroup>
+						<col style="width:8%">
+						<col style="width:84%">
+						<col style="width:8%">
+					</colgroup>
+					<tbody>
+						<tr style="vertical-align:top">
+							<td></td>
+							<td>
+								<img id="charImage"/>
+							</td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+
+				<table id="question-table">
+					<colgroup>
+						<col style="width:8%">
+						<col style="width:84%">
+						<col style="width:8%">
+					</colgroup>
+					<tbody>
+						<tr style="height:80px!important; vertical-align:top!important">
+							<td></td>
+							<td>
+								<p>Do you think <span id="pronounChar">{{}}</span> can</br><a id="definition" href="#" data-toggle="tooltip"><span id="question">{{}}</span></a>?</p>
+							</td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+				
+				<!-- <p>Do you think <span id="pronounChar">{{}}</span> can</br><a id="definition" href="#" data-toggle="tooltip"><span id="question">{{}}</span></a>?</p> -->
+
+				<table id="button-table">
+					<colgroup>
+						<col style="width:8%">
+						<col style="width:84%">
+						<col style="width:8%">
+					</colgroup>
+					<tbody>
+						<tr>
+							<td></td>
+							<td>
+								<button type="submit" class="btn btn-default" id="no">NO</button>
+								<button type="submit" class="btn btn-default" id="kinda">KINDA</button>
+								<button type="submit" class="btn btn-default" id="yes">YES</button>							
+							</td>
+							<td></td>
+						</tr>
+					</tbody>
+				</table>
+			
+			</div>
+
+		</div>
+
+<!-- post-study: demographics -->
+
+<!-- demographics survey ("demographics" slide) -->
+
+	<div class="slide" id="demographics">
+		
+		<h1>Demographic Survey</h1>
+
+		<p>Finally, we'd like to know a little bit about your background. This will help us compare responses from many different participants and ensure that we have a representative sample for our study.</p>
+		
+		<form role="form" id="demographicsForm">
+
+			<div class="control-group">
+				<label for="age">Age:</label>
+				<div class="controls">
+					<input type="text" class="form-control" id="age" name="age" placeholder="Type your age here (in years)" required> 
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label for="gender">Gender:</label>
+				<div class="controls">
+					<div class="radio">
+						<label class="radio" for="gender-0"><input type="radio" name="gender" id="gender-0" value="female">Female</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="gender-1"><input type="radio" name="gender" id="gender-1" value="male">Male</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="gender-2"><input type="radio" name="gender" id="gender-2" value="other_prefNo">Other/prefer not to say</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label for="job">What is your job/occupation?</label>
+				<div class="controls">
+					<input type="text" class="form-control" id="job" name="job" placeholder="Type your job/occupation here" input type="text">
+				</div>
+			</div>      
+
+			<div class="control-group">
+				<label for="education">Please select the category that best represents the amount of education you have completed.</label>
+				<div class="controls">
+					<div class="radio">
+						<label class="radio" for="education-0"><input type="radio" name="education" id="education-0" value="hs_none">Less than 9th grade</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="education-1"><input type="radio" name="education" id="education-1" value="hs_some">Some high school, no diploma</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="education-2"><input type="radio" name="education" id="education-2" value="hs_diploma">High school diploma or equivalent (e.g., GED)</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="education-3"><input type="radio" name="education" id="education-3" value="college_some">Some college, no degree</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="education-4"><input type="radio" name="education" id="education-4" value="college_assocDegree">Associate's degree</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="education-5"><input type="radio" name="education" id="education-5" value="college_bachDegree">Bacehlor's degree (e.g., BA, BS)</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="education-6"><input type="radio" name="education" id="education-6" value="grad_some">Some graduate or professional school, no degree</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="education-7"><input type="radio" name="education" id="education-7" value="grad_degree">Graduate or professional degree (e.g., MA, MS, PhD, MD, JD)</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="education-8"><input type="radio" name="education" id="education-8" value="other_prefNo">Other/prefer not to say</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label for="ethnicity">How would you describe your ethnicity? (Choose one or more options.)</label>
+				<div class="controls">
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="asian_eastAsian">Asian: East Asian</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="asian_southAsian">Asian: South Asian</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="asian_otherAsian">Asian: Other Asian</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="black">Black or African American</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="hispanicLatino">Hispanic or Latino/a</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="middleEastern">Middle Eastern</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="nativeAmerican">Native American, American Indian, or Alaska Native</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="nativeHawaiianPI">Native Hawaiian or other Pacific Islander</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="white">White or European American</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="ethnicity" value="other_prefNo">Other/prefer not to say</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label for="religionChild">With what religion(s), if any, were you raised? (Choose one or more options.)</label>
+				<div class="controls">
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="buddhism">Buddhism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="christianity_catholic">Christianity: Catholic</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="christianity_evangelical">Christianity: Evangelical</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="christianity_protestant">Christianity: Protestant (mainline/mainstream)</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="christianity_morman">Christianity: LDS/Mormon</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="christianity_other">Christianity: Other Christian</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="hinduism">Hinduism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="islam">Islam</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="jainism">Jainism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="judaism">Judaism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="sikhism">Sikhism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="other">Other religion</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="none">No religion</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionChild" value="prefNo">Prefer not to say</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label for="religionNow">With what religious organization(s), if any, do you identify now? (Choose one or more options.)</label>
+				<div class="controls">
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="buddhism">Buddhism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="christianity_catholic">Christianity: Catholic</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="christianity_evangelical">Christianity: Evangelical</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="christianity_protestant">Christianity: Protestant (mainline/mainstream)</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="christianity_mormon">Christianity: LDS/Mormon</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="christianity_other">Christianity: Other Christian</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="hinduism">Hinduism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="islam">Islam</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="jainism">Jainism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="judaism">Judaism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="sikhism">Sikhism</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="other">Other religion</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="none">No religion</label>
+					</div>
+					<div class="checkbox">
+						<label><input type="checkbox" name="religionNow" value="prefNo">Prefer not to say</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label for="country">In what country do you currently live?</label>
+				<div class="controls">
+					<input type="text" class="form-control" id="country" name="country" placeholder="Type your current country of residence here"> 
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label for="englishNative">Is English your native language?</label>
+				<div class="controls">
+					<div class="radio">
+						<label class="radio" for="englishNative-0"><input type="radio" name="englishNative" id="englishNative-0" value="yes_only">Yes, English is my <b>only</b> native language</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="englishNative-1"><input type="radio" name="englishNative" id="englishNative-1" value="yes_multiple">Yes, English is one of <b>multiple</b> native languages for me</label>
+					</div>
+					<div class="radio">
+						<label class="radio" for="englishNative-2"><input type="radio" name="englishNative" id="englishNative-2" value="no">No, English is <b>not</b> my native language</label>
+					</div>
+				</div>
+			</div>      
+
+		<div class="control-group">
+			<label class="control-label" for="comments">Comments</label>
+			<div class="controls">
+				<p>Do you have anything you'd like to share with the researcher - e.g., notes on problems with the survey, ways to improve your experience of taking the survey, etc.?  (You can also email the researcher directly at <a href="mailto:kweisman@stanford.edu" target="_blank">kweisman@stanford.edu</a>.) We really appreciate your feedback!</p>
+				<textarea class="form-control" rows="3" id="comments" name="comments"></textarea>
+			</div>
+		</div>
+		</form>
+
+				<div class="button">
+					<button type="submit" class="btn btn-default" id="wide">Submit</button>
+				</div>
+
+	</div>
+
+<!-- post-study: the end -->
+
+	<div class="slide" id="end">
+
+		<div class="container" id="text-block">
+							
+			<h1>You're finished - thanks for participating!</h1>
+
+			<p>The HIT has been automatically submitted, and you will be paid within 10 minutes. This HIT does <b>not</b> require completion codes. You may close this window at any time.</p>
+			
+		</div>
+		
+	</div>
+
+<!-- include javascript files -->
+
+    <!-- bootstrap -->
+    <script src="dependencies/bootstrap.min.js"></script>
+
+    <!-- my experiment -->
+    <script src="scripts/demographics.js"></script>
+    <script src="scripts/characters.js"></script>
+    <script src="scripts/capacities.js"></script>
+    <script src="scripts/experiment.js"></script>
+	<script src="scripts/start.js"></script>
+
+    <!-- fingerprinting -->
+    <script src="dependencies/store.js"></script>
+    <script src="dependencies/fingerprint.js"></script>
+
+	</body>
+
+</html>
