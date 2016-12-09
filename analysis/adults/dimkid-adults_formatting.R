@@ -177,7 +177,7 @@ d2 <- d_tidy %>%
 
 d3 <- d_tidy %>%
   filter(run %in% c("us_run_03", "us_run_03b")) %>%
-  mutate(responseNum = as.numeric(as.character(response)))
+  mutate(responseNum = as.numeric(as.character(responseNum)))
 
 # --- WRITING ANONYMIZED CSV --------------------------------------------------
 
