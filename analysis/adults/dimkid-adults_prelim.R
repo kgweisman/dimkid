@@ -1,3 +1,6 @@
+# --- PRELIMINARIES -----------------------------------------------------------
+
+# load libraries
 library(dplyr)
 library(tidyr)
 library(stats)
@@ -5,13 +8,19 @@ library(psych)
 library(ggplot2)
 library(tibble)
 
+# clear environment
+rm(list=ls())
+
 # READ IN DATA ----------------------------------------------------------------
 
 # # run 01 (3-point scale)
 # d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv")
 
-# run 02 (7-point scale)
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-02_2016-07-19_anonymized.csv")
+# # run 02 (7-point scale)
+# d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-02_2016-07-19_anonymized.csv")
+
+# run 03 (3-point scale, original wording for 'free will' and 'intentions')
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-03_2016-12-08_anonymized.csv")
 
 # TIDY DATA -------------------------------------------------------------------
 
@@ -33,7 +42,16 @@ cor3 <- cor(d2, method = "spearman", use = "complete.obs")
 
 # HEATMAP, CLUSTERING ---------------------------------------------------------
 
-m <- as.matrix(d2)
+# fill in NAs randomly
+d4 <- d2 %>% 
+  rownames_to_column %>% 
+  gather(key, val, -rowname) %>% 
+  mutate(val = ifelse(!is.na(val), val,
+                      sample(c(0, 0.5, 1), 1, replace = T))) %>%
+  spread(key, val) %>% 
+  select(-rowname)
+
+m <- as.matrix(d4)
 heatmap(m)
 
 cluster <- hclust(dist(t(m)))
@@ -58,6 +76,24 @@ fa(r = d2, nfactors = 13, rotate = "varimax", fm = "minres", cor = "poly")
 fa.sort(fa(d2, nfactors = 5, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 4, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+
+# tetrachoric correlations
+fa.parallel(d2, cor = "tet")
+fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "tet")
+fa(r = d2, nfactors = 13, rotate = "varimax", fm = "minres", cor = "tet")
+# fa.sort(fa(d2, nfactors = 7, rotate = "varimax", cor = "tet")$loadings[]) %>% View()
+fa.sort(fa(d2, nfactors = 5, rotate = "varimax", cor = "tet")$loadings[]) %>% View()
+fa.sort(fa(d2, nfactors = 4, rotate = "varimax", cor = "tet")$loadings[]) %>% View()
+fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "tet")$loadings[]) %>% View()
+
+# covariances
+fa.parallel(d2, cor = "cov")
+fa(r = d2, nfactors = 13, rotate = "none", fm = "minres", cor = "cov")
+fa(r = d2, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cov")
+# fa.sort(fa(d2, nfactors = 7, rotate = "varimax", cor = "cov")$loadings[]) %>% View()
+fa.sort(fa(d2, nfactors = 5, rotate = "varimax", cor = "cov")$loadings[]) %>% View()
+fa.sort(fa(d2, nfactors = 4, rotate = "varimax", cor = "cov")$loadings[]) %>% View()
+fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "cov")$loadings[]) %>% View()
 
 # PLOTTING --------------------------------------------------------------------
 # make factor assignments
