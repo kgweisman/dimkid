@@ -122,7 +122,7 @@ d1 %>%
 # ethnicity
 d1 %>% 
   select(subid, ethnicity) %>%
-  mutate(east_asian = grepl("east asian", ethnicity) & !grepl("south", ethnicity),
+  mutate(east_asian = grepl("east asian", ethnicity),
          white = grepl("white", ethnicity),
          latino = grepl("latino", ethnicity),
          middle_eastern = grepl("middle eastern", ethnicity),
@@ -379,7 +379,7 @@ ggplot(d1_bycond %>% full_join(factors3_ADULT),
 # USING ADULT FACTOR LOADINGS, by age -----------------------------------------
 
 # read in ages
-ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2016-11-14.csv") %>%
+ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2016-12-16.csv") %>%
   select(-age_formula, -comments) %>%
   mutate(ethnicityCat1 = 
            factor(ifelse(is.na(ethnicity), NA,
@@ -393,14 +393,15 @@ ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/
                                          grepl("south", ethnicity) |
                                          grepl("chinese", ethnicity) |
                                          grepl("filipino", ethnicity),
-                                       "asian", NA)))))
+                                       "asian", NA)))),
+         age = as.numeric(as.character(age)))
 
 # make age thing
 d1_bycond_age <- d1_bycond %>%
   left_join(ages %>% select(subid, age)) %>%
   filter(!is.na(age)) %>%
-  mutate(ageCat3 = ifelse(age < 8, "7", ifelse(age < 9, "8", ifelse(age < 10, "9", NA))),
-         ageCat2 = ifelse(age < median(age), "young", ifelse(age < 10, "old", NA)))
+  mutate(ageCat3 = ifelse(age < 8, "7", ifelse(age < 9, "8", ifelse(age < 10, "9", NA)))) %>%
+  mutate(ageCat2 = ifelse(age < median(age), "young", ifelse(age < 10, "old", NA)))
 
 # by condition
 d1_bycond_ADULT_AGE_mb <- multi_boot(d1_bycond_age, # get from above
@@ -412,7 +413,8 @@ d1_bycond_ADULT_AGE_mb <- multi_boot(d1_bycond_age, # get from above
   arrange(character, factor, desc(loading_abs)) %>%
   rownames_to_column(var = "full_order") %>%
   mutate(full_order = as.numeric(full_order)) %>%
-  arrange(factorName, full_order)
+  arrange(factorName, full_order) %>%
+  filter(!is.na(ageCat2))
 
 ggplot(d1_bycond_ADULT_AGE_mb, 
        aes(x = desc(order*2), y = mean,
@@ -446,7 +448,8 @@ d_reg <- d1_bycond %>%
   left_join(ages %>% select(subid, age)) %>%
   mutate(ageCat3 = ifelse(age < 8, "7", ifelse(age < 9, "8", ifelse(age < 10, "9", NA))),
          ageCat2 = ifelse(age < median(age), "young", ifelse(age < 10, "old", NA))) %>%
-  filter(posneg == "pos", !is.na(age))
+  filter(posneg == "pos", !is.na(age), character != "elephant") %>%
+  mutate(character = factor(character))
 
 # set contrasts
 contrasts(d_reg$factor) <- cbind(socemo = c(0, 1, 0),
@@ -465,3 +468,13 @@ summary(r2)
 r3 <- lmer(responseNum ~ character * factor * scale(age) + (1 | subid) + (1 | capacity), d_reg)
 summary(r3)
 anova(r1, r2, r3)
+
+# ordinal
+library(ordinal)
+r4 <- clmm(factor(responseNum) ~ character * factor + (1 | subid) + (1 | capacity), d_reg)
+summary(r4)
+r5 <- clmm(factor(responseNum) ~ character * factor + scale(age) + (1 | subid) + (1 | capacity), d_reg)
+summary(r5)
+r6 <- clmm(factor(responseNum) ~ character * factor * scale(age) + (1 | subid) + (1 | capacity), d_reg)
+summary(r6)
+anova(r4, r5, r6)
