@@ -206,11 +206,11 @@ d1_beetle <- d0 %>%
   filter(capacity != "na") %>%
   spread(capacity, responseNum)
 d3_beetle <- data.frame(d1_beetle[,-1], row.names = d1_beetle[,1])
-# fa.parallel(d3_beetle)
+fa.parallel(d3_beetle)
 
 # fa.sort(fa(d3_beetle, nfactors = 2, rotate = "varimax")$loadings[]) %>% View()
 
-# PLOTTING --------------------------------------------------------------------
+# PLOTTING, USING CHILD FACTOR LOADINGS ---------------------------------------
 
 # make factor assignments
 factors <- fa.sort(fa(d3, nfactors = 3, rotate = "varimax", cor = "cor")$loadings[]) 
@@ -298,7 +298,7 @@ ggplot(d1_bycond_mb,
         legend.position = "top")
   
 
-# USING ADULT FACTOR LOADINGS -------------------------------------------------
+# ...USING ADULT FACTOR LOADINGS ----------------------------------------------
 
 # read in adult loadings
 factors_poly_varimax_3f <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/plots and tables/factors_poly_varimax_3f (adults)") %>%
@@ -376,7 +376,7 @@ ggplot(d1_bycond %>% full_join(factors3_ADULT),
         axis.ticks.y = element_blank(),
         legend.position = "top")
 
-# USING ADULT FACTOR LOADINGS, by age -----------------------------------------
+# ...USING ADULT FACTOR LOADINGS, by age --------------------------------------
 
 # read in ages
 ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2016-12-16.csv") %>%
@@ -440,6 +440,14 @@ ggplot(d1_bycond_ADULT_AGE_mb,
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         legend.position = "top")
+
+# ...BY ITEM, age -------------------------------------------------------------
+ggplot(d1, aes(x = age, y = responseNum, color = character, fill = character)) +
+  facet_wrap(~ capacity, ncol = 8) +
+  geom_point(position = "jitter", size = .25) + 
+  geom_smooth(alpha = 0.1) +
+  theme_bw()
+
 
 # BASIC REGRESSION ANALYSES ---------------------------------------------------
 
