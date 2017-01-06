@@ -560,24 +560,25 @@ robot_r5 <- lmer(score ~ factor * poly(age, 3) + (1 | subid), d_reg2 %>% filter(
 summary(robot_r5)
 anova(robot_r3b, robot_r4, robot_r5)
 
-# # stepwise regression ---------------------------------------------------------
-# 
-# d_step <- d3[complete.cases(d3),] %>%
-#   rownames_to_column(var = "subid") %>%
-#   left_join(ages) %>%
-#   filter(!is.na(age), !is.na(happy)) %>%
-#   left_join(d1_bycond %>% select(subid, character) %>% distinct()) %>%
-#   mutate(character = factor(character))
-# 
-# # character (could do same thing for age...)
-# step_r1 <- glm(character ~ happy + depressed + fear + angry + calm + sounds + seeing + temperature + odors + depth + computations + thoughts + reasoning + remembering + beliefs + hungry + tired + pain + nauseated + safe + love + recognizing + communicating + guilt + disrespected + free_will + choices + self_restraint + intentions + goal + conscious + self_aware + desires + embarrassed + emo_recog + joy + morality + personality + pleasure + pride, data = d_step, , family = "binomial")
-# 
-# summary(step_r1)
-# 
-# step_r2 <- step(step_r1)
-# step_r2
-# summary(step_r2)
-# 
+# EXPLORATORY....
+# stepwise regression ---------------------------------------------------------
+
+d_step <- d3[complete.cases(d3),] %>%
+  rownames_to_column(var = "subid") %>%
+  left_join(ages) %>%
+  filter(!is.na(age), !is.na(happy)) %>%
+  left_join(d1_bycond %>% select(subid, character) %>% distinct()) %>%
+  mutate(character = factor(character))
+
+# age 
+step_r1 <- lm(age ~ character * (happy + depressed + fear + angry + calm + sounds + seeing + temperature + odors + depth + computations + thoughts + reasoning + remembering + beliefs + hungry + tired + pain + nauseated + safe + love + recognizing + communicating + guilt + disrespected + free_will + choices + self_restraint + intentions + goal + conscious + self_aware + desires + embarrassed + emo_recog + joy + morality + personality + pleasure + pride), data = d_step)
+
+summary(step_r1)
+
+step_r2 <- step(step_r1)
+step_r2
+summary(step_r2)
+
 # step_r3 <- step(step_r1, direction = "backward")
 # step_r3
 # summary(step_r3)
@@ -585,3 +586,77 @@ anova(robot_r3b, robot_r4, robot_r5)
 # step_r4 <- step(step_r1, direction = "forward")
 # step_r4
 # summary(step_r4)
+
+# glmpath ---------------------------------------------------------------------
+
+# data formatting
+d_glmpath <- d_step %>%
+  select(angry:tired, character, age)
+mental <- as.matrix(d_glmpath[,1:40])
+char <- as.matrix(as.numeric(d_glmpath[,41])-1)
+age <- as.matrix(log(d_glmpath[,42])) # log transform!
+
+d_glmpath_robot <- d_glmpath %>%
+  filter(character == "robot") %>%
+  select(-character)
+mental_robot <- as.matrix(d_glmpath_robot[,1:40])
+age_robot <- as.matrix(log(d_glmpath_robot[,41])) # log transform!
+
+d_glmpath_beetle <- d_glmpath %>%
+  filter(character == "beetle") %>%
+  select(-character)
+mental_beetle <- as.matrix(d_glmpath_beetle[,1:40])
+age_beetle <- as.matrix(log(d_glmpath_beetle[,41])) # log transform!
+
+# without cross-validation
+
+library(glmpath)
+# rs1 <- glmpath(mental, char, family = "binomial"); rs1
+# rs1 <- glmpath(mental, age, family = "gaussian"); rs1
+rs1 <- glmpath(mental_robot, age_robot, family = "gaussian"); rs1
+# rs1 <- glmpath(mental_beetle, age_beetle, family = "gaussian"); rs1
+# head(summary(rs1))
+# head(rs1$b.predictor)
+
+# get max lambda (for use in CV below)
+lambda_max <- max(rs1$lambda)
+
+# make df for predictors
+d_predictor <- rs1$b.predictor %>% # extract the coefficient estimates
+  data.frame() %>% # turn them into a dataframe
+  rownames_to_column(var = "step") %>% # add the rownames as a "step" variable
+  mutate(lambda = rs1$lambda, # add the lambda values for each step
+         aic = rs1$aic, # add AIC for each step
+         bic = rs1$bic) %>% # add BIC for each step
+  gather(variable, coeff, happy:pride) %>% # turn into longform
+  arrange(step, variable) # arrange by step number and selfrating
+
+# check out fit
+d_predictor %>% 
+  spread(variable, coeff) %>% # make it wideform again
+  select(step:bic) # don't include the coefficients for all the predictors
+
+# find lambda that minimizes AIC
+lambda_minAIC <- d_predictor %>%
+  filter(aic == min(aic)) %>%
+  select(lambda, aic) %>%
+  unique()
+lambda_minAIC
+
+# look at the coefficients when lambda = best lambda (for AIC)
+d_predictor %>%
+  filter(lambda == lambda_minAIC$lambda) %>%
+  filter(coeff != 0)
+
+# find lambda that minimizes BIC
+lambda_minBIC <- d_predictor %>%
+  filter(bic == min(bic)) %>%
+  select(lambda, bic) %>%
+  unique()
+lambda_minBIC
+
+# look at the coefficients when lambda = best lambda (for BIC)
+d_predictor %>%
+  filter(lambda == lambda_minBIC$lambda) %>%
+  filter(coeff != 0)
+
