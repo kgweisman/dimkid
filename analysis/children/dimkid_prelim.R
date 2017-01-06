@@ -27,7 +27,7 @@ d1_pilot <- d_pilot %>%
 
 # lydia, olivia, allie (summer 2016) + nicky, dru, ariel, olivia (fall 2016)
 
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2016-12-16_anonymized.csv")
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2017-01-06_anonymized.csv")
 
 # TIDY DATA -------------------------------------------------------------------
 
@@ -49,7 +49,8 @@ qplot(age, data = d0 %>% select(subid, age) %>% distinct()) +
   geom_vline(xintercept = 10, color = "red")
 
 d1 <- d0 %>%
-  filter(is.na(age) | (age >= 6.5 & age <10.5))
+  filter(is.na(age) | (age >= 6.5 & age <10.5)) %>%
+  select(-X, -X.1)
 
 d2 <- d1 %>%
   select(capacity, responseNum, subid) %>%
@@ -297,7 +298,6 @@ ggplot(d1_bycond_mb,
         axis.ticks.y = element_blank(),
         legend.position = "top")
   
-
 # ...USING ADULT FACTOR LOADINGS ----------------------------------------------
 
 # read in adult loadings
@@ -379,7 +379,7 @@ ggplot(d1_bycond %>% full_join(factors3_ADULT),
 # ...USING ADULT FACTOR LOADINGS, by age --------------------------------------
 
 # read in ages
-ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2016-12-16.csv") %>%
+ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2017-01-06.csv") %>%
   select(-age_formula, -comments) %>%
   mutate(ethnicityCat1 = 
            factor(ifelse(is.na(ethnicity), NA,
@@ -483,14 +483,14 @@ r2 <- lmer(responseNum ~ character * factor + scale(age) + (1 | subid) + (1 | ca
 r3 <- lmer(responseNum ~ character * factor * scale(age) + (1 | subid) + (1 | capacity), d_reg)
 anova(r1, r2, r3)
 # summary(r1)
-summary(r2)
-# summary(r3)
+# summary(r2)
+summary(r3)
 
-r2b <- lmer(responseNum ~ character * factor + poly(age, 1) + (1 | subid) + (1 | capacity), d_reg)
-r4 <- lmer(responseNum ~ character * factor + poly(age, 2) + (1 | subid) + (1 | capacity), d_reg)
-r5 <- lmer(responseNum ~ character * factor + poly(age, 2) + (1 | subid) + (1 | capacity), d_reg)
-anova(r2b, r4, r5)
-summary(r2b)
+r3b <- lmer(responseNum ~ character * factor * poly(age, 1) + (1 | subid) + (1 | capacity), d_reg)
+r4 <- lmer(responseNum ~ character * factor * poly(age, 2) + (1 | subid) + (1 | capacity), d_reg)
+r5 <- lmer(responseNum ~ character * factor * poly(age, 2) + (1 | subid) + (1 | capacity), d_reg)
+anova(r3b, r4, r5)
+summary(r3b)
 # summary(r4)
 # summary(r5)
 
@@ -537,6 +537,7 @@ d_reg2 <- d0 %>%
 # plot
 ggplot(d_reg2, aes(x = age, y = score, color = character, fill = character)) +
   facet_wrap("factor") +
+  theme_bw() +
   geom_point() + 
   geom_smooth(alpha = 0.2) 
 
@@ -558,7 +559,7 @@ r4 <- lmer(score ~ character * factor * poly(age, 2) + (1 | subid), d_reg2)
 r5 <- lmer(score ~ character * factor * poly(age, 3) + (1 | subid), d_reg2)
 anova(r3b, r4, r5)
 summary(r3b)
-summary(r4)
+# summary(r4)
 summary(r5)
 
 # robot only
@@ -575,8 +576,8 @@ robot_r4 <- lmer(score ~ factor * poly(age, 2) + (1 | subid), d_reg2 %>% filter(
 robot_r5 <- lmer(score ~ factor * poly(age, 3) + (1 | subid), d_reg2 %>% filter(character == "robot"))
 anova(robot_r3b, robot_r4, robot_r5)
 summary(robot_r3b)
-summary(robot_r4)
-summary(robot_r5)
+# summary(robot_r4)
+# summary(robot_r5)
 
 # EXPLORATORY.... -------------------------------------------------------------
 
