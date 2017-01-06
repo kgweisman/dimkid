@@ -559,3 +559,29 @@ summary(robot_r4)
 robot_r5 <- lmer(score ~ factor * poly(age, 3) + (1 | subid), d_reg2 %>% filter(character == "robot"))
 summary(robot_r5)
 anova(robot_r3b, robot_r4, robot_r5)
+
+# # stepwise regression ---------------------------------------------------------
+# 
+# d_step <- d3[complete.cases(d3),] %>%
+#   rownames_to_column(var = "subid") %>%
+#   left_join(ages) %>%
+#   filter(!is.na(age), !is.na(happy)) %>%
+#   left_join(d1_bycond %>% select(subid, character) %>% distinct()) %>%
+#   mutate(character = factor(character))
+# 
+# # character (could do same thing for age...)
+# step_r1 <- glm(character ~ happy + depressed + fear + angry + calm + sounds + seeing + temperature + odors + depth + computations + thoughts + reasoning + remembering + beliefs + hungry + tired + pain + nauseated + safe + love + recognizing + communicating + guilt + disrespected + free_will + choices + self_restraint + intentions + goal + conscious + self_aware + desires + embarrassed + emo_recog + joy + morality + personality + pleasure + pride, data = d_step, , family = "binomial")
+# 
+# summary(step_r1)
+# 
+# step_r2 <- step(step_r1)
+# step_r2
+# summary(step_r2)
+# 
+# step_r3 <- step(step_r1, direction = "backward")
+# step_r3
+# summary(step_r3)
+# 
+# step_r4 <- step(step_r1, direction = "forward")
+# step_r4
+# summary(step_r4)
