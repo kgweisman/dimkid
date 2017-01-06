@@ -174,20 +174,20 @@ d2_old %>% count()
 # pearson correlations
 VSS.scree(d3)
 fa.parallel(d3)
-fa(r = d3, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
-fa(r = d3, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cor")
+# fa(r = d3, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
+# fa(r = d3, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cor")
 # fa.sort(fa(d3, nfactors = 7, rotate = "varimax")$loadings[]) %>% View()
-fa.sort(fa(d3, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
+# fa.sort(fa(d3, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
 fa.sort(fa(d3, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
-# polychoric correlations
-fa.parallel(d3, cor = "poly")
-fa(d3, nfactors = 13, rotate = "none", cor = "poly")
-fa(d3, nfactors = 13, rotate = "varimax", cor = "poly")
-fa.sort(fa(d3, nfactors = 7, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-fa.sort(fa(d3, nfactors = 5, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-fa.sort(fa(d3, nfactors = 4, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-fa.sort(fa(d3, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# # polychoric correlations
+# fa.parallel(d3, cor = "poly")
+# fa(d3, nfactors = 13, rotate = "none", cor = "poly")
+# fa(d3, nfactors = 13, rotate = "varimax", cor = "poly")
+# fa.sort(fa(d3, nfactors = 7, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# fa.sort(fa(d3, nfactors = 5, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# fa.sort(fa(d3, nfactors = 4, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# fa.sort(fa(d3, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 
 # separate by character
 d1_robot <- d0 %>%
@@ -196,8 +196,8 @@ d1_robot <- d0 %>%
   filter(capacity != "na") %>%
   spread(capacity, responseNum)
 d3_robot <- data.frame(d1_robot[,-1], row.names = d1_robot[,1])
-fa.parallel(d3_robot)
 
+# fa.parallel(d3_robot)
 # fa.sort(fa(d3_robot, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
 d1_beetle <- d0 %>%
@@ -206,8 +206,8 @@ d1_beetle <- d0 %>%
   filter(capacity != "na") %>%
   spread(capacity, responseNum)
 d3_beetle <- data.frame(d1_beetle[,-1], row.names = d1_beetle[,1])
-fa.parallel(d3_beetle)
 
+# fa.parallel(d3_beetle)
 # fa.sort(fa(d3_beetle, nfactors = 2, rotate = "varimax")$loadings[]) %>% View()
 
 # PLOTTING, USING CHILD FACTOR LOADINGS ---------------------------------------
@@ -477,23 +477,40 @@ contrasts(d_reg$factor) <- cbind(socemo = c(0, 1, 0),
 # contrasts(d_reg$character) <- cbind(robot = c(0, 1))
 contrasts(d_reg$character) <- cbind(robot = c(-1, 1))
 
+library(lme4)
 r1 <- lmer(responseNum ~ character * factor + (1 | subid) + (1 | capacity), d_reg)
-summary(r1)
 r2 <- lmer(responseNum ~ character * factor + scale(age) + (1 | subid) + (1 | capacity), d_reg)
-summary(r2)
 r3 <- lmer(responseNum ~ character * factor * scale(age) + (1 | subid) + (1 | capacity), d_reg)
-summary(r3)
 anova(r1, r2, r3)
+# summary(r1)
+summary(r2)
+# summary(r3)
 
-# ordinal
-library(ordinal)
-r4 <- clmm(factor(responseNum) ~ character * factor + (1 | subid) + (1 | capacity), d_reg)
-summary(r4)
-r5 <- clmm(factor(responseNum) ~ character * factor + scale(age) + (1 | subid) + (1 | capacity), d_reg)
-summary(r5)
-r6 <- clmm(factor(responseNum) ~ character * factor * scale(age) + (1 | subid) + (1 | capacity), d_reg)
-summary(r6)
-anova(r4, r5, r6)
+r2b <- lmer(responseNum ~ character * factor + poly(age, 1) + (1 | subid) + (1 | capacity), d_reg)
+r4 <- lmer(responseNum ~ character * factor + poly(age, 2) + (1 | subid) + (1 | capacity), d_reg)
+r5 <- lmer(responseNum ~ character * factor + poly(age, 2) + (1 | subid) + (1 | capacity), d_reg)
+anova(r2b, r4, r5)
+summary(r2b)
+# summary(r4)
+# summary(r5)
+
+# # ordinal
+# library(ordinal)
+# r6 <- clmm(factor(responseNum) ~ character * factor + (1 | subid) + (1 | capacity), d_reg)
+# r7 <- clmm(factor(responseNum) ~ character * factor + scale(age) + (1 | subid) + (1 | capacity), d_reg)
+# r8 <- clmm(factor(responseNum) ~ character * factor * scale(age) + (1 | subid) + (1 | capacity), d_reg)
+# anova(r6, r7, r8)
+# # summary(r6)
+# summary(r7)
+# # summary(r8)
+# 
+# r7b <- clmm(factor(responseNum) ~ character * factor + poly(age, 1) + (1 | subid) + (1 | capacity), d_reg)
+# r9 <- clmm(factor(responseNum) ~ character * factor + poly(age, 2) + (1 | subid) + (1 | capacity), d_reg)
+# r10 <- clmm(factor(responseNum) ~ character * factor + poly(age, 2) + (1 | subid) + (1 | capacity), d_reg)
+# anova(r7b, r8, r9)
+# summary(r7b)
+# # summary(r8)
+# # summary(r9)
 
 # REGRESSION ON FACTOR SCORES -------------------------------------------------
 
@@ -502,7 +519,8 @@ scores_children <- fa(d3, nfactors = 3, rotate = "varimax")$scores %>%
   rownames_to_column(var = "subid") %>%
   rename(score_MR1 = MR1, score_MR2 = MR2, score_MR3 = MR3)
 
-d_reg2 %>% filter(character == "robot") <- d0 %>%
+d_reg2 <- d0 %>%
+  # filter(character == "robot") %>%
   select(subid, age, character) %>%
   filter(character != "elephant") %>%
   distinct() %>%
@@ -517,50 +535,51 @@ d_reg2 %>% filter(character == "robot") <- d0 %>%
   mutate(factor = factor(factor))
 
 # plot
-ggplot(d_reg2 %>% filter(character == "robot"), aes(x = age, y = score, color = character, fill = character)) +
+ggplot(d_reg2, aes(x = age, y = score, color = character, fill = character)) +
   facet_wrap("factor") +
   geom_point() + 
   geom_smooth(alpha = 0.2) 
 
 # set contrasts
-contrasts(d_reg2 %>% filter(character == "robot")$factor) <- cbind(MR1 = c(1, 0, 0), # MAKE SURE TO DOUBLE-CHECK!!
+contrasts(d_reg2$factor) <- cbind(MR1 = c(1, 0, 0), # MAKE SURE TO DOUBLE-CHECK!!
                                   MR3 = c(0, 0, 1))
-contrasts(d_reg2 %>% filter(character == "robot")$character) <- cbind(robot = c(-1, 1))
+contrasts(d_reg2$character) <- cbind(robot = c(-1, 1))
 
-r1 <- lmer(score ~ character * factor + (1 | subid), d_reg2 %>% filter(character == "robot"))
-summary(r1)
-r2 <- lmer(score ~ character * factor + scale(age) + (1 | subid), d_reg2 %>% filter(character == "robot"))
-summary(r2)
-r3 <- lmer(score ~ character * factor * scale(age) + (1 | subid), d_reg2 %>% filter(character == "robot"))
-summary(r3)
+r1 <- lmer(score ~ character * factor + (1 | subid), d_reg2)
+r2 <- lmer(score ~ character * factor + scale(age) + (1 | subid), d_reg2)
+r3 <- lmer(score ~ character * factor * scale(age) + (1 | subid), d_reg2)
 anova(r1, r2, r3)
+# summary(r1)
+# summary(r2)
+summary(r3)
 
-r3b <- lmer(score ~ character * factor * poly(age, 1) + (1 | subid), d_reg2 %>% filter(character == "robot"))
-summary(r3b)
-r4 <- lmer(score ~ character * factor * poly(age, 2) + (1 | subid), d_reg2 %>% filter(character == "robot"))
-summary(r4)
-r5 <- lmer(score ~ character * factor * poly(age, 3) + (1 | subid), d_reg2 %>% filter(character == "robot"))
-summary(r5)
+r3b <- lmer(score ~ character * factor * poly(age, 1) + (1 | subid), d_reg2)
+r4 <- lmer(score ~ character * factor * poly(age, 2) + (1 | subid), d_reg2)
+r5 <- lmer(score ~ character * factor * poly(age, 3) + (1 | subid), d_reg2)
 anova(r3b, r4, r5)
+summary(r3b)
+summary(r4)
+summary(r5)
 
 # robot only
 robot_r1 <- lmer(score ~ factor + (1 | subid), d_reg2 %>% filter(character == "robot"))
-summary(robot_r1)
 robot_r2 <- lmer(score ~ factor + scale(age) + (1 | subid), d_reg2 %>% filter(character == "robot"))
-summary(robot_r2)
 robot_r3 <- lmer(score ~ factor * scale(age) + (1 | subid), d_reg2 %>% filter(character == "robot"))
-summary(robot_r3)
 anova(robot_r1, robot_r2, robot_r3)
+# summary(robot_r1)
+# summary(robot_r2)
+summary(robot_r3)
 
 robot_r3b <- lmer(score ~ factor * poly(age, 1) + (1 | subid), d_reg2 %>% filter(character == "robot"))
-summary(robot_r3b)
 robot_r4 <- lmer(score ~ factor * poly(age, 2) + (1 | subid), d_reg2 %>% filter(character == "robot"))
-summary(robot_r4)
 robot_r5 <- lmer(score ~ factor * poly(age, 3) + (1 | subid), d_reg2 %>% filter(character == "robot"))
-summary(robot_r5)
 anova(robot_r3b, robot_r4, robot_r5)
+summary(robot_r3b)
+summary(robot_r4)
+summary(robot_r5)
 
-# EXPLORATORY....
+# EXPLORATORY.... -------------------------------------------------------------
+
 # stepwise regression ---------------------------------------------------------
 
 d_step <- d3[complete.cases(d3),] %>%
@@ -570,13 +589,12 @@ d_step <- d3[complete.cases(d3),] %>%
   left_join(d1_bycond %>% select(subid, character) %>% distinct()) %>%
   mutate(character = factor(character))
 
-# age 
+# age (both characters)
 step_r1 <- lm(age ~ character * (happy + depressed + fear + angry + calm + sounds + seeing + temperature + odors + depth + computations + thoughts + reasoning + remembering + beliefs + hungry + tired + pain + nauseated + safe + love + recognizing + communicating + guilt + disrespected + free_will + choices + self_restraint + intentions + goal + conscious + self_aware + desires + embarrassed + emo_recog + joy + morality + personality + pleasure + pride), data = d_step)
-
-summary(step_r1)
+# summary(step_r1)
 
 step_r2 <- step(step_r1)
-step_r2
+# step_r2
 summary(step_r2)
 
 # step_r3 <- step(step_r1, direction = "backward")
@@ -586,6 +604,15 @@ summary(step_r2)
 # step_r4 <- step(step_r1, direction = "forward")
 # step_r4
 # summary(step_r4)
+
+# age (robot only)
+
+step_r5 <- lm(age ~ happy + depressed + fear + angry + calm + sounds + seeing + temperature + odors + depth + computations + thoughts + reasoning + remembering + beliefs + hungry + tired + pain + nauseated + safe + love + recognizing + communicating + guilt + disrespected + free_will + choices + self_restraint + intentions + goal + conscious + self_aware + desires + embarrassed + emo_recog + joy + morality + personality + pleasure + pride, data = d_step %>% filter(character == "robot"))
+# summary(step_r5)
+
+step_r6 <- step(step_r5)
+# step_r6
+summary(step_r6)
 
 # glmpath ---------------------------------------------------------------------
 
