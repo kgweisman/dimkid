@@ -494,3 +494,68 @@ summary(r5)
 r6 <- clmm(factor(responseNum) ~ character * factor * scale(age) + (1 | subid) + (1 | capacity), d_reg)
 summary(r6)
 anova(r4, r5, r6)
+
+# REGRESSION ON FACTOR SCORES -------------------------------------------------
+
+scores_children <- fa(d3, nfactors = 3, rotate = "varimax")$scores %>%
+  data.frame() %>%
+  rownames_to_column(var = "subid") %>%
+  rename(score_MR1 = MR1, score_MR2 = MR2, score_MR3 = MR3)
+
+d_reg2 %>% filter(character == "robot") <- d0 %>%
+  select(subid, age, character) %>%
+  filter(character != "elephant") %>%
+  distinct() %>%
+  full_join(scores_children) %>%
+  left_join(ages %>% select(subid, age)) %>%
+  mutate(age = as.numeric(as.character(age))) %>%
+  mutate(ageCat3 = ifelse(age < 8, "7", ifelse(age < 9, "8", ifelse(age < 10, "9", NA))),
+         ageCat2 = ifelse(age < median(age, na.rm = T), "young", ifelse(age < 10, "old", NA))) %>%
+  mutate(character = factor(character)) %>%
+  filter(!is.na(score_MR1) & !is.na(score_MR2) & !is.na(score_MR3), !is.na(age)) %>%
+  gather(factor, score, starts_with("score_")) %>%
+  mutate(factor = factor(factor))
+
+# plot
+ggplot(d_reg2 %>% filter(character == "robot"), aes(x = age, y = score, color = character, fill = character)) +
+  facet_wrap("factor") +
+  geom_point() + 
+  geom_smooth(alpha = 0.2) 
+
+# set contrasts
+contrasts(d_reg2 %>% filter(character == "robot")$factor) <- cbind(MR1 = c(1, 0, 0), # MAKE SURE TO DOUBLE-CHECK!!
+                                  MR3 = c(0, 0, 1))
+contrasts(d_reg2 %>% filter(character == "robot")$character) <- cbind(robot = c(-1, 1))
+
+r1 <- lmer(score ~ character * factor + (1 | subid), d_reg2 %>% filter(character == "robot"))
+summary(r1)
+r2 <- lmer(score ~ character * factor + scale(age) + (1 | subid), d_reg2 %>% filter(character == "robot"))
+summary(r2)
+r3 <- lmer(score ~ character * factor * scale(age) + (1 | subid), d_reg2 %>% filter(character == "robot"))
+summary(r3)
+anova(r1, r2, r3)
+
+r3b <- lmer(score ~ character * factor * poly(age, 1) + (1 | subid), d_reg2 %>% filter(character == "robot"))
+summary(r3b)
+r4 <- lmer(score ~ character * factor * poly(age, 2) + (1 | subid), d_reg2 %>% filter(character == "robot"))
+summary(r4)
+r5 <- lmer(score ~ character * factor * poly(age, 3) + (1 | subid), d_reg2 %>% filter(character == "robot"))
+summary(r5)
+anova(r3b, r4, r5)
+
+# robot only
+robot_r1 <- lmer(score ~ factor + (1 | subid), d_reg2 %>% filter(character == "robot"))
+summary(robot_r1)
+robot_r2 <- lmer(score ~ factor + scale(age) + (1 | subid), d_reg2 %>% filter(character == "robot"))
+summary(robot_r2)
+robot_r3 <- lmer(score ~ factor * scale(age) + (1 | subid), d_reg2 %>% filter(character == "robot"))
+summary(robot_r3)
+anova(robot_r1, robot_r2, robot_r3)
+
+robot_r3b <- lmer(score ~ factor * poly(age, 1) + (1 | subid), d_reg2 %>% filter(character == "robot"))
+summary(robot_r3b)
+robot_r4 <- lmer(score ~ factor * poly(age, 2) + (1 | subid), d_reg2 %>% filter(character == "robot"))
+summary(robot_r4)
+robot_r5 <- lmer(score ~ factor * poly(age, 3) + (1 | subid), d_reg2 %>% filter(character == "robot"))
+summary(robot_r5)
+anova(robot_r3b, robot_r4, robot_r5)
