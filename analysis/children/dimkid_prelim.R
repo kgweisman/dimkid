@@ -15,7 +15,7 @@ graphics.off()
 # READ IN DATA ----------------------------------------------------------------
 
 # kara pilot
-d_pilot <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/compiled/dimkid_p01-14_2016-04-01.csv")
+d_pilot <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/pilot data/compiled/dimkid_p01-14_2016-04-01.csv")
 
 d1_pilot <- d_pilot %>%
   select(cap_short, response_coded, subid) %>%
@@ -444,10 +444,18 @@ ggplot(d1_bycond_ADULT_AGE_mb,
 # ...BY ITEM, age -------------------------------------------------------------
 ggplot(d1, aes(x = age, y = responseNum, color = character, fill = character)) +
   facet_wrap(~ capacity, ncol = 8) +
-  geom_point(position = "jitter", size = .25) + 
-  geom_smooth(alpha = 0.1) +
+  geom_jitter(height = 0.25, width = 0, size = 0.25) +
+  # geom_point(position = "jitter", size = .25) + 
+  geom_smooth(alpha = 0.2) + # is this legit for 3-point scale?
   theme_bw()
 
+# ranks (like spearman correlations)
+ggplot(d1, aes(x = rank(age), y = responseNum, color = character, fill = character)) +
+  facet_wrap(~ capacity, ncol = 8) +
+  geom_jitter(height = 0.1, width = 0, size = 0.25) +
+  # geom_point(position = "jitter", size = .25) + 
+  geom_smooth(alpha = 0.2) + 
+  theme_bw()
 
 # BASIC REGRESSION ANALYSES ---------------------------------------------------
 
