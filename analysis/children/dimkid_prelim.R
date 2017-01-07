@@ -115,6 +115,12 @@ d1 %>%
 qplot(d1 %>% distinct(subid, .keep_all = T) %>% select(age), bins = 18) +
   geom_vline(xintercept = median(d1$age, na.rm = T), color = "red")
 
+ggplot(d1 %>% distinct(subid, .keep_all = T) %>% select(age, character),
+       aes(x = age)) +
+  geom_histogram(bins = 9) +
+  facet_wrap(~ character) +
+  geom_vline(xintercept = median(d1$age, na.rm = T), color = "red")
+
 # gender
 d1 %>%
   select(subid, gender) %>%
