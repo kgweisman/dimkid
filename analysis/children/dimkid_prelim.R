@@ -40,8 +40,8 @@ qplot(d0$rt, bins = 100) +
   scale_x_log10(breaks = seq(0, 1000, 100)) +
   geom_vline(xintercept = 350, color = "red")
 
-d0 <- d0 %>%
-  filter(rt >= 350)
+# d0 <- d0 %>%
+#   filter(rt >= 350)
 
 # examine and filter by ages
 qplot(age, data = d0 %>% select(subid, age) %>% distinct()) +
@@ -112,7 +112,8 @@ d1 %>%
             min_age = min(age, na.rm = T),
             max_age = max(age, na.rm = T))
 
-qplot(d1 %>% distinct(subid, .keep_all = T) %>% select(age), bins = 18)
+qplot(d1 %>% distinct(subid, .keep_all = T) %>% select(age), bins = 18) +
+  geom_vline(xintercept = median(d1$age, na.rm = T), color = "red")
 
 # gender
 d1 %>%
@@ -175,7 +176,7 @@ d2_old %>% count()
 # pearson correlations
 VSS.scree(d3)
 fa.parallel(d3)
-# fa(r = d3, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
+fa(r = d3, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
 # fa(r = d3, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cor")
 # fa.sort(fa(d3, nfactors = 7, rotate = "varimax")$loadings[]) %>% View()
 # fa.sort(fa(d3, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
@@ -186,6 +187,7 @@ fa.sort(fa(d3, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 # fa(d3, nfactors = 13, rotate = "none", cor = "poly")
 # fa(d3, nfactors = 13, rotate = "varimax", cor = "poly")
 # fa.sort(fa(d3, nfactors = 7, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# fa.sort(fa(d3, nfactors = 6, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 # fa.sort(fa(d3, nfactors = 5, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 # fa.sort(fa(d3, nfactors = 4, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 # fa.sort(fa(d3, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
@@ -213,8 +215,11 @@ d3_beetle <- data.frame(d1_beetle[,-1], row.names = d1_beetle[,1])
 
 # PLOTTING, USING CHILD FACTOR LOADINGS ---------------------------------------
 
-# make factor assignments
-factors <- fa.sort(fa(d3, nfactors = 3, rotate = "varimax", cor = "cor")$loadings[]) 
+# set correlation type: pearson or polychoric?
+cor_type <- "cor"
+# cor_type <- "poly"
+
+factors <- fa.sort(fa(d3, nfactors = 3, rotate = "varimax", cor = cor_type)$loadings[]) 
 
 factors2 <- factors %>%
   data.frame() %>%
@@ -297,7 +302,7 @@ ggplot(d1_bycond_mb,
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
         legend.position = "top")
-  
+
 # ...USING ADULT FACTOR LOADINGS ----------------------------------------------
 
 # read in adult loadings
@@ -401,7 +406,7 @@ d1_bycond_age <- d1_bycond %>%
   left_join(ages %>% select(subid, age)) %>%
   filter(!is.na(age)) %>%
   mutate(ageCat3 = ifelse(age < 8, "7", ifelse(age < 9, "8", ifelse(age < 10, "9", NA)))) %>%
-  mutate(ageCat2 = ifelse(age < median(age), "young", ifelse(age < 10, "old", NA)))
+  mutate(ageCat2 = ifelse(age < median(age, na.rm = T), "young", ifelse(age < 10, "old", NA)))
 
 # by condition
 d1_bycond_ADULT_AGE_mb <- multi_boot(d1_bycond_age, # get from above
@@ -442,20 +447,118 @@ ggplot(d1_bycond_ADULT_AGE_mb,
         legend.position = "top")
 
 # ...BY ITEM, age -------------------------------------------------------------
-ggplot(d1, aes(x = age, y = responseNum, color = character, fill = character)) +
-  facet_wrap(~ capacity, ncol = 8) +
-  geom_jitter(height = 0.25, width = 0, size = 0.25) +
-  # geom_point(position = "jitter", size = .25) + 
-  geom_smooth(alpha = 0.2) + # is this legit for 3-point scale?
-  theme_bw()
 
-# ranks (like spearman correlations)
-ggplot(d1, aes(x = rank(age), y = responseNum, color = character, fill = character)) +
+# alphabetical order
+ggplot(d1, aes(x = age, y = responseNum, color = character, fill = character)) +
   facet_wrap(~ capacity, ncol = 8) +
   geom_jitter(height = 0.1, width = 0, size = 0.25) +
   # geom_point(position = "jitter", size = .25) + 
-  geom_smooth(alpha = 0.2) + 
-  theme_bw()
+  geom_smooth(alpha = 0.2) + # is this legit for 3-point scale?
+  theme_bw() +
+  theme(text = element_text(size = 18),
+        legend.position = "top")
+
+# # ranks (like spearman correlations)
+# ggplot(d1, aes(x = rank(age), y = responseNum, color = character, fill = character)) +
+#   facet_wrap(~ capacity, ncol = 8) +
+#   geom_jitter(height = 0.1, width = 0, size = 0.25) +
+#   # geom_point(position = "jitter", size = .25) +
+#   geom_smooth(alpha = 0.2) +
+#   theme_bw() +
+#   theme(text = element_text(size = 18),
+#       legend.position = "top")
+
+# ordered by factor
+d1_byfactor <- d1 %>% 
+  left_join(factors2 %>%
+              mutate(factor = factor(factor)) %>%
+              arrange(factor, desc(loading_abs)) %>% 
+              rownames_to_column(var = "order") %>%
+              mutate(order = as.numeric(order)))
+
+ggplot(d1_byfactor, 
+       aes(x = age, y = responseNum, color = character, fill = character)) +
+  facet_wrap(factor ~ reorder(capacity, order), ncol = 8) +
+  geom_jitter(height = 0.1, width = 0, size = 0.25) +
+  # geom_point(position = "jitter", size = .25) + 
+  geom_smooth(alpha = 0.2) + # is this legit for 3-point scale?
+  theme_bw() +
+  theme(text = element_text(size = 18),
+        legend.position = "top")
+
+# factor 1 only
+ggplot(d1_byfactor %>%
+         filter(factor == "MR1"), 
+       aes(x = age, y = responseNum, color = character, fill = character)) +
+  facet_wrap(~ reorder(capacity, order), ncol = 5) +
+  geom_jitter(height = 0.1, width = 0, size = 0.25) +
+  # geom_point(position = "jitter", size = .25) + 
+  geom_smooth(alpha = 0.2) + # is this legit for 3-point scale?
+  theme_bw() +
+  theme(text = element_text(size = 18),
+        legend.position = "top")
+
+# factor 2 only
+ggplot(d1_byfactor %>%
+         filter(factor == "MR2"), 
+       aes(x = age, y = responseNum, color = character, fill = character)) +
+  facet_wrap(~ reorder(capacity, order), ncol = 5) +
+  geom_jitter(height = 0.1, width = 0, size = 0.25) +
+  # geom_point(position = "jitter", size = .25) + 
+  geom_smooth(alpha = 0.2) + # is this legit for 3-point scale?
+  theme_bw() +
+  theme(text = element_text(size = 18),
+        legend.position = "top")
+
+# factor 3 only
+ggplot(d1_byfactor %>%
+         filter(factor == "MR3"), 
+       aes(x = age, y = responseNum, color = character, fill = character)) +
+  facet_wrap(~ reorder(capacity, order), ncol = 5) +
+  geom_jitter(height = 0.1, width = 0, size = 0.25) +
+  # geom_point(position = "jitter", size = .25) + 
+  geom_smooth(alpha = 0.2) + # is this legit for 3-point scale?
+  theme_bw() +
+  theme(text = element_text(size = 18),
+        legend.position = "top")
+
+# raw counts
+
+# factor 1 only
+ggplot(d1_byfactor %>%
+         filter(factor == "MR1", !is.na(age)), 
+       aes(x = cut_number(age, 4), fill = factor(responseNum))) +
+  facet_grid(character ~ reorder(capacity, order)) +
+  geom_bar(position = "fill") +
+  theme_bw() +
+  theme(text = element_text(size = 18),
+        legend.position = "top",
+        axis.text.x = element_blank(),
+        axis.title.y = element_blank())
+
+# factor 2 only
+ggplot(d1_byfactor %>%
+         filter(factor == "MR2", !is.na(age)), 
+       aes(x = cut_number(age, 4), fill = factor(responseNum))) +
+  facet_grid(character ~ reorder(capacity, order)) +
+  geom_bar(position = "fill") +
+  theme_bw() +
+  theme(text = element_text(size = 18),
+        legend.position = "top",
+        axis.text.x = element_blank(),
+        axis.title.y = element_blank())
+
+# factor 3 only
+ggplot(d1_byfactor %>%
+         filter(factor == "MR3", !is.na(age)), 
+       aes(x = cut_number(age, 4), fill = factor(responseNum))) +
+  facet_grid(character ~ reorder(capacity, order)) +
+  geom_bar(position = "fill") +
+  theme_bw() +
+  theme(text = element_text(size = 18),
+        legend.position = "top",
+        axis.text.x = element_blank(),
+        axis.title.y = element_blank())
 
 # BASIC REGRESSION ANALYSES ---------------------------------------------------
 
@@ -514,7 +617,19 @@ summary(r3b)
 
 # REGRESSION ON FACTOR SCORES -------------------------------------------------
 
-scores_children <- fa(d3, nfactors = 3, rotate = "varimax")$scores %>%
+# set correlation type: pearson or polychoric?
+cor_type <- "cor"
+# cor_type <- "poly"
+
+# set score type
+score_type <- "regression"
+# score_type <- "Thurstone"
+# score_type <- "tenBerge"
+# score_type <- "Anderson"
+# score_type <- "Bartlett"
+
+scores_children <- fa(d3, nfactors = 3, rotate = "varimax", 
+                      cor = cor_type, scores = score_type)$scores %>%
   data.frame() %>%
   rownames_to_column(var = "subid") %>%
   rename(score_MR1 = MR1, score_MR2 = MR2, score_MR3 = MR3)
@@ -538,8 +653,11 @@ d_reg2 <- d0 %>%
 ggplot(d_reg2, aes(x = age, y = score, color = character, fill = character)) +
   facet_wrap("factor") +
   theme_bw() +
+  theme(text = element_text(size = 24),
+        legend.position = "top") +
   geom_point() + 
-  geom_smooth(alpha = 0.2) 
+  geom_smooth(alpha = 0.2, method = "loess")
+  # geom_smooth(alpha = 0.2, method = "lm") 
 
 # set contrasts
 contrasts(d_reg2$factor) <- cbind(MR1 = c(1, 0, 0), # MAKE SURE TO DOUBLE-CHECK!!
@@ -577,7 +695,7 @@ robot_r5 <- lmer(score ~ factor * poly(age, 3) + (1 | subid), d_reg2 %>% filter(
 anova(robot_r3b, robot_r4, robot_r5)
 summary(robot_r3b)
 # summary(robot_r4)
-# summary(robot_r5)
+summary(robot_r5)
 
 # EXPLORATORY.... -------------------------------------------------------------
 
