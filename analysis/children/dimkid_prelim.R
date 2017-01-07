@@ -806,3 +806,171 @@ d_predictor %>%
   filter(lambda == lambda_minBIC$lambda) %>%
   filter(coeff != 0)
 
+# ...BY ITEM, culture ---------------------------------------------------------
+
+# look at demographics again
+
+# age 
+d1 %>% 
+  select(subid, ethnicityCat2, age) %>%
+  distinct(.keep_all = T) %>%
+  group_by(ethnicityCat2) %>%
+  summarise(mean_age = mean(age, na.rm = T),
+            sd_age = sd(age, na.rm = T),
+            median_age = median(age, na.rm = T),
+            min_age = min(age, na.rm = T),
+            max_age = max(age, na.rm = T))
+
+t.test(age ~ ethnicityCat2, d1 %>% select(subid, ethnicityCat2, age) %>% distinct(.keep_all = T))
+
+# gender
+d1 %>%
+  select(subid, ethnicityCat2, gender) %>%
+  distinct(.keep_all = T) %>%
+  count(ethnicityCat2, gender)
+
+# ethnicity
+d1 %>% 
+  select(subid, ethnicityCat2, ethnicity) %>%
+  mutate(east_asian = grepl("east asian", ethnicity),
+         white = grepl("white", ethnicity),
+         latino = grepl("latino", ethnicity),
+         middle_eastern = grepl("middle eastern", ethnicity),
+         native = grepl("native", ethnicity),
+         south_asian = grepl("south", ethnicity)) %>%
+  distinct(.keep_all = T) %>%
+  gather(ethnicityTF, TF, -subid, -ethnicity, -ethnicityCat2) %>%
+  filter(TF) %>%
+  count(ethnicityCat2, ethnicityTF)
+
+# condition
+d1 %>% 
+  select(subid, ethnicityCat2, character) %>%
+  distinct(.keep_all = T) %>%
+  count(ethnicityCat2, character)
+
+summary(with(d1 %>% 
+               select(subid, ethnicityCat2, character) %>% 
+               distinct(.keep_all = T) %>%
+               mutate(character = factor(character)),
+             table(character, ethnicityCat2)))
+
+# plot!
+d1_byculture <- multi_boot(d1_bycond %>% left_join(d1 %>% select(subid, ethnicityCat2)), 
+                           column = "responseNum",
+                           summary_groups = c("ethnicityCat2", "character", 
+                                              "capacity", "capWordingShort"),
+                           statistics_functions = c("mean", "ci_lower", "ci_upper"))
+
+d1_byculture2 <- d1_byculture %>%
+  ungroup() %>%
+  mutate(ethnicityCat2 = factor(ethnicityCat2, labels = c("A", "W"))) %>%
+  left_join(factors2 %>%
+              mutate(factor = factor(factor)) %>%
+              arrange(factor, desc(loading_abs)) %>% 
+              rownames_to_column(var = "order") %>%
+              mutate(order = as.numeric(order)))
+
+# alphabetical order
+ggplot(d1_byculture2 %>% filter(!is.na(ethnicityCat2)), 
+       aes(x = ethnicityCat2, y = mean, color = character, fill = character)) +
+  facet_wrap(~ capacity, ncol = 8) +
+  geom_point() +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper)) +
+  theme_bw() +
+  theme(text = element_text(size = 18),
+        legend.position = "top")
+
+# ordered by factor
+ggplot(d1_byculture2 %>% filter(!is.na(ethnicityCat2)), 
+       aes(x = ethnicityCat2, y = mean, color = character, fill = character)) +
+  facet_wrap(~ reorder(capacity, order), ncol = 8) +
+  geom_point() +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.1) +
+  theme_bw() +
+  theme(text = element_text(size = 18),
+        legend.position = "top")
+
+# factor 1 only
+ggplot(d1_byculture2 %>% filter(!is.na(ethnicityCat2)) %>% filter(factor == "MR1"), 
+       aes(x = ethnicityCat2, y = mean, color = character, fill = character)) +
+  facet_wrap(~ reorder(capacity, order), ncol = 5) +
+  geom_point() +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.2) +
+  theme_bw() +
+  theme(text = element_text(size = 18),
+        legend.position = "top")
+
+# factor 2 only
+ggplot(d1_byculture2 %>% filter(!is.na(ethnicityCat2)) %>% filter(factor == "MR2"), 
+       aes(x = ethnicityCat2, y = mean, color = character, fill = character)) +
+  facet_wrap(~ reorder(capacity, order), ncol = 5) +
+  geom_point() +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.2) +
+  theme_bw() +
+  theme(text = element_text(size = 18),
+        legend.position = "top")
+
+# factor 3 only
+ggplot(d1_byculture2 %>% filter(!is.na(ethnicityCat2)) %>% filter(factor == "MR3"), 
+       aes(x = ethnicityCat2, y = mean, color = character, fill = character)) +
+  facet_wrap(~ reorder(capacity, order), ncol = 5) +
+  geom_point() +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.2) +
+  theme_bw() +
+  theme(text = element_text(size = 18),
+        legend.position = "top")
+
+d_byculture_scores <- d0 %>%
+  select(subid, ethnicityCat2, age, character) %>%
+  filter(character != "elephant") %>%
+  distinct() %>%
+  full_join(scores_children) %>%
+  left_join(ages %>% select(subid, age)) %>%
+  mutate(character = factor(character)) %>%
+  filter(!is.na(score_MR1) & !is.na(score_MR2) & !is.na(score_MR3), !is.na(age)) %>%
+  gather(factor, score, starts_with("score_")) %>%
+  mutate(factor = factor(factor)) %>%
+  multi_boot(column = "score",
+             summary_groups = c("ethnicityCat2", "character", "factor"),
+             statistics_functions = c("mean", "ci_lower", "ci_upper"))
+
+# plot
+ggplot(d_byculture_scores %>% filter(!is.na(ethnicityCat2)) %>% ungroup %>% mutate(ethnicityCat2 = factor(ethnicityCat2, labels = c("A", "W"))), 
+       aes(x = ethnicityCat2, y = mean, color = character, fill = character)) +
+  facet_wrap("factor") +
+  theme_bw() +
+  theme(text = element_text(size = 24),
+        legend.position = "top") +
+  geom_point(size = 4) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.2)
+
+# analyze?
+d_reg3 <- d_reg2 %>%
+  left_join(d1 %>% select(subid, ethnicityCat2)) %>%
+  filter(!is.na(ethnicityCat2))
+
+# set contrasts
+contrasts(d_reg3$factor) <- cbind(MR1 = c(1, 0, 0), # MAKE SURE TO DOUBLE-CHECK!!
+                                  MR3 = c(0, 0, 1))
+contrasts(d_reg3$character) <- cbind(robot = c(-1, 1))
+contrasts(d_reg3$ethnicityCat2) <- cbind(W = c(-1, 1))
+
+r1 <- lmer(score ~ character * factor + (1 | subid), d_reg3)
+r2 <- lmer(score ~ character * factor + ethnicityCat2 + (1 | subid), d_reg3)
+r3 <- lmer(score ~ character * factor * ethnicityCat2 + (1 | subid), d_reg3)
+anova(r1, r2, r3)
+# summary(r1)
+# summary(r2)
+summary(r3)
+
+# robot only
+robot_r1 <- lmer(score ~ factor + (1 | subid), d_reg3 %>% filter(character == "robot"))
+robot_r2 <- lmer(score ~ factor + ethnicityCat2 + (1 | subid), d_reg3 %>% filter(character == "robot"))
+robot_r3 <- lmer(score ~ factor * ethnicityCat2 + (1 | subid), d_reg3 %>% filter(character == "robot"))
+anova(robot_r1, robot_r2, robot_r3)
+# summary(robot_r1)
+# summary(robot_r2)
+summary(robot_r3)
+
+
