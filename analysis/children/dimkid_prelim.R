@@ -149,10 +149,12 @@ d1 %>%
 
 # HEATMAP, CLUSTERING ---------------------------------------------------------
 
-m <- as.matrix(d3)
-heatmap(m)
+m1 <- as.matrix(d3[complete.cases(d3),]) # remove rows with NAs
+heatmap(m1)
 
-cluster <- hclust(dist(t(m)))
+m1 <- as.matrix(d3) # keep NAs
+
+cluster <- hclust(dist(t(m1)))
 plot(cluster)
 
 d2_young <- d1 %>%
@@ -743,30 +745,36 @@ summary(step_r6)
 
 # data formatting
 d_glmpath <- d_step %>%
-  select(angry:tired, character, age)
+  select(angry:tired, character, age, ethnicityCat2)
 mental <- as.matrix(d_glmpath[,1:40])
 char <- as.matrix(as.numeric(d_glmpath[,41])-1)
 age <- as.matrix(log(d_glmpath[,42])) # log transform!
+culture <- as.matrix(as.numeric(d_glmpath[,43])-1)
 
 d_glmpath_robot <- d_glmpath %>%
   filter(character == "robot") %>%
   select(-character)
 mental_robot <- as.matrix(d_glmpath_robot[,1:40])
 age_robot <- as.matrix(log(d_glmpath_robot[,41])) # log transform!
+culture_robot <- as.matrix(as.numeric(d_glmpath_robot[,42])-1)
 
 d_glmpath_beetle <- d_glmpath %>%
   filter(character == "beetle") %>%
   select(-character)
 mental_beetle <- as.matrix(d_glmpath_beetle[,1:40])
 age_beetle <- as.matrix(log(d_glmpath_beetle[,41])) # log transform!
+culture_beetle <- as.matrix(as.numeric(d_glmpath_beetle[,42])-1)
 
 # without cross-validation
 
 library(glmpath)
 # rs1 <- glmpath(mental, char, family = "binomial"); rs1
 # rs1 <- glmpath(mental, age, family = "gaussian"); rs1
-rs1 <- glmpath(mental_robot, age_robot, family = "gaussian"); rs1
+rs1 <- glmpath(mental, culture, family = "gaussian"); rs1
+# rs1 <- glmpath(mental_robot, age_robot, family = "gaussian"); rs1
 # rs1 <- glmpath(mental_beetle, age_beetle, family = "gaussian"); rs1
+rs1 <- glmpath(mental_robot, culture_robot, family = "gaussian"); rs1
+# rs1 <- glmpath(mental_beetle, culture_beetle, family = "gaussian"); rs1
 # head(summary(rs1))
 # head(rs1$b.predictor)
 
