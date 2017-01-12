@@ -27,7 +27,7 @@ d1_pilot <- d_pilot %>%
 
 # lydia, olivia, allie (summer 2016) + nicky, dru, ariel, olivia (fall 2016)
 
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2017-01-06_anonymized.csv")
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2017-01-11_anonymized.csv")
 
 # TIDY DATA -------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ qplot(age, data = d0 %>% select(subid, age) %>% distinct()) +
   geom_vline(xintercept = 10, color = "red")
 
 d1 <- d0 %>%
-  filter(is.na(age) | (age >= 6.5 & age <10.5)) %>%
+  filter(is.na(age) | (age >= 7 & age <10)) %>%
   select(-X, -X.1)
 
 d2 <- d1 %>%
@@ -102,6 +102,12 @@ cor3 <- cor(d3, method = "spearman", use = "complete.obs")
 
 # DEMOGRAPHICS ----------------------------------------------------------------
 
+# total n
+d1 %>% 
+  select(subid) %>%
+  distinct(.keep_all = T) %>%
+  count()
+
 # age 
 d1 %>% 
   select(subid, age) %>%
@@ -115,11 +121,22 @@ d1 %>%
 qplot(d1 %>% distinct(subid, .keep_all = T) %>% select(age), bins = 18) +
   geom_vline(xintercept = median(d1$age, na.rm = T), color = "red")
 
-ggplot(d1 %>% distinct(subid, .keep_all = T) %>% select(age, character),
+d1 %>% 
+  distinct(subid, .keep_all = T) %>% 
+  select(age, character) %>%
+  group_by(character) %>% 
+  summarise(median = median(age, na.rm = T))
+
+ggplot(d1 %>% 
+         distinct(subid, .keep_all = T) %>% 
+         select(age, character) %>%
+         group_by(character) %>%
+         mutate(median_age = median(age, na.rm = T)),
        aes(x = age)) +
   geom_histogram(bins = 9) +
   facet_wrap(~ character) +
-  geom_vline(xintercept = median(d1$age, na.rm = T), color = "red")
+  geom_vline(xintercept = median(d1$age, na.rm = T), color = "black") +
+  geom_vline(aes(xintercept = median_age, color = character), lty = 2)
 
 # gender
 d1 %>%
@@ -190,15 +207,15 @@ fa(r = d3, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
 # fa.sort(fa(d3, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
 fa.sort(fa(d3, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
-# # polychoric correlations
-# fa.parallel(d3, cor = "poly")
-# fa(d3, nfactors = 13, rotate = "none", cor = "poly")
-# fa(d3, nfactors = 13, rotate = "varimax", cor = "poly")
-# fa.sort(fa(d3, nfactors = 7, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-# fa.sort(fa(d3, nfactors = 6, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-# fa.sort(fa(d3, nfactors = 5, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-# fa.sort(fa(d3, nfactors = 4, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-# fa.sort(fa(d3, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# polychoric correlations
+fa.parallel(d3, cor = "poly")
+fa(d3, nfactors = 13, rotate = "none", cor = "poly")
+fa(d3, nfactors = 13, rotate = "varimax", cor = "poly")
+fa.sort(fa(d3, nfactors = 7, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+fa.sort(fa(d3, nfactors = 6, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+fa.sort(fa(d3, nfactors = 5, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+fa.sort(fa(d3, nfactors = 4, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+fa.sort(fa(d3, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 
 # separate by character
 d1_robot <- d0 %>%
@@ -376,7 +393,7 @@ ggplot(d1_bycond %>% full_join(factors3_ADULT),
            label = capWordingShort)) +
   facet_grid(character ~ factorName) +
   geom_bar(position = "fill") +
-  geom_text(aes(y = 0, hjust = 0)) +
+  geom_text(aes(y = 0, hjust = 0), size = 7) +
   labs(title = "Children's responses, by adult-derived factors",
        y = "\nProportion of responses",
        x = "Capacity\n",
@@ -392,7 +409,7 @@ ggplot(d1_bycond %>% full_join(factors3_ADULT),
 # ...USING ADULT FACTOR LOADINGS, by age --------------------------------------
 
 # read in ages
-ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2017-01-06.csv") %>%
+ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2017-01-11.csv") %>%
   select(-age_formula, -comments) %>%
   mutate(ethnicityCat1 = 
            factor(ifelse(is.na(ethnicity), NA,
@@ -568,60 +585,60 @@ ggplot(d1_byfactor %>%
         axis.text.x = element_blank(),
         axis.title.y = element_blank())
 
-# BASIC REGRESSION ANALYSES ---------------------------------------------------
-
-d_reg <- d1_bycond %>% 
-  full_join(factors3_ADULT) %>%
-  left_join(ages %>% select(subid, age)) %>%
-  mutate(ageCat3 = ifelse(age < 8, "7", ifelse(age < 9, "8", ifelse(age < 10, "9", NA))),
-         ageCat2 = ifelse(age < median(age), "young", ifelse(age < 10, "old", NA))) %>%
-  filter(posneg == "pos", !is.na(age), character != "elephant") %>%
-  mutate(character = factor(character))
-
-# set contrasts
-contrasts(d_reg$factor) <- cbind(socemo = c(0, 1, 0),
-                                 percog = c(0, 0, 1))
-# contrasts(d_reg$factor) <- cbind(Ph.v.UGM = c(1, 0, -1),
-#                                  SE.v.UGM = c(0, 1, -1))
-# contrasts(d_reg$factor) <- cbind(SEPC.v.Ph = c(-2, 1, 1),
-#                                  SE.v.PC = c(0, 1, -1))
-# contrasts(d_reg$character) <- cbind(robot = c(0, 1))
-contrasts(d_reg$character) <- cbind(robot = c(-1, 1))
-
-library(lme4)
-r1 <- lmer(responseNum ~ character * factor + (1 | subid) + (1 | capacity), d_reg)
-r2 <- lmer(responseNum ~ character * factor + scale(age) + (1 | subid) + (1 | capacity), d_reg)
-r3 <- lmer(responseNum ~ character * factor * scale(age) + (1 | subid) + (1 | capacity), d_reg)
-anova(r1, r2, r3)
-# summary(r1)
-# summary(r2)
-summary(r3)
-
-r3b <- lmer(responseNum ~ character * factor * poly(age, 1) + (1 | subid) + (1 | capacity), d_reg)
-r4 <- lmer(responseNum ~ character * factor * poly(age, 2) + (1 | subid) + (1 | capacity), d_reg)
-r5 <- lmer(responseNum ~ character * factor * poly(age, 2) + (1 | subid) + (1 | capacity), d_reg)
-anova(r3b, r4, r5)
-summary(r3b)
-# summary(r4)
-# summary(r5)
-
-# # ordinal
-# library(ordinal)
-# r6 <- clmm(factor(responseNum) ~ character * factor + (1 | subid) + (1 | capacity), d_reg)
-# r7 <- clmm(factor(responseNum) ~ character * factor + scale(age) + (1 | subid) + (1 | capacity), d_reg)
-# r8 <- clmm(factor(responseNum) ~ character * factor * scale(age) + (1 | subid) + (1 | capacity), d_reg)
-# anova(r6, r7, r8)
-# # summary(r6)
-# summary(r7)
-# # summary(r8)
+# # BASIC REGRESSION ANALYSES ---------------------------------------------------
 # 
-# r7b <- clmm(factor(responseNum) ~ character * factor + poly(age, 1) + (1 | subid) + (1 | capacity), d_reg)
-# r9 <- clmm(factor(responseNum) ~ character * factor + poly(age, 2) + (1 | subid) + (1 | capacity), d_reg)
-# r10 <- clmm(factor(responseNum) ~ character * factor + poly(age, 2) + (1 | subid) + (1 | capacity), d_reg)
-# anova(r7b, r8, r9)
-# summary(r7b)
-# # summary(r8)
-# # summary(r9)
+# d_reg <- d1_bycond %>% 
+#   full_join(factors3_ADULT) %>%
+#   left_join(ages %>% select(subid, age)) %>%
+#   mutate(ageCat3 = ifelse(age < 8, "7", ifelse(age < 9, "8", ifelse(age < 10, "9", NA))),
+#          ageCat2 = ifelse(age < median(age), "young", ifelse(age < 10, "old", NA))) %>%
+#   filter(posneg == "pos", !is.na(age), character != "elephant") %>%
+#   mutate(character = factor(character))
+# 
+# # set contrasts
+# contrasts(d_reg$factor) <- cbind(socemo = c(0, 1, 0),
+#                                  percog = c(0, 0, 1))
+# # contrasts(d_reg$factor) <- cbind(Ph.v.UGM = c(1, 0, -1),
+# #                                  SE.v.UGM = c(0, 1, -1))
+# # contrasts(d_reg$factor) <- cbind(SEPC.v.Ph = c(-2, 1, 1),
+# #                                  SE.v.PC = c(0, 1, -1))
+# # contrasts(d_reg$character) <- cbind(robot = c(0, 1))
+# contrasts(d_reg$character) <- cbind(robot = c(-1, 1))
+# 
+# library(lme4)
+# r1 <- lmer(responseNum ~ character * factor + (1 | subid) + (1 | capacity), d_reg)
+# r2 <- lmer(responseNum ~ character * factor + scale(age) + (1 | subid) + (1 | capacity), d_reg)
+# r3 <- lmer(responseNum ~ character * factor * scale(age) + (1 | subid) + (1 | capacity), d_reg)
+# anova(r1, r2, r3)
+# # summary(r1)
+# summary(r2)
+# summary(r3)
+# 
+# r3b <- lmer(responseNum ~ character * factor * poly(age, 1) + (1 | subid) + (1 | capacity), d_reg)
+# r4 <- lmer(responseNum ~ character * factor * poly(age, 2) + (1 | subid) + (1 | capacity), d_reg)
+# r5 <- lmer(responseNum ~ character * factor * poly(age, 3) + (1 | subid) + (1 | capacity), d_reg)
+# anova(r3b, r4, r5)
+# summary(r3b)
+# # summary(r4)
+# summary(r5)
+# 
+# # # ordinal
+# # library(ordinal)
+# # r6 <- clmm(factor(responseNum) ~ character * factor + (1 | subid) + (1 | capacity), d_reg)
+# # r7 <- clmm(factor(responseNum) ~ character * factor + scale(age) + (1 | subid) + (1 | capacity), d_reg)
+# # r8 <- clmm(factor(responseNum) ~ character * factor * scale(age) + (1 | subid) + (1 | capacity), d_reg)
+# # anova(r6, r7, r8)
+# # # summary(r6)
+# # summary(r7)
+# # # summary(r8)
+# # 
+# # r7b <- clmm(factor(responseNum) ~ character * factor + poly(age, 1) + (1 | subid) + (1 | capacity), d_reg)
+# # r9 <- clmm(factor(responseNum) ~ character * factor + poly(age, 2) + (1 | subid) + (1 | capacity), d_reg)
+# # r10 <- clmm(factor(responseNum) ~ character * factor + poly(age, 2) + (1 | subid) + (1 | capacity), d_reg)
+# # anova(r7b, r8, r9)
+# # summary(r7b)
+# # # summary(r8)
+# # # summary(r9)
 
 # REGRESSION ON FACTOR SCORES -------------------------------------------------
 
@@ -770,10 +787,10 @@ culture_beetle <- as.matrix(as.numeric(d_glmpath_beetle[,42])-1)
 library(glmpath)
 # rs1 <- glmpath(mental, char, family = "binomial"); rs1
 # rs1 <- glmpath(mental, age, family = "gaussian"); rs1
-rs1 <- glmpath(mental, culture, family = "gaussian"); rs1
-# rs1 <- glmpath(mental_robot, age_robot, family = "gaussian"); rs1
+# rs1 <- glmpath(mental, culture, family = "gaussian"); rs1
+rs1 <- glmpath(mental_robot, age_robot, family = "gaussian"); rs1
 # rs1 <- glmpath(mental_beetle, age_beetle, family = "gaussian"); rs1
-rs1 <- glmpath(mental_robot, culture_robot, family = "gaussian"); rs1
+# rs1 <- glmpath(mental_robot, culture_robot, family = "gaussian"); rs1
 # rs1 <- glmpath(mental_beetle, culture_beetle, family = "gaussian"); rs1
 # head(summary(rs1))
 # head(rs1$b.predictor)
