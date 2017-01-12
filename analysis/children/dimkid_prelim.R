@@ -25,8 +25,7 @@ d1_pilot <- d_pilot %>%
   filter(cap_short != "na") %>%
   spread(cap_short, response_coded)
 
-# lydia, olivia, allie (summer 2016) + nicky, dru, ariel, olivia (fall 2016)
-
+# lydia, olivia, allie (summer 2016) + nicky, dru, ariel, olivia (fall 2016) + campbell (winter 2017)
 d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2017-01-11_anonymized.csv")
 
 # TIDY DATA -------------------------------------------------------------------
