@@ -25,7 +25,7 @@ d_adult01 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Di
 # d_adult03 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-03_2016-12-08_anonymized.csv")
 
 # CHILD run 01 [lydia, olivia, allie (summer 2016) + nicky, dru, ariel, olivia (fall 2016) + campbell (winter 2017)]
-d_child01 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2017-01-11_anonymized.csv") %>% select(-X.1, -X)
+d_child01 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2017-01-13_anonymized.csv") %>% select(-X.1, -X)
 
 # TIDY DATA -------------------------------------------------------------------
 
@@ -247,8 +247,11 @@ ggplot(d1_bycond_mb_factorsChild,
 
 # combine adults and children
 fa.parallel(d3)
+howmanyfac <- 3
+# howmanyfac <- 4
+
 factors_all <- fa.sort(fa(d3,
-                          nfactors = 3,
+                          nfactors = howmanyfac,
                           rotate = "varimax",
                           cor = cor_type)$loadings[]) %>%
   data.frame() %>%
@@ -256,19 +259,23 @@ factors_all <- fa.sort(fa(d3,
   mutate(MR1_abs = abs(MR1),
          MR2_abs = abs(MR2),
          MR3_abs = abs(MR3),
-         loading_abs = pmax(MR1_abs, MR2_abs, MR3_abs),
+         # MR4_abs = abs(MR4),
+         loading_abs = pmax(MR1_abs, MR2_abs, MR3_abs), #, MR4_abs),
          loading = ifelse(loading_abs == abs(MR1), MR1,
                           ifelse(loading_abs == abs(MR2), MR2,
                                  ifelse(loading_abs == abs(MR3), MR3,
-                                        NA))),
+                                        # ifelse(loading_abs == abs(MR4), MR4,
+                                               NA))), #),
          factor = ifelse(loading == MR1, "MR1",
                          ifelse(loading == MR2, "MR2",
                                 ifelse(loading == MR3, "MR3",
-                                       NA))),
+                                       # ifelse(loading == MR4, "MR4",
+                                              NA))), #),
          factorName = ifelse(loading == MR1, "Factor 1",
                              ifelse(loading == MR2, "Factor 2",
                                     ifelse(loading == MR3, "Factor 3",
-                                           NA)))) %>%
+                                           # ifelse(loading == MR4, "Factor 4",
+                                                  NA)))) %>% #) %>%
   arrange(factor, desc(loading_abs)) %>%
   select(capacity, factor, factorName, loading, loading_abs)
 
@@ -285,6 +292,10 @@ factors_all <-
               filter(factor == "MR3") %>%
               rownames_to_column(var = "order") %>%
               mutate(order = as.numeric(order))) %>%
+  # full_join(factors_all %>%
+  #             filter(factor == "MR4") %>%
+  #             rownames_to_column(var = "order") %>%
+  #             mutate(order = as.numeric(order))) %>%
   mutate(posneg = factor(ifelse(loading < 0, "neg", "pos")),
          textColor = ifelse(loading < 0, "dodgerblue3", "black"))
 
@@ -335,12 +346,32 @@ score_type <- "regression"
 # score_type <- "Anderson"
 # score_type <- "Bartlett"
 
-scores_all <- fa(d3, nfactors = 3, rotate = "varimax",
+# scores_all <- fa(d3, nfactors = 3, rotate = "varimax",
+#                  cor = cor_type, scores = score_type)$scores %>%
+#   data.frame() %>%
+#   rownames_to_column(var = "subid") %>%
+#   mutate(ageGroup = factor(ifelse(grepl("run", subid), "adult", "child"))) %>%
+#   rename(score_MR1 = MR1, score_MR2 = MR2, score_MR3 = MR3)
+
+scores_all <- fa(d3, nfactors = 4, rotate = "varimax",
                  cor = cor_type, scores = score_type)$scores %>%
   data.frame() %>%
   rownames_to_column(var = "subid") %>%
   mutate(ageGroup = factor(ifelse(grepl("run", subid), "adult", "child"))) %>%
-  rename(score_MR1 = MR1, score_MR2 = MR2, score_MR3 = MR3)
+  rename(score_MR1 = MR1, score_MR2 = MR2, score_MR3 = MR3, score_MR4 = MR4)
+
+# d_reg2 <- d0 %>%
+#   select(subid, ageGroup, character) %>%
+#   filter(character != "elephant") %>%
+#   distinct() %>%
+#   full_join(scores_all) %>%
+#   mutate(character = factor(character)) %>%
+#   filter(!is.na(score_MR1), !is.na(score_MR2), !is.na(score_MR3), !is.na(ageGroup)) %>%
+#   gather(factor, score, starts_with("score_")) %>%
+#   mutate(factor = factor(factor)) %>%
+#   multi_boot(column = "score",
+#              summary_groups = c("ageGroup", "character", "factor"),
+#              statistics_functions = c("mean", "ci_lower", "ci_upper"))
 
 d_reg2 <- d0 %>%
   select(subid, ageGroup, character) %>%
@@ -348,7 +379,8 @@ d_reg2 <- d0 %>%
   distinct() %>%
   full_join(scores_all) %>%
   mutate(character = factor(character)) %>%
-  filter(!is.na(score_MR1) & !is.na(score_MR2) & !is.na(score_MR3), !is.na(ageGroup)) %>%
+  filter(!is.na(score_MR1), !is.na(score_MR2), !is.na(score_MR3), !is.na(score_MR4), 
+         !is.na(ageGroup)) %>%
   gather(factor, score, starts_with("score_")) %>%
   mutate(factor = factor(factor)) %>%
   multi_boot(column = "score",
@@ -358,7 +390,7 @@ d_reg2 <- d0 %>%
 # plot
 ggplot(d_reg2,
        aes(x = ageGroup, y = mean, color = character, fill = character)) +
-  facet_wrap("factor") +
+  facet_wrap("factor", ncol = 4) +
   theme_bw() +
   theme(text = element_text(size = 24),
         legend.position = "top") +
@@ -366,19 +398,33 @@ ggplot(d_reg2,
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.2)
 
 # analyze?
+# d_reg3 <- d0 %>%
+#   select(subid, ageGroup, character) %>%
+#   filter(character != "elephant") %>%
+#   distinct() %>%
+#   full_join(scores_all) %>%
+#   mutate(character = factor(character)) %>%
+#   filter(!is.na(score_MR1) & !is.na(score_MR2) & !is.na(score_MR3), !is.na(ageGroup)) %>%
+#   gather(factor, score, starts_with("score_")) %>%
+#   mutate(factor = factor(factor))
+
 d_reg3 <- d0 %>%
   select(subid, ageGroup, character) %>%
   filter(character != "elephant") %>%
   distinct() %>%
   full_join(scores_all) %>%
   mutate(character = factor(character)) %>%
-  filter(!is.na(score_MR1) & !is.na(score_MR2) & !is.na(score_MR3), !is.na(ageGroup)) %>%
+  filter(!is.na(score_MR1), !is.na(score_MR2), !is.na(score_MR3), !is.na(score_MR4),
+         !is.na(ageGroup)) %>%
   gather(factor, score, starts_with("score_")) %>%
   mutate(factor = factor(factor))
 
 # set contrasts
-contrasts(d_reg3$factor) <- cbind(MR1 = c(1, 0, 0), # MAKE SURE TO DOUBLE-CHECK!!
-                                  MR3 = c(0, 0, 1))
+# contrasts(d_reg3$factor) <- cbind(MR1 = c(1, 0, 0), # MAKE SURE TO DOUBLE-CHECK!!
+#                                   MR3 = c(0, 0, 1))
+contrasts(d_reg3$factor) <- cbind(MR1 = c(1, 0, 0, 0), # MAKE SURE TO DOUBLE-CHECK!!
+                                  MR3 = c(0, 0, 1, 0),
+                                  MR4 = c(0, 0, 0, 1))
 contrasts(d_reg3$character) <- cbind(robot = c(-1, 1))
 contrasts(d_reg3$ageGroup) <- cbind(child = c(-1, 1))
 
@@ -398,3 +444,46 @@ anova(robot_r1, robot_r2, robot_r3)
 # summary(robot_r1)
 # summary(robot_r2)
 summary(robot_r3)
+
+# make table ------------
+
+comb <- round(fa.sort(fa(d3, nfactors = 3, rotate = "varimax", cor = cor_type)$loadings[]), 2) %>%
+  data.frame() %>%
+  rename(comb_MR1 = MR1, comb_MR2 = MR2, comb_MR3 = MR3) %>%
+  rownames_to_column(var = "item") %>%
+  rownames_to_column(var = "order") %>%
+  mutate(order = as.numeric(order))
+
+temp_adult <- d3 %>%
+  rownames_to_column(var = "subid") %>%
+  left_join(d %>% select(subid, ageGroup) %>% distinct()) %>%
+  filter(ageGroup == "adult") %>%
+  select(-ageGroup) %>% 
+  column_to_rownames(var = "subid")
+
+temp_child <- d3 %>%
+  rownames_to_column(var = "subid") %>%
+  left_join(d %>% select(subid, ageGroup) %>% distinct()) %>%
+  filter(ageGroup == "child") %>%
+  select(-ageGroup) %>% 
+  column_to_rownames(var = "subid")
+
+ad <- round(fa.sort(fa(temp_adult, nfactors = 3, rotate = "varimax", cor = cor_type)$loadings[]), 2) %>%
+  data.frame() %>%
+  rename(ad_MR1 = MR1, ad_MR2 = MR2, ad_MR3 = MR3) %>%
+  rownames_to_column(var = "item")
+
+ch <- round(fa.sort(fa(temp_child, nfactors = 3, rotate = "varimax", cor = cor_type)$loadings[]), 2) %>%
+  data.frame() %>%
+  rename(ch_MR1 = MR1, ch_MR2 = MR2, ch_MR3 = MR3) %>%
+  rownames_to_column(var = "item")
+
+temp_table <- comb %>%
+  full_join(ad) %>%
+  full_join(ch) %>%
+  select(order, item,
+         ad_MR1, ch_MR1, comb_MR1,
+         ad_MR2, ch_MR2, comb_MR2,
+         ad_MR3, ch_MR3, comb_MR3) %>%
+  arrange(order) %>%
+  select(-order)

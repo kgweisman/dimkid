@@ -126,6 +126,8 @@ d1 %>%
   group_by(character) %>% 
   summarise(median = median(age, na.rm = T))
 
+t.test(age ~ character, d1)
+
 ggplot(d1 %>% 
          distinct(subid, .keep_all = T) %>% 
          select(age, character) %>%
@@ -203,18 +205,21 @@ fa.parallel(d3)
 fa(r = d3, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
 # fa(r = d3, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cor")
 # fa.sort(fa(d3, nfactors = 7, rotate = "varimax")$loadings[]) %>% View()
-# fa.sort(fa(d3, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
+fa.sort(fa(d3, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
 fa.sort(fa(d3, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
-# polychoric correlations
-fa.parallel(d3, cor = "poly")
-fa(d3, nfactors = 13, rotate = "none", cor = "poly")
-fa(d3, nfactors = 13, rotate = "varimax", cor = "poly")
-fa.sort(fa(d3, nfactors = 7, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-fa.sort(fa(d3, nfactors = 6, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-fa.sort(fa(d3, nfactors = 5, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-fa.sort(fa(d3, nfactors = 4, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-fa.sort(fa(d3, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+fa.sort(fa(d3, nfactors = 4, rotate = "oblimin")$loadings[]) %>% View() # oblimin rotation
+fa.sort(fa(d3, nfactors = 3, rotate = "oblimin")$loadings[]) %>% View() # oblimin rotation
+
+# # polychoric correlations
+# fa.parallel(d3, cor = "poly")
+# fa(d3, nfactors = 13, rotate = "none", cor = "poly")
+# fa(d3, nfactors = 13, rotate = "varimax", cor = "poly")
+# fa.sort(fa(d3, nfactors = 7, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# fa.sort(fa(d3, nfactors = 6, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# fa.sort(fa(d3, nfactors = 5, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# fa.sort(fa(d3, nfactors = 4, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# fa.sort(fa(d3, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 
 # separate by character
 d1_robot <- d0 %>%
@@ -500,15 +505,15 @@ d1_byfactor <- d1 %>%
               rownames_to_column(var = "order") %>%
               mutate(order = as.numeric(order)))
 
-ggplot(d1_byfactor, 
-       aes(x = age, y = responseNum, color = character, fill = character)) +
-  facet_wrap(factor ~ reorder(capacity, order), ncol = 8) +
-  geom_jitter(height = 0.1, width = 0, size = 0.25) +
-  # geom_point(position = "jitter", size = .25) + 
-  geom_smooth(alpha = 0.2) + # is this legit for 3-point scale?
-  theme_bw() +
-  theme(text = element_text(size = 18),
-        legend.position = "top")
+# ggplot(d1_byfactor, 
+#        aes(x = age, y = responseNum, color = character, fill = character)) +
+#   facet_wrap(factor ~ reorder(capacity, order), ncol = 8) +
+#   geom_jitter(height = 0.1, width = 0, size = 0.25) +
+#   # geom_point(position = "jitter", size = .25) + 
+#   geom_smooth(alpha = 0.2) + # is this legit for 3-point scale?
+#   theme_bw() +
+#   theme(text = element_text(size = 18),
+#         legend.position = "top")
 
 # factor 1 only
 ggplot(d1_byfactor %>%
@@ -858,6 +863,12 @@ d1 %>%
   select(subid, ethnicityCat2, gender) %>%
   distinct(.keep_all = T) %>%
   count(ethnicityCat2, gender)
+
+summary(with(d1 %>% 
+               select(subid, ethnicityCat2, gender) %>% 
+               distinct(.keep_all = T) %>%
+               mutate(gender = factor(gender)),
+             table(gender, ethnicityCat2)))
 
 # ethnicity
 d1 %>% 
