@@ -15,80 +15,46 @@ graphics.off()
 # READ IN DATA ----------------------------------------------------------------
 
 # # run 01 (3-point scale)
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv")
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv")[-1]
 
 # # run 02 (7-point scale)
-# d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-02_2016-07-19_anonymized.csv")
+# d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-02_2016-07-19_anonymized.csv")[-1]
 
 # run 03 (3-point scale, original wording for 'free will' and 'intentions')
-# d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-03_2016-12-08_anonymized.csv")
+# d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-03_2016-12-08_anonymized.csv")[-1]
 
 # TIDY DATA -------------------------------------------------------------------
 
 # filter by condition (no elephant!)
 d0 <- d %>%
+  rename(character = charName) %>%
   filter(character %in% c("beetle", "robot"))
+
+# examine durations
+qplot(d0$duration)
+d0 %>% summarise(mean = mean(duration, na.rm = T),
+                 median = median(duration, na.rm = T),
+                 min = min(duration, na.rm = T),
+                 max = max(duration, na.rm = T))
 
 # examine and filter by RTs
 qplot(d0$rt, bins = 100) +
   scale_x_log10(breaks = seq(0, 1000, 100)) +
   geom_vline(xintercept = 250, color = "red")
 
-d0 <- d0 %>%
-  filter(rt >= 250)
-
-# examine and filter by ages
-qplot(age, data = d0 %>% select(subid, age) %>% distinct()) +
-  geom_vline(xintercept = 7, color = "red") +
-  geom_vline(xintercept = 10, color = "red")
+d0 %>% 
+  mutate(short_rt = ifelse(rt < 250, T, F)) %>% 
+  count(short_rt) %>%
+  mutate(percent = n/sum(n))
 
 d1 <- d0 %>%
-  filter(is.na(age) | (age >= 7 & age <10)) %>%
-  select(-X, -X.1)
+  filter(rt >= 250)
 
+# finish tidying
 d2 <- d1 %>%
   select(capacity, responseNum, subid) %>%
-  filter(capacity != "na") %>%
+  filter(!is.na(capacity), capacity != "na") %>%
   spread(capacity, responseNum)
-
-# names(d2) <- gsub(" ", "\\.", names(d2))
-# names(d2) <- gsub("\\-", "\\.", names(d2))
-
-# if merging
-d2_combo <- d2_pilot %>%
-  rename(communicating = communicate,
-         computations = math,
-         depressed = sad,
-         disrespected = hurt_feelings,
-         fear = scared,
-         guilt = guilty,
-         nauseated = sick,
-         odors = smells,
-         pride = proud,
-         reasoning = thinking,
-         recognizing = recognize,
-         remembering = remember,
-         seeing = see,
-         self_restraint = self_control,
-         temperature = temperatures) %>%
-  mutate(conscious = ifelse(!is.na(conscious), consious,
-                            ifelse(!is.na(aware), aware,
-                                   NA)),
-         free_will = ifelse(!is.na(free_will), consious,
-                            ifelse(!is.na(decide), decide,
-                                   NA)),
-         intentions = ifelse(!is.na(intentions), consious,
-                             ifelse(!is.na(plan), plan,
-                                    NA))) %>%
-  select(-aware, -decide, -plan) %>%
-  gather(item, response, -subid) %>%
-  mutate(response = response * 2) %>%
-  spread(item, response) %>%
-  full_join(d2)
-
-# d2 <- d2_combo
-
-# continue
 
 d3 <- data.frame(d2[,-1], row.names = d2[,1])
 
@@ -123,17 +89,6 @@ d1 %>%
 
 t.test(age ~ character, d1)
 
-ggplot(d1 %>% 
-         distinct(subid, .keep_all = T) %>% 
-         select(age, character) %>%
-         group_by(character) %>%
-         mutate(median_age = median(age, na.rm = T)),
-       aes(x = age)) +
-  geom_histogram(bins = 9) +
-  facet_wrap(~ character) +
-  geom_vline(xintercept = median(d1$age, na.rm = T), color = "black") +
-  geom_vline(aes(xintercept = median_age, color = character), lty = 2)
-
 # gender
 d1 %>%
   select(subid, gender) %>%
@@ -143,12 +98,14 @@ d1 %>%
 # ethnicity
 d1 %>% 
   select(subid, ethnicity) %>%
-  mutate(east_asian = grepl("east asian", ethnicity),
+  # MIGHT BE SOME PROBLEMS HERE
+  mutate(east_asian = grepl("eastAsian", ethnicity),
          white = grepl("white", ethnicity),
-         latino = grepl("latino", ethnicity),
-         middle_eastern = grepl("middle eastern", ethnicity),
+         latino = grepl("hispanicLatino", ethnicity),
+         middle_eastern = grepl("middleEastern", ethnicity),
          native = grepl("native", ethnicity),
-         south_asian = grepl("south", ethnicity)) %>%
+         south_asian = grepl("southAsian", ethnicity),
+         black = grepl("black", ethnicity)) %>%
   distinct(.keep_all = T) %>%
   gather(ethnicityTF, TF, -subid, -ethnicity) %>%
   filter(TF) %>%
@@ -169,28 +126,6 @@ m1 <- as.matrix(d3) # keep NAs
 
 cluster <- hclust(dist(t(m1)))
 plot(cluster)
-
-d2_young <- d1 %>%
-  filter(age < median(d1$age, na.rm = T)) %>%
-  select(capacity, responseNum, subid) %>%
-  filter(capacity != "na") %>%
-  spread(capacity, responseNum)
-d3_young <- data.frame(d2_young[,-1], row.names = d2_young[,1])
-m_young <- as.matrix(d3_young)
-cluster_young <- hclust(dist(t(m_young)))
-plot(cluster_young)
-d2_young %>% count()
-
-d2_old <- d1 %>%
-  filter(age >= median(d1$age, na.rm = T)) %>%
-  select(capacity, responseNum, subid) %>%
-  filter(capacity != "na") %>%
-  spread(capacity, responseNum)
-d3_old <- data.frame(d2_old[,-1], row.names = d2_old[,1])
-m_old <- as.matrix(d3_old)
-cluster_old <- hclust(dist(t(m_old)))
-plot(cluster_old)
-d2_old %>% count()
 
 # FACTOR ANALYSIS -------------------------------------------------------------
 

@@ -148,12 +148,14 @@ d1 %>%
 # ethnicity
 d1 %>% 
   select(subid, ethnicity) %>%
-  mutate(east_asian = grepl("east asian", ethnicity),
+  # MIGHT BE SOME PROBLEMS HERE
+  mutate(east_asian = grepl("eastAsian", ethnicity),
          white = grepl("white", ethnicity),
-         latino = grepl("latino", ethnicity),
-         middle_eastern = grepl("middle eastern", ethnicity),
+         latino = grepl("hispanicLatino", ethnicity),
+         middle_eastern = grepl("middleEastern", ethnicity),
          native = grepl("native", ethnicity),
-         south_asian = grepl("south", ethnicity)) %>%
+         south_asian = grepl("southAsian", ethnicity),
+         black = grepl("black", ethnicity)) %>%
   distinct(.keep_all = T) %>%
   gather(ethnicityTF, TF, -subid, -ethnicity) %>%
   filter(TF) %>%
