@@ -37,10 +37,10 @@ d0 <- d %>%
 # examine and filter by RTs
 qplot(d0$rt, bins = 100) +
   scale_x_log10(breaks = seq(0, 1000, 100)) +
-  geom_vline(xintercept = 350, color = "red")
+  geom_vline(xintercept = 250, color = "red")
 
 # d0 <- d0 %>%
-#   filter(rt >= 350)
+#   filter(rt >= 250)
 
 # examine and filter by ages
 qplot(age, data = d0 %>% select(subid, age) %>% distinct()) +

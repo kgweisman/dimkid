@@ -45,6 +45,11 @@ jsonFormat = function(wd, runName) {
       subid = paste0(runName, "_", i),
       charName = jd$answers$data$allData$character$charName,
       
+      # subject-level data: duration
+      duration = ifelse(
+        is.null(jd$answers$data$allData$sessionDuration) == TRUE, NA,
+        jd$answers$data$allData$sessionDuration),
+      
       # subject-level data: demographics
       country = ifelse(
         is.null(jd$answers$data$allData$country) == TRUE, NA,
@@ -143,6 +148,7 @@ d_tidy = full_join(d_us_run_01, d_us_run_01b) %>%
   mutate(
     run = factor(run),
     subid = factor(subid),
+    duration = as.numeric(duration),
     country_selfrep = factor(country),
     country = factor(ifelse(grepl("india", subid) == T, "india", 
                             ifelse(grepl("us", subid) == T, "us",
