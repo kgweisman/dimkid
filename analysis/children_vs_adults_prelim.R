@@ -482,8 +482,9 @@ temp_table <- comb %>%
   full_join(ad) %>%
   full_join(ch) %>%
   select(order, item,
-         ad_MR1, ch_MR1, comb_MR1,
-         ad_MR2, ch_MR2, comb_MR2,
+         # DOUBLE CHECK THESE!
+         ad_MR2, ch_MR1, comb_MR1,
+         ad_MR1, ch_MR2, comb_MR2,
          ad_MR3, ch_MR3, comb_MR3) %>%
   arrange(order) %>%
   select(-order)
