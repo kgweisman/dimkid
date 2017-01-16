@@ -88,7 +88,7 @@ d3_adult <- d3 %>%
   select(-subid, -ageGroup)
 
 factors_adult <- fa.sort(fa(d3_adult,
-                            nfactors = 13,
+                            nfactors = 3,
                             rotate = rot_type,
                             cor = cor_type)$loadings[]) %>%
   data.frame() %>%
@@ -148,7 +148,7 @@ d3_child <- d3 %>%
   select(-subid, -ageGroup)
 
 factors_child <- fa.sort(fa(d3_child,
-                            nfactors = 13,
+                            nfactors = 3,
                             rotate = rot_type,
                             cor = cor_type)$loadings[]) %>%
   data.frame() %>%
@@ -284,7 +284,7 @@ ggplot(d1_bycond_mb_factorsChild,
 fa(d3, nfactors = 13, rotate = "none", cor = cor_type)
 
 factors_all <- fa.sort(fa(d3,
-                          nfactors = 13,
+                          nfactors = 3,
                           rotate = rot_type,
                           cor = cor_type)$loadings[]) %>%
   data.frame() %>%
@@ -350,6 +350,7 @@ ggplot(d1_bycond_mb_factorsAll,
            group = character, color = character, shape = character,
            label = capWording)) +
   facet_grid(ageGroup ~ factorName) +
+  # facet_grid(factorName ~ ageGroup) +
   geom_hline(yintercept = 0, lty = 3) +
   geom_hline(yintercept = 0.5, lty = 3) +
   geom_hline(yintercept = 1, lty = 3) +
@@ -378,6 +379,7 @@ score_type <- "regression"
 # score_type <- "tenBerge"
 # score_type <- "Anderson"
 # score_type <- "Bartlett"
+# score_type <- "Harman"
 
 scores_all <- fa(d3, nfactors = 13, rotate = rot_type,
                  cor = cor_type, scores = score_type)$scores %>%
@@ -402,29 +404,42 @@ d_reg2 <- d0 %>%
              statistics_functions = c("mean", "ci_lower", "ci_upper"))
 
 # plot
-ggplot(d_reg2,
-       aes(x = ageGroup, y = mean, color = character, fill = character)) +
+ggplot(d_reg2 %>%
+         ungroup() %>%
+         mutate(factor = factor(factor,
+                                labels = c("Social-emotional",
+                                           "Physiological",
+                                           "Perceptual-cognitive")),
+                ageGroup = factor(ageGroup,
+                                  levels = c("child", "adult"),
+                                  labels = c("children", "adults"))),
+       aes(x = ageGroup, y = mean, color = character, shape = character)) +
   facet_wrap("factor", ncol = 3) +
   theme_bw() +
-  theme(text = element_text(size = 24),
-        legend.position = "top") +
-  geom_point(size = 4) +
-  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.2)
+  theme(text = element_text(size = 28),
+        legend.position = "bottom") +
+  geom_point(size = 5) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.2) +
+  scale_shape_manual(values = c(19, 15)) +
+  labs(title = "Factor scores by age group",
+       # subtitle = "Adults (Study 1) vs. children (Study 2)\n",
+       x = "Age group",
+       y = "Mean factor score") # 1000 by 500
 
-# analyze?
+# analyze
 d_reg3 <- d0 %>%
   select(subid, ageGroup, character) %>%
   filter(character != "elephant") %>%
   distinct() %>%
-  full_join(scores_all) %>%
+  left_join(scores_all) %>%
   mutate(character = factor(character)) %>%
   filter(!is.na(score_F1) & !is.na(score_F2) & !is.na(score_F3), !is.na(ageGroup)) %>%
   gather(factor, score, starts_with("score_")) %>%
   mutate(factor = factor(factor))
 
 # set contrasts
-contrasts(d_reg3$factor) <- cbind(F1 = c(1, 0, 0), # MAKE SURE TO DOUBLE-CHECK!!
-                                  F3 = c(0, 0, 1))
+contrasts(d_reg3$factor) <- cbind(F1 = c(1, -1, 0), # MAKE SURE TO DOUBLE-CHECK!!
+                                  F3 = c(0, -1, 1))
 contrasts(d_reg3$character) <- cbind(robot = c(-1, 1))
 contrasts(d_reg3$ageGroup) <- cbind(child = c(-1, 1))
 
@@ -436,6 +451,8 @@ anova(r1, r2, r3)
 # summary(r2)
 summary(r3)
 
+round(summary(r3)$coefficients, 2) %>% data.frame() %>% View()
+
 # robot only
 robot_r1 <- lmer(score ~ factor + (1 | subid), d_reg3 %>% filter(character == "robot"))
 robot_r2 <- lmer(score ~ factor + ageGroup + (1 | subid), d_reg3 %>% filter(character == "robot"))
@@ -444,6 +461,54 @@ anova(robot_r1, robot_r2, robot_r3)
 # summary(robot_r1)
 # summary(robot_r2)
 summary(robot_r3)
+
+# children only (robot and beetle)
+d_reg3_child <- d_reg3 %>%
+  filter(ageGroup == "child") %>%
+  left_join(d_child01 %>% select(subid, age)) %>%
+  filter(!is.na(age)) %>%
+  distinct()
+
+contrasts(d_reg3_child$factor) <- cbind(F1 = c(1, -1, 0), # MAKE SURE TO DOUBLE-CHECK!!
+                                        F3 = c(0, -1, 1))
+contrasts(d_reg3_child$character) <- cbind(robot = c(-1, 1))
+
+r1_child <- lmer(score ~ character * factor + (1 | subid), d_reg3_child)
+r2_child <- lmer(score ~ character * factor + scale(age) + (1 | subid), d_reg3_child)
+r3_child <- lmer(score ~ character * factor * scale(age) + (1 | subid), d_reg3_child)
+anova(r1_child, r2_child, r3_child)
+# summary(r1_child)
+# summary(r2_child)
+summary(r3_child)
+
+r4_child <- lmer(score ~ character * factor + poly(age, 1) + (1 | subid), d_reg3_child)
+r5_child <- lmer(score ~ character * factor + poly(age, 3) + (1 | subid), d_reg3_child)
+r6_child <- lmer(score ~ character * factor * poly(age, 3) + (1 | subid), d_reg3_child)
+anova(r4_child, r5_child, r6_child)
+# summary(r4_child)
+# summary(r5_child)
+summary(r6_child)
+
+round(summary(r6_child)$coefficients, 2) %>% data.frame() %>% View()
+
+ggplot(d_reg3_child %>%
+         ungroup() %>%
+         mutate(factor = factor(factor,
+                                labels = c("Social-emotional",
+                                           "Physiological",
+                                           "Perceptual-cognitive"))),
+       aes(x = age, y = score, color = character, fill = character, shape = character)) +
+  facet_wrap("factor", ncol = 3) +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        legend.position = "bottom") +
+  geom_smooth(method = "loess", alpha = 0.4) +
+  geom_point(size = 2) +
+  scale_shape_manual(values = c(19, 15)) +
+  labs(title = "Factor scores by children's age",
+       # subtitle = "Children (Study 2)\n",
+       x = "Age (years)",
+       y = "Factor score") # 1000 by 500
 
 # make table ------------
 
@@ -500,3 +565,72 @@ loadings_table <- comb %>%
          ad_F3, ch_F3, comb_F3) %>%
   arrange(order) %>%
   select(-order, -capacity)
+
+# plot all items
+# by condition
+d1_bycond2 <- d0 %>%
+  left_join(d_child01 %>% select(subid, age)) %>%
+  select(character, capacity, capWording, responseNum, subid, ageGroup, age) %>%
+  filter(character != "elephant") %>%
+  filter(capacity != "na", is.na(responseNum) == F) %>%
+  mutate(capWording = gsub(" --.*", "", capWording),
+         ageGroup3 = ifelse(ageGroup == "adult", "adult",
+                            ifelse(is.na(age), NA,
+                                   ifelse(age < 8, "7y", 
+                                          ifelse(age < 9, "8y",
+                                                 ifelse(age < 10, "9y",
+                                                        NA)))))) %>%
+  distinct()
+
+d1_bycond2 %>% select(ageGroup3, subid) %>% distinct() %>% count(ageGroup3)
+
+# make df for plotting
+d1_bycond2_mb <- multi_boot(d1_bycond2,
+                           column = "responseNum",
+                           summary_groups = c("ageGroup3", "character", "capacity", "capWording"),
+                           statistics_functions = c("mean", "ci_lower", "ci_upper"))
+
+d1_bycond2_mb_factorsAll <- d1_bycond2_mb %>% 
+  full_join(factors_all) %>%
+  arrange(character, factor, desc(loading_abs)) %>%
+  rownames_to_column(var = "full_order") %>%
+  mutate(full_order = as.numeric(full_order)) %>%
+  arrange(factorName, full_order) %>%
+  filter(!is.na(ageGroup3)) %>%
+  mutate(factorName = factor(factorName,
+                             levels = c("Factor 1", "Factor 2", "Factor 3"),
+                             labels = c("Social-emotional", 
+                                        "Physiological", 
+                                        "Perceptual-cognitive")))
+
+dodge_width <- 2
+
+ggplot(d1_bycond2_mb_factorsAll, 
+       aes(x = desc(order*2), y = mean,
+           color = ageGroup3, shape = ageGroup3,
+           label = capWording)) +
+  facet_grid(factorName ~ character, scales = "free", space = "free") +
+  geom_hline(yintercept = 0, lty = 3) +
+  geom_hline(yintercept = 0.5, lty = 3) +
+  geom_hline(yintercept = 1, lty = 3) +
+  geom_point(stat = "identity", position = position_dodge(width = dodge_width), size = 8) +
+  scale_shape_manual(values = c(rep(18, 3), 17)) +
+  # scale_colour_brewer(type = "seq", palette = "PuRd") +
+  scale_colour_hue(h = c(0, 180)) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
+                position = position_dodge(width = dodge_width), width = 0) +
+  geom_text(aes(y = -0.5, hjust = 0), 
+            color = d1_bycond2_mb_factorsAll$textColor,
+            size = 8) +
+  labs(title = "Responses by mental capacity item",
+       y = "Mean response (0 = NO, 0.5 = KINDA, 1 = YES)",
+       x = "Capacity",
+       color = "Age group: ", shape = "Age group: ") +
+  scale_y_continuous(breaks = c(0, 0.5, 1)) +
+  coord_flip() +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        # axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "top") # 1700 by 2000
