@@ -34,14 +34,6 @@ d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dim
 d0 <- d %>%
   filter(character %in% c("beetle", "robot"))
 
-# examine and filter by RTs
-qplot(d0$rt, bins = 100) +
-  scale_x_log10(breaks = seq(0, 1000, 100)) +
-  geom_vline(xintercept = 250, color = "red")
-
-# d0 <- d0 %>%
-#   filter(rt >= 250)
-
 # examine and filter by ages
 qplot(age, data = d0 %>% select(subid, age) %>% distinct()) +
   geom_vline(xintercept = 7, color = "red") +
@@ -51,64 +43,39 @@ d1 <- d0 %>%
   filter(is.na(age) | (age >= 7 & age <10)) %>%
   select(-X, -X.1)
 
+# examine and filter by RTs
+qplot(d1$rt, bins = 100) +
+  scale_x_log10(breaks = seq(0, 1000, 100)) +
+  geom_vline(xintercept = 250, color = "red")
+
+d1 %>% 
+  mutate(short_rt = ifelse(rt < 250, T, F)) %>% 
+  count(short_rt) %>%
+  mutate(percent = n/sum(n))
+
 d2 <- d1 %>%
+  filter(rt >= 250)
+
+# finish tidying
+d3 <- d2 %>%
   select(capacity, responseNum, subid) %>%
-  filter(capacity != "na") %>%
+  filter(!is.na(capacity), capacity != "na") %>%
   spread(capacity, responseNum)
 
-# names(d2) <- gsub(" ", "\\.", names(d2))
-# names(d2) <- gsub("\\-", "\\.", names(d2))
+d4 <- data.frame(d3[,-1], row.names = d3[,1])
 
-# if merging
-d2_combo <- d2_pilot %>%
-  rename(communicating = communicate,
-         computations = math,
-         depressed = sad,
-         disrespected = hurt_feelings,
-         fear = scared,
-         guilt = guilty,
-         nauseated = sick,
-         odors = smells,
-         pride = proud,
-         reasoning = thinking,
-         recognizing = recognize,
-         remembering = remember,
-         seeing = see,
-         self_restraint = self_control,
-         temperature = temperatures) %>%
-  mutate(conscious = ifelse(!is.na(conscious), consious,
-                            ifelse(!is.na(aware), aware,
-                                   NA)),
-         free_will = ifelse(!is.na(free_will), consious,
-                            ifelse(!is.na(decide), decide,
-                                   NA)),
-         intentions = ifelse(!is.na(intentions), consious,
-                            ifelse(!is.na(plan), plan,
-                                   NA))) %>%
-  select(-aware, -decide, -plan) %>%
-  gather(item, response, -subid) %>%
-  mutate(response = response * 2) %>%
-  spread(item, response) %>%
-  full_join(d2)
-
-# d2 <- d2_combo
-
-# continue
-
-d3 <- data.frame(d2[,-1], row.names = d2[,1])
-
-cor3 <- cor(d3, method = "spearman", use = "complete.obs")
+cor3 <- cor(d4, method = "spearman", use = "complete.obs")
 
 # DEMOGRAPHICS ----------------------------------------------------------------
 
 # total n
-d1 %>% 
+d2 %>% 
   select(subid) %>%
   distinct(.keep_all = T) %>%
   count()
 
 # age 
-d1 %>% 
+d2 %>% 
   select(subid, age) %>%
   distinct(.keep_all = T) %>%
   summarise(mean_age = mean(age, na.rm = T),
@@ -117,18 +84,18 @@ d1 %>%
             min_age = min(age, na.rm = T),
             max_age = max(age, na.rm = T))
 
-qplot(d1 %>% distinct(subid, .keep_all = T) %>% select(age), bins = 18) +
-  geom_vline(xintercept = median(d1$age, na.rm = T), color = "red")
+qplot(d2 %>% distinct(subid, .keep_all = T) %>% select(age), bins = 18) +
+  geom_vline(xintercept = median(d2$age, na.rm = T), color = "red")
 
-d1 %>% 
+d2 %>% 
   distinct(subid, .keep_all = T) %>% 
   select(age, character) %>%
   group_by(character) %>% 
   summarise(median = median(age, na.rm = T))
 
-t.test(age ~ character, d1)
+t.test(age ~ character, d2 %>% select(subid, age, character) %>% distinct)
 
-ggplot(d1 %>% 
+ggplot(d2 %>% 
          distinct(subid, .keep_all = T) %>% 
          select(age, character) %>%
          group_by(character) %>%
@@ -136,65 +103,105 @@ ggplot(d1 %>%
        aes(x = age)) +
   geom_histogram(bins = 9) +
   facet_wrap(~ character) +
-  geom_vline(xintercept = median(d1$age, na.rm = T), color = "black") +
+  geom_vline(xintercept = median(d2$age, na.rm = T), color = "black") +
   geom_vline(aes(xintercept = median_age, color = character), lty = 2)
 
 # gender
-d1 %>%
+d2 %>%
   select(subid, gender) %>%
   distinct(.keep_all = T) %>%
   count(gender)
 
 # ethnicity
-d1 %>% 
+d2 %>% 
   select(subid, ethnicity) %>%
   # MIGHT BE SOME PROBLEMS HERE
-  mutate(east_asian = grepl("eastAsian", ethnicity),
+  mutate(black = grepl("black", ethnicity),
+         east_asian = grepl("east asian", ethnicity) |
+           grepl("chinese", ethnicity) |
+           grepl("korea", ethnicity) |
+           grepl("japan", ethnicity) |
+           grepl("taiwan", ethnicity),
+         south_asian = grepl("south", ethnicity) |
+           grepl("india", ethnicity) |
+           grepl("pakistan", ethnicity) |
+           grepl("bangla", ethnicity) |
+           grepl("sri lanka", ethnicity),
+         latino = grepl("latin", ethnicity) |
+           grepl("hispanic", ethnicity) |
+           grepl("mexic", ethnicity),
+         middle_eastern = grepl("middle", ethnicity),
+         pac_island = grepl("pacific", ethnicity),
+         native_am = grepl("native", ethnicity) & !grepl("hawaiian", ethnicity),
          white = grepl("white", ethnicity),
-         latino = grepl("hispanicLatino", ethnicity),
-         middle_eastern = grepl("middleEastern", ethnicity),
-         native = grepl("native", ethnicity),
-         south_asian = grepl("southAsian", ethnicity),
-         black = grepl("black", ethnicity)) %>%
+         other = grepl("other", ethnicity)) %>%
   distinct(.keep_all = T) %>%
   gather(ethnicityTF, TF, -subid, -ethnicity) %>%
   filter(TF) %>%
   count(ethnicityTF)
 
 # condition
-d1 %>% 
+d2 %>% 
   select(subid, character) %>%
   distinct(.keep_all = T) %>%
   count(character)
 
+# duration
+d2 %>%
+  left_join(d %>% select(subid, sessionDuration)) %>%
+  summarise(mean = mean(sessionDuration, na.rm = T),
+            median = median(sessionDuration, na.rm = T),
+            min = min(sessionDuration, na.rm = T),
+            max = max(sessionDuration, na.rm = T))
+
+qplot(d2 %>% 
+        left_join(d %>% select(subid, sessionDuration)) %>% 
+        mutate(sessionDuration = round(as.numeric(as.character(sessionDuration)), 3)) %>%
+        select(sessionDuration)) +
+  scale_x_continuous(breaks = 0:15)
+
+t.test(sessionDuration ~ character,
+       d2 %>%
+         select(subid, character, sessionDuration) %>%
+         left_join(d %>% select(subid, sessionDuration)) %>%
+         mutate(subid = as.character(subid),
+                character = factor(character),
+                sessionDuration = round(as.numeric(as.character(sessionDuration)), 3)) %>%
+         distinct())
+  
+# incomplete
+d1 %>% # use d1 (before dropping trials) 
+  count(subid) %>%
+  filter(n != 40)
+
 # HEATMAP, CLUSTERING ---------------------------------------------------------
 
-m1 <- as.matrix(d3[complete.cases(d3),]) # remove rows with NAs
+m1 <- as.matrix(d4[complete.cases(d4),]) # remove rows with NAs
 heatmap(m1)
 
-m1 <- as.matrix(d3) # keep NAs
+m1 <- as.matrix(d4) # keep NAs
 
 cluster <- hclust(dist(t(m1)))
 plot(cluster)
 
-d2_young <- d1 %>%
-  filter(age < median(d1$age, na.rm = T)) %>%
+d2_young <- d2 %>%
+  filter(age < median(d2$age, na.rm = T)) %>%
   select(capacity, responseNum, subid) %>%
   filter(capacity != "na") %>%
   spread(capacity, responseNum)
-d3_young <- data.frame(d2_young[,-1], row.names = d2_young[,1])
-m_young <- as.matrix(d3_young)
+d4_young <- data.frame(d2_young[,-1], row.names = d2_young[,1])
+m_young <- as.matrix(d4_young)
 cluster_young <- hclust(dist(t(m_young)))
 plot(cluster_young)
 d2_young %>% count()
 
-d2_old <- d1 %>%
-  filter(age >= median(d1$age, na.rm = T)) %>%
+d2_old <- d2 %>%
+  filter(age >= median(d2$age, na.rm = T)) %>%
   select(capacity, responseNum, subid) %>%
   filter(capacity != "na") %>%
   spread(capacity, responseNum)
-d3_old <- data.frame(d2_old[,-1], row.names = d2_old[,1])
-m_old <- as.matrix(d3_old)
+d4_old <- data.frame(d2_old[,-1], row.names = d2_old[,1])
+m_old <- as.matrix(d4_old)
 cluster_old <- hclust(dist(t(m_old)))
 plot(cluster_old)
 d2_old %>% count()
@@ -202,47 +209,47 @@ d2_old %>% count()
 # FACTOR ANALYSIS -------------------------------------------------------------
 
 # pearson correlations
-VSS.scree(d3)
-fa.parallel(d3)
-fa(r = d3, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
-# fa(r = d3, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cor")
-# fa.sort(fa(d3, nfactors = 7, rotate = "varimax")$loadings[]) %>% View()
-fa.sort(fa(d3, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
-fa.sort(fa(d3, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
+VSS.scree(d4)
+fa.parallel(d4)
+fa(r = d4, nfactors = 13, rotate = "none", fm = "minres", cor = "cor")
+fa(r = d4, nfactors = 13, rotate = "varimax", fm = "minres", cor = "cor")
+# fa.sort(fa(d4, nfactors = 7, rotate = "varimax")$loadings[]) %>% View()
+fa.sort(fa(d4, nfactors = 4, rotate = "varimax")$loadings[]) %>% View()
+fa.sort(fa(d4, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
-fa.sort(fa(d3, nfactors = 4, rotate = "oblimin")$loadings[]) %>% View() # oblimin rotation
-fa.sort(fa(d3, nfactors = 3, rotate = "oblimin")$loadings[]) %>% View() # oblimin rotation
+fa.sort(fa(d4, nfactors = 4, rotate = "oblimin")$loadings[]) %>% View() # oblimin rotation
+fa.sort(fa(d4, nfactors = 3, rotate = "oblimin")$loadings[]) %>% View() # oblimin rotation
 
 # # polychoric correlations
-# fa.parallel(d3, cor = "poly")
-# fa(d3, nfactors = 13, rotate = "none", cor = "poly")
-# fa(d3, nfactors = 13, rotate = "varimax", cor = "poly")
-# fa.sort(fa(d3, nfactors = 7, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-# fa.sort(fa(d3, nfactors = 6, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-# fa.sort(fa(d3, nfactors = 5, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-# fa.sort(fa(d3, nfactors = 4, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
-# fa.sort(fa(d3, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# fa.parallel(d4, cor = "poly")
+# fa(d4, nfactors = 13, rotate = "none", cor = "poly")
+# fa(d4, nfactors = 13, rotate = "varimax", cor = "poly")
+# fa.sort(fa(d4, nfactors = 7, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# fa.sort(fa(d4, nfactors = 6, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# fa.sort(fa(d4, nfactors = 5, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# fa.sort(fa(d4, nfactors = 4, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
+# fa.sort(fa(d4, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>% View()
 
 # separate by character
-d1_robot <- d0 %>%
+d2_robot <- d0 %>%
   filter(character == "robot") %>%
   select(capacity, responseNum, subid) %>%
   filter(capacity != "na") %>%
   spread(capacity, responseNum)
-d3_robot <- data.frame(d1_robot[,-1], row.names = d1_robot[,1])
+d4_robot <- data.frame(d2_robot[,-1], row.names = d2_robot[,1])
 
-# fa.parallel(d3_robot)
-# fa.sort(fa(d3_robot, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
+# fa.parallel(d4_robot)
+# fa.sort(fa(d4_robot, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
-d1_beetle <- d0 %>%
+d2_beetle <- d0 %>%
   filter(character == "beetle") %>%
   select(capacity, responseNum, subid) %>%
   filter(capacity != "na") %>%
   spread(capacity, responseNum)
-d3_beetle <- data.frame(d1_beetle[,-1], row.names = d1_beetle[,1])
+d4_beetle <- data.frame(d2_beetle[,-1], row.names = d2_beetle[,1])
 
-# fa.parallel(d3_beetle)
-# fa.sort(fa(d3_beetle, nfactors = 2, rotate = "varimax")$loadings[]) %>% View()
+# fa.parallel(d4_beetle)
+# fa.sort(fa(d4_beetle, nfactors = 2, rotate = "varimax")$loadings[]) %>% View()
 
 # PLOTTING, USING CHILD FACTOR LOADINGS ---------------------------------------
 
@@ -250,7 +257,7 @@ d3_beetle <- data.frame(d1_beetle[,-1], row.names = d1_beetle[,1])
 cor_type <- "cor"
 # cor_type <- "poly"
 
-factors <- fa.sort(fa(d3, nfactors = 3, rotate = "varimax", cor = cor_type)$loadings[]) 
+factors <- fa.sort(fa(d4, nfactors = 3, rotate = "varimax", cor = cor_type)$loadings[]) 
 
 factors2 <- factors %>%
   data.frame() %>%
@@ -291,7 +298,7 @@ factors3 <-
          textColor = ifelse(loading < 0, "dodgerblue3", "black"))
 
 # by condition
-d1_bycond <- d0 %>%
+d2_bycond <- d0 %>%
   select(character, capacity, capWording, responseNum, subid) %>%
   filter(character != "elephant") %>%
   filter(capacity != "na", is.na(responseNum) == F) %>%
@@ -299,7 +306,7 @@ d1_bycond <- d0 %>%
   select(-capWording)
 
 library(langcog)
-d1_bycond_mb <- multi_boot(d1_bycond,
+d2_bycond_mb <- multi_boot(d2_bycond,
                            column = "responseNum",
                            summary_groups = c("character", "capacity", "capWordingShort"),
                            statistics_functions = c("mean", "ci_lower", "ci_upper")) %>% 
@@ -309,7 +316,7 @@ d1_bycond_mb <- multi_boot(d1_bycond,
   mutate(full_order = as.numeric(full_order)) %>%
   arrange(factorName, full_order)
 
-ggplot(d1_bycond_mb, 
+ggplot(d2_bycond_mb, 
        aes(x = desc(order*2), y = mean,
            group = character, color = character, shape = character,
            label = capWordingShort)) +
@@ -321,7 +328,7 @@ ggplot(d1_bycond_mb,
   scale_shape_manual(values = c(19, 15)) +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
                 position = position_dodge(width = .75), width = 0) +
-  geom_text(aes(y = -0.18, hjust = 0), color = d1_bycond_mb$textColor, size = 6) +
+  geom_text(aes(y = -0.18, hjust = 0), color = d2_bycond_mb$textColor, size = 6) +
   labs(title = "Children's responses, by child-derived factors",
        y = "\nMean response (0 = NO, 0.5 = KINDA, 1 = YES)",
        x = "Capacity\n",
@@ -358,7 +365,7 @@ factors3_ADULT <-
          textColor = ifelse(loading < 0, "dodgerblue3", "black"))
 
 # by condition
-d1_bycond_ADULT_mb <- multi_boot(d1_bycond, # get from above
+d2_bycond_ADULT_mb <- multi_boot(d2_bycond, # get from above
                            column = "responseNum",
                            summary_groups = c("character", "capacity", "capWordingShort"),
                            statistics_functions = c("mean", "ci_lower", "ci_upper")) %>% 
@@ -368,7 +375,7 @@ d1_bycond_ADULT_mb <- multi_boot(d1_bycond, # get from above
   mutate(full_order = as.numeric(full_order)) %>%
   arrange(factorName, full_order)
 
-ggplot(d1_bycond_ADULT_mb, 
+ggplot(d2_bycond_ADULT_mb, 
        aes(x = desc(order*2), y = mean,
            group = character, color = character, shape = character,
            label = capWordingShort)) +
@@ -380,7 +387,7 @@ ggplot(d1_bycond_ADULT_mb,
   scale_shape_manual(values = c(19, 15)) +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
                 position = position_dodge(width = .75), width = 0) +
-  geom_text(aes(y = -0.18, hjust = 0), color = d1_bycond_ADULT_mb$textColor, size = 6) +
+  geom_text(aes(y = -0.18, hjust = 0), color = d2_bycond_ADULT_mb$textColor, size = 6) +
   labs(title = "Children's responses, by adult-derived factors",
        y = "\nMean response (0 = NO, 0.5 = KINDA, 1 = YES)",
        x = "Capacity\n",
@@ -393,7 +400,7 @@ ggplot(d1_bycond_ADULT_mb,
         axis.ticks.y = element_blank(),
         legend.position = "top")
 
-ggplot(d1_bycond %>% full_join(factors3_ADULT), 
+ggplot(d2_bycond %>% full_join(factors3_ADULT), 
        aes(x = desc(order*2),
            fill = factor(responseNum), 
            label = capWordingShort)) +
@@ -433,14 +440,14 @@ ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/
          age = as.numeric(as.character(age)))
 
 # make age thing
-d1_bycond_age <- d1_bycond %>%
+d2_bycond_age <- d2_bycond %>%
   left_join(ages %>% select(subid, age)) %>%
   filter(!is.na(age)) %>%
   mutate(ageCat3 = ifelse(age < 8, "7", ifelse(age < 9, "8", ifelse(age < 10, "9", NA)))) %>%
   mutate(ageCat2 = ifelse(age < median(age, na.rm = T), "young", ifelse(age < 10, "old", NA)))
 
 # by condition
-d1_bycond_ADULT_AGE_mb <- multi_boot(d1_bycond_age, # get from above
+d2_bycond_ADULT_AGE_mb <- multi_boot(d2_bycond_age, # get from above
                                  column = "responseNum",
                                  summary_groups = c("ageCat2", 
                                                     "character", "capacity", "capWordingShort"),
@@ -452,7 +459,7 @@ d1_bycond_ADULT_AGE_mb <- multi_boot(d1_bycond_age, # get from above
   arrange(factorName, full_order) %>%
   filter(!is.na(ageCat2))
 
-ggplot(d1_bycond_ADULT_AGE_mb, 
+ggplot(d2_bycond_ADULT_AGE_mb, 
        aes(x = desc(order*2), y = mean,
            group = character, color = character, shape = character,
            label = capWordingShort)) +
@@ -464,7 +471,7 @@ ggplot(d1_bycond_ADULT_AGE_mb,
   scale_shape_manual(values = c(19, 15)) +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
                 position = position_dodge(width = .75), width = 0) +
-  geom_text(aes(y = -0.18, hjust = 0), color = d1_bycond_ADULT_AGE_mb$textColor, size = 6) +
+  geom_text(aes(y = -0.18, hjust = 0), color = d2_bycond_ADULT_AGE_mb$textColor, size = 6) +
   labs(title = "Children's responses, by adult-derived factors",
        y = "\nMean response (0 = NO, 0.5 = KINDA, 1 = YES)",
        x = "Capacity\n",
@@ -480,7 +487,7 @@ ggplot(d1_bycond_ADULT_AGE_mb,
 # ...BY ITEM, age -------------------------------------------------------------
 
 # alphabetical order
-ggplot(d1, aes(x = age, y = responseNum, color = character, fill = character)) +
+ggplot(d2, aes(x = age, y = responseNum, color = character, fill = character)) +
   facet_wrap(~ capacity, ncol = 8) +
   geom_jitter(height = 0.1, width = 0, size = 0.25) +
   # geom_point(position = "jitter", size = .25) + 
@@ -490,7 +497,7 @@ ggplot(d1, aes(x = age, y = responseNum, color = character, fill = character)) +
         legend.position = "top")
 
 # # ranks (like spearman correlations)
-# ggplot(d1, aes(x = rank(age), y = responseNum, color = character, fill = character)) +
+# ggplot(d2, aes(x = rank(age), y = responseNum, color = character, fill = character)) +
 #   facet_wrap(~ capacity, ncol = 8) +
 #   geom_jitter(height = 0.1, width = 0, size = 0.25) +
 #   # geom_point(position = "jitter", size = .25) +
@@ -500,14 +507,14 @@ ggplot(d1, aes(x = age, y = responseNum, color = character, fill = character)) +
 #       legend.position = "top")
 
 # ordered by factor
-d1_byfactor <- d1 %>% 
+d2_byfactor <- d2 %>% 
   left_join(factors2 %>%
               mutate(factor = factor(factor)) %>%
               arrange(factor, desc(loading_abs)) %>% 
               rownames_to_column(var = "order") %>%
               mutate(order = as.numeric(order)))
 
-# ggplot(d1_byfactor, 
+# ggplot(d2_byfactor, 
 #        aes(x = age, y = responseNum, color = character, fill = character)) +
 #   facet_wrap(factor ~ reorder(capacity, order), ncol = 8) +
 #   geom_jitter(height = 0.1, width = 0, size = 0.25) +
@@ -518,7 +525,7 @@ d1_byfactor <- d1 %>%
 #         legend.position = "top")
 
 # factor 1 only
-ggplot(d1_byfactor %>%
+ggplot(d2_byfactor %>%
          filter(factor == "MR1"), 
        aes(x = age, y = responseNum, color = character, fill = character)) +
   facet_wrap(~ reorder(capacity, order), ncol = 5) +
@@ -530,7 +537,7 @@ ggplot(d1_byfactor %>%
         legend.position = "top")
 
 # factor 2 only
-ggplot(d1_byfactor %>%
+ggplot(d2_byfactor %>%
          filter(factor == "MR2"), 
        aes(x = age, y = responseNum, color = character, fill = character)) +
   facet_wrap(~ reorder(capacity, order), ncol = 5) +
@@ -542,7 +549,7 @@ ggplot(d1_byfactor %>%
         legend.position = "top")
 
 # factor 3 only
-ggplot(d1_byfactor %>%
+ggplot(d2_byfactor %>%
          filter(factor == "MR3"), 
        aes(x = age, y = responseNum, color = character, fill = character)) +
   facet_wrap(~ reorder(capacity, order), ncol = 5) +
@@ -556,7 +563,7 @@ ggplot(d1_byfactor %>%
 # raw counts
 
 # factor 1 only
-ggplot(d1_byfactor %>%
+ggplot(d2_byfactor %>%
          filter(factor == "MR1", !is.na(age)), 
        aes(x = cut_number(age, 4), fill = factor(responseNum))) +
   facet_grid(character ~ reorder(capacity, order)) +
@@ -568,7 +575,7 @@ ggplot(d1_byfactor %>%
         axis.title.y = element_blank())
 
 # factor 2 only
-ggplot(d1_byfactor %>%
+ggplot(d2_byfactor %>%
          filter(factor == "MR2", !is.na(age)), 
        aes(x = cut_number(age, 4), fill = factor(responseNum))) +
   facet_grid(character ~ reorder(capacity, order)) +
@@ -580,7 +587,7 @@ ggplot(d1_byfactor %>%
         axis.title.y = element_blank())
 
 # factor 3 only
-ggplot(d1_byfactor %>%
+ggplot(d2_byfactor %>%
          filter(factor == "MR3", !is.na(age)), 
        aes(x = cut_number(age, 4), fill = factor(responseNum))) +
   facet_grid(character ~ reorder(capacity, order)) +
@@ -593,7 +600,7 @@ ggplot(d1_byfactor %>%
 
 # # BASIC REGRESSION ANALYSES ---------------------------------------------------
 # 
-# d_reg <- d1_bycond %>% 
+# d_reg <- d2_bycond %>% 
 #   full_join(factors3_ADULT) %>%
 #   left_join(ages %>% select(subid, age)) %>%
 #   mutate(ageCat3 = ifelse(age < 8, "7", ifelse(age < 9, "8", ifelse(age < 10, "9", NA))),
@@ -659,7 +666,7 @@ score_type <- "regression"
 # score_type <- "Anderson"
 # score_type <- "Bartlett"
 
-scores_children <- fa(d3, nfactors = 3, rotate = "varimax", 
+scores_children <- fa(d4, nfactors = 3, rotate = "varimax", 
                       cor = cor_type, scores = score_type)$scores %>%
   data.frame() %>%
   rownames_to_column(var = "subid") %>%
@@ -732,11 +739,11 @@ summary(robot_r5)
 
 # stepwise regression ---------------------------------------------------------
 
-d_step <- d3[complete.cases(d3),] %>%
+d_step <- d4[complete.cases(d4),] %>%
   rownames_to_column(var = "subid") %>%
   left_join(ages) %>%
   filter(!is.na(age), !is.na(happy)) %>%
-  left_join(d1_bycond %>% select(subid, character) %>% distinct()) %>%
+  left_join(d2_bycond %>% select(subid, character) %>% distinct()) %>%
   mutate(character = factor(character))
 
 # age (both characters)
@@ -848,7 +855,7 @@ d_predictor %>%
 # look at demographics again
 
 # age 
-d1 %>% 
+d2 %>% 
   select(subid, ethnicityCat2, age) %>%
   distinct(.keep_all = T) %>%
   group_by(ethnicityCat2) %>%
@@ -858,22 +865,22 @@ d1 %>%
             min_age = min(age, na.rm = T),
             max_age = max(age, na.rm = T))
 
-t.test(age ~ ethnicityCat2, d1 %>% select(subid, ethnicityCat2, age) %>% distinct(.keep_all = T))
+t.test(age ~ ethnicityCat2, d2 %>% select(subid, ethnicityCat2, age) %>% distinct(.keep_all = T))
 
 # gender
-d1 %>%
+d2 %>%
   select(subid, ethnicityCat2, gender) %>%
   distinct(.keep_all = T) %>%
   count(ethnicityCat2, gender)
 
-summary(with(d1 %>% 
+summary(with(d2 %>% 
                select(subid, ethnicityCat2, gender) %>% 
                distinct(.keep_all = T) %>%
                mutate(gender = factor(gender)),
              table(gender, ethnicityCat2)))
 
 # ethnicity
-d1 %>% 
+d2 %>% 
   select(subid, ethnicityCat2, ethnicity) %>%
   mutate(east_asian = grepl("east asian", ethnicity),
          white = grepl("white", ethnicity),
@@ -887,25 +894,25 @@ d1 %>%
   count(ethnicityCat2, ethnicityTF)
 
 # condition
-d1 %>% 
+d2 %>% 
   select(subid, ethnicityCat2, character) %>%
   distinct(.keep_all = T) %>%
   count(ethnicityCat2, character)
 
-summary(with(d1 %>% 
+summary(with(d2 %>% 
                select(subid, ethnicityCat2, character) %>% 
                distinct(.keep_all = T) %>%
                mutate(character = factor(character)),
              table(character, ethnicityCat2)))
 
 # plot!
-d1_byculture <- multi_boot(d1_bycond %>% left_join(d1 %>% select(subid, ethnicityCat2)), 
+d2_byculture <- multi_boot(d2_bycond %>% left_join(d2 %>% select(subid, ethnicityCat2)), 
                            column = "responseNum",
                            summary_groups = c("ethnicityCat2", "character", 
                                               "capacity", "capWordingShort"),
                            statistics_functions = c("mean", "ci_lower", "ci_upper"))
 
-d1_byculture2 <- d1_byculture %>%
+d2_byculture2 <- d2_byculture %>%
   ungroup() %>%
   mutate(ethnicityCat2 = factor(ethnicityCat2, labels = c("A", "W"))) %>%
   left_join(factors2 %>%
@@ -915,7 +922,7 @@ d1_byculture2 <- d1_byculture %>%
               mutate(order = as.numeric(order)))
 
 # alphabetical order
-ggplot(d1_byculture2 %>% filter(!is.na(ethnicityCat2)), 
+ggplot(d2_byculture2 %>% filter(!is.na(ethnicityCat2)), 
        aes(x = ethnicityCat2, y = mean, color = character, fill = character)) +
   facet_wrap(~ capacity, ncol = 8) +
   geom_point() +
@@ -925,7 +932,7 @@ ggplot(d1_byculture2 %>% filter(!is.na(ethnicityCat2)),
         legend.position = "top")
 
 # ordered by factor
-ggplot(d1_byculture2 %>% filter(!is.na(ethnicityCat2)), 
+ggplot(d2_byculture2 %>% filter(!is.na(ethnicityCat2)), 
        aes(x = ethnicityCat2, y = mean, color = character, fill = character)) +
   facet_wrap(~ reorder(capacity, order), ncol = 8) +
   geom_point() +
@@ -935,7 +942,7 @@ ggplot(d1_byculture2 %>% filter(!is.na(ethnicityCat2)),
         legend.position = "top")
 
 # factor 1 only
-ggplot(d1_byculture2 %>% filter(!is.na(ethnicityCat2)) %>% filter(factor == "MR1"), 
+ggplot(d2_byculture2 %>% filter(!is.na(ethnicityCat2)) %>% filter(factor == "MR1"), 
        aes(x = ethnicityCat2, y = mean, color = character, fill = character)) +
   facet_wrap(~ reorder(capacity, order), ncol = 5) +
   geom_point() +
@@ -945,7 +952,7 @@ ggplot(d1_byculture2 %>% filter(!is.na(ethnicityCat2)) %>% filter(factor == "MR1
         legend.position = "top")
 
 # factor 2 only
-ggplot(d1_byculture2 %>% filter(!is.na(ethnicityCat2)) %>% filter(factor == "MR2"), 
+ggplot(d2_byculture2 %>% filter(!is.na(ethnicityCat2)) %>% filter(factor == "MR2"), 
        aes(x = ethnicityCat2, y = mean, color = character, fill = character)) +
   facet_wrap(~ reorder(capacity, order), ncol = 5) +
   geom_point() +
@@ -955,7 +962,7 @@ ggplot(d1_byculture2 %>% filter(!is.na(ethnicityCat2)) %>% filter(factor == "MR2
         legend.position = "top")
 
 # factor 3 only
-ggplot(d1_byculture2 %>% filter(!is.na(ethnicityCat2)) %>% filter(factor == "MR3"), 
+ggplot(d2_byculture2 %>% filter(!is.na(ethnicityCat2)) %>% filter(factor == "MR3"), 
        aes(x = ethnicityCat2, y = mean, color = character, fill = character)) +
   facet_wrap(~ reorder(capacity, order), ncol = 5) +
   geom_point() +
@@ -990,7 +997,7 @@ ggplot(d_byculture_scores %>% filter(!is.na(ethnicityCat2)) %>% ungroup %>% muta
 
 # analyze?
 d_reg3 <- d_reg2 %>%
-  left_join(d1 %>% select(subid, ethnicityCat2)) %>%
+  left_join(d2 %>% select(subid, ethnicityCat2)) %>%
   filter(!is.na(ethnicityCat2))
 
 # set contrasts

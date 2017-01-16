@@ -57,126 +57,160 @@ ggplot(d0) +
   scale_x_log10(breaks = seq(0, 1000, 100)) +
   geom_vline(xintercept = 350, color = "red")
 
-# d0 <- d0 %>%
-#   filter(rt >= 350)
+d1 <- d0 %>%
+  filter(rt >= 250)
 
-d1 <- d0
-
+# finish tidying
 d2 <- d1 %>%
   select(capacity, responseNum, subid) %>%
-  filter(capacity != "na") %>%
+  filter(!is.na(capacity), capacity != "na") %>%
   spread(capacity, responseNum)
 
 d3 <- data.frame(d2[,-1], row.names = d2[,1])
 
 cor3 <- cor(d3, method = "spearman", use = "complete.obs")
 
-# PLOT MEAN RESPONSES BY FACTOR -----------------------------------------------
+# EFA and PLOT MEAN RESPONSES BY FACTOR ---------------------------------------
 
 # set correlation type: pearson or polychoric?
 cor_type <- "cor"
 # cor_type <- "poly"
 
-factors_adult <- fa.sort(fa(d3 %>% 
-                               rownames_to_column(var = "subid") %>%
-                               filter(grepl("run", subid)) %>%
-                               select(-subid),
-                             nfactors = 3,
-                             rotate = "varimax",
-                             cor = cor_type)$loadings[]) %>%
+# set rotation type: varimax or oblimin?
+rot_type <- "varimax"
+# rot_type <- "oblimin"
+
+# make adult (first 3 factors from rotated maximal solution) 
+d3_adult <- d3 %>%
+  rownames_to_column(var = "subid") %>%
+  left_join(d %>% select(subid, ageGroup)) %>%
+  filter(ageGroup == "adult") %>%
+  select(-subid, -ageGroup)
+
+factors_adult <- fa.sort(fa(d3_adult,
+                            nfactors = 13,
+                            rotate = rot_type,
+                            cor = cor_type)$loadings[]) %>%
   data.frame() %>%
-  rownames_to_column(var = "capacity") %>%
-  mutate(MR1_abs = abs(MR1),
-         MR2_abs = abs(MR2),
-         MR3_abs = abs(MR3),
-         loading_abs = pmax(MR1_abs, MR2_abs, MR3_abs),
-         loading = ifelse(loading_abs == abs(MR1), MR1,
-                          ifelse(loading_abs == abs(MR2), MR2,
-                                 ifelse(loading_abs == abs(MR3), MR3,
+  select(1:3) %>%
+  rownames_to_column(var = "capacity")
+
+colnames(factors_adult)[2:4] <- c("F1", "F2", "F3")
+
+factors_adult <- factors_adult %>%
+  mutate(F1_abs = abs(F1),
+         F2_abs = abs(F2),
+         F3_abs = abs(F3),
+         loading_abs = pmax(F1_abs, F2_abs, F3_abs),
+         loading = ifelse(loading_abs == abs(F1), F1,
+                          ifelse(loading_abs == abs(F2), F2,
+                                 ifelse(loading_abs == abs(F3), F3,
                                         NA))),
-         factor = ifelse(loading == MR1, "MR1",
-                         ifelse(loading == MR2, "MR2",
-                                ifelse(loading == MR3, "MR3",
+         factor = ifelse(loading == F1, "F1",
+                         ifelse(loading == F2, "F2",
+                                ifelse(loading == F3, "F3",
                                        NA))),
-         factorName = ifelse(loading == MR1, "Factor 1",
-                             ifelse(loading == MR2, "Factor 2",
-                                    ifelse(loading == MR3, "Factor 3",
+         factorName = ifelse(loading == F1, "Factor 1",
+                             ifelse(loading == F2, "Factor 2",
+                                    ifelse(loading == F3, "Factor 3",
                                            NA)))) %>%
   arrange(factor, desc(loading_abs)) %>%
   select(capacity, factor, factorName, loading, loading_abs)
 
 factors_adult <- 
   full_join(factors_adult %>%
-              filter(factor == "MR1") %>%
+              filter(factor == "F1") %>%
               rownames_to_column(var = "order") %>%
               mutate(order = as.numeric(order)),
             factors_adult %>%
-              filter(factor == "MR2") %>%
+              filter(factor == "F2") %>%
               rownames_to_column(var = "order") %>%
               mutate(order = as.numeric(order))) %>%
   full_join(factors_adult %>%
-              filter(factor == "MR3") %>%
+              filter(factor == "F3") %>%
               rownames_to_column(var = "order") %>%
               mutate(order = as.numeric(order))) %>%
   mutate(posneg = factor(ifelse(loading < 0, "neg", "pos")),
          textColor = ifelse(loading < 0, "dodgerblue3", "black"))
 
-factors_child <- fa.sort(fa(d3 %>% 
-                              rownames_to_column(var = "subid") %>%
-                              filter(!grepl("run", subid)) %>%
-                              select(-subid),
-                            nfactors = 3,
-                            rotate = "varimax",
+factors_adult <- factors_adult %>%
+  left_join(d %>% select(capacity, capWording) %>% distinct()) %>%
+  mutate(capWordingShort = gsub(" --.*", "", capWording)) %>%
+  select(-capWording) %>%
+  rename(capWording = capWordingShort) %>%
+  distinct()
+
+# make child (first 3 factors from rotated maximal solution) 
+d3_child <- d3 %>%
+  rownames_to_column(var = "subid") %>%
+  left_join(d %>% select(subid, ageGroup)) %>%
+  filter(ageGroup == "child") %>%
+  select(-subid, -ageGroup)
+
+factors_child <- fa.sort(fa(d3_child,
+                            nfactors = 13,
+                            rotate = rot_type,
                             cor = cor_type)$loadings[]) %>%
   data.frame() %>%
-  rownames_to_column(var = "capacity") %>%
-  mutate(MR1_abs = abs(MR1),
-         MR2_abs = abs(MR2),
-         MR3_abs = abs(MR3),
-         loading_abs = pmax(MR1_abs, MR2_abs, MR3_abs),
-         loading = ifelse(loading_abs == abs(MR1), MR1,
-                          ifelse(loading_abs == abs(MR2), MR2,
-                                 ifelse(loading_abs == abs(MR3), MR3,
+  select(1:3) %>%
+  rownames_to_column(var = "capacity")
+
+colnames(factors_child)[2:4] <- c("F1", "F2", "F3")
+
+factors_child <- factors_child %>%
+  mutate(F1_abs = abs(F1),
+         F2_abs = abs(F2),
+         F3_abs = abs(F3),
+         loading_abs = pmax(F1_abs, F2_abs, F3_abs),
+         loading = ifelse(loading_abs == abs(F1), F1,
+                          ifelse(loading_abs == abs(F2), F2,
+                                 ifelse(loading_abs == abs(F3), F3,
                                         NA))),
-         factor = ifelse(loading == MR1, "MR1",
-                         ifelse(loading == MR2, "MR2",
-                                ifelse(loading == MR3, "MR3",
+         factor = ifelse(loading == F1, "F1",
+                         ifelse(loading == F2, "F2",
+                                ifelse(loading == F3, "F3",
                                        NA))),
-         factorName = ifelse(loading == MR1, "Factor 1",
-                             ifelse(loading == MR2, "Factor 2",
-                                    ifelse(loading == MR3, "Factor 3",
+         factorName = ifelse(loading == F1, "Factor 1",
+                             ifelse(loading == F2, "Factor 2",
+                                    ifelse(loading == F3, "Factor 3",
                                            NA)))) %>%
   arrange(factor, desc(loading_abs)) %>%
   select(capacity, factor, factorName, loading, loading_abs)
 
 factors_child <- 
   full_join(factors_child %>%
-              filter(factor == "MR1") %>%
+              filter(factor == "F1") %>%
               rownames_to_column(var = "order") %>%
               mutate(order = as.numeric(order)),
             factors_child %>%
-              filter(factor == "MR2") %>%
+              filter(factor == "F2") %>%
               rownames_to_column(var = "order") %>%
               mutate(order = as.numeric(order))) %>%
   full_join(factors_child %>%
-              filter(factor == "MR3") %>%
+              filter(factor == "F3") %>%
               rownames_to_column(var = "order") %>%
               mutate(order = as.numeric(order))) %>%
   mutate(posneg = factor(ifelse(loading < 0, "neg", "pos")),
          textColor = ifelse(loading < 0, "dodgerblue3", "black"))
+
+factors_child <- factors_child %>%
+  left_join(d %>% select(capacity, capWording) %>% distinct()) %>%
+  mutate(capWordingShort = gsub(" --.*", "", capWording)) %>%
+  select(-capWording) %>%
+  rename(capWording = capWordingShort) %>%
+  distinct()
 
 # by condition
 d1_bycond <- d0 %>%
   select(character, capacity, capWording, responseNum, subid, ageGroup) %>%
   filter(character != "elephant") %>%
   filter(capacity != "na", is.na(responseNum) == F) %>%
-  mutate(capWordingShort = gsub(" --.*", "", capWording)) %>%
-  select(-capWording)
+  mutate(capWording = gsub(" --.*", "", capWording))
 
 # make df for plotting
 d1_bycond_mb <- multi_boot(d1_bycond,
                            column = "responseNum",
-                           summary_groups = c("ageGroup", "character", "capacity", "capWordingShort"),
+                           summary_groups = c("ageGroup", "character", "capacity", "capWording"),
                            statistics_functions = c("mean", "ci_lower", "ci_upper"))
 
 d1_bycond_mb_factorsAdult <- d1_bycond_mb %>% 
@@ -197,7 +231,7 @@ d1_bycond_mb_factorsChild <- d1_bycond_mb %>%
 ggplot(d1_bycond_mb_factorsAdult, 
        aes(x = desc(order*2), y = mean,
            group = character, color = character, shape = character,
-           label = capWordingShort)) +
+           label = capWording)) +
   facet_grid(ageGroup ~ factorName) +
   geom_hline(yintercept = 0, lty = 3) +
   geom_hline(yintercept = 0.5, lty = 3) +
@@ -223,7 +257,7 @@ ggplot(d1_bycond_mb_factorsAdult,
 ggplot(d1_bycond_mb_factorsChild, 
        aes(x = desc(order*2), y = mean,
            group = character, color = character, shape = character,
-           label = capWordingShort)) +
+           label = capWording)) +
   facet_grid(ageGroup ~ factorName) +
   geom_hline(yintercept = 0, lty = 3) +
   geom_hline(yintercept = 0.5, lty = 3) +
@@ -246,58 +280,61 @@ ggplot(d1_bycond_mb_factorsChild,
         legend.position = "top")
 
 # combine adults and children
-fa.parallel(d3)
-howmanyfac <- 3
-# howmanyfac <- 4
+# fa.parallel(d3)
+fa(d3, nfactors = 13, rotate = "none", cor = cor_type)
 
 factors_all <- fa.sort(fa(d3,
-                          nfactors = howmanyfac,
-                          rotate = "varimax",
+                          nfactors = 13,
+                          rotate = rot_type,
                           cor = cor_type)$loadings[]) %>%
   data.frame() %>%
-  rownames_to_column(var = "capacity") %>%
-  mutate(MR1_abs = abs(MR1),
-         MR2_abs = abs(MR2),
-         MR3_abs = abs(MR3),
-         # MR4_abs = abs(MR4),
-         loading_abs = pmax(MR1_abs, MR2_abs, MR3_abs), #, MR4_abs),
-         loading = ifelse(loading_abs == abs(MR1), MR1,
-                          ifelse(loading_abs == abs(MR2), MR2,
-                                 ifelse(loading_abs == abs(MR3), MR3,
-                                        # ifelse(loading_abs == abs(MR4), MR4,
-                                               NA))), #),
-         factor = ifelse(loading == MR1, "MR1",
-                         ifelse(loading == MR2, "MR2",
-                                ifelse(loading == MR3, "MR3",
-                                       # ifelse(loading == MR4, "MR4",
-                                              NA))), #),
-         factorName = ifelse(loading == MR1, "Factor 1",
-                             ifelse(loading == MR2, "Factor 2",
-                                    ifelse(loading == MR3, "Factor 3",
-                                           # ifelse(loading == MR4, "Factor 4",
-                                                  NA)))) %>% #) %>%
+  select(1:3) %>%
+  rownames_to_column(var = "capacity")
+
+colnames(factors_all)[2:4] <- c("F1", "F2", "F3")
+
+factors_all <- factors_all %>%
+  mutate(F1_abs = abs(F1),
+         F2_abs = abs(F2),
+         F3_abs = abs(F3),
+         loading_abs = pmax(F1_abs, F2_abs, F3_abs),
+         loading = ifelse(loading_abs == abs(F1), F1,
+                          ifelse(loading_abs == abs(F2), F2,
+                                 ifelse(loading_abs == abs(F3), F3,
+                                        NA))),
+         factor = ifelse(loading == F1, "F1",
+                         ifelse(loading == F2, "F2",
+                                ifelse(loading == F3, "F3",
+                                       NA))),
+         factorName = ifelse(loading == F1, "Factor 1",
+                             ifelse(loading == F2, "Factor 2",
+                                    ifelse(loading == F3, "Factor 3",
+                                           NA)))) %>%
   arrange(factor, desc(loading_abs)) %>%
   select(capacity, factor, factorName, loading, loading_abs)
 
 factors_all <- 
   full_join(factors_all %>%
-              filter(factor == "MR1") %>%
+              filter(factor == "F1") %>%
               rownames_to_column(var = "order") %>%
               mutate(order = as.numeric(order)),
             factors_all %>%
-              filter(factor == "MR2") %>%
+              filter(factor == "F2") %>%
               rownames_to_column(var = "order") %>%
               mutate(order = as.numeric(order))) %>%
   full_join(factors_all %>%
-              filter(factor == "MR3") %>%
+              filter(factor == "F3") %>%
               rownames_to_column(var = "order") %>%
               mutate(order = as.numeric(order))) %>%
-  # full_join(factors_all %>%
-  #             filter(factor == "MR4") %>%
-  #             rownames_to_column(var = "order") %>%
-  #             mutate(order = as.numeric(order))) %>%
   mutate(posneg = factor(ifelse(loading < 0, "neg", "pos")),
          textColor = ifelse(loading < 0, "dodgerblue3", "black"))
+
+factors_all <- factors_all %>%
+  left_join(d %>% select(capacity, capWording) %>% distinct()) %>%
+  mutate(capWordingShort = gsub(" --.*", "", capWording)) %>%
+  select(-capWording) %>%
+  rename(capWording = capWordingShort) %>%
+  distinct()
 
 # make df for plotting
 d1_bycond_mb_factorsAll <- d1_bycond_mb %>% 
@@ -311,7 +348,7 @@ d1_bycond_mb_factorsAll <- d1_bycond_mb %>%
 ggplot(d1_bycond_mb_factorsAll, 
        aes(x = desc(order*2), y = mean,
            group = character, color = character, shape = character,
-           label = capWordingShort)) +
+           label = capWording)) +
   facet_grid(ageGroup ~ factorName) +
   geom_hline(yintercept = 0, lty = 3) +
   geom_hline(yintercept = 0.5, lty = 3) +
@@ -335,10 +372,6 @@ ggplot(d1_bycond_mb_factorsAll,
 
 # REGRESSION ON FACTOR SCORES -------------------------------------------------
 
-# set correlation type: pearson or polychoric?
-cor_type <- "cor"
-# cor_type <- "poly"
-
 # set score type
 score_type <- "regression"
 # score_type <- "Thurstone"
@@ -346,32 +379,14 @@ score_type <- "regression"
 # score_type <- "Anderson"
 # score_type <- "Bartlett"
 
-# scores_all <- fa(d3, nfactors = 3, rotate = "varimax",
-#                  cor = cor_type, scores = score_type)$scores %>%
-#   data.frame() %>%
-#   rownames_to_column(var = "subid") %>%
-#   mutate(ageGroup = factor(ifelse(grepl("run", subid), "adult", "child"))) %>%
-#   rename(score_MR1 = MR1, score_MR2 = MR2, score_MR3 = MR3)
-
-scores_all <- fa(d3, nfactors = 4, rotate = "varimax",
+scores_all <- fa(d3, nfactors = 13, rotate = rot_type,
                  cor = cor_type, scores = score_type)$scores %>%
   data.frame() %>%
+  select(1:3) %>%
   rownames_to_column(var = "subid") %>%
-  mutate(ageGroup = factor(ifelse(grepl("run", subid), "adult", "child"))) %>%
-  rename(score_MR1 = MR1, score_MR2 = MR2, score_MR3 = MR3, score_MR4 = MR4)
+  mutate(ageGroup = factor(ifelse(grepl("run", subid), "adult", "child")))
 
-# d_reg2 <- d0 %>%
-#   select(subid, ageGroup, character) %>%
-#   filter(character != "elephant") %>%
-#   distinct() %>%
-#   full_join(scores_all) %>%
-#   mutate(character = factor(character)) %>%
-#   filter(!is.na(score_MR1), !is.na(score_MR2), !is.na(score_MR3), !is.na(ageGroup)) %>%
-#   gather(factor, score, starts_with("score_")) %>%
-#   mutate(factor = factor(factor)) %>%
-#   multi_boot(column = "score",
-#              summary_groups = c("ageGroup", "character", "factor"),
-#              statistics_functions = c("mean", "ci_lower", "ci_upper"))
+colnames(scores_all)[2:4] <- c("score_F1", "score_F2", "score_F3")
 
 d_reg2 <- d0 %>%
   select(subid, ageGroup, character) %>%
@@ -379,8 +394,7 @@ d_reg2 <- d0 %>%
   distinct() %>%
   full_join(scores_all) %>%
   mutate(character = factor(character)) %>%
-  filter(!is.na(score_MR1), !is.na(score_MR2), !is.na(score_MR3), !is.na(score_MR4), 
-         !is.na(ageGroup)) %>%
+  filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(ageGroup)) %>%
   gather(factor, score, starts_with("score_")) %>%
   mutate(factor = factor(factor)) %>%
   multi_boot(column = "score",
@@ -390,7 +404,7 @@ d_reg2 <- d0 %>%
 # plot
 ggplot(d_reg2,
        aes(x = ageGroup, y = mean, color = character, fill = character)) +
-  facet_wrap("factor", ncol = 4) +
+  facet_wrap("factor", ncol = 3) +
   theme_bw() +
   theme(text = element_text(size = 24),
         legend.position = "top") +
@@ -398,33 +412,19 @@ ggplot(d_reg2,
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0.2)
 
 # analyze?
-# d_reg3 <- d0 %>%
-#   select(subid, ageGroup, character) %>%
-#   filter(character != "elephant") %>%
-#   distinct() %>%
-#   full_join(scores_all) %>%
-#   mutate(character = factor(character)) %>%
-#   filter(!is.na(score_MR1) & !is.na(score_MR2) & !is.na(score_MR3), !is.na(ageGroup)) %>%
-#   gather(factor, score, starts_with("score_")) %>%
-#   mutate(factor = factor(factor))
-
 d_reg3 <- d0 %>%
   select(subid, ageGroup, character) %>%
   filter(character != "elephant") %>%
   distinct() %>%
   full_join(scores_all) %>%
   mutate(character = factor(character)) %>%
-  filter(!is.na(score_MR1), !is.na(score_MR2), !is.na(score_MR3), !is.na(score_MR4),
-         !is.na(ageGroup)) %>%
+  filter(!is.na(score_F1) & !is.na(score_F2) & !is.na(score_F3), !is.na(ageGroup)) %>%
   gather(factor, score, starts_with("score_")) %>%
   mutate(factor = factor(factor))
 
 # set contrasts
-# contrasts(d_reg3$factor) <- cbind(MR1 = c(1, 0, 0), # MAKE SURE TO DOUBLE-CHECK!!
-#                                   MR3 = c(0, 0, 1))
-contrasts(d_reg3$factor) <- cbind(MR1 = c(1, 0, 0, 0), # MAKE SURE TO DOUBLE-CHECK!!
-                                  MR3 = c(0, 0, 1, 0),
-                                  MR4 = c(0, 0, 0, 1))
+contrasts(d_reg3$factor) <- cbind(F1 = c(1, 0, 0), # MAKE SURE TO DOUBLE-CHECK!!
+                                  F3 = c(0, 0, 1))
 contrasts(d_reg3$character) <- cbind(robot = c(-1, 1))
 contrasts(d_reg3$ageGroup) <- cbind(child = c(-1, 1))
 
@@ -447,12 +447,18 @@ summary(robot_r3)
 
 # make table ------------
 
-comb <- round(fa.sort(fa(d3, nfactors = 3, rotate = "varimax", cor = cor_type)$loadings[]), 2) %>%
+# nfactors_choice <- 13
+nfactors_choice <- 3
+
+comb <- round(fa.sort(fa(d3, nfactors = nfactors_choice, 
+                         rotate = rot_type, cor = cor_type)$loadings[]), 2) %>%
   data.frame() %>%
-  rename(comb_MR1 = MR1, comb_MR2 = MR2, comb_MR3 = MR3) %>%
-  rownames_to_column(var = "item") %>%
+  select(1:3) %>%
+  rownames_to_column(var = "capacity") %>%
   rownames_to_column(var = "order") %>%
-  mutate(order = as.numeric(order))
+  mutate(order = as.numeric(order)) %>%
+  left_join(factors_all %>% select(capacity, capWording))
+colnames(comb)[3:5] <- c("comb_F1", "comb_F2", "comb_F3")
 
 temp_adult <- d3 %>%
   rownames_to_column(var = "subid") %>%
@@ -468,23 +474,29 @@ temp_child <- d3 %>%
   select(-ageGroup) %>% 
   column_to_rownames(var = "subid")
 
-ad <- round(fa.sort(fa(temp_adult, nfactors = 3, rotate = "varimax", cor = cor_type)$loadings[]), 2) %>%
+fa(temp_adult, nfactors = 13, 
+   rotate = rot_type, cor = cor_type)
+ad <- round(fa.sort(fa(temp_adult, nfactors = nfactors_choice, 
+                       rotate = rot_type, cor = cor_type)$loadings[]), 2) %>%
   data.frame() %>%
-  rename(ad_MR1 = MR1, ad_MR2 = MR2, ad_MR3 = MR3) %>%
-  rownames_to_column(var = "item")
+  select(1:3) %>%
+  rownames_to_column(var = "capacity")
+colnames(ad)[2:4] <- c("ad_F1", "ad_F2", "ad_F3")
 
-ch <- round(fa.sort(fa(temp_child, nfactors = 3, rotate = "varimax", cor = cor_type)$loadings[]), 2) %>%
+ch <- round(fa.sort(fa(temp_child, nfactors = 4, # IMPORTANT 
+                       rotate = rot_type, cor = cor_type)$loadings[]), 2) %>%
   data.frame() %>%
-  rename(ch_MR1 = MR1, ch_MR2 = MR2, ch_MR3 = MR3) %>%
-  rownames_to_column(var = "item")
+  select(1:3) %>%
+  rownames_to_column(var = "capacity")
+colnames(ch)[2:4] <- c("ch_F1", "ch_F2", "ch_F3")
 
-temp_table <- comb %>%
+loadings_table <- comb %>%
   full_join(ad) %>%
   full_join(ch) %>%
-  select(order, item,
+  select(order, capacity, capWording,
          # DOUBLE CHECK THESE!
-         ad_MR2, ch_MR1, comb_MR1,
-         ad_MR1, ch_MR2, comb_MR2,
-         ad_MR3, ch_MR3, comb_MR3) %>%
+         ad_F1, ch_F1, comb_F1,
+         ad_F2, ch_F2, comb_F2,
+         ad_F3, ch_F3, comb_F3) %>%
   arrange(order) %>%
-  select(-order)
+  select(-order, -capacity)
