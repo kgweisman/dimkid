@@ -462,7 +462,7 @@ anova(robot_r1, robot_r2, robot_r3)
 # summary(robot_r2)
 summary(robot_r3)
 
-# children only (robot and beetle)
+# children only (AGE: robot and beetle)
 d_reg3_child <- d_reg3 %>%
   filter(ageGroup == "child") %>%
   left_join(d_child01 %>% select(subid, age)) %>%
@@ -502,11 +502,59 @@ ggplot(d_reg3_child %>%
   theme_bw() +
   theme(text = element_text(size = 28),
         legend.position = "bottom") +
-  geom_smooth(method = "loess", alpha = 0.4) +
+  geom_smooth(method = "lm", alpha = 0.4) +
   geom_point(size = 2) +
   scale_shape_manual(values = c(19, 15)) +
   labs(title = "Factor scores by children's age",
        # subtitle = "Children (Study 2)\n",
+       x = "Age (years)",
+       y = "Factor score") # 1000 by 500
+
+# adults only (AGE: robot and beetle)
+d_reg3_adult <- d_reg3 %>%
+  filter(ageGroup == "adult") %>%
+  left_join(d_adult01 %>% select(subid, age)) %>%
+  filter(!is.na(age)) %>%
+  distinct()
+
+contrasts(d_reg3_adult$factor) <- cbind(F1 = c(1, -1, 0), # MAKE SURE TO DOUBLE-CHECK!!
+                                        F3 = c(0, -1, 1))
+contrasts(d_reg3_adult$character) <- cbind(robot = c(-1, 1))
+
+r1_adult <- lmer(score ~ character * factor + (1 | subid), d_reg3_adult)
+r2_adult <- lmer(score ~ character * factor + scale(age) + (1 | subid), d_reg3_adult)
+r3_adult <- lmer(score ~ character * factor * scale(age) + (1 | subid), d_reg3_adult)
+anova(r1_adult, r2_adult, r3_adult) # r3
+# summary(r1_adult)
+# summary(r2_adult)
+summary(r3_adult)
+
+r4_adult <- lmer(score ~ character * factor * poly(age, 1) + (1 | subid), d_reg3_adult)
+r5_adult <- lmer(score ~ character * factor * poly(age, 2) + (1 | subid), d_reg3_adult)
+r6_adult <- lmer(score ~ character * factor * poly(age, 3) + (1 | subid), d_reg3_adult)
+anova(r4_adult, r5_adult, r6_adult) # r4
+summary(r4_adult)
+# summary(r5_adult)
+# summary(r6_adult)
+
+round(summary(r4_adult)$coefficients, 2) %>% data.frame() %>% View()
+
+ggplot(d_reg3_adult %>%
+         ungroup() %>%
+         mutate(factor = factor(factor,
+                                labels = c("Social-emotional",
+                                           "Physiological",
+                                           "Perceptual-cognitive"))),
+       aes(x = age, y = score, color = character, fill = character, shape = character)) +
+  facet_wrap("factor", ncol = 3) +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        legend.position = "bottom") +
+  geom_smooth(method = "loess", alpha = 0.4) +
+  geom_point(size = 2) +
+  scale_shape_manual(values = c(19, 15)) +
+  labs(title = "Factor scores by adults' age",
+       # subtitle = "Adults (Study 1)\n",
        x = "Age (years)",
        y = "Factor score") # 1000 by 500
 
