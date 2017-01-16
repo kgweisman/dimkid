@@ -476,20 +476,20 @@ contrasts(d_reg3_child$character) <- cbind(robot = c(-1, 1))
 r1_child <- lmer(score ~ character * factor + (1 | subid), d_reg3_child)
 r2_child <- lmer(score ~ character * factor + scale(age) + (1 | subid), d_reg3_child)
 r3_child <- lmer(score ~ character * factor * scale(age) + (1 | subid), d_reg3_child)
-anova(r1_child, r2_child, r3_child)
+anova(r1_child, r2_child, r3_child) # r3
 # summary(r1_child)
 # summary(r2_child)
 summary(r3_child)
 
-r4_child <- lmer(score ~ character * factor + poly(age, 1) + (1 | subid), d_reg3_child)
-r5_child <- lmer(score ~ character * factor + poly(age, 3) + (1 | subid), d_reg3_child)
+r4_child <- lmer(score ~ character * factor * poly(age, 1) + (1 | subid), d_reg3_child)
+r5_child <- lmer(score ~ character * factor * poly(age, 2) + (1 | subid), d_reg3_child)
 r6_child <- lmer(score ~ character * factor * poly(age, 3) + (1 | subid), d_reg3_child)
-anova(r4_child, r5_child, r6_child)
-# summary(r4_child)
+anova(r4_child, r5_child, r6_child) # r4
+summary(r4_child)
 # summary(r5_child)
-summary(r6_child)
+# summary(r6_child)
 
-round(summary(r6_child)$coefficients, 2) %>% data.frame() %>% View()
+round(summary(r7_child)$coefficients, 2) %>% data.frame() %>% View()
 
 ggplot(d_reg3_child %>%
          ungroup() %>%
