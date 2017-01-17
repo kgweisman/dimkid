@@ -174,8 +174,17 @@ d3_beetle <- data.frame(d1_beetle[,-1], row.names = d1_beetle[,1])
 # fa.sort(fa(d3_beetle, nfactors = 2, rotate = "varimax")$loadings[]) %>% View()
 
 # PLOTTING --------------------------------------------------------------------
+
+# choose correlation type
+cor_type <- "cor"
+# cor_type <- "poly"
+
+# choose rotation type
+rot_type <- "varimax"
+# rot_type <- "oblimin"
+
 # make factor assignments
-factors <- fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) 
+factors <- fa.sort(fa(d3, nfactors = 3, rotate = rot_type, cor = cor_type)$loadings[]) 
 
 factors2 <- factors %>%
   data.frame() %>%
@@ -217,7 +226,7 @@ factors3 <-
 
 # by condition
 d1_bycond <- d0 %>%
-  select(charName, capacity, capWording, responseNum, subid) %>%
+  select(character, capacity, capWording, responseNum, subid) %>%
   filter(capacity != "na", is.na(responseNum) == F) %>%
   mutate(capWordingShort = gsub(" --.*", "", capWording)) %>%
   select(-capWording)
@@ -225,17 +234,17 @@ d1_bycond <- d0 %>%
 library(langcog)
 d1_bycond_mb <- multi_boot(d1_bycond,
                            column = "responseNum",
-                           summary_groups = c("charName", "capacity", "capWordingShort"),
+                           summary_groups = c("character", "capacity", "capWordingShort"),
                            statistics_functions = c("mean", "ci_lower", "ci_upper")) %>% 
   full_join(factors3) %>%
-  arrange(charName, factor, desc(loading_abs)) %>%
+  arrange(character, factor, desc(loading_abs)) %>%
   rownames_to_column(var = "full_order") %>%
   mutate(full_order = as.numeric(full_order)) %>%
   arrange(factorName, full_order)
 
 ggplot(d1_bycond_mb, 
        aes(x = desc(order*2), y = mean,
-           group = charName, color = charName, shape = charName,
+           group = character, color = character, shape = character,
            label = capWordingShort)) +
   facet_grid(. ~ factorName) +
   geom_hline(yintercept = 0, lty = 3) +
@@ -261,7 +270,7 @@ ggplot(d1_bycond_mb,
 # EXPORT LOADINGS -------------------------------------------------------------
 
 # make factor assignments: polychoric correlations, varimax rotation, 3 factors
-factors_poly_varimax_3f_0 <- fa.sort(fa(d2, nfactors = 3, rotate = "varimax", cor = "poly")$loadings[]) %>%
+factors_0 <- fa.sort(fa(d3, nfactors = 3, rotate = rot_type, cor = cor_type)$loadings[]) %>%
   data.frame() %>%
   rownames_to_column(var = "capacity") %>%
   mutate(MR1_abs = abs(MR1),
@@ -279,8 +288,8 @@ factors_poly_varimax_3f_0 <- fa.sort(fa(d2, nfactors = 3, rotate = "varimax", co
   arrange(factor, desc(loading_abs)) %>%
   select(capacity, factor, loading, loading_abs)
 
-factors_poly_varimax_3f <- 
-  full_join(factors_poly_varimax_3f_0 %>%
+factors <- 
+  full_join(factors_0 %>%
               filter(factor == "MR1") %>%
               rownames_to_column(var = "order") %>%
               mutate(order = as.numeric(order)),
@@ -299,12 +308,18 @@ factors_poly_varimax_3f <-
                                                   NA)))))
 
 # export to csv
-write.csv(factors_poly_varimax_3f, "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/plots and tables/factors_poly_varimax_3f (adults)")
+if(cor_type == "poly") {
+  write.csv(factors, "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/plots and tables/factors_poly_varimax_3f (adults)")
+}
+
+if(cor_type == "cor") {
+  write.csv(factors_0, "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/plots and tables/factors_cor_varimax_3f (adults)")
+}
 
 # #### EXPLORATORY ------------------------------------------------------------
 # 
 # # remove items with mandatory definitions
-# d3a <- d2[!grepl("\\.\\.\\.", names(d2))]
+# d3a <- d3[!grepl("\\.\\.\\.", names(d3))]
 # 
 # cor3a <- cor(d3a, method = "spearman", use = "complete.obs")
 # 
@@ -323,7 +338,7 @@ write.csv(factors_poly_varimax_3f, "/Users/kweisman/Documents/Research (Stanford
 # 
 # 
 # # remove "cognitive" agency items
-# d3b <- d2 %>%
+# d3b <- d3 %>%
 #   select (-decide.what.to.do, -figure.out.how.to.do.things, -have.self.control....like.when.you.stop.yourself.from.doing.something.you.shouldn.t.do)
 # 
 # cor3b <- cor(d3b, method = "spearman", use = "complete.obs")
@@ -341,7 +356,7 @@ write.csv(factors_poly_varimax_3f, "/Users/kweisman/Documents/Research (Stanford
 # # fa.sort(fa(d3b, nfactors = 2, rotate = "varimax")$loadings[]) %>% View()
 # 
 # # remove (a priori) "substnantially reworded" agency items (see Mental capacity items 2016-06-30.doc)
-# d3c <- d2 %>%
+# d3c <- d3 %>%
 #   select (-do.math, -be.aware.of.things, -feel.sad, -sense.whether.something.is.close.by.or.far.away, -get.hurt.feelings, -feel.scared, -decide.what.to.do, -make.plans, -know.what.s.nice.and.what.s.mean, -feel.sick....like.when.you.feel.like.you.might.throw.up, -smell.things, -figure.out.how.to.do.things, -be.aware.of.itself, -have.self.control....like.when.you.stop.yourself.from.doing.something.you.shouldn.t.do, -hear.sounds)
 # 
 # cor3c <- cor(d3c, method = "spearman", use = "complete.obs")
