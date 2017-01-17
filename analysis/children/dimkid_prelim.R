@@ -7,6 +7,8 @@ library(psych)
 library(ggplot2)
 library(tibble)
 library(GPArotation)
+library(lme4)
+library(langcog)
 
 # clear environment
 rm(list=ls())
@@ -27,6 +29,24 @@ d1_pilot <- d_pilot %>%
 
 # lydia, olivia, allie (summer 2016) + nicky, dru, ariel, olivia (fall 2016) + campbell (winter 2017)
 d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2017-01-13_anonymized.csv")
+
+# read in ages
+ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2017-01-13.csv") %>%
+  select(-age_formula, -comments) %>%
+  mutate(ethnicityCat1 = 
+           factor(ifelse(is.na(ethnicity), NA,
+                         ifelse(ethnicity == "white, caucasian, or european american",
+                                "euro-american", "multicultural"))),
+         ethnicityCat2 = 
+           factor(ifelse(is.na(ethnicity), NA,
+                         ifelse(ethnicity == "white, caucasian, or european american",
+                                "euro-american",
+                                ifelse(grepl("east asian", ethnicity) |
+                                         grepl("south", ethnicity) |
+                                         grepl("chinese", ethnicity) |
+                                         grepl("filipino", ethnicity),
+                                       "asian", NA)))),
+         age = as.numeric(as.character(age)))
 
 # TIDY DATA -------------------------------------------------------------------
 
@@ -420,24 +440,6 @@ ggplot(d2_bycond %>% full_join(factors3_ADULT),
         legend.position = "top")
 
 # ...USING ADULT FACTOR LOADINGS, by age --------------------------------------
-
-# read in ages
-ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2017-01-13.csv") %>%
-  select(-age_formula, -comments) %>%
-  mutate(ethnicityCat1 = 
-           factor(ifelse(is.na(ethnicity), NA,
-                         ifelse(ethnicity == "white, caucasian, or european american",
-                                "euro-american", "multicultural"))),
-         ethnicityCat2 = 
-           factor(ifelse(is.na(ethnicity), NA,
-                         ifelse(ethnicity == "white, caucasian, or european american",
-                                "euro-american",
-                                ifelse(grepl("east asian", ethnicity) |
-                                         grepl("south", ethnicity) |
-                                         grepl("chinese", ethnicity) |
-                                         grepl("filipino", ethnicity),
-                                       "asian", NA)))),
-         age = as.numeric(as.character(age)))
 
 # make age thing
 d2_bycond_age <- d2_bycond %>%
