@@ -25,7 +25,7 @@ d_adult01 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Di
 # d_adult03 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-03_2016-12-08_anonymized.csv")
 
 # CHILD run 01 [lydia, olivia, allie (summer 2016) + nicky, dru, ariel, olivia (fall 2016) + campbell (winter 2017)]
-d_child01 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2017-01-13_anonymized.csv") %>% select(-X.1, -X)
+d_child01 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2017-01-19_anonymized.csv") %>% select(-X.1, -X)
 
 # TIDY DATA -------------------------------------------------------------------
 
