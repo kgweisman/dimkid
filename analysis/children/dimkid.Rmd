@@ -953,8 +953,8 @@ ggplot(scores_children_plotting %>%
   theme_bw() +
   theme(text = element_text(size = 28),
         legend.position = "bottom") +
-  # geom_smooth(method = "loess", alpha = 0.4) +
-  geom_smooth(method = "lm", alpha = 0.4) +
+  geom_smooth(method = "loess", alpha = 0.4) +
+  # geom_smooth(method = "lm", alpha = 0.4) +
   geom_point(size = 2) +
   scale_shape_manual(values = c(19, 15)) +
   labs(title = "Factor scores by children's age",
@@ -1232,5 +1232,12 @@ big_table <- efa_adult_small_rot_loadings %>%
   round(2)
 
 big_table
+```
+
+```{r relationships between scores}
+cor.plot(scores_all %>% column_to_rownames(var = "subid") %>% select(-ageGroup))
+cor.test(scores_all$score_F1, scores_all$score_F2, use = "complete.obs")
+cor.test(scores_all$score_F1, scores_all$score_F3, use = "complete.obs")
+cor.test(scores_all$score_F2, scores_all$score_F3, use = "complete.obs")
 ```
 
