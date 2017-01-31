@@ -18,6 +18,7 @@ library(stats)
 library(psych)
 library(GPArotation)
 library(lme4)
+library(RColorBrewer)
 
 # clear environment
 rm(list=ls())
@@ -1169,13 +1170,12 @@ summary(clm_self_control)
 
 at_least_kinda_9y <- d2 %>% 
   filter(!is.na(responseCat),
-         character == "robot",
          ageGroup == "child",
          !is.na(age),
          age > 9) %>%
   distinct() %>%
-  count(capacity, responseCat) %>%
-  group_by(capacity) %>%
+  count(character, capacity, responseCat) %>%
+  group_by(character, capacity) %>%
   mutate(prop_n = n/sum(n, na.rm = T)) %>%
   select(-n) %>%
   spread(responseCat, prop_n) %>% # n) %>%
@@ -1184,7 +1184,7 @@ at_least_kinda_9y <- d2 %>%
   arrange(factor, desc(at_least_kinda))
 
 at_least_kinda_9y %>%
-  select(capacity:at_least_kinda, factor, loading)
+  select(character:at_least_kinda, factor, loading)
 
 at_least_kinda_adult <- d2 %>% 
   filter(!is.na(responseCat),
@@ -1239,5 +1239,142 @@ cor.plot(scores_all %>% column_to_rownames(var = "subid") %>% select(-ageGroup))
 cor.test(scores_all$score_F1, scores_all$score_F2, use = "complete.obs")
 cor.test(scores_all$score_F1, scores_all$score_F3, use = "complete.obs")
 cor.test(scores_all$score_F2, scores_all$score_F3, use = "complete.obs")
+```
+
+```{r new plot}
+# by condition
+d1_bycond3 <- d2 %>%
+  left_join(d_child02 %>% select(subid, age)) %>%
+  select(character, capacity, capWording, responseCat, subid, ageGroup, age) %>%
+  filter(capacity != "na", !is.na(responseCat)) %>%
+  mutate(capWording = gsub(" --.*", "", capWording),
+         ageGroup3 = ifelse(ageGroup == "adult", "adult",
+                            ifelse(is.na(age), NA,
+                                   ifelse(age < 8, "7y", 
+                                          ifelse(age < 9, "8y",
+                                                 ifelse(age < 10, "9y",
+                                                        NA)))))) %>%
+  distinct()
+
+d1_bycond3 %>% select(ageGroup3, subid) %>% distinct() %>% count(ageGroup3)
+
+# make df for plotting
+d1_bycond3_mb_factorsAll <- d1_bycond3 %>% 
+  full_join(efa_comb_small_rot_loadings %>%
+              group_by(factor) %>%
+              mutate(order = rank(desc(loading_abs)))) %>%
+  arrange(character, factor, desc(loading_abs)) %>%
+  rownames_to_column(var = "full_order") %>%
+  mutate(full_order = as.numeric(full_order)) %>%
+  arrange(factorName, full_order) %>%
+  ungroup() %>%
+  filter(!is.na(ageGroup3)) %>%
+  mutate(factorName = factor(factorName,
+                             levels = c("Factor 1", "Factor 2", "Factor 3"),
+                             labels = c("Social-emotional", 
+                                        "Physiological", 
+                                        "Perceptual-cognitive")),
+         agentic = ifelse(capWording %in% c("decide_what_to_do", "make_choices", "have_self_control", 
+                                            "make_plans", "have_goals", 
+                                            "understand_how_somebody_else_is_feeling",
+                                            "know_what's_nice_and_what's_mean", "have_thoughts",
+                                            "remember_things", "communicate_with_somebody_else"),
+                          TRUE, FALSE))
+
+
+d1_bycond3_annotate <- d1_bycond3_mb_factorsAll %>% 
+  filter(order <= 4) %>% 
+  select(character, order, capWording) %>% 
+  distinct()
+
+# ggplot(d1_bycond3_mb_factorsAll %>% filter(order <= 4), 
+#        aes(x = interaction(ageGroup3, desc(order*2)), 
+#            # y = responseCat,
+#            # color = ageGroup3, shape = ageGroup3,
+#            fill = responseCat,
+#            label = ageGroup3)) +
+#            # label = gsub("_", " ", paste(capWording, ageGroup3, sep = ": ")))) +
+#   # facet_grid(factorName ~ character * order, scales = "free", space = "free") +
+#   facet_grid(factorName ~ character, scales = "free", space = "free") +
+#   geom_bar(position = "fill") +
+#   geom_text(aes(y = -0.5, hjust = 0), 
+#             color = "black",
+#             # color = d1_bycond2_mb_factorsAll$textColor,
+#             size = 8) +
+#   geom_text(aes(x = order, y = 1.5, label = capWording), hjust = -1) +
+#   # annotate("text", aes(facet = order, label = d1_bycond3_annotate$capWording)) +
+#   labs(title = "Responses by mental capacity item",
+#        y = "Relative frequency",
+#        x = "Capacity * Age group",
+#        fill = "Response: ") +
+#   scale_y_continuous(breaks = c(0, 0.5, 1)) +
+#   # coord_flip() +
+#   theme_bw() +
+#   theme(text = element_text(size = 28),
+#         # axis.title.y = element_blank(),
+#         axis.text.y = element_blank(),
+#         axis.ticks.y = element_blank(),
+#         legend.position = "top") # 1700 by 2000
+
+ggplot(d1_bycond3_mb_factorsAll %>% 
+         filter(order <= 5) %>%
+         mutate(facet = tools::toTitleCase(paste0(character, " (", ageGroup, ")"))), 
+         # mutate(facet = tools::toTitleCase(paste(ageGroup, character, sep = ": "))), 
+       aes(x = desc(order*2), 
+           fill = character,
+           alpha = responseCat,
+           # fill = responseCat,
+           label = gsub("_", " ", capWording))) +
+  facet_grid(factorName ~ facet) + #, scales = "free", space = "free") +
+  geom_bar(position = "stack") +
+  scale_alpha_manual(values=c(0.4, 0.7, 1)) +
+  geom_text(aes(y = 5, hjust = 0), 
+            color = "black",
+            # color = d1_bycond2_mb_factorsAll$textColor,
+            size = 8) +
+  labs(title = "Responses by mental capacity item",
+       y = "Count",
+       x = "Capacity",
+       alpha = "Response: ",
+       fill = "Character: ") +
+  coord_flip() +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        # axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "top") # 2000 by 1200
+
+ggplot(d1_bycond3_mb_factorsAll %>%
+         filter(order <= 10) %>%
+         # filter(order <= 5 | capWording %in% c("know_what's_nice_and_what's_mean",
+         #                                       "make_choices")) %>% # add selected agency by factor
+         mutate(facet = tools::toTitleCase(paste0(character, " (", ageGroup, ")"))), 
+         # mutate(facet = tools::toTitleCase(paste(ageGroup, character, sep = ": "))), 
+       aes(x = desc(order*2), 
+           fill = character,
+           alpha = responseCat,
+           # fill = responseCat,
+           label = gsub("_", " ", capWording))) +
+  facet_grid(factorName ~ facet, scales = "free", space = "free") +
+  geom_bar(position = "stack") +
+  scale_alpha_manual(values=c(0.4, 0.7, 1)) +
+  geom_text(aes(y = 5, hjust = 0), 
+            color = "black",
+            # color = d1_bycond2_mb_factorsAll$textColor,
+            size = 8) +
+  labs(title = "Responses by mental capacity item",
+       y = "Count",
+       x = "Capacity",
+       alpha = "Response: ",
+       fill = "Character: ") +
+  coord_flip() +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        # axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "top") # 2000 by 1200
+
 ```
 
