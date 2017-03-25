@@ -258,6 +258,13 @@ d1 %>%
   count(ageGroup, ethnicityTF)
 
 # NOTE: not mutually exclusive!!
+
+# mutually exclusive version
+d1 %>% 
+  select(ageGroup, subid, ethnicity) %>%
+  mutate(ethnicity = tolower(ethnicity)) %>%
+  distinct(.keep_all = T) %>%
+  count(ageGroup, ethnicity)
 ```
 
 ```{r missing data}
@@ -1377,4 +1384,3 @@ ggplot(d1_bycond3_mb_factorsAll %>%
         legend.position = "top") # 2000 by 1200
 
 ```
-
