@@ -264,7 +264,21 @@ d1 %>%
   select(ageGroup, subid, ethnicity) %>%
   mutate(ethnicity = tolower(ethnicity)) %>%
   distinct(.keep_all = T) %>%
-  count(ageGroup, ethnicity)
+  mutate(ethnicity2 = ifelse(ageGroup == "adult",
+                             ifelse(grepl(",", ethnicity), "multiple", ethnicity),
+                             ifelse(grepl(";", ethnicity), "multiple", ethnicity))) %>% 
+  mutate(ethnicity3 = ifelse(grepl("other", ethnicity2),
+                             ifelse(grepl("/", ethnicity2) | grepl("mix", ethnicity2),
+                                    "multiple",
+                                    ifelse(grepl("asian", ethnicity2) | grepl("korean", ethnicity2),
+                                           "east asian",
+                                           ethnicity2)),
+                             ethnicity2)) %>%
+  count(ageGroup, ethnicity3) %>%
+  ungroup() %>%
+  group_by(ageGroup) %>%
+  mutate(prop = n/sum(n)) %>%
+  arrange(ageGroup, desc(n))
 ```
 
 ```{r missing data}
@@ -971,6 +985,104 @@ ggplot(scores_children_plotting %>%
        y = "Factor score") # 1000 by 500
 ```
 
+## Adults by age at test
+
+```{r regression age at test data prep}
+scores_adults <- fa(d3_adult, nfactors = efa_comb_max_unrot_nfactors, rotate = rot_type,
+                 cor = cor_type, scores = score_type)$scores %>%
+  data.frame() %>%
+  rownames_to_column(var = "subid") %>%
+  mutate(ageGroup = factor(ifelse(grepl("run", subid), "adult", "adult")))
+
+colnames(scores_adults)[2:4] <- c("score_F1", "score_F2", "score_F3")
+```
+
+```{r regression age at test analysis}
+# analyze
+scores_adults_analysis <- d %>%
+  select(subid, age, character) %>%
+  distinct() %>%
+  left_join(scores_adults) %>%
+  mutate(character = factor(character)) %>%
+  filter(!is.na(score_F1) & !is.na(score_F2) & !is.na(score_F3), !is.na(age)) %>%
+  gather(factor, score, starts_with("score_")) %>%
+  mutate(factor = factor(factor))
+
+# set contrasts
+contrasts(scores_adults_analysis$factor) <- cbind(F1 = c(1, -1, 0), # MAKE SURE TO DOUBLE-CHECK!!
+                                               F3 = c(0, -1, 1))
+contrasts(scores_adults_analysis$character) <- cbind(robot = c(-1, 1))
+
+r4 <- lmer(score ~ character * factor + (1 | subid), scores_adults_analysis)
+r5 <- lmer(score ~ character * factor + scale(age) + (1 | subid), scores_adults_analysis)
+r6 <- lmer(score ~ character * factor * scale(age) + (1 | subid), scores_adults_analysis)
+anova(r4, r5, r6)
+# summary(r4)
+# summary(r5)
+summary(r6)
+
+# stepwise regression
+drop1(r6, test = "Chisq")
+r6_step2 <- lmer(score ~ character * factor + scale(age) + character:scale(age) + factor:scale(age) + (1 | subid), scores_adults_analysis)
+drop1(r6_step2, test = "Chisq")
+summary(r6_step2)
+
+# explore polynoial effects of age
+r6b <- lmer(score ~ character * factor * poly(age, 1) + (1 | subid), scores_adults_analysis)
+r7 <- lmer(score ~ character * factor * poly(age, 2) + (1 | subid), scores_adults_analysis)
+r8 <- lmer(score ~ character * factor * poly(age, 3) + (1 | subid), scores_adults_analysis)
+anova(r6b, r7, r8)
+# summary(r6b)
+summary(r7)
+summary(r8)
+
+round(signif(summary(r6)$coefficients, 3), 2) %>% data.frame() # %>% View()
+
+# stepwise regression
+drop1(r8, test = "Chisq")
+r8_step2 <- lmer(score ~ character * factor * poly(age, 2) + poly(age, 3) + poly(age, 3):character + poly(age, 3):factor + (1 | subid), scores_adults_analysis)
+drop1(r8_step2, test = "Chisq")
+r8_step3 <- lmer(score ~ character * factor + poly(age, 3) + (1 | subid) + poly(age, 2) + character:poly(age, 2) + factor:poly(age, 2), scores_adults_analysis)
+drop1(r8_step3, test = "Chisq")
+summary(r8_step3)
+```
+
+```{r regression age at test plot}
+scores_adults_plotting <- d %>%
+  filter(!is.na(age)) %>%
+  select(subid, age, character) %>%
+  distinct() %>%
+  full_join(scores_adults) %>%
+  mutate(character = factor(character)) %>%
+  filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age)) %>%
+  gather(factor, score, starts_with("score_")) %>%
+  mutate(factor = factor(factor)) %>%
+  multi_boot(column = "score",
+             summary_groups = c("age", "character", "factor"),
+             statistics_functions = c("mean", "ci_lower", "ci_upper"))
+
+# plot
+ggplot(scores_adults_plotting %>%
+         ungroup() %>%
+         mutate(factor = factor(factor,
+                                labels = c("Social-emotional",
+                                           "Physiological",
+                                           "Perceptual-cognitive"))),
+       aes(x = age, y = mean, color = character, fill = character, shape = character)) +
+  facet_wrap("factor", ncol = 3) +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        legend.position = "bottom") +
+  geom_smooth(method = "loess", alpha = 0.4) +
+  # geom_smooth(method = "lm", alpha = 0.4) +
+  geom_point(size = 2) +
+  scale_shape_manual(values = c(19, 15)) +
+  labs(title = "Factor scores by adults's age",
+       # subtitle = "Adults (Study 2)\n",
+       x = "Age (years)",
+       y = "Factor score") # 1000 by 500
+```
+
 ## Big figure
 
 ```{r big figure}
@@ -1383,4 +1495,73 @@ ggplot(d1_bycond3_mb_factorsAll %>%
         axis.ticks.y = element_blank(),
         legend.position = "top") # 2000 by 1200
 
+```
+
+```{r srcd plot version 1}
+d_srcd <- d1_bycond3_mb_factorsAll %>% 
+         filter(factor == "F1", order <= 5) %>%
+  select(ageGroup, character, responseCat, order, capWording) %>%
+  mutate(labeller = ifelse(responseCat == "no", gsub("_", " ", capWording), NA)) %>%
+  distinct()
+  
+ggplot(d1_bycond3_mb_factorsAll %>% 
+         filter(factor == "F1", order <= 5) %>%
+         mutate(facet = tools::toTitleCase(paste(ageGroup, character, sep = ": "))),
+       aes(x = desc(order*2), 
+           fill = character,
+           alpha = responseCat,
+           label = gsub("_", " ", capWording))) +
+  facet_grid(factorName ~ facet) + #, scales = "free", space = "free") +
+  geom_bar(position = "stack", color = "black") +
+  scale_alpha_manual(values=c(0.2, 0.5, 1)) +
+  # scale_alpha_manual(values=c(0.4, 0.7, 1)) +
+  geom_text(data = d_srcd, 
+            aes(x = desc(order*2), label = labeller, y = 5),
+            hjust = 0, angle = 90, color = "black", size = 8, alpha = 1) +
+  labs(title = "Responses by mental capacity item",
+       y = "Count",
+       x = "Capacity",
+       alpha = "Response: ",
+       fill = "Character: ") +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.position = "bottom") # 1000 by 500
+```
+
+```{r srcd plot version 2}
+d_srcd2 <- d1_bycond3_mb_factorsAll %>% 
+         filter(factor == "F1", order <= 5, character == "robot") %>%
+  select(ageGroup, character, responseCat, order, capWording) %>%
+  mutate(labeller = ifelse(responseCat == "no", gsub("_", " ", capWording), NA)) %>%
+  distinct()
+  
+ggplot(d1_bycond3_mb_factorsAll %>% 
+         filter(factor == "F1", order <= 5, character == "robot") %>%
+         mutate(facet = tools::toTitleCase(paste(ageGroup, character, sep = ": "))) %>%
+         mutate(facet = factor(facet, 
+                               levels = c("Child: Robot", "Adult: Robot"),
+                               labels = c("Children: robot", "Adults: robot"))) %>%
+         mutate(ageGroup2 = factor(ageGroup, levels = c("child", "adult"),
+                                   labels = c("children", "adults"))),
+       aes(x = desc(order*2), 
+           alpha = responseCat,
+           label = gsub("_", " ", capWording))) +
+  facet_grid(~ ageGroup2) + #, scales = "free", space = "free") +
+  geom_bar(position = "stack", color = "black", fill = "#00BFC4") +
+  scale_alpha_manual(values=c(0.2, 0.5, 1)) +
+  # scale_alpha_manual(values=c(0.4, 0.7, 1)) +
+  geom_text(data = d_srcd2, 
+            aes(x = desc(order*2), label = labeller, y = 5),
+            hjust = 0, angle = 90, color = "black", size = 8, alpha = 1) +
+  labs(y = "Count",
+       x = "Capacity",
+       alpha = "Response: ",
+       fill = "Character: ") +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.position = "bottom") # 600 by 500
 ```
