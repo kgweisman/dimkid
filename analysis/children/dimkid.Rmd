@@ -987,7 +987,7 @@ ggplot(scores_children_plotting %>%
 
 ## Adults by age at test
 
-```{r regression age at test data prep}
+```{r regression adult age at test data prep}
 scores_adults <- fa(d3_adult, nfactors = efa_comb_max_unrot_nfactors, rotate = rot_type,
                  cor = cor_type, scores = score_type)$scores %>%
   data.frame() %>%
@@ -997,7 +997,7 @@ scores_adults <- fa(d3_adult, nfactors = efa_comb_max_unrot_nfactors, rotate = r
 colnames(scores_adults)[2:4] <- c("score_F1", "score_F2", "score_F3")
 ```
 
-```{r regression age at test analysis}
+```{r regression adult age at test analysis}
 # analyze
 scores_adults_analysis <- d %>%
   select(subid, age, character) %>%
@@ -1047,7 +1047,7 @@ drop1(r8_step3, test = "Chisq")
 summary(r8_step3)
 ```
 
-```{r regression age at test plot}
+```{r regression adult age at test plot}
 scores_adults_plotting <- d %>%
   filter(!is.na(age)) %>%
   select(subid, age, character) %>%
