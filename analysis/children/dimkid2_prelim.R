@@ -17,7 +17,7 @@ graphics.off()
 # READ IN DATA ----------------------------------------------------------------
 
 # run02: campbell, nicky, dru (winter 2017)
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-03-24_anonymized.csv")
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-04-09_anonymized.csv")
 
 # # read in ages
 # ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2017-01-19.csv") %>%
@@ -1008,5 +1008,220 @@ d_step <- d4[complete.cases(d4),] %>%
 # # summary(robot_r1)
 # # summary(robot_r2)
 # summary(robot_r3)
+
+# FROM DIMKID.RMD (2017-04-09) ------------
+
+# settings
+# cor_type <- "cor"
+cor_type <- "poly"
+rot_type <- "varimax"
+# rot_type <- "oblimin"
+
+# Children alone
+
+## Exploratory factor analysis
+
+### Maximal (13-factor) unrotated solution
+
+# do factor analysis
+efa_child_max_unrot <- fa(d4, nfactors = 13, rotate = "none", cor = cor_type)
+efa_child_max_unrot
+
+# examine eigenvalues and variance explained
+efa_child_max_unrot_eigenvalues <- print(efa_child_max_unrot)$Vaccounted %>%
+  t() %>%
+  data.frame()
+
+# count factors with eigenvalues > 1 and variance explained > 5%
+efa_child_max_unrot_nfactors <- efa_child_max_unrot_eigenvalues %>%
+  filter(SS.loadings > 1, Proportion.Explained > 0.05) %>%
+  count() %>%
+  as.numeric()
+efa_child_max_unrot_nfactors
+
+# manually check that each factor is the dominant factor for at least one mental capacity item
+efa_child_max_unrot_loadings <- fa.sort(loadings(efa_child_max_unrot)[]) %>%
+  data.frame() %>%
+  select(1:efa_child_max_unrot_nfactors) %>%
+  rename(F1 = MR1, F2 = MR2, F3 = MR3, F4 = MR4, F5 = MR5, F6 = MR6) %>% # adjust by hand as needed
+  # rename(F1 = MR1, F2 = MR7, F3 = MR2, F4 = MR4) %>% # adjust by hand as needed
+  mutate(F1_abs = abs(F1),
+         F2_abs = abs(F2),
+         F3_abs = abs(F3),
+         F4_abs = abs(F4),
+         F5_abs = abs(F5),
+         F6_abs = abs(F6),
+         loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs, F5_abs, F6_abs),
+         # loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs),
+         loading = ifelse(loading_abs == abs(F1), F1,
+                          ifelse(loading_abs == abs(F2), F2,
+                                 ifelse(loading_abs == abs(F3), F3,
+                                        ifelse(loading_abs == abs(F4), F4,
+                                               ifelse(loading_abs == abs(F5), F5,
+                                                      ifelse(loading_abs == abs(F6), F6,
+                                                             NA)))))),
+         # loading = ifelse(loading_abs == abs(F1), F1,
+         #                  ifelse(loading_abs == abs(F2), F2,
+         #                         ifelse(loading_abs == abs(F3), F3,
+         #                                ifelse(loading_abs == abs(F4), F4,
+         #                                       NA)))),
+         factor = ifelse(loading == F1, "F1",
+                         ifelse(loading == F2, "F2",
+                                ifelse(loading == F3, "F3",
+                                       ifelse(loading == F4, "F4",
+                                              ifelse(loading == F5, "F5",
+                                                     ifelse(loading == F6, "F6",
+                                                            NA)))))),
+         # factor = ifelse(loading == F1, "F1",
+         #                 ifelse(loading == F2, "F2",
+         #                        ifelse(loading == F3, "F3",
+         #                               ifelse(loading == F4, "F4",
+         #                                      NA)))),
+         factorName = ifelse(loading == F1, "Factor 1",
+                             ifelse(loading == F2, "Factor 2",
+                                    ifelse(loading == F3, "Factor 3",
+                                           ifelse(loading == F4, "Factor 4",
+                                                  ifelse(loading == F5, "Factor 5",
+                                                         ifelse(loading == F6, "Factor 6",
+                                                                NA)))))))
+         # factorName = ifelse(loading == F1, "Factor 1",
+         #                     ifelse(loading == F2, "Factor 2",
+         #                            ifelse(loading == F3, "Factor 3",
+         #                                   ifelse(loading == F4, "Factor 4",
+         #                                          NA)))))
+
+efa_child_max_unrot_loadings %>% count(factorName) # drop any factors where n < 1
+
+# reset as needed
+efa_child_max_unrot_nfactors <- efa_child_max_unrot_loadings %>% count(factorName) %>% nrow()
+
+### Maximal (13-factor) rotated solution
+
+# do factor analysis
+efa_child_max_rot <- fa(d4, nfactors = 13, rotate = rot_type, cor = cor_type)
+efa_child_max_rot
+
+# examine eigenvalues and variance explained
+efa_child_max_rot_eigenvalues <- print(efa_child_max_rot)$Vaccounted %>%
+  t() %>%
+  data.frame()
+efa_child_max_rot_eigenvalues
+
+# but see https://www.researchgate.net/post/How_to_calculate_the_explained_variance_per_factor_in_a_principal_axis_factor_analysis if rotation != "varimax"
+# takeaway: use "Proportion.Var" instead of "Proportion.Explained"
+
+### Small rotated solution
+
+# do factor analysis
+efa_child_small_rot <- fa(d4, nfactors = efa_child_max_unrot_nfactors, rotate = rot_type, cor = cor_type)
+efa_child_small_rot
+
+# examine eigenvalues and variance explained
+efa_child_small_rot_eigenvalues <- print(efa_child_small_rot)$Vaccounted %>%
+  t() %>%
+  data.frame()
+efa_child_small_rot_eigenvalues
+
+# but see https://www.researchgate.net/post/How_to_calculate_the_explained_variance_per_factor_in_a_principal_axis_factor_analysis if rotation != "varimax"
+# takeaway: use "Proportion.Var" instead of "Proportion.Explained"
+
+#### Loadings
+
+# make dataframe for all factor loadings and dominant factor
+efa_child_small_rot_loadings <- efa_child_small_rot$loadings[] %>%
+  fa.sort() %>%
+  data.frame() %>%
+  rownames_to_column(var = "capacity") %>%
+  rename(F1 = MR1, F2 = MR2, F3 = MR3, F4 = MR4, F5 = MR5) %>% # adjust by hand as needed
+  # rename(F1 = MR1, F2 = MR2, F3 = MR3) %>% # adjust by hand as needed
+  mutate(F1_abs = abs(F1),
+         F2_abs = abs(F2),
+         F3_abs = abs(F3),
+         F4_abs = abs(F4),
+         F5_abs = abs(F5),
+         loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs, F5_abs),
+         # loading_abs = pmax(F1_abs, F2_abs, F3_abs),
+         loading = ifelse(loading_abs == abs(F1), F1,
+                          ifelse(loading_abs == abs(F2), F2,
+                                 ifelse(loading_abs == abs(F3), F3,
+                                        ifelse(loading_abs == abs(F4), F4,
+                                               ifelse(loading_abs == abs(F5), F5,
+                                                      NA))))),
+         # loading = ifelse(loading_abs == abs(F1), F1,
+         #                  ifelse(loading_abs == abs(F2), F2,
+         #                         ifelse(loading_abs == abs(F3), F3,
+         #                                NA))),
+         factor = ifelse(loading == F1, "F1",
+                         ifelse(loading == F2, "F2",
+                                ifelse(loading == F3, "F3",
+                                       ifelse(loading == F4, "F4",
+                                              ifelse(loading == F5, "F5",
+                                                     NA))))),
+         # factor = ifelse(loading == F1, "F1",
+         #                 ifelse(loading == F2, "F2",
+         #                        ifelse(loading == F3, "F3",
+         #                               NA))),
+         factorName = ifelse(loading == F1, "Factor 1",
+                             ifelse(loading == F2, "Factor 2",
+                                    ifelse(loading == F3, "Factor 3",
+                                           ifelse(loading == F4, "Factor 4",
+                                                  ifelse(loading == F5, "Factor 5",
+                                                         NA)))))) %>%
+         # factorName = ifelse(loading == F1, "Factor 1",
+         #                     ifelse(loading == F2, "Factor 2",
+         #                            ifelse(loading == F3, "Factor 3",
+         #                                   NA)))) %>%
+  select(capacity, F1, F2, F3, 
+         F4, F5,
+         factor, factorName, loading, loading_abs) %>%
+  distinct() %>%
+  full_join(d %>% select(capacity, capWording)) %>%
+  mutate(capWording = gsub("\\ ", "_", gsub(" --.*", "", capWording))) %>%
+  select(capacity, capWording, F1:loading_abs) %>%
+  distinct()
+
+# print out list of items by dominant factor
+efa_child_small_rot_items <- efa_child_small_rot_loadings %>%
+  arrange(factor, desc(loading_abs)) %>%
+  mutate(capWordingPlus = ifelse(loading > 0, capWording, 
+                                 paste0(capWording, " (negative loading)"))) %>%
+  group_by(factor) %>%
+  summarise(items = gsub("_", " ", paste(capWordingPlus, collapse = ", ")))
+head(efa_child_small_rot_items$items, 40)
+
+# plot for ut austin talk
+d4_bychar_mb <- multi_boot(scores_children %>% 
+                             gather(factor, score, -subid) %>%
+                             left_join(d2 %>% select(subid, character)) %>%
+                             distinct(),
+                           column = "score",
+                           summary_groups = c("character", "factor"),
+                           statistics_functions = c("mean", "ci_lower", "ci_upper"))
+
+ggplot(d4_bychar_mb %>%
+         ungroup() %>%
+         filter(!is.na(character)) %>%
+         mutate(factor = factor(factor,
+                                levels = c("score_MR2", "score_MR1", "score_MR3"),
+                                labels = c("Social-emotional",
+                                           "Physiological",
+                                           "Perceptual-cognitive")),
+                character = factor(character,
+                                  levels = c("computer", "robot", "beetle", 
+                                             "bird", "mouse", "goat", "elephant"))),
+       aes(x = character, y = mean, color = character, shape = character)) +
+  facet_wrap("factor", ncol = 3) +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        legend.position = "none") +
+  geom_point(size = 5, position = position_dodge(width = 0.4)) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+                width = 0.2, position = position_dodge(width = 0.4)) +
+  scale_color_manual(values = c("black", "#00BFC4", "#F8766D", rep("black", 4))) +
+  scale_shape_manual(values = c(17, 15, 19, rep(17, 4))) +
+  labs(title = "Factor scores by character",
+       x = "Character",
+       y = "Mean factor score") # 1000 by 500
 
 

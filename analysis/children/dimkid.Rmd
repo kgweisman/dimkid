@@ -1445,7 +1445,7 @@ ggplot(d1_bycond3_mb_factorsAll %>%
            # fill = responseCat,
            label = gsub("_", " ", capWording))) +
   facet_grid(factorName ~ facet) + #, scales = "free", space = "free") +
-  geom_bar(position = "stack") +
+  geom_bar(position = "stack", color = "black") +
   scale_alpha_manual(values=c(0.4, 0.7, 1)) +
   geom_text(aes(y = 5, hjust = 0), 
             color = "black",
@@ -1465,7 +1465,7 @@ ggplot(d1_bycond3_mb_factorsAll %>%
         legend.position = "top") # 2000 by 1200
 
 ggplot(d1_bycond3_mb_factorsAll %>%
-         filter(order <= 10) %>%
+         # filter(order <= 10) %>%
          # filter(order <= 5 | capWording %in% c("know_what's_nice_and_what's_mean",
          #                                       "make_choices")) %>% # add selected agency by factor
          mutate(facet = tools::toTitleCase(paste0(character, " (", ageGroup, ")"))), 
@@ -1476,7 +1476,7 @@ ggplot(d1_bycond3_mb_factorsAll %>%
            # fill = responseCat,
            label = gsub("_", " ", capWording))) +
   facet_grid(factorName ~ facet, scales = "free", space = "free") +
-  geom_bar(position = "stack") +
+  geom_bar(position = "stack", color = "black") +
   scale_alpha_manual(values=c(0.4, 0.7, 1)) +
   geom_text(aes(y = 5, hjust = 0), 
             color = "black",
@@ -1489,7 +1489,7 @@ ggplot(d1_bycond3_mb_factorsAll %>%
        fill = "Character: ") +
   coord_flip() +
   theme_bw() +
-  theme(text = element_text(size = 28),
+  theme(text = element_text(size = 32),
         # axis.title.y = element_blank(),
         axis.text.y = element_blank(),
         axis.ticks.y = element_blank(),
@@ -1537,6 +1537,42 @@ d_srcd2 <- d1_bycond3_mb_factorsAll %>%
   mutate(labeller = ifelse(responseCat == "no", gsub("_", " ", capWording), NA)) %>%
   distinct()
   
+ggplot(d1_bycond3_mb_factorsAll %>% 
+         filter(factor == "F1", order <= 5) %>%
+         mutate(facet = tolower(paste(ageGroup, character, sep = ": "))) %>%
+         mutate(facet = factor(facet, 
+                               levels = c("child: beetle", "child: robot", 
+                                          "adult: beetle", "adult: robot"),
+                               labels = c("children: beetle", "children: robot", 
+                                          "adults: beetle", "adults: robot"))) %>%
+         mutate(ageGroup2 = factor(ageGroup, levels = c("child", "adult"),
+                                   labels = c("children", "adults"))),
+       aes(x = desc(order*2), 
+           fill = character,
+           alpha = responseCat,
+           label = gsub("_", " ", capWording))) +
+  facet_grid(~ facet) + #, scales = "free", space = "free") +
+  geom_bar(position = "stack", color = "black") +
+  scale_alpha_manual(values=c(0.2, 0.5, 1)) +
+  # scale_alpha_manual(values=c(0.4, 0.7, 1)) +
+  geom_text(data = d_srcd2, 
+            aes(x = desc(order*2), label = labeller, y = 5),
+            hjust = 0, angle = 90, color = "black", size = 8, alpha = 1) +
+  labs(y = "Count",
+       x = "Capacity",
+       alpha = "Response: ",
+       fill = "Character: ") +
+  labs(title = "Responses (raw counts)",
+       y = "Count",
+       x = "Capacity",
+       alpha = "response: ",
+       fill = "character: ") +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        legend.position = "bottom") # 1000 by 500
+
 ggplot(d1_bycond3_mb_factorsAll %>% 
          filter(factor == "F1", order <= 5, character == "robot") %>%
          mutate(facet = tools::toTitleCase(paste(ageGroup, character, sep = ": "))) %>%
