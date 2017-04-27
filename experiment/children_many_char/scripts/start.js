@@ -22,15 +22,15 @@ function startStudy() {
 			// record or randomly select character
 			if ($('input#character').val() === "random") {
 				experiment.allData.character = randomElementNR(charList);
-			} else if (["beetle","robot"].indexOf($('input#character').val()) === -1) {
-				window.alert("Please choose: beetle, robot, or random.");
+			} else if (["beetle","bird","computer","doll","elephant","goat","mouse","robot","stuffed_animal"].indexOf($('input#character').val()) === -1) {
+				window.alert("Please choose: beetle, bird, computer, doll, elephant, goat, mouse, robot, stuffed_animal, or random.");
 			} else {
 				var chosenChar = $('input#character').val();
 				experiment.allData.character = characters[chosenChar];
 			}
 
 			// set up introduction and stage slides
-			$("span#pronounChar").text(experiment.allData.character.pronoun+" "+experiment.allData.character.charName);
+			$("span#pronounChar").text(experiment.allData.character.pronoun+" "+experiment.allData.character.singular);
 			$("span#pluralChar").text(experiment.allData.character.plural);
 			$("img#charImage").attr("src", experiment.allData.character.imageSource);
 			
@@ -45,9 +45,14 @@ function startStudy() {
 					$('img#charImage').width(270);
 					$('img#charImage').height(180);
 					break;
+				case "doll":
 				case "robot":
 					$('img#charImage').width(180);
 					$('img#charImage').height(270);
+					break;
+				case "stuffed_animal":
+					$('img#charImage').width(220);
+					$('img#charImage').height(220);
 			}
 
 			showSlide("introduction");
