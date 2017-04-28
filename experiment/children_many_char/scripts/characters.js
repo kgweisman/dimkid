@@ -22,7 +22,7 @@ function makeCharacters() {
 	addCharacter("goat", "a", "goat", "goats");
 	addCharacter("elephant", "a", "elephant", "elephants");
 	addCharacter("doll", "a", "doll", "dolls");
-	addCharacter("stuffed_animal", "a", "stuffed animal", "stuffed animals");
+	addCharacter("teddy_bear", "a", "teddy bear", "teddy bears");
 
 	// make list of characters
 	charList = Object.keys(characters).map(function (key) {return characters[key]});
