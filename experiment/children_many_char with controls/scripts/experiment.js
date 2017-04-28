@@ -168,6 +168,11 @@ function makeExperiment() {
 
 				// set text for this trial
 				$("span#question").text(data.capWording);
+				if (data.trialNum === 1) {
+					$("span#youcansay").text("You can say...");
+				} else {
+					$("span#youcansay").text("");					
+				}
 
 				// set tooltip definition for this trial
 				if (data.trialNum === 1) {
