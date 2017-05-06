@@ -17,7 +17,7 @@ graphics.off()
 # READ IN DATA ----------------------------------------------------------------
 
 # run02: campbell, nicky, dru (winter 2017)
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-04-09_anonymized.csv")
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-05-06_anonymized.csv")
 
 # # read in ages
 # ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2017-01-19.csv") %>%
@@ -41,7 +41,8 @@ d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dim
 
 # filter by condition
 d0 <- d %>%
-  filter(character %in% c("computer", "robot", "beetle", "bird", "goat", "mouse", "elephant"))
+  filter(character %in% c("computer", "robot", "beetle", "bird", "goat", "mouse", "elephant",
+                          "doll", "teddy_bear"))
 
 # # examine and filter by ages
 # qplot(age, data = d0 %>% select(subid, age) %>% distinct()) +
@@ -327,10 +328,12 @@ ggplot(d2_bycond_mb,
   scale_shape_manual(values = c(19, # beetle
                                 13, # bird
                                 7, # computer
+                                1, # doll
                                 8, # elephant
                                 17, # goat
                                 18, # mouse
-                                15)) + # robot
+                                15, # robot
+                                2 )) + # teddy_bear
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
                 position = position_dodge(width = .75), width = 0) +
   geom_text(aes(y = -0.18, hjust = 0), color = d2_bycond_mb$textColor, size = 6) +
@@ -392,10 +395,12 @@ ggplot(d2_bycond_ADULT_mb,
   scale_shape_manual(values = c(19, # beetle
                                 13, # bird
                                 7, # computer
+                                1, # doll
                                 8, # elephant
                                 17, # goat
                                 18, # mouse
-                                15)) + # robot
+                                15, # robot
+                                2 )) + # teddy_bear
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
                 position = position_dodge(width = .75), width = 0) +
   geom_text(aes(y = -0.18, hjust = 0), color = d2_bycond_ADULT_mb$textColor, size = 6) +
@@ -614,6 +619,7 @@ d_reg2 <- d2 %>%
          # ageCat2 = ifelse(age < median(age, na.rm = T), "young", ifelse(age < 10, "old", NA))) %>%
   mutate(character = factor(character,
                             levels = c("computer", "robot", 
+                                       "doll", "teddy_bear",
                                        "beetle", "bird", 
                                        "mouse", "goat", "elephant"))) %>%
   filter(!is.na(score_MR1) & !is.na(score_MR2) & !is.na(score_MR3)) %>% #, !is.na(age)) %>%
@@ -680,12 +686,14 @@ d_reg2 <- d0 %>%
 # set contrasts
 contrasts(d_reg2$factor) <- cbind(MR1 = c(1, 0, 0), # MAKE SURE TO DOUBLE-CHECK!!
                                   MR3 = c(0, 0, 1))
-contrasts(d_reg2$character) <- cbind(robot = c(0, 0, -1, 0, 0, 0, 1),
-                                     beetle = c(1, 0, -1, 0, 0, 0, 0),
-                                     bird = c(0, 1, -1, 0, 0, 0, 0),
-                                     mouse = c(0, 0, -1, 0, 0, 1, 0),
-                                     goat = c(0, 0, -1, 0, 1, 0, 0),
-                                     elephant = c(0, 0, -1, 1, 0, 0, 0))
+contrasts(d_reg2$character) <- cbind(robot = c(0, 0, -1, 0, 0, 0, 0, 1, 0),
+                                     doll = c(0, 0, -1, 1, 0, 0, 0, 0, 0),
+                                     teddy_bear = c(0, 0, -1, 0, 0, 0, 0, 0, 1),
+                                     beetle = c(1, 0, -1, 0, 0, 0, 0, 0, 0),
+                                     bird = c(0, 1, -1, 0, 0, 0, 0, 0, 0),
+                                     mouse = c(0, 0, -1, 0, 0, 0, 1, 0, 0),
+                                     goat = c(0, 0, -1, 0, 0, 1, 0, 0, 0),
+                                     elephant = c(0, 0, -1, 0, 1, 0, 0, 0, 0))
 
 r1 <- lmer(score ~ character * factor + (1 | subid), d_reg2)
 # r2 <- lmer(score ~ character * factor + scale(age) + (1 | subid), d_reg2)
@@ -1009,7 +1017,7 @@ d_step <- d4[complete.cases(d4),] %>%
 # # summary(robot_r2)
 # summary(robot_r3)
 
-# FROM DIMKID.RMD (2017-04-09) ------------
+# FROM DIMKID.RMD ------------
 
 # settings
 # cor_type <- "cor"
@@ -1043,7 +1051,7 @@ efa_child_max_unrot_nfactors
 efa_child_max_unrot_loadings <- fa.sort(loadings(efa_child_max_unrot)[]) %>%
   data.frame() %>%
   select(1:efa_child_max_unrot_nfactors) %>%
-  rename(F1 = MR1, F2 = MR2, F3 = MR3, F4 = MR4, F5 = MR5, F6 = MR6) %>% # adjust by hand as needed
+  rename(F1 = MR1, F2 = MR2, F3 = MR3, F4 = MR4, F5 = MR5, F6 = MR6, F7 = MR7) %>% # adjust by hand as needed
   # rename(F1 = MR1, F2 = MR7, F3 = MR2, F4 = MR4) %>% # adjust by hand as needed
   mutate(F1_abs = abs(F1),
          F2_abs = abs(F2),
@@ -1051,7 +1059,8 @@ efa_child_max_unrot_loadings <- fa.sort(loadings(efa_child_max_unrot)[]) %>%
          F4_abs = abs(F4),
          F5_abs = abs(F5),
          F6_abs = abs(F6),
-         loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs, F5_abs, F6_abs),
+         F7_abs = abs(F7),
+         loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs, F5_abs, F6_abs, F7_abs),
          # loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs),
          loading = ifelse(loading_abs == abs(F1), F1,
                           ifelse(loading_abs == abs(F2), F2,
@@ -1059,7 +1068,8 @@ efa_child_max_unrot_loadings <- fa.sort(loadings(efa_child_max_unrot)[]) %>%
                                         ifelse(loading_abs == abs(F4), F4,
                                                ifelse(loading_abs == abs(F5), F5,
                                                       ifelse(loading_abs == abs(F6), F6,
-                                                             NA)))))),
+                                                             ifelse(loading_abs == abs(F7), F7,
+                                                                    NA))))))),
          # loading = ifelse(loading_abs == abs(F1), F1,
          #                  ifelse(loading_abs == abs(F2), F2,
          #                         ifelse(loading_abs == abs(F3), F3,
@@ -1071,7 +1081,8 @@ efa_child_max_unrot_loadings <- fa.sort(loadings(efa_child_max_unrot)[]) %>%
                                        ifelse(loading == F4, "F4",
                                               ifelse(loading == F5, "F5",
                                                      ifelse(loading == F6, "F6",
-                                                            NA)))))),
+                                                            ifelse(loading == F7, "F7",
+                                                                   NA))))))),
          # factor = ifelse(loading == F1, "F1",
          #                 ifelse(loading == F2, "F2",
          #                        ifelse(loading == F3, "F3",
@@ -1083,7 +1094,8 @@ efa_child_max_unrot_loadings <- fa.sort(loadings(efa_child_max_unrot)[]) %>%
                                            ifelse(loading == F4, "Factor 4",
                                                   ifelse(loading == F5, "Factor 5",
                                                          ifelse(loading == F6, "Factor 6",
-                                                                NA)))))))
+                                                                ifelse(loading == F7, "Factor 7",
+                                                                       NA))))))))
          # factorName = ifelse(loading == F1, "Factor 1",
          #                     ifelse(loading == F2, "Factor 2",
          #                            ifelse(loading == F3, "Factor 3",
@@ -1094,6 +1106,7 @@ efa_child_max_unrot_loadings %>% count(factorName) # drop any factors where n < 
 
 # reset as needed
 efa_child_max_unrot_nfactors <- efa_child_max_unrot_loadings %>% count(factorName) %>% nrow()
+# efa_child_max_unrot_nfactors <- 3
 
 ### Maximal (13-factor) rotated solution
 
@@ -1132,47 +1145,47 @@ efa_child_small_rot_loadings <- efa_child_small_rot$loadings[] %>%
   fa.sort() %>%
   data.frame() %>%
   rownames_to_column(var = "capacity") %>%
-  rename(F1 = MR1, F2 = MR2, F3 = MR3, F4 = MR4, F5 = MR5) %>% # adjust by hand as needed
-  # rename(F1 = MR1, F2 = MR2, F3 = MR3) %>% # adjust by hand as needed
+  # rename(F1 = MR1, F2 = MR2, F3 = MR3, F4 = MR4, F5 = MR5) %>% # adjust by hand as needed
+  rename(F1 = MR1, F2 = MR2, F3 = MR3) %>% # adjust by hand as needed
   mutate(F1_abs = abs(F1),
          F2_abs = abs(F2),
          F3_abs = abs(F3),
-         F4_abs = abs(F4),
-         F5_abs = abs(F5),
-         loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs, F5_abs),
-         # loading_abs = pmax(F1_abs, F2_abs, F3_abs),
-         loading = ifelse(loading_abs == abs(F1), F1,
-                          ifelse(loading_abs == abs(F2), F2,
-                                 ifelse(loading_abs == abs(F3), F3,
-                                        ifelse(loading_abs == abs(F4), F4,
-                                               ifelse(loading_abs == abs(F5), F5,
-                                                      NA))))),
+         # F4_abs = abs(F4),
+         # F5_abs = abs(F5),
+         # loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs, F5_abs),
+         loading_abs = pmax(F1_abs, F2_abs, F3_abs),
          # loading = ifelse(loading_abs == abs(F1), F1,
          #                  ifelse(loading_abs == abs(F2), F2,
          #                         ifelse(loading_abs == abs(F3), F3,
-         #                                NA))),
-         factor = ifelse(loading == F1, "F1",
-                         ifelse(loading == F2, "F2",
-                                ifelse(loading == F3, "F3",
-                                       ifelse(loading == F4, "F4",
-                                              ifelse(loading == F5, "F5",
-                                                     NA))))),
+         #                                ifelse(loading_abs == abs(F4), F4,
+         #                                       ifelse(loading_abs == abs(F5), F5,
+         #                                              NA))))),
+         loading = ifelse(loading_abs == abs(F1), F1,
+                          ifelse(loading_abs == abs(F2), F2,
+                                 ifelse(loading_abs == abs(F3), F3,
+                                        NA))),
          # factor = ifelse(loading == F1, "F1",
          #                 ifelse(loading == F2, "F2",
          #                        ifelse(loading == F3, "F3",
-         #                               NA))),
-         factorName = ifelse(loading == F1, "Factor 1",
-                             ifelse(loading == F2, "Factor 2",
-                                    ifelse(loading == F3, "Factor 3",
-                                           ifelse(loading == F4, "Factor 4",
-                                                  ifelse(loading == F5, "Factor 5",
-                                                         NA)))))) %>%
+         #                               ifelse(loading == F4, "F4",
+         #                                      ifelse(loading == F5, "F5",
+         #                                             NA))))),
+         factor = ifelse(loading == F1, "F1",
+                         ifelse(loading == F2, "F2",
+                                ifelse(loading == F3, "F3",
+                                       NA))),
          # factorName = ifelse(loading == F1, "Factor 1",
          #                     ifelse(loading == F2, "Factor 2",
          #                            ifelse(loading == F3, "Factor 3",
-         #                                   NA)))) %>%
+         #                                   ifelse(loading == F4, "Factor 4",
+         #                                          ifelse(loading == F5, "Factor 5",
+         #                                                 NA)))))) %>%
+         factorName = ifelse(loading == F1, "Factor 1",
+                             ifelse(loading == F2, "Factor 2",
+                                    ifelse(loading == F3, "Factor 3",
+                                           NA)))) %>%
   select(capacity, F1, F2, F3, 
-         F4, F5,
+         # F4, F5,
          factor, factorName, loading, loading_abs) %>%
   distinct() %>%
   full_join(d %>% select(capacity, capWording)) %>%
@@ -1207,7 +1220,11 @@ ggplot(d4_bychar_mb %>%
                                            "Physiological",
                                            "Perceptual-cognitive")),
                 character = factor(character,
-                                  levels = c("computer", "robot", "beetle", 
+                                  levels = c("computer", "robot", 
+                                             "doll", "teddy_bear", "beetle", 
+                                             "bird", "mouse", "goat", "elephant"),
+                                  labels = c("computer", "robot", 
+                                             "doll", "teddy bear", "beetle", 
                                              "bird", "mouse", "goat", "elephant"))),
        aes(x = character, y = mean, color = character, shape = character)) +
   facet_wrap("factor", ncol = 3) +
@@ -1218,8 +1235,8 @@ ggplot(d4_bychar_mb %>%
   geom_point(size = 5, position = position_dodge(width = 0.4)) +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
                 width = 0.2, position = position_dodge(width = 0.4)) +
-  scale_color_manual(values = c("black", "#00BFC4", "#F8766D", rep("black", 4))) +
-  scale_shape_manual(values = c(17, 15, 19, rep(17, 4))) +
+  scale_color_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
+  scale_shape_manual(values = c(17, 15, rep(17, 2), 19, rep(17, 4))) +
   labs(title = "Factor scores by character",
        x = "Character",
        y = "Mean factor score") # 1000 by 500
