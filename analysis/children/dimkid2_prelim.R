@@ -41,8 +41,11 @@ d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dim
 
 # filter by condition
 d0 <- d %>%
-  filter(character %in% c("computer", "robot", "beetle", "bird", "goat", "mouse", "elephant",
-                          "doll", "teddy_bear"))
+  filter(character %in% c("computer", "robot", "doll", "teddy_bear",
+                          "beetle", "bird", "goat", "mouse", "elephant"))
+
+d0 <- d0 %>%
+  filter(!character %in% c("doll", "teddy_bear"))
 
 # # examine and filter by ages
 # qplot(age, data = d0 %>% select(subid, age) %>% distinct()) +
@@ -241,6 +244,21 @@ fa.sort(fa(d4, nfactors = 3, rotate = "varimax")$loadings[]) %>% View()
 
 fa.sort(fa(d4, nfactors = 4, rotate = "oblimin")$loadings[]) %>% View() # oblimin rotation
 fa.sort(fa(d4, nfactors = 3, rotate = "oblimin")$loadings[]) %>% View() # oblimin rotation
+
+# # cor.plot (for SBSC)
+# fa.sort(fa(d4, nfactors = 3, rotate = "varimax")$loadings[]) %>% 
+#   data.frame() %>%
+#   rownames_to_column(var = "capacity") %>%
+#   left_join(d2_bycond_mb %>% data.frame() %>% select(capacity, capWordingShort) %>% distinct()) %>%
+#   mutate(capWordingShort = gsub("sense whether something is close by or far away", 
+#                                 "sense... far away", capWordingShort)) %>%
+#   mutate(capWordingShort = gsub("figure out how to do things", 
+#                                 "figure out how...", capWordingShort)) %>%
+#   mutate(capWordingShort = gsub("sense temperatures", 
+#                                 "sense temp...", capWordingShort)) %>%
+#   select(-capacity) %>%
+#   column_to_rownames(var = "capWordingShort") %>%
+#   cor.plot()
 
 # # polychoric correlations
 # fa.parallel(d4, cor = "poly")
