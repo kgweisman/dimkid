@@ -1,14 +1,37 @@
-factors_df <- fa.sort(fa(d4, nfactors = 3, rotate = rot_type)$loadings[]) %>% 
+# SET PARAMETERS (overrides previous run)
+
+# cor_type <- "cor"
+# cor_type <- "poly"
+
+# rot_type <- "varimax"
+rot_type <- "oblimin"
+
+# score_type <- "tenBerge"
+score_type <- "Thurstone"
+
+# data_set <- d3_adult # study 1, 2 characters, adults
+# data_set <- d3_child # study 2, 2 characters, children
+# data_set <- d3_combined # studies 1-2, 2 characters, adults/children
+data_set <- d4 # study 3, 7 characters
+
+cap_key <- d1_bycond2_mb_factorsAll # studies 1-2, 2 characters, adults/children
+# cap_key <- d2_bycond_mb %>% rename(capWording = capWordingShort) # study 3, 7 characters
+
+# MAKE DATAFRAME
+
+factors_df <- fa.sort(fa(data_set, nfactors = 3, rotate = rot_type)$loadings[]) %>% 
   data.frame() %>%
   rownames_to_column(var = "capacity") %>%
-  left_join(d2_bycond_mb %>% data.frame() %>% select(capacity, capWordingShort) %>% distinct()) %>%
-  mutate(capWordingShort = gsub("sense whether something is close by or far away",
-                                "sense whether... far away", capWordingShort)) %>%
+  # left_join(d2_bycond_mb %>% data.frame() %>% select(capacity, capWordingShort) %>% distinct()) %>%
+  left_join(cap_key %>% data.frame() %>% select(capacity, capWording) %>% distinct()) %>%
+  mutate(capWordingShort = gsub("_", " ", capWording)) %>%
+  # mutate(capWordingShort = gsub("sense whether something is close by or far away",
+  #                               "sense whether... far away", cap_key)) %>%
   # mutate(capWordingShort = gsub("figure out how to do things", 
-  #                               "figure out how...", capWordingShort)) %>%
+  #                               "figure out how...", cap_key)) %>%
   # mutate(capWordingShort = gsub("sense temperatures", 
-  #                               "sense temp...", capWordingShort)) %>%
-  select(-capacity) %>%
+  #                               "sense temp...", cap_key)) %>%
+  select(capWordingShort, MR1, MR2, MR3) %>%
   # column_to_rownames(var = "capWordingShort") %>%
   rename(capacity = capWordingShort, Factor1 = MR1, Factor2 = MR2, Factor3 = MR3) %>%
   rownames_to_column(var = "order") %>%
@@ -37,3 +60,6 @@ ggplot(factors_df_long, aes(x = factor(factor, labels = c("Factor 1", "Factor 2"
   theme(text = element_text(size = 24),
         axis.title = element_blank(),
         panel.grid = element_blank())
+
+# correlations by participant
+cor.ci(fa(data_set, nfactors = 3, rotate = rot_type, cor = cor_type, scores = score_type)$scores %>% data.frame())
