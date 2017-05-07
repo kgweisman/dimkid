@@ -1,4 +1,4 @@
-factors_df <- fa.sort(fa(d4, nfactors = 3, rotate = "oblimin")$loadings[]) %>% 
+factors_df <- fa.sort(fa(d4, nfactors = 3, rotate = rot_type)$loadings[]) %>% 
   data.frame() %>%
   rownames_to_column(var = "capacity") %>%
   left_join(d2_bycond_mb %>% data.frame() %>% select(capacity, capWordingShort) %>% distinct()) %>%
