@@ -389,13 +389,13 @@ cor_type <- "cor"
 # cor_type <- "poly"
 
 # set rotation type: varimax or oblimin?
-rot_type <- "varimax"
-# rot_type <- "oblimin"
+# rot_type <- "varimax"
+rot_type <- "oblimin"
 
 # set score type
 # score_type <- "regression"
-# score_type <- "Thurstone"
-score_type <- "tenBerge"
+score_type <- "Thurstone"
+# score_type <- "tenBerge"
 # score_type <- "Anderson"
 # score_type <- "Bartlett"
 # score_type <- "Harman"
@@ -975,8 +975,8 @@ ggplot(scores_children_plotting %>%
   theme_bw() +
   theme(text = element_text(size = 28),
         legend.position = "bottom") +
-  geom_smooth(method = "loess", alpha = 0.4) +
-  # geom_smooth(method = "lm", alpha = 0.4) +
+  # geom_smooth(method = "loess", alpha = 0.4) +
+  geom_smooth(method = "lm", alpha = 0.4) +
   geom_point(size = 2) +
   scale_shape_manual(values = c(19, 15)) +
   labs(title = "Factor scores by children's age",
@@ -1073,8 +1073,8 @@ ggplot(scores_adults_plotting %>%
   theme_bw() +
   theme(text = element_text(size = 28),
         legend.position = "bottom") +
-  geom_smooth(method = "loess", alpha = 0.4) +
-  # geom_smooth(method = "lm", alpha = 0.4) +
+  # geom_smooth(method = "loess", alpha = 0.4) +
+  geom_smooth(method = "lm", alpha = 0.4) +
   geom_point(size = 2) +
   scale_shape_manual(values = c(19, 15)) +
   labs(title = "Factor scores by adults's age",
@@ -1358,6 +1358,11 @@ cor.plot(scores_all %>% column_to_rownames(var = "subid") %>% select(-ageGroup))
 cor.test(scores_all$score_F1, scores_all$score_F2, use = "complete.obs")
 cor.test(scores_all$score_F1, scores_all$score_F3, use = "complete.obs")
 cor.test(scores_all$score_F2, scores_all$score_F3, use = "complete.obs")
+
+
+cor.ci(scores_adults %>% column_to_rownames(var = "subid") %>% select(-ageGroup))
+cor.ci(scores_children %>% column_to_rownames(var = "subid") %>% select(-ageGroup))
+cor.ci(scores_all %>% column_to_rownames(var = "subid") %>% select(-ageGroup))
 ```
 
 ```{r new plot}

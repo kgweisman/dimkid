@@ -67,3 +67,4 @@ ggplot(indiv_scores_mb %>%
        y = "Mean subscale score") # 1000 by 500
 
 indiv_scores %>% spread(factor, score) %>% select(BODY:SOUL) %>% cor.ci()
+indiv_scores_mb %>% select(character, factor, mean) %>% spread(factor, mean) %>% ungroup() %>% select(BODY:SOUL) %>% cor.ci()

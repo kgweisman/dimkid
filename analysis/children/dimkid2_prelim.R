@@ -346,12 +346,13 @@ ggplot(d2_bycond_mb,
   scale_shape_manual(values = c(19, # beetle
                                 13, # bird
                                 7, # computer
-                                1, # doll
+                                # 1, # doll
                                 8, # elephant
                                 17, # goat
                                 18, # mouse
-                                15, # robot
-                                2 )) + # teddy_bear
+                                15)) + # robot
+                                # 15, # robot
+                                # 2 )) + # teddy_bear
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
                 position = position_dodge(width = .75), width = 0) +
   geom_text(aes(y = -0.18, hjust = 0), color = d2_bycond_mb$textColor, size = 6) +
@@ -616,10 +617,18 @@ ggplot(d2_bycond_ADULT_mb,
 
 # ...FACTOR SCORES ------------------------------------------------------------
 
-# set score_type
-score_type <- "tenBerge"
+# set score type
+# score_type <- "regression"
+score_type <- "Thurstone"
+# score_type <- "tenBerge"
+# score_type <- "Anderson"
+# score_type <- "Bartlett"
 
-scores_children <- fa(d4, nfactors = 3, rotate = "varimax", 
+# set rotation type
+# rot_type <- "varimax"
+rot_type <- "oblimin"
+
+scores_children <- fa(d4, nfactors = 3, rotate = rot_type, 
                       cor = cor_type, scores = score_type)$scores %>%
   data.frame() %>%
   rownames_to_column(var = "subid") %>%
@@ -656,18 +665,7 @@ ggplot(d_reg2, aes(x = character, y = score)) +
 
 # REGRESSION ON FACTOR SCORES -------------------------------------------------
 
-# set correlation type: pearson or polychoric?
-cor_type <- "cor"
-# cor_type <- "poly"
-
-# set score type
-score_type <- "regression"
-# score_type <- "Thurstone"
-# score_type <- "tenBerge"
-# score_type <- "Anderson"
-# score_type <- "Bartlett"
-
-scores_children <- fa(d4, nfactors = 3, rotate = "varimax", 
+scores_children <- fa(d4, nfactors = 3, rotate = rot_type, 
                       cor = cor_type, scores = score_type)$scores %>%
   data.frame() %>%
   rownames_to_column(var = "subid") %>%
@@ -1037,12 +1035,6 @@ d_step <- d4[complete.cases(d4),] %>%
 
 # FROM DIMKID.RMD ------------
 
-# settings
-# cor_type <- "cor"
-cor_type <- "poly"
-rot_type <- "varimax"
-# rot_type <- "oblimin"
-
 # Children alone
 
 ## Exploratory factor analysis
@@ -1069,56 +1061,57 @@ efa_child_max_unrot_nfactors
 efa_child_max_unrot_loadings <- fa.sort(loadings(efa_child_max_unrot)[]) %>%
   data.frame() %>%
   select(1:efa_child_max_unrot_nfactors) %>%
-  rename(F1 = MR1, F2 = MR2, F3 = MR3, F4 = MR4, F5 = MR5, F6 = MR6, F7 = MR7) %>% # adjust by hand as needed
+  # rename(F1 = MR1, F2 = MR2, F3 = MR3, F4 = MR4, F5 = MR5, F6 = MR6, F7 = MR7) %>% # adjust by hand as needed
+  rename(F1 = MR1, F2 = MR8, F3 = MR2, F4 = MR3) %>% # adjust by hand as needed
   # rename(F1 = MR1, F2 = MR7, F3 = MR2, F4 = MR4) %>% # adjust by hand as needed
   mutate(F1_abs = abs(F1),
          F2_abs = abs(F2),
          F3_abs = abs(F3),
          F4_abs = abs(F4),
-         F5_abs = abs(F5),
-         F6_abs = abs(F6),
-         F7_abs = abs(F7),
-         loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs, F5_abs, F6_abs, F7_abs),
-         # loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs),
-         loading = ifelse(loading_abs == abs(F1), F1,
-                          ifelse(loading_abs == abs(F2), F2,
-                                 ifelse(loading_abs == abs(F3), F3,
-                                        ifelse(loading_abs == abs(F4), F4,
-                                               ifelse(loading_abs == abs(F5), F5,
-                                                      ifelse(loading_abs == abs(F6), F6,
-                                                             ifelse(loading_abs == abs(F7), F7,
-                                                                    NA))))))),
+         # F5_abs = abs(F5),
+         # F6_abs = abs(F6),
+         # F7_abs = abs(F7),
+         # loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs, F5_abs, F6_abs, F7_abs),
+         loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs),
          # loading = ifelse(loading_abs == abs(F1), F1,
          #                  ifelse(loading_abs == abs(F2), F2,
          #                         ifelse(loading_abs == abs(F3), F3,
          #                                ifelse(loading_abs == abs(F4), F4,
-         #                                       NA)))),
-         factor = ifelse(loading == F1, "F1",
-                         ifelse(loading == F2, "F2",
-                                ifelse(loading == F3, "F3",
-                                       ifelse(loading == F4, "F4",
-                                              ifelse(loading == F5, "F5",
-                                                     ifelse(loading == F6, "F6",
-                                                            ifelse(loading == F7, "F7",
-                                                                   NA))))))),
+         #                                       ifelse(loading_abs == abs(F5), F5,
+         #                                              ifelse(loading_abs == abs(F6), F6,
+         #                                                     ifelse(loading_abs == abs(F7), F7,
+         #                                                            NA))))))),
+         loading = ifelse(loading_abs == abs(F1), F1,
+                          ifelse(loading_abs == abs(F2), F2,
+                                 ifelse(loading_abs == abs(F3), F3,
+                                        ifelse(loading_abs == abs(F4), F4,
+                                               NA)))),
          # factor = ifelse(loading == F1, "F1",
          #                 ifelse(loading == F2, "F2",
          #                        ifelse(loading == F3, "F3",
          #                               ifelse(loading == F4, "F4",
-         #                                      NA)))),
-         factorName = ifelse(loading == F1, "Factor 1",
-                             ifelse(loading == F2, "Factor 2",
-                                    ifelse(loading == F3, "Factor 3",
-                                           ifelse(loading == F4, "Factor 4",
-                                                  ifelse(loading == F5, "Factor 5",
-                                                         ifelse(loading == F6, "Factor 6",
-                                                                ifelse(loading == F7, "Factor 7",
-                                                                       NA))))))))
+         #                                      ifelse(loading == F5, "F5",
+         #                                             ifelse(loading == F6, "F6",
+         #                                                    ifelse(loading == F7, "F7",
+         #                                                           NA))))))),
+         factor = ifelse(loading == F1, "F1",
+                         ifelse(loading == F2, "F2",
+                                ifelse(loading == F3, "F3",
+                                       ifelse(loading == F4, "F4",
+                                              NA)))),
          # factorName = ifelse(loading == F1, "Factor 1",
          #                     ifelse(loading == F2, "Factor 2",
          #                            ifelse(loading == F3, "Factor 3",
          #                                   ifelse(loading == F4, "Factor 4",
-         #                                          NA)))))
+         #                                          ifelse(loading == F5, "Factor 5",
+         #                                                 ifelse(loading == F6, "Factor 6",
+         #                                                        ifelse(loading == F7, "Factor 7",
+         #                                                               NA))))))))
+         factorName = ifelse(loading == F1, "Factor 1",
+                             ifelse(loading == F2, "Factor 2",
+                                    ifelse(loading == F3, "Factor 3",
+                                           ifelse(loading == F4, "Factor 4",
+                                                  NA)))))
 
 efa_child_max_unrot_loadings %>% count(factorName) # drop any factors where n < 1
 
@@ -1253,6 +1246,8 @@ ggplot(d4_bychar_mb %>%
   geom_point(size = 5, position = position_dodge(width = 0.4)) +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
                 width = 0.2, position = position_dodge(width = 0.4)) +
+  # scale_color_manual(values = c("black", "#00BFC4", "#F8766D", rep("black", 4))) +
+  # scale_shape_manual(values = c(17, 15, 19, rep(17, 4))) +
   scale_color_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
   scale_shape_manual(values = c(17, 15, rep(17, 2), 19, rep(17, 4))) +
   labs(title = "Factor scores by character",

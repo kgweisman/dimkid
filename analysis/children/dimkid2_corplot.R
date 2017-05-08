@@ -14,8 +14,8 @@ score_type <- "Thurstone"
 # data_set <- d3_combined # studies 1-2, 2 characters, adults/children
 data_set <- d4 # study 3, 7 characters
 
-cap_key <- d1_bycond2_mb_factorsAll # studies 1-2, 2 characters, adults/children
-# cap_key <- d2_bycond_mb %>% rename(capWording = capWordingShort) # study 3, 7 characters
+# cap_key <- d1_bycond2_mb_factorsAll # studies 1-2, 2 characters, adults/children
+cap_key <- d2_bycond_mb %>% rename(capWording = capWordingShort) # study 3, 7 characters
 
 # MAKE DATAFRAME
 
@@ -39,12 +39,17 @@ factors_df <- fa.sort(fa(data_set, nfactors = 3, rotate = rot_type)$loadings[]) 
 
 factors_df_long <- factors_df %>%
   gather(factor, loading, -capacity, -order) %>%
+  # mutate(factor = factor(gsub("Factor", "Factor ", factor))) %>%
+  # mutate(factor = factor(gsub("Factor", "Factor ", factor),
+  #                        levels = c("Factor 1", "Factor 3", "Factor 2"))) %>%
+  mutate(factor = factor(gsub("Factor", "Factor ", factor),
+                         levels = c("Factor 2", "Factor 1", "Factor 3"))) %>%
   arrange(order, factor)
 
-ggplot(factors_df_long, aes(x = factor(factor, labels = c("Factor 1", "Factor 2", "Factor 3")), 
+ggplot(factors_df_long, aes(x = factor, 
                             y = reorder(capacity, desc(order)), fill = loading)) + 
   geom_tile(color = "black") +
-  geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+  # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
   scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
                        guide = guide_colorbar(title = element_blank(),
                                               barheight = 20)) +
@@ -59,7 +64,7 @@ ggplot(factors_df_long, aes(x = factor(factor, labels = c("Factor 1", "Factor 2"
   theme_minimal() +
   theme(text = element_text(size = 24),
         axis.title = element_blank(),
-        panel.grid = element_blank())
+        panel.grid = element_blank()) # 1000 by 1000 
 
 # correlations by participant
 cor.ci(fa(data_set, nfactors = 3, rotate = rot_type, cor = cor_type, scores = score_type)$scores %>% data.frame())
