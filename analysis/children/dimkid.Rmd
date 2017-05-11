@@ -862,8 +862,10 @@ ggplot(scores_all_plotting %>%
                                            "Physiological",
                                            "Perceptual-cognitive")),
                 ageGroup = factor(ageGroup,
-                                  levels = c("child", "adult"),
-                                  labels = c("children", "adults"))),
+                                  levels = c("adult", "child"),
+                                  labels = c("adults", "children"))),
+                                  # levels = c("child", "adult"),
+                                  # labels = c("children", "adults"))),
        aes(x = ageGroup, y = mean, color = character, shape = character)) +
   facet_wrap("factor", ncol = 3) +
   theme_bw() +
