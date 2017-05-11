@@ -389,13 +389,13 @@ cor_type <- "cor"
 # cor_type <- "poly"
 
 # set rotation type: varimax or oblimin?
-# rot_type <- "varimax"
-rot_type <- "oblimin"
+rot_type <- "varimax"
+# rot_type <- "oblimin"
 
 # set score type
 # score_type <- "regression"
-score_type <- "Thurstone"
-# score_type <- "tenBerge"
+# score_type <- "Thurstone"
+score_type <- "tenBerge"
 # score_type <- "Anderson"
 # score_type <- "Bartlett"
 # score_type <- "Harman"
