@@ -22,7 +22,7 @@ jsonFormat = function(wd, runName) {
   setwd(wd)
   
   # gather files
-  files = dir("run02 individual sessions/")
+  files = dir(paste(runName, "individual sessions/"))
   
   # make dataframe
   d.raw = data.frame()
@@ -30,7 +30,7 @@ jsonFormat = function(wd, runName) {
   for(i in 1:length(files)) {
     
     # read in file
-    d.temp <- read.csv(paste0("./run02 individual sessions/", files[i])) %>%
+    d.temp <- read.csv(paste0("./", runName, " individual sessions/", files[i])) %>%
       mutate(run = runName) %>%
       mutate_each(funs = "as.character")
     
@@ -44,10 +44,15 @@ jsonFormat = function(wd, runName) {
 
 # --- READING IN DATA OBJECTS -------------------------------------------------
 
-# Kid run 01 (2017-01-22 to ...)
+# Kid run 02 (2017-01-22 to ...)
 d_run_02 = jsonFormat(
   wd = "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/data/",
   runName = "run_02")
+
+# Kid run 03 (2017-04-16 to ...)
+d_run_03 = jsonFormat(
+  wd = "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/data/",
+  runName = "run_03")
 
 # --- TIDYING -----------------------------------------------------------------
 
@@ -70,7 +75,7 @@ d_run_02 = jsonFormat(
 
 # clean up variables
 d_tidy = d_run_02 %>%
-  # full_join(d_run_03) %>%
+  full_join(d_run_03) %>%
   mutate(
     run = factor(run),
     subid = toupper(as.character(subid)),
@@ -90,7 +95,14 @@ glimpse(d_tidy)
 # --- WRITING ANONYMIZED CSV --------------------------------------------------
 
 # write to de-identified csv file
-write.csv(d_tidy, "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-05-06_anonymized.csv")
 
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-05-06_anonymized.csv")[-1]        
+# run 02
+write.csv(d_tidy %>% filter(run == "run_02"), "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-06-23_anonymized.csv")
 
+# run 03
+write.csv(d_tidy %>% filter(run == "run_03"), "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-06-23_anonymized.csv")
+
+# read in
+d2 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-06-23_anonymized.csv")[-1]        
+
+d3 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-06-23_anonymized.csv")[-1]        

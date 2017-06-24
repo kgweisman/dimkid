@@ -14,10 +14,18 @@ library(langcog)
 rm(list=ls())
 graphics.off()
 
+# functions
+mean_na <- function(x){mean(x, na.rm = T)}
+ci_lower_na <- function(x){ci_lower(x, na.rm = T)}
+ci_upper_na <- function(x){ci_upper(x, na.rm = T)}
+
 # READ IN DATA ----------------------------------------------------------------
 
-# run02: campbell, nicky, dru (winter 2017)
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-05-06_anonymized.csv")
+# run_02: campbell, nicky, dru (winter 2017)
+# d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-06-23_anonymized.csv")
+
+# run_03: bobby, olivia, (ariel), kara, catherine (spring-summer 2017)
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-06-23_anonymized.csv")
 
 # # read in ages
 # ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2017-01-19.csv") %>%
@@ -44,8 +52,12 @@ d0 <- d %>%
   filter(character %in% c("computer", "robot", "doll", "teddy_bear",
                           "beetle", "bird", "goat", "mouse", "elephant"))
 
-d0 <- d0 %>%
-  filter(!character %in% c("doll", "teddy_bear"))
+# d0 <- d0 %>%
+#   filter(!character %in% c("doll", "teddy_bear"))
+
+# filter by capacity
+d0 <- d %>%
+  filter(!capacity %in% c("metal", "on_off"))
 
 # # examine and filter by ages
 # qplot(age, data = d0 %>% select(subid, age) %>% distinct()) +
@@ -346,13 +358,13 @@ ggplot(d2_bycond_mb,
   scale_shape_manual(values = c(19, # beetle
                                 13, # bird
                                 7, # computer
-                                # 1, # doll
+                                1, # doll
                                 8, # elephant
                                 17, # goat
                                 18, # mouse
-                                15)) + # robot
-                                # 15, # robot
-                                # 2 )) + # teddy_bear
+                                # 15)) + # robot
+                                15, # robot
+                                2 )) + # teddy_bear
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
                 position = position_dodge(width = .75), width = 0) +
   geom_text(aes(y = -0.18, hjust = 0), color = d2_bycond_mb$textColor, size = 6) +
@@ -1041,6 +1053,9 @@ d_step <- d4[complete.cases(d4),] %>%
 
 ### Maximal (13-factor) unrotated solution
 
+cor_type <- "cor"
+rot_type <- "oblimin"
+
 # do factor analysis
 efa_child_max_unrot <- fa(d4, nfactors = 13, rotate = "none", cor = cor_type)
 efa_child_max_unrot
@@ -1062,17 +1077,18 @@ efa_child_max_unrot_loadings <- fa.sort(loadings(efa_child_max_unrot)[]) %>%
   data.frame() %>%
   select(1:efa_child_max_unrot_nfactors) %>%
   # rename(F1 = MR1, F2 = MR2, F3 = MR3, F4 = MR4, F5 = MR5, F6 = MR6, F7 = MR7) %>% # adjust by hand as needed
-  rename(F1 = MR1, F2 = MR8, F3 = MR2, F4 = MR3) %>% # adjust by hand as needed
   # rename(F1 = MR1, F2 = MR7, F3 = MR2, F4 = MR4) %>% # adjust by hand as needed
+  rename(F1 = MR1, F2 = MR4, F3 = MR5) %>% # adjust by hand as needed
   mutate(F1_abs = abs(F1),
          F2_abs = abs(F2),
          F3_abs = abs(F3),
-         F4_abs = abs(F4),
+         # F4_abs = abs(F4),
          # F5_abs = abs(F5),
          # F6_abs = abs(F6),
          # F7_abs = abs(F7),
          # loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs, F5_abs, F6_abs, F7_abs),
-         loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs),
+         # loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs),
+         loading_abs = pmax(F1_abs, F2_abs, F3_abs),
          # loading = ifelse(loading_abs == abs(F1), F1,
          #                  ifelse(loading_abs == abs(F2), F2,
          #                         ifelse(loading_abs == abs(F3), F3,
@@ -1081,11 +1097,15 @@ efa_child_max_unrot_loadings <- fa.sort(loadings(efa_child_max_unrot)[]) %>%
          #                                              ifelse(loading_abs == abs(F6), F6,
          #                                                     ifelse(loading_abs == abs(F7), F7,
          #                                                            NA))))))),
+         # loading = ifelse(loading_abs == abs(F1), F1,
+         #                  ifelse(loading_abs == abs(F2), F2,
+         #                         ifelse(loading_abs == abs(F3), F3,
+         #                                ifelse(loading_abs == abs(F4), F4,
+         #                                       NA)))),
          loading = ifelse(loading_abs == abs(F1), F1,
                           ifelse(loading_abs == abs(F2), F2,
                                  ifelse(loading_abs == abs(F3), F3,
-                                        ifelse(loading_abs == abs(F4), F4,
-                                               NA)))),
+                                        NA))),
          # factor = ifelse(loading == F1, "F1",
          #                 ifelse(loading == F2, "F2",
          #                        ifelse(loading == F3, "F3",
@@ -1094,11 +1114,15 @@ efa_child_max_unrot_loadings <- fa.sort(loadings(efa_child_max_unrot)[]) %>%
          #                                             ifelse(loading == F6, "F6",
          #                                                    ifelse(loading == F7, "F7",
          #                                                           NA))))))),
+         # factor = ifelse(loading == F1, "F1",
+         #                 ifelse(loading == F2, "F2",
+         #                        ifelse(loading == F3, "F3",
+         #                               ifelse(loading == F4, "F4",
+         #                                      NA)))),
          factor = ifelse(loading == F1, "F1",
                          ifelse(loading == F2, "F2",
                                 ifelse(loading == F3, "F3",
-                                       ifelse(loading == F4, "F4",
-                                              NA)))),
+                                              NA))),
          # factorName = ifelse(loading == F1, "Factor 1",
          #                     ifelse(loading == F2, "Factor 2",
          #                            ifelse(loading == F3, "Factor 3",
@@ -1107,11 +1131,15 @@ efa_child_max_unrot_loadings <- fa.sort(loadings(efa_child_max_unrot)[]) %>%
          #                                                 ifelse(loading == F6, "Factor 6",
          #                                                        ifelse(loading == F7, "Factor 7",
          #                                                               NA))))))))
+         # factorName = ifelse(loading == F1, "Factor 1",
+         #                     ifelse(loading == F2, "Factor 2",
+         #                            ifelse(loading == F3, "Factor 3",
+         #                                   ifelse(loading == F4, "Factor 4",
+         #                                          NA)))))
          factorName = ifelse(loading == F1, "Factor 1",
                              ifelse(loading == F2, "Factor 2",
                                     ifelse(loading == F3, "Factor 3",
-                                           ifelse(loading == F4, "Factor 4",
-                                                  NA)))))
+                                                  NA))))
 
 efa_child_max_unrot_loadings %>% count(factorName) # drop any factors where n < 1
 
@@ -1220,16 +1248,16 @@ d4_bychar_mb <- multi_boot(scores_children %>%
                              distinct(),
                            column = "score",
                            summary_groups = c("character", "factor"),
-                           statistics_functions = c("mean", "ci_lower", "ci_upper"))
+                           statistics_functions = c("mean_na", "ci_lower_na", "ci_upper_na"))
 
 ggplot(d4_bychar_mb %>%
          ungroup() %>%
          filter(!is.na(character)) %>%
          mutate(factor = factor(factor,
-                                levels = c("score_MR2", "score_MR1", "score_MR3"),
-                                labels = c("Social-emotional",
-                                           "Physiological",
-                                           "Perceptual-cognitive")),
+                                levels = c("score_MR2", "score_MR1", "score_MR3")), #,
+                                # labels = c("Social-emotional",
+                                #            "Physiological",
+                                #            "Perceptual-cognitive")),
                 character = factor(character,
                                   levels = c("computer", "robot", 
                                              "doll", "teddy_bear", "beetle", 
@@ -1237,14 +1265,14 @@ ggplot(d4_bychar_mb %>%
                                   labels = c("computer", "robot", 
                                              "doll", "teddy bear", "beetle", 
                                              "bird", "mouse", "goat", "elephant"))),
-       aes(x = character, y = mean, color = character, shape = character)) +
-  facet_wrap("factor", ncol = 3) +
+       aes(x = character, y = mean_na, color = character, shape = character)) +
+  facet_wrap(~ factor, ncol = 3) +
   theme_bw() +
   theme(text = element_text(size = 28),
         axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
         legend.position = "none") +
   geom_point(size = 5, position = position_dodge(width = 0.4)) +
-  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+  geom_errorbar(aes(ymin = ci_lower_na, ymax = ci_upper_na), 
                 width = 0.2, position = position_dodge(width = 0.4)) +
   # scale_color_manual(values = c("black", "#00BFC4", "#F8766D", rep("black", 4))) +
   # scale_shape_manual(values = c(17, 15, 19, rep(17, 4))) +
@@ -1253,5 +1281,3 @@ ggplot(d4_bychar_mb %>%
   labs(title = "Factor scores by character",
        x = "Character",
        y = "Mean factor score") # 1000 by 500
-
-
