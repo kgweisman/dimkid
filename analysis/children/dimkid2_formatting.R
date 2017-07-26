@@ -97,12 +97,12 @@ glimpse(d_tidy)
 # write to de-identified csv file
 
 # run 02
-write.csv(d_tidy %>% filter(run == "run_02"), "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-06-23_anonymized.csv")
+write.csv(d_tidy %>% filter(run == "run_02"), "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-07-24_anonymized.csv")
 
 # run 03
-write.csv(d_tidy %>% filter(run == "run_03"), "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-06-23_anonymized.csv")
+write.csv(d_tidy %>% filter(run == "run_03"), "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-07-24_anonymized.csv")
 
 # read in
-d2 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-06-23_anonymized.csv")[-1]        
+d2 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-07-24_anonymized.csv")[-1]        
 
-d3 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-06-23_anonymized.csv")[-1]        
+d3 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-07-24_anonymized.csv")[-1]        

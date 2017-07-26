@@ -22,10 +22,10 @@ ci_upper_na <- function(x){ci_upper(x, na.rm = T)}
 # READ IN DATA ----------------------------------------------------------------
 
 # run_02: campbell, nicky, dru (winter 2017)
-# d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-06-23_anonymized.csv")
+# d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-07-24_anonymized.csv")
 
 # run_03: bobby, olivia, (ariel), kara, catherine (spring-summer 2017)
-d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-06-23_anonymized.csv")
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-07-24_anonymized.csv")
 
 # # read in ages
 # ages <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/dimkid_participant_ages_2017-01-19.csv") %>%
@@ -1054,7 +1054,8 @@ d_step <- d4[complete.cases(d4),] %>%
 ### Maximal (13-factor) unrotated solution
 
 cor_type <- "cor"
-rot_type <- "oblimin"
+# rot_type <- "oblimin"
+rot_type <- "varimax"
 
 # do factor analysis
 efa_child_max_unrot <- fa(d4, nfactors = 13, rotate = "none", cor = cor_type)
@@ -1077,18 +1078,18 @@ efa_child_max_unrot_loadings <- fa.sort(loadings(efa_child_max_unrot)[]) %>%
   data.frame() %>%
   select(1:efa_child_max_unrot_nfactors) %>%
   # rename(F1 = MR1, F2 = MR2, F3 = MR3, F4 = MR4, F5 = MR5, F6 = MR6, F7 = MR7) %>% # adjust by hand as needed
-  # rename(F1 = MR1, F2 = MR7, F3 = MR2, F4 = MR4) %>% # adjust by hand as needed
-  rename(F1 = MR1, F2 = MR4, F3 = MR5) %>% # adjust by hand as needed
+  rename(F1 = MR1, F2 = MR5, F3 = MR2, F4 = MR6) %>% # adjust by hand as needed
+  # rename(F1 = MR1, F2 = MR5, F3 = MR7) %>% # adjust by hand as needed
   mutate(F1_abs = abs(F1),
          F2_abs = abs(F2),
          F3_abs = abs(F3),
-         # F4_abs = abs(F4),
+         F4_abs = abs(F4),
          # F5_abs = abs(F5),
          # F6_abs = abs(F6),
          # F7_abs = abs(F7),
          # loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs, F5_abs, F6_abs, F7_abs),
-         # loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs),
-         loading_abs = pmax(F1_abs, F2_abs, F3_abs),
+         loading_abs = pmax(F1_abs, F2_abs, F3_abs, F4_abs),
+         # loading_abs = pmax(F1_abs, F2_abs, F3_abs),
          # loading = ifelse(loading_abs == abs(F1), F1,
          #                  ifelse(loading_abs == abs(F2), F2,
          #                         ifelse(loading_abs == abs(F3), F3,
@@ -1097,15 +1098,15 @@ efa_child_max_unrot_loadings <- fa.sort(loadings(efa_child_max_unrot)[]) %>%
          #                                              ifelse(loading_abs == abs(F6), F6,
          #                                                     ifelse(loading_abs == abs(F7), F7,
          #                                                            NA))))))),
-         # loading = ifelse(loading_abs == abs(F1), F1,
-         #                  ifelse(loading_abs == abs(F2), F2,
-         #                         ifelse(loading_abs == abs(F3), F3,
-         #                                ifelse(loading_abs == abs(F4), F4,
-         #                                       NA)))),
          loading = ifelse(loading_abs == abs(F1), F1,
                           ifelse(loading_abs == abs(F2), F2,
                                  ifelse(loading_abs == abs(F3), F3,
-                                        NA))),
+                                        ifelse(loading_abs == abs(F4), F4,
+                                               NA)))),
+         # loading = ifelse(loading_abs == abs(F1), F1,
+         #                  ifelse(loading_abs == abs(F2), F2,
+         #                         ifelse(loading_abs == abs(F3), F3,
+         #                                NA))),
          # factor = ifelse(loading == F1, "F1",
          #                 ifelse(loading == F2, "F2",
          #                        ifelse(loading == F3, "F3",
@@ -1114,15 +1115,15 @@ efa_child_max_unrot_loadings <- fa.sort(loadings(efa_child_max_unrot)[]) %>%
          #                                             ifelse(loading == F6, "F6",
          #                                                    ifelse(loading == F7, "F7",
          #                                                           NA))))))),
-         # factor = ifelse(loading == F1, "F1",
-         #                 ifelse(loading == F2, "F2",
-         #                        ifelse(loading == F3, "F3",
-         #                               ifelse(loading == F4, "F4",
-         #                                      NA)))),
          factor = ifelse(loading == F1, "F1",
                          ifelse(loading == F2, "F2",
                                 ifelse(loading == F3, "F3",
-                                              NA))),
+                                       ifelse(loading == F4, "F4",
+                                              NA)))),
+         # factor = ifelse(loading == F1, "F1",
+         #                 ifelse(loading == F2, "F2",
+         #                        ifelse(loading == F3, "F3",
+         #                                      NA))),
          # factorName = ifelse(loading == F1, "Factor 1",
          #                     ifelse(loading == F2, "Factor 2",
          #                            ifelse(loading == F3, "Factor 3",
@@ -1131,15 +1132,15 @@ efa_child_max_unrot_loadings <- fa.sort(loadings(efa_child_max_unrot)[]) %>%
          #                                                 ifelse(loading == F6, "Factor 6",
          #                                                        ifelse(loading == F7, "Factor 7",
          #                                                               NA))))))))
-         # factorName = ifelse(loading == F1, "Factor 1",
-         #                     ifelse(loading == F2, "Factor 2",
-         #                            ifelse(loading == F3, "Factor 3",
-         #                                   ifelse(loading == F4, "Factor 4",
-         #                                          NA)))))
          factorName = ifelse(loading == F1, "Factor 1",
                              ifelse(loading == F2, "Factor 2",
                                     ifelse(loading == F3, "Factor 3",
-                                                  NA))))
+                                           ifelse(loading == F4, "Factor 4",
+                                                  NA)))))
+         # factorName = ifelse(loading == F1, "Factor 1",
+         #                     ifelse(loading == F2, "Factor 2",
+         #                            ifelse(loading == F3, "Factor 3",
+         #                                          NA))))
 
 efa_child_max_unrot_loadings %>% count(factorName) # drop any factors where n < 1
 
