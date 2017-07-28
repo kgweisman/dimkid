@@ -1884,6 +1884,33 @@ scores_s12_plotting <- d1 %>%
              statistics_functions = c("mean", "ci_lower", "ci_upper"))
 ```
 
+```{r s12 regression}
+tempC <- d1 %>% mutate(subid = paste(character, subid, sep = "_")) %>%
+  full_join(d2 %>% mutate(subid = paste(character, subid, sep = "_"))) %>%
+  full_join(data.frame(efa_d12_all_rotatedN$scores) %>%
+            rownames_to_column("subid") %>%
+              gather(factor, score, -subid)) %>%
+  mutate(factor = factor(factor),
+         age_group = factor(age_group),
+         character = factor(character)) # %>%
+  # filter(!is.na(factor), !is.na(age_group), !is.na(character))
+
+contrasts(tempC$factor) = cbind(factor1 = c(1, -1, 0),
+                                factor3 = c(0, -1, 1))
+
+contrasts(tempC$age_group) = cbind(children = c(-1, 1))
+contrasts(tempC$character) = cbind(robot = c(-1, 1))
+
+library(lme4)
+r1 <- lmer(score ~ character * factor * age_group + (1 | subid) , tempC)
+summary(r1)
+
+# library(brms)
+# r1b <- brm(score ~ character * factor * age_group + (1 | subid) , tempC,
+#             family = "gaussian")
+# summary(r1b)
+```
+
 ```{r s12 figure factor scores by age group, fig.width = 6, fig.height = 3}
 # plot
 ggplot(scores_s12_plotting %>%
@@ -2095,5 +2122,174 @@ ggplot(scores_s34_plotting %>%
        x = "Character",
        y = "Mean factor score",
        shape = "Age group: ") # 1000 by 500
+```
+
+# Factor scores by age
+
+## Study 1
+
+```{r s1 factor scores by age setup, fig.width = 6, fig.height = 3}
+scores_s1_plotting <- d1 %>% 
+  select(subid, age, character) %>% 
+  distinct() %>% 
+  mutate(subid = paste(character, subid, sep = "_")) %>%
+  full_join(efa_d1_all_rotatedN$scores %>% 
+              data.frame() %>% 
+              rownames_to_column("subid")) %>%
+  mutate(character = factor(character)) %>%
+  rename(score_F1 = MR1, score_F2 = MR2, score_F3 = MR3) %>%
+  filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age)) %>%
+  gather(factor, score, starts_with("score_")) %>%
+  mutate(factor = factor(factor))
+
+ggplot(scores_s1_plotting %>%
+         ungroup() %>%
+         mutate(factor = factor(factor,
+                                levels = c("score_F2", "score_F1", "score_F3"),
+                                labels = c("Social-emotional",
+                                           "Physiological",
+                                           "Perceptual-cognitive"))),
+       aes(x = age, y = score, color = character, fill = character, shape = character)) +
+  facet_wrap("factor", ncol = 3) +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        legend.position = "bottom") +
+  # geom_smooth(method = "loess", alpha = 0.4) +
+  geom_smooth(method = "lm", alpha = 0.4) +
+  geom_point(size = 2) +
+  scale_shape_manual(values = c(19, 15)) +
+  labs(title = "Factor scores by adults' age",
+       # subtitle = "Adults (Study 1)\n",
+       x = "Age (years)",
+       y = "Factor score") # 1000 by 500
+```
+
+## Study 2
+
+```{r s2 factor scores by age setup, fig.width = 6, fig.height = 3}
+scores_s2_plotting <- d2 %>% 
+  select(subid, age, character) %>% 
+  distinct() %>% 
+  mutate(subid = paste(character, subid, sep = "_")) %>%
+  full_join(efa_d2_all_rotatedN$scores %>% 
+              data.frame() %>% 
+              rownames_to_column("subid")) %>%
+  mutate(character = factor(character)) %>%
+  rename(score_F1 = MR1, score_F2 = MR2, score_F3 = MR3) %>%
+  filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age)) %>%
+  gather(factor, score, starts_with("score_")) %>%
+  mutate(factor = factor(factor))
+
+ggplot(scores_s2_plotting %>%
+         ungroup() %>%
+         mutate(factor = factor(factor,
+                                labels = c("Social-emotional",
+                                           "Physiological",
+                                           "Perceptual-cognitive"))),
+       aes(x = age, y = score, color = character, fill = character, shape = character)) +
+  facet_wrap("factor", ncol = 3) +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        legend.position = "bottom") +
+  # geom_smooth(method = "loess", alpha = 0.4) +
+  geom_smooth(method = "lm", alpha = 0.4) +
+  geom_point(size = 2) +
+  scale_shape_manual(values = c(19, 15)) +
+  labs(title = "Factor scores by children's age",
+       # subtitle = "Children (Study 2)\n",
+       x = "Age (years)",
+       y = "Factor score") # 1000 by 500
+```
+
+## Studies 1-2
+
+```{r s12 scatter plus mean scores by age setup, fig.width = 5, fig.height = 3}
+tempA <- d2 %>% 
+  select(subid, age, character) %>% 
+  distinct() %>% 
+  mutate(subid = paste(character, subid, sep = "_")) %>%
+  full_join(efa_d12_all_rotatedN$scores %>% 
+              data.frame() %>% 
+              rownames_to_column("subid")) %>%
+  mutate(character = factor(character)) %>%
+  rename(score_F1 = MR1, score_F2 = MR2, score_F3 = MR3) %>%
+  filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age)) %>%
+  gather(factor, score, starts_with("score_")) %>%
+  mutate(factor = factor(factor,
+                         labels = c("Social-emotional",
+                                    "Physiological",
+                                    "Perceptual-cognitive")))
+
+tempB <- scores_s12_plotting %>%
+  filter(age_group == "adults") %>%
+  ungroup() %>%
+  mutate(factor = factor(factor,
+                         labels = c("Social-emotional",
+                                    "Physiological",
+                                    "Perceptual-cognitive")),
+         age = 11) 
+
+ggplot(tempA,
+       aes(x = age, y = score, color = character, fill = character, shape = character)) +
+  facet_wrap("factor", ncol = 3) +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom") +
+  # geom_smooth(method = "loess", alpha = 0.4) +
+  geom_smooth(method = "lm", alpha = 0.4) +
+  geom_point(size = 2) +
+  geom_point(data = tempB, aes(y = mean),
+             size = 4, position = position_dodge(width = 0.6)) +
+  geom_errorbar(data = tempB, aes(ymin = ci_lower, ymax = ci_upper, y = mean), width = 0.4,
+                position = position_dodge(width = 0.6)) +
+  scale_shape_manual(values = c(19, 15)) +
+  scale_x_continuous(breaks = c(7:11), labels = c("7y", "8y", "9y", "10y", "adults")) +
+  labs(title = "Factor scores by age",
+       # subtitle = "Children (Study 2)\n",
+       x = "Age",
+       y = "Factor score") # 1000 by 500
+```
+
+## Studies 3-4
+
+```{r s34 factor scores by age setup, fig.width = 6, fig.height = 3}
+# scores_s34_plotting <- d3 %>% 
+#   select(subid, age, character) %>% 
+#   distinct() %>% 
+#   mutate(subid = paste(character, subid, sep = "_")) %>%
+#   full_join(d4 %>%
+#               mutate(age = (as.numeric(dateOfTest) - as.numeric(dateOfBirth))/365) %>%
+#               select(subid, age, character) %>%
+#               distinct() %>%
+#               mutate(subid = paste(character, subid, sep = "_"))) %>%
+#   full_join(efa_d3_all_rotatedN$scores %>% 
+#               data.frame() %>% 
+#               rownames_to_column("subid")) %>%
+#   mutate(character = factor(character)) %>%
+#   rename(score_F1 = MR1, score_F2 = MR2, score_F3 = MR3) %>%
+#   filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age)) %>%
+#   gather(factor, score, starts_with("score_")) %>%
+#   mutate(factor = factor(factor))
+# 
+# ggplot(scores_s34_plotting %>%
+#          ungroup() %>%
+#          mutate(factor = factor(factor,
+#                                 labels = c("Social-emotional",
+#                                            "Physiological",
+#                                            "Perceptual-cognitive"))),
+#        aes(x = age, y = score, color = character, fill = character, shape = character)) +
+#   facet_wrap("factor", ncol = 3) +
+#   theme_bw() +
+#   theme(text = element_text(size = 28),
+#         legend.position = "bottom") +
+#   # geom_smooth(method = "loess", alpha = 0.4) +
+#   geom_smooth(method = "lm", alpha = 0.4) +
+#   geom_point(size = 2) +
+#   scale_shape_manual(values = c(19, 15)) +
+#   labs(title = "Factor scores by children's age",
+#        # subtitle = "Children (Studies 3-4)\n",
+#        x = "Age (years)",
+#        y = "Factor score") # 1000 by 500
 ```
 
