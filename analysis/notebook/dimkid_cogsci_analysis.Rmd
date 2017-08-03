@@ -2628,11 +2628,11 @@ ggplot(tempA,
 
 ```{r s34 factor scores by age setup, fig.width = 10, fig.height = 20}
 scores_s34_plotting <- d3 %>%
-  select(subid, age, character) %>%
+  select(age_group, subid, age, character) %>%
   distinct() %>%
   mutate(subid = paste(character, subid, sep = "_")) %>%
   full_join(d4 %>%
-              select(subid, age, character) %>%
+              select(age_group, subid, age, character) %>%
               distinct() %>%
               mutate(subid = paste(character, subid, sep = "_"))) %>%
   full_join(efa_d34_all_rotatedN$scores %>%
@@ -2655,7 +2655,8 @@ ggplot(scores_s34_plotting %>%
                 character = factor(character,
                                    levels = c("computer", "robot", "doll", "teddy_bear",
                                               "beetle", "bird", "mouse", "goat", "elephant"))),
-       aes(x = age, y = score, color = character, fill = character, shape = character)) +
+       # aes(x = age, y = score, color = character, fill = character, shape = character)) +
+       aes(x = age, y = score, gropu = age_group)) +
   # facet_wrap("factor", ncol = 3) +
   # facet_grid(factor ~ character) +
   facet_grid(character ~ factor) +
@@ -2663,14 +2664,14 @@ ggplot(scores_s34_plotting %>%
   theme(text = element_text(size = 28),
         legend.position = "none") +
   # geom_smooth(method = "loess", alpha = 0.4) +
-  # geom_smooth(method = "lm", alpha = 0.4) +
-  geom_smooth(method = "lm", alpha = 0.4, formula = y ~ poly(x, 2)) +
+  geom_smooth(method = "lm", alpha = 0.4) +
+  # geom_smooth(method = "lm", alpha = 0.4, formula = y ~ poly(x, 2)) +
   # geom_smooth(method = "lm", alpha = 0.4, formula = y ~ poly(x, 3)) +
   geom_point(size = 2) +
   scale_x_continuous(breaks = seq(2, 12, 2)) +
-  scale_fill_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
-  scale_color_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
-  scale_shape_manual(values = c(17, 15, rep(17, 2), 19, rep(17, 4))) +
+  # scale_fill_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
+  # scale_color_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
+  # scale_shape_manual(values = c(17, 15, rep(17, 2), 19, rep(17, 4))) +
   labs(title = "Factor scores by children's age",
        # subtitle = "Children (Studies 3-4)\n",
        x = "Age (years)",
