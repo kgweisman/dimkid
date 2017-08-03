@@ -1950,6 +1950,100 @@ ggplot(factors_s3_long, aes(x = factor,
         panel.grid = element_blank()) # 1000 by 1000
 ```
 
+### Study 4 (4-6y)
+
+```{r figure heatmap s4, fig.width = 5, fig.height = 4}
+factors_s4 <- fa.sort(fa(d4_all, nfactors = 3, cor = chosenCorType, rotate = chosenRotType)$loadings[]) %>%
+  data.frame() %>%
+  rownames_to_column(var = "item") %>%
+  left_join(wording) %>%
+  select(wording, MR1, MR2, MR3) %>%
+  rename(capacity = wording, Factor1 = MR1, Factor2 = MR2, Factor3 = MR3) %>%
+  rownames_to_column(var = "order") %>%
+  mutate(order = as.numeric(order))
+
+factors_s4_long <- factors_s4 %>%
+  gather(factor, loading, -capacity, -order) %>%
+  mutate(factor = factor(gsub("Factor", "F", factor))) %>%
+  # mutate(factor = factor(gsub("Factor", "F", factor),
+  #                        levels = c("F1", "F3", "F2"))) %>%
+  mutate(factor = factor(gsub("Factor", "F", factor),
+                         levels = c("F2", "F1", "F3"))) %>%
+  arrange(order, factor)
+
+factors_s4_blank1 <- factors_s4_long %>%
+  mutate(loading = rep(100, length(factors_s4_long$loading)))
+# factors_s4_blank2 <- factors_s4_long %>%
+#   mutate(loading = ifelse(factor == "F1", loading, rep(100, length(factors_s4_long$loading)*2/3)))
+factors_s4_blank2 <- factors_s4_long %>%
+  mutate(loading = ifelse(factor == "F2", loading, rep(100, length(factors_s4_long$loading)*2/3)))
+factors_s4_blank3 <- factors_s4_long %>%
+  mutate(loading = ifelse(factor != "F3", loading, rep(100, length(factors_s4_long$loading)*1/3)))
+
+# ggplot(factors_s4_blank1, aes(x = factor,
+#                             y = reorder(capacity, desc(order)), fill = loading)) +
+#   geom_tile(color = "black") +
+#   # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+#   scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
+#                        guide = guide_colorbar(title = element_blank(),
+#                                               barheight = 20)) +
+#   scale_x_discrete(position = "top") +
+#   theme_minimal() +
+#   theme(text = element_text(size = 24),
+#         axis.text.x = element_text(size = 28),
+#         axis.title = element_blank(),
+#         panel.grid = element_blank()) # 1000 by 1000
+# 
+# ggplot(factors_s4_blank2, aes(x = factor,
+#                               y = reorder(capacity, desc(order)), fill = loading)) +
+#   geom_tile(color = "black") +
+#   # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+#   scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
+#                        guide = guide_colorbar(title = element_blank(),
+#                                               barheight = 20)) +
+#   scale_x_discrete(position = "top") +
+#   theme_minimal() +
+#   theme(text = element_text(size = 24),
+#         axis.text.x = element_text(size = 28),
+#         axis.title = element_blank(),
+#         panel.grid = element_blank()) # 1000 by 1000
+# 
+# ggplot(factors_s4_blank3, aes(x = factor,
+#                               y = reorder(capacity, desc(order)), fill = loading)) +
+#   geom_tile(color = "black") +
+#   # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+#   scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
+#                        guide = guide_colorbar(title = element_blank(),
+#                                               barheight = 20)) +
+#   scale_x_discrete(position = "top") +
+#   theme_minimal() +
+#   theme(text = element_text(size = 24),
+#         axis.text.x = element_text(size = 28),
+#         axis.title = element_blank(),
+#         panel.grid = element_blank()) # 1000 by 1000
+
+ggplot(factors_s4_long, aes(x = factor,
+                            y = reorder(capacity, desc(order)), fill = loading)) +
+  geom_tile(color = "black") +
+  # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+  scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
+                       guide = guide_colorbar(title = element_blank(),
+                                              barheight = 20)) +
+  scale_x_discrete(position = "top") +
+  # geom_rect(aes(xmin = 0.51, xmax = 1.49, ymin = 14.55, ymax = 20.45),
+  #           alpha = 0, color = "black", size = .5) +
+  # geom_rect(aes(xmin = 1.51, xmax = 2.49, ymin = 6.55, ymax = 14.45),
+  #           alpha = 0, color = "black", size = .5) +
+  # geom_rect(aes(xmin = 2.51, xmax = 3.49, ymin = 0.55, ymax = 6.45),
+  #           alpha = 0, color = "black", size = .5) +
+  # theme_bw() +
+  theme_minimal() +
+  theme(text = element_text(size = 24),
+        axis.text.x = element_text(size = 28),
+        axis.title = element_blank(),
+        panel.grid = element_blank()) # 1000 by 1000
+```
+
 ## Mean ratings
 
 ### Studies 1-2
