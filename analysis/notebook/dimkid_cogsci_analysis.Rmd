@@ -1408,6 +1408,262 @@ figS2 <- plot_ly(scatter_plotting, x = HEART, y = BODY, z = MIND,
 figS2
 ```
 
+### Study 3 (7-9yo)
+
+```{r figure 3d scatter s3}
+# set up labels for plot (shortened version of mental capacity items)
+wording <- loadings(efa_d3_all_rotatedN)[] %>%
+  data.frame() %>%
+  rownames_to_column(var = "item") %>%
+  select(item) %>%
+  mutate(wording = factor(
+    recode(item,
+           happy = "feel happy",
+           depressed = "feel sad",
+           fear = "feel scared",
+           angry = "get angry",
+           calm = "feel calm",
+           sounds = "hear sounds",
+           seeing = "see things",
+           temperature = "sense temperatures",
+           odors = "smell things",
+           depth = "sense whether something is close by or far away",
+           computations = "do math",
+           thoughts = "have thoughts",
+           reasoning = "figure out how to do things",
+           remembering = "remember things",
+           beliefs = "have beliefs, like when you think something is true",
+           hungry = "get hungry",
+           tired = "feel tired",
+           pain = "feel pain",
+           nauseated = "feel sick, like when you feel like you might throw up",
+           safe = "feel safe",
+           love = "feel love",
+           recognizing = "recognize somebody else",
+           communicating = "communicate with somebody else",
+           guilt = "feel guilty",
+           disrespected = "get hurt feelings",
+           free_will = "decide what to do",
+           choices = "make choices",
+           self_restraint = "have self-control, like when you stop yourself from doing something you shouldn't do",
+           intentions = "make plans",
+           goal = "have goals, like when you're working hard to do something or make something happen",
+           conscious = "be aware of things",
+           self_aware = "be aware of itself",
+           desires = "have desires, like when you really want something",
+           embarrassed = "feel embarrassed",
+           emo_recog = "understand how somebody else is feeling",
+           joy = "feel joy",
+           morality = "know what's nice and what's mean",
+           personality = "have a personality, like when someone is shy and somebody else is silly",
+           pleasure = "feel pleasure, like when something feels really good",
+           proud = "feel proud"))) %>%
+    mutate(short = factor(
+      recode(item,
+             happy = "happy",
+             depressed = "sad",
+           fear = "scared",
+           angry = "angry",
+           calm = "calm",
+           sounds = "hear",
+           seeing = "see",
+           temperature = "temperatures",
+           odors = "smell",
+           depth = "depth",
+           computations = "math",
+           thoughts = "thoughts",
+           reasoning = "figure out",
+           remembering = "remember",
+           beliefs = "beliefs",
+           hungry = "hungry",
+           tired = "tired",
+           pain = "pain",
+           nauseated = "sick",
+           safe = "safe",
+           love = "love",
+           recognizing = "recognize",
+           communicating = "communicate",
+           guilt = "guilty",
+           disrespected = "hurt feelings",
+           free_will = "decide",
+           choices = "choices",
+           self_restraint = "self-control",
+           intentions = "plans",
+           goal = "goals",
+           conscious = "aware",
+           self_aware = "self-aware",
+           desires = "desires",
+           embarrassed = "embarrassed",
+           emo_recog = "empathy",
+           joy = "joy",
+           morality = "morality",
+           personality = "personality",
+           pleasure = "pleasure",
+           proud = "proud")))
+
+# make dataframe for plotting
+scatter_plotting <- loadings(efa_d3_all_rotatedN)[] %>%
+  data.frame() %>%
+  rownames_to_column(var = "item") %>%
+  rename(BODY = MR1,
+         HEART = MR2,
+         MIND = MR3) %>%
+  full_join(wording) %>%
+  mutate(dominant = factor(
+    ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(BODY), "BODY",
+           ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(HEART), "HEART",
+                  ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(MIND), "MIND",
+                         NA)))),
+    size = ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(BODY), abs(BODY),
+                  ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(HEART), abs(HEART),
+                         ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(MIND), abs(MIND),
+                                NA))),
+    color = ifelse(dominant == "BODY", "#E41A1C",
+                   ifelse(dominant == "HEART", "#4DAF4A",
+                          ifelse(dominant == "MIND", "#E41A1C",
+                                 NA))))
+
+# plot!
+figs3 <- plot_ly(scatter_plotting, x = HEART, y = BODY, z = MIND,
+             type = "scatter3d",
+             color = dominant, colors = c("#377EB8", "#4DAF4A", "#E41A1C"),
+             marker = list(size = 4),
+             text = short,
+             textfont = list(size = 15),
+             mode = "text+markers",
+             showlegend = TRUE)
+
+figs3
+```
+
+### Study 4 (4-6yo)
+
+```{r figure 3d scatter s4}
+# set up labels for plot (shortened version of mental capacity items)
+wording <- loadings(efa_d4_all_rotatedN)[] %>%
+  data.frame() %>%
+  rownames_to_column(var = "item") %>%
+  select(item) %>%
+  mutate(wording = factor(
+    recode(item,
+           happy = "feel happy",
+           depressed = "feel sad",
+           fear = "feel scared",
+           angry = "get angry",
+           calm = "feel calm",
+           sounds = "hear sounds",
+           seeing = "see things",
+           temperature = "sense temperatures",
+           odors = "smell things",
+           depth = "sense whether something is close by or far away",
+           computations = "do math",
+           thoughts = "have thoughts",
+           reasoning = "figure out how to do things",
+           remembering = "remember things",
+           beliefs = "have beliefs, like when you think something is true",
+           hungry = "get hungry",
+           tired = "feel tired",
+           pain = "feel pain",
+           nauseated = "feel sick, like when you feel like you might throw up",
+           safe = "feel safe",
+           love = "feel love",
+           recognizing = "recognize somebody else",
+           communicating = "communicate with somebody else",
+           guilt = "feel guilty",
+           disrespected = "get hurt feelings",
+           free_will = "decide what to do",
+           choices = "make choices",
+           self_restraint = "have self-control, like when you stop yourself from doing something you shouldn't do",
+           intentions = "make plans",
+           goal = "have goals, like when you're working hard to do something or make something happen",
+           conscious = "be aware of things",
+           self_aware = "be aware of itself",
+           desires = "have desires, like when you really want something",
+           embarrassed = "feel embarrassed",
+           emo_recog = "understand how somebody else is feeling",
+           joy = "feel joy",
+           morality = "know what's nice and what's mean",
+           personality = "have a personality, like when someone is shy and somebody else is silly",
+           pleasure = "feel pleasure, like when something feels really good",
+           proud = "feel proud"))) %>%
+    mutate(short = factor(
+      recode(item,
+             happy = "happy",
+             depressed = "sad",
+           fear = "scared",
+           angry = "angry",
+           calm = "calm",
+           sounds = "hear",
+           seeing = "see",
+           temperature = "temperatures",
+           odors = "smell",
+           depth = "depth",
+           computations = "math",
+           thoughts = "thoughts",
+           reasoning = "figure out",
+           remembering = "remember",
+           beliefs = "beliefs",
+           hungry = "hungry",
+           tired = "tired",
+           pain = "pain",
+           nauseated = "sick",
+           safe = "safe",
+           love = "love",
+           recognizing = "recognize",
+           communicating = "communicate",
+           guilt = "guilty",
+           disrespected = "hurt feelings",
+           free_will = "decide",
+           choices = "choices",
+           self_restraint = "self-control",
+           intentions = "plans",
+           goal = "goals",
+           conscious = "aware",
+           self_aware = "self-aware",
+           desires = "desires",
+           embarrassed = "embarrassed",
+           emo_recog = "empathy",
+           joy = "joy",
+           morality = "morality",
+           personality = "personality",
+           pleasure = "pleasure",
+           proud = "proud")))
+
+# make dataframe for plotting
+scatter_plotting <- loadings(efa_d4_all_rotatedN)[] %>%
+  data.frame() %>%
+  rownames_to_column(var = "item") %>%
+  rename(BODY = MR1,
+         HEART = MR2,
+         MIND = MR3) %>%
+  full_join(wording) %>%
+  mutate(dominant = factor(
+    ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(BODY), "BODY",
+           ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(HEART), "HEART",
+                  ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(MIND), "MIND",
+                         NA)))),
+    size = ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(BODY), abs(BODY),
+                  ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(HEART), abs(HEART),
+                         ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(MIND), abs(MIND),
+                                NA))),
+    color = ifelse(dominant == "BODY", "#E41A1C",
+                   ifelse(dominant == "HEART", "#4DAF4A",
+                          ifelse(dominant == "MIND", "#E41A1C",
+                                 NA))))
+
+# plot!
+figs4 <- plot_ly(scatter_plotting, x = HEART, y = BODY, z = MIND,
+             type = "scatter3d",
+             color = dominant, colors = c("#377EB8", "#4DAF4A", "#E41A1C"),
+             marker = list(size = 4),
+             text = short,
+             textfont = list(size = 15),
+             mode = "text+markers",
+             showlegend = TRUE)
+
+figs4
+```
+
 ## Heatmaps
 
 *NOTE: set to 3 factors manually, for now.*
