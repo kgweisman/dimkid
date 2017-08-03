@@ -1166,7 +1166,7 @@ palette_s3 <- c(rep(myPalette["MIND"], palette_base %>% filter(s3_factor == "MIN
 
 ## 3D scatterplots
 
-Factor loadings for the 40 mental capacities on the three rotated factors in Study 1. Items are colored by their dominant factor loading: Items that loaded most strongly on the body factor (physiological states and will) are in red; items that loaded most strongly on the heart factor (social-emotional experiences and morality) are in blue; and items that loaded most strongly on the mind factor (perceptual-cognitive abilities and goal pursuit) are in green.
+Factor loadings for the 40 mental capacities on the three rotated factors in Study 1. Items are colored by their dominant factor loading: Items that loaded most strongly on the body factor (bodily states and will) are in red; items that loaded most strongly on the heart factor (social-emotional experiences and morality) are in blue; and items that loaded most strongly on the mind factor (perceptual-cognitive abilities and goal pursuit) are in green.
 
 ### Study 1 (adults)
 
@@ -2290,7 +2290,7 @@ ggplot(scores_s12_plotting %>%
          ungroup() %>%
          mutate(factor = factor(factor,
                                 labels = c("Social-emotional",
-                                           "Physiological",
+                                           "Bodily",
                                            "Perceptual-cognitive")),
                 age_group = factor(age_group,
                                   # levels = c("adults", "children_79"),
@@ -2342,7 +2342,7 @@ ggplot(scores_s3_plotting %>%
                                               "beetle", "bird", "mouse", "goat", "elephant")),
                 factor = factor(factor,
                                 levels = c("score_F2", "score_F1", "score_F3"),
-                                labels = c("Social-emotional", "Physiological", "Perceptual-cognitive"))),
+                                labels = c("Social-emotional", "Bodily", "Perceptual-cognitive"))),
        aes(x = character, y = mean, color = character, shape = character)) +
   facet_wrap(~ factor, ncol = 3) +
   theme_bw() +
@@ -2474,7 +2474,7 @@ ggplot(scores_s34_plotting %>%
                                               "beetle", "bird", "mouse", "goat", "elephant")),
                 factor = factor(factor,
                                 levels = c("score_F2", "score_F1", "score_F3"),
-                                labels = c("Social-emotional", "Physiological", "Perceptual-cognitive")),
+                                labels = c("Social-emotional", "Bodily", "Perceptual-cognitive")),
                 age_group = factor(age_group,
                                   levels = c("children_46", "children_79"),
                                   labels = c("4-6y", "7-9y"))),
@@ -2520,7 +2520,7 @@ ggplot(scores_s1_plotting %>%
          mutate(factor = factor(factor,
                                 levels = c("score_F2", "score_F1", "score_F3"),
                                 labels = c("Social-emotional",
-                                           "Physiological",
+                                           "Bodily",
                                            "Perceptual-cognitive"))),
        aes(x = age, y = score, color = character, fill = character, shape = character)) +
   facet_wrap("factor", ncol = 3) +
@@ -2557,7 +2557,7 @@ ggplot(scores_s2_plotting %>%
          ungroup() %>%
          mutate(factor = factor(factor,
                                 labels = c("Social-emotional",
-                                           "Physiological",
+                                           "Bodily",
                                            "Perceptual-cognitive"))),
        aes(x = age, y = score, color = character, fill = character, shape = character)) +
   facet_wrap("factor", ncol = 3) +
@@ -2590,7 +2590,7 @@ tempA <- d2 %>%
   gather(factor, score, starts_with("score_")) %>%
   mutate(factor = factor(factor,
                          labels = c("Social-emotional",
-                                    "Physiological",
+                                    "Bodily",
                                     "Perceptual-cognitive")))
 
 tempB <- scores_s12_plotting %>%
@@ -2598,7 +2598,7 @@ tempB <- scores_s12_plotting %>%
   ungroup() %>%
   mutate(factor = factor(factor,
                          labels = c("Social-emotional",
-                                    "Physiological",
+                                    "Bodily",
                                     "Perceptual-cognitive")),
          age = 11) 
 
@@ -2650,7 +2650,7 @@ ggplot(scores_s34_plotting %>%
          mutate(factor = factor(factor,
                                 levels = c("score_F3", "score_F1", "score_F2"),
                                 labels = c("Social-emotional",
-                                           "Physiological",
+                                           "Bodily",
                                            "Perceptual-cognitive")),
                 character = factor(character,
                                    levels = c("computer", "robot", "doll", "teddy_bear",
