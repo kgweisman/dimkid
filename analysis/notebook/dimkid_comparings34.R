@@ -12,6 +12,9 @@ temp <- d3 %>% select(-trial.comments) %>%
                                levels = c("ay", "br", "cf", "cx", "jns",
                                           "kw", "ldb", "osh")))
 
+# total n
+temp %>% count(age_group)
+
 # age
 ggplot(temp, aes(x = age, fill = age_group)) +
   geom_histogram(bins = 50) +

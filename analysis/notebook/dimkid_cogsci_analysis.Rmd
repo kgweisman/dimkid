@@ -392,7 +392,7 @@ d_raw_study2 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects
   mutate(study = "study 2", age_group = "children_79") %>% select(-X)
 
 # study 3 (January - June 2017, 7-9yo, 9 conditions, 3-point-scale, "decide what to do" and "make plans")
-d_raw_study3 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-08-03_anonymized.csv") %>%
+d_raw_study3 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-08-04_anonymized.csv") %>%
   mutate(study = "study 3", age_group = "children_79") %>% select(-X) %>%
   mutate(dob = parse_datetime(dateOfBirth, "%m/%d/%y"),
          dot = parse_datetime(gsub("2017", "17", dateOfTest), "%m/%d/%y"), 
@@ -400,7 +400,7 @@ d_raw_study3 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects
   select(-dateOfBirth, -dateOfTest, -dob, -dot)
 
 # study 4 (Mary 2017 - present, 4-6yo, 9 conditions, 3-point-scale, "decide what to do" and "make plans")
-d_raw_study4 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-03_anonymized.csv") %>%
+d_raw_study4 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-04_anonymized.csv") %>%
   mutate(study = "study 4", age_group = "children_46") %>% select(-X) %>%
   mutate(dob = parse_datetime(dateOfBirth, "%m/%d/%y"),
          dot = parse_datetime(gsub("2017", "17", dateOfTest), "%m/%d/%y"), 
