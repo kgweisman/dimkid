@@ -392,7 +392,7 @@ d_raw_study2 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects
   mutate(study = "study 2", age_group = "children_79") %>% select(-X)
 
 # study 3 (January - June 2017, 7-9yo, 9 conditions, 3-point-scale, "decide what to do" and "make plans")
-d_raw_study3 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-08-04_anonymized.csv") %>%
+d_raw_study3 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-08-08_anonymized.csv") %>%
   mutate(study = "study 3", age_group = "children_79") %>% select(-X) %>%
   mutate(dob = parse_datetime(dateOfBirth, "%m/%d/%y"),
          dot = parse_datetime(gsub("2017", "17", dateOfTest), "%m/%d/%y"), 
@@ -400,7 +400,7 @@ d_raw_study3 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects
   select(-dateOfBirth, -dateOfTest, -dob, -dot)
 
 # study 4 (Mary 2017 - present, 4-6yo, 9 conditions, 3-point-scale, "decide what to do" and "make plans")
-d_raw_study4 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-04_anonymized.csv") %>%
+d_raw_study4 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-08_anonymized.csv") %>%
   mutate(study = "study 4", age_group = "children_46") %>% select(-X) %>%
   mutate(dob = parse_datetime(dateOfBirth, "%m/%d/%y"),
          dot = parse_datetime(gsub("2017", "17", dateOfTest), "%m/%d/%y"), 
@@ -927,12 +927,22 @@ order_s3 <- loadings(fa.sort(efa_d3_all_rotatedN))[] %>%
 order_s4 <- loadings(fa.sort(efa_d4_all_rotatedN))[] %>%
   data.frame() %>%
   rownames_to_column(var = "capacity") %>%
-  rename(s4_body = MR1, s4_heart = MR3, s4_mind = MR2)
+  rename(s4_body = MR1, 
+         # s4_heart = MR3, 
+         s4_mind = MR2)
+
+# manually set 3 factors
+order_s4_manual <- loadings(fa.sort(fa(d1_all, nfactors = 3,
+                                       rotate = chosenRotType, cor = chosenCorType)))[] %>%
+  data.frame() %>%
+  rownames_to_column(var = "capacity") %>%
+  rownames_to_column(var = "order1_manual") %>%
+  rename(s4_heart = MR2, s4_body = MR1, s4_mind = MR3)
 
 bigTable <- order_s1_manual %>% # could substitute order_s1
   full_join(order_s2) %>%
   full_join(order_s3) %>%
-  full_join(order_s4) %>%
+  full_join(order_s4_manual) %>% # could substitute order_s4
   mutate_at(vars(starts_with("s")), funs(round2)) %>%
   select(order1_manual, # could subistitute order_s1
          capacity, ends_with("heart"), ends_with("body"), ends_with("mind")) 
@@ -1112,25 +1122,27 @@ char_plotting <- char_plotting_ratings_all %>%
               mutate(s3_order = as.numeric(s3_order)) %>%
               select(-s3_MR1_abs, -s3_MR2_abs, -s3_MR3_abs)) %>%
   full_join(order_s4 %>%
-              rename(s4_MR1 = s4_body, s4_MR2 = s4_mind, s4_MR3 = s4_heart) %>%
+              rename(s4_MR1 = s4_body, s4_MR2 = s4_mind) %>% #, s4_MR3 = s4_heart) %>%
               mutate(s4_MR1_abs = abs(s4_MR1),
                      s4_MR2_abs = abs(s4_MR2),
-                     s4_MR3_abs = abs(s4_MR3),
+                     # s4_MR3_abs = abs(s4_MR3),
                      s4_factor = 
-                       ifelse(s4_MR1_abs > s4_MR2_abs &
-                                s4_MR1_abs > s4_MR3_abs, "BODY",
-                              ifelse(s4_MR2_abs > s4_MR1_abs &
-                                       s4_MR2_abs > s4_MR3_abs, "HEART",
-                                     ifelse(s4_MR3_abs > s4_MR1_abs &
-                                              s4_MR3_abs > s4_MR2_abs, "MIND",
-                                            NA))),
+                       ifelse(s4_MR1_abs > s4_MR2_abs, "BODY", "MIND"),
+                     # s4_factor = 
+                     #   ifelse(s4_MR1_abs > s4_MR2_abs &
+                     #            s4_MR1_abs > s4_MR3_abs, "BODY",
+                     #          ifelse(s4_MR2_abs > s4_MR1_abs &
+                     #                   s4_MR2_abs > s4_MR3_abs, "HEART",
+                     #                 ifelse(s4_MR3_abs > s4_MR1_abs &
+                     #                          s4_MR3_abs > s4_MR2_abs, "MIND",
+                     #                        NA))),
                      s4_color = recode(s4_factor,
                                        "BODY" = "#E41A1C",
                                        "HEART" = "#377EB8",
                                        "MIND" = "#4DAF4A")) %>%
               rownames_to_column(var = "s4_order") %>%
               mutate(s4_order = as.numeric(s4_order)) %>%
-              select(-s4_MR1_abs, -s4_MR2_abs, -s4_MR3_abs))
+              select(-s4_MR1_abs, -s4_MR2_abs)) #, -s4_MR3_abs))
 
 # configure plot labels
 label_df_s1 <- char_plotting %>% filter(study == "study 1") %>% select(condition, n) %>% unique()
@@ -1144,7 +1156,7 @@ facetLabs_s3 <- gsub(" \\(", "\n(", makeFacetLabs(char_plotting %>% filter(study
 facetLabs_s4 <- gsub(" \\(", "\n(", makeFacetLabs(char_plotting %>% filter(study == "study 4")))
 
 # configure custom palette
-myPalette <- brewer.pal(3, "Set1"); names(myPalette) <- c("BODY", "HEART", "MIND")
+myPalette <- brewer.pal(3, "Set1"); names(myPalette) <- c("HEART", "BODY", "MIND")
 
 palette_base <- char_plotting %>% 
   select(capacity, ends_with("_factor")) %>%
@@ -1284,11 +1296,11 @@ scatter_plotting <- loadings(efa_d1_all_rotatedN)[] %>%
                                  NA))))
 
 # plot!
-figS1 <- plot_ly(scatter_plotting, x = HEART, y = BODY, z = MIND,
+figS1 <- plot_ly(scatter_plotting, x = ~HEART, y = ~BODY, z = ~MIND,
              type = "scatter3d",
-             color = dominant, colors = c("#377EB8", "#4DAF4A", "#E41A1C"),
+             color = ~dominant, colors = c("#377EB8", "#4DAF4A", "#E41A1C"),
              marker = list(size = 4),
-             text = short,
+             text = ~short,
              textfont = list(size = 15),
              mode = "text+markers",
              showlegend = TRUE)
@@ -1412,11 +1424,11 @@ scatter_plotting <- loadings(efa_d2_all_rotatedN)[] %>%
                                  NA))))
 
 # plot!
-figS2 <- plot_ly(scatter_plotting, x = HEART, y = BODY, z = MIND,
+figS2 <- plot_ly(scatter_plotting, x = ~HEART, y = ~BODY, z = ~MIND,
              type = "scatter3d",
-             color = dominant, colors = c("#377EB8", "#4DAF4A", "#E41A1C"),
+             color = ~dominant, colors = c("#377EB8", "#4DAF4A", "#E41A1C"),
              marker = list(size = 4),
-             text = short,
+             text = ~short,
              textfont = list(size = 15),
              mode = "text+markers",
              showlegend = TRUE)
@@ -1540,11 +1552,11 @@ scatter_plotting <- loadings(efa_d3_all_rotatedN)[] %>%
                                  NA))))
 
 # plot!
-figs3 <- plot_ly(scatter_plotting, x = HEART, y = BODY, z = MIND,
+figs3 <- plot_ly(scatter_plotting, x = ~HEART, y = ~BODY, z = ~MIND,
              type = "scatter3d",
-             color = dominant, colors = c("#377EB8", "#4DAF4A", "#E41A1C"),
+             color = ~dominant, colors = c("#377EB8", "#4DAF4A", "#E41A1C"),
              marker = list(size = 4),
-             text = short,
+             text = ~short,
              textfont = list(size = 15),
              mode = "text+markers",
              showlegend = TRUE)
@@ -1645,39 +1657,39 @@ wording_s4 <- loadings(efa_d4_all_rotatedN)[] %>%
            pleasure = "pleasure",
            proud = "proud")))
 
-# make dataframe for plotting
-scatter_plotting <- loadings(efa_d4_all_rotatedN)[] %>%
-  data.frame() %>%
-  rownames_to_column(var = "item") %>%
-  rename(BODY = MR1,
-         HEART = MR2,
-         MIND = MR3) %>%
-  full_join(wording_s4) %>%
-  mutate(dominant = factor(
-    ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(BODY), "BODY",
-           ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(HEART), "HEART",
-                  ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(MIND), "MIND",
-                         NA)))),
-    size = ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(BODY), abs(BODY),
-                  ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(HEART), abs(HEART),
-                         ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(MIND), abs(MIND),
-                                NA))),
-    color = ifelse(dominant == "BODY", "#E41A1C",
-                   ifelse(dominant == "HEART", "#4DAF4A",
-                          ifelse(dominant == "MIND", "#E41A1C",
-                                 NA))))
-
-# plot!
-figs4 <- plot_ly(scatter_plotting, x = HEART, y = BODY, z = MIND,
-             type = "scatter3d",
-             color = dominant, colors = c("#377EB8", "#4DAF4A", "#E41A1C"),
-             marker = list(size = 4),
-             text = short,
-             textfont = list(size = 15),
-             mode = "text+markers",
-             showlegend = TRUE)
-
-figs4
+# # make dataframe for plotting
+# scatter_plotting <- loadings(efa_d4_all_rotatedN)[] %>%
+#   data.frame() %>%
+#   rownames_to_column(var = "item") %>%
+#   rename(BODY = MR1,
+#          HEART = MR2,
+#          MIND = MR3) %>%
+#   full_join(wording_s4) %>%
+#   mutate(dominant = factor(
+#     ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(BODY), "BODY",
+#            ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(HEART), "HEART",
+#                   ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(MIND), "MIND",
+#                          NA)))),
+#     size = ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(BODY), abs(BODY),
+#                   ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(HEART), abs(HEART),
+#                          ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(MIND), abs(MIND),
+#                                 NA))),
+#     color = ifelse(dominant == "BODY", "#E41A1C",
+#                    ifelse(dominant == "HEART", "#4DAF4A",
+#                           ifelse(dominant == "MIND", "#E41A1C",
+#                                  NA))))
+# 
+# # plot!
+# figs4 <- plot_ly(scatter_plotting, x = ~HEART, y = ~BODY, z = ~MIND,
+#              type = "scatter3d",
+#              color = ~dominant, colors = c("#377EB8", "#4DAF4A", "#E41A1C"),
+#              marker = list(size = 4),
+#              text = ~short,
+#              textfont = list(size = 15),
+#              mode = "text+markers",
+#              showlegend = TRUE)
+# 
+# figs4
 ```
 
 ## Heatmaps
@@ -1701,8 +1713,8 @@ factors_s1_long <- factors_s1 %>%
   mutate(factor = factor(gsub("Factor", "F", factor))) %>%
   # mutate(factor = factor(gsub("Factor", "F", factor),
   #                        levels = c("F1", "F3", "F2"))) %>%
-  mutate(factor = factor(gsub("Factor", "F", factor),
-                         levels = c("F2", "F1", "F3"))) %>%
+  # mutate(factor = factor(gsub("Factor", "F", factor),
+  #                        levels = c("F2", "F1", "F3"))) %>%
   arrange(order, factor)
 
 factors_s1_blank1 <- factors_s1_long %>%
@@ -1874,7 +1886,7 @@ ggplot(factors_s2_long, aes(x = factor,
 
 ### Study 3 (7-9y)
 
-```{r figure heatmap s3, fig.width = 10, fig.height = 8}
+```{r figure heatmap s3, fig.width = 5, fig.height = 7}
 factors_s3 <- fa.sort(fa(d3_all, nfactors = 3, cor = chosenCorType, rotate = chosenRotType)$loadings[]) %>%
   data.frame() %>%
   rownames_to_column(var = "item") %>%
@@ -1888,9 +1900,9 @@ factors_s3_long <- factors_s3 %>%
   gather(factor, loading, -capacity, -order) %>%
   mutate(factor = factor(gsub("Factor", "F", factor))) %>%
   # mutate(factor = factor(gsub("Factor", "F", factor),
-  #                        levels = c("F1", "F3", "F2"))) %>%
-  mutate(factor = factor(gsub("Factor", "F", factor),
-                         levels = c("F2", "F1", "F3"))) %>%
+  # #                        levels = c("F1", "F3", "F2"))) %>%
+  # mutate(factor = factor(gsub("Factor", "F", factor),
+  #                        levels = c("F2", "F1", "F3"))) %>%
   arrange(order, factor)
 
 factors_s3_blank1 <- factors_s3_long %>%
@@ -1947,7 +1959,7 @@ factors_s3_blank3 <- factors_s3_long %>%
 ggplot(factors_s3_long, aes(x = factor,
                             y = reorder(capacity, desc(order)), fill = loading)) +
   geom_tile(color = "black") +
-  # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+  geom_text(aes(label = format(round(loading, 2), nsmall = 2)), size = 6) +
   scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
                        guide = guide_colorbar(title = element_blank(),
                                               barheight = 20)) +
@@ -1967,8 +1979,9 @@ ggplot(factors_s3_long, aes(x = factor,
 ```
 
 ### Study 4 (4-6y)
+(3 factors by force)
 
-```{r figure heatmap s4, fig.width = 10, fig.height = 8}
+```{r figure heatmap s4, fig.width = 5, fig.height = 7}
 factors_s4 <- fa.sort(fa(d4_all, nfactors = 3, cor = chosenCorType, rotate = chosenRotType)$loadings[]) %>%
   data.frame() %>%
   rownames_to_column(var = "item") %>%
@@ -1983,8 +1996,8 @@ factors_s4_long <- factors_s4 %>%
   mutate(factor = factor(gsub("Factor", "F", factor))) %>%
   # mutate(factor = factor(gsub("Factor", "F", factor),
   #                        levels = c("F1", "F3", "F2"))) %>%
-  mutate(factor = factor(gsub("Factor", "F", factor),
-                         levels = c("F2", "F1", "F3"))) %>%
+  # mutate(factor = factor(gsub("Factor", "F", factor),
+  #                        levels = c("F2", "F1", "F3"))) %>%
   arrange(order, factor)
 
 factors_s4_blank1 <- factors_s4_long %>%
@@ -2041,7 +2054,7 @@ factors_s4_blank3 <- factors_s4_long %>%
 ggplot(factors_s4_long, aes(x = factor,
                             y = reorder(capacity, desc(order)), fill = loading)) +
   geom_tile(color = "black") +
-  # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+  geom_text(aes(label = format(round(loading, 2), nsmall = 2)), size = 6) +
   scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
                        guide = guide_colorbar(title = element_blank(),
                                               barheight = 20)) +
@@ -2066,7 +2079,7 @@ ggplot(factors_s4_long, aes(x = factor,
 
 Mean ratings of 40 mental capacities for the 2 entities included in Studies 1-2. Participants responded on a 3-point scale (0 = "no", 0.5 = "kinda", 1 = "yes"). Error bars are nonparametric bootstrapped 95% confidence intervals. Mental capacities are grouped according to their dominant factor loading in Study 1 (adults).
 
-```{r figure mean ratings s1-s2, fig.width = 6, fig.height = 6}
+```{r figure mean ratings s1-s2, fig.width = 3, fig.height = 3}
 # make dataframe
 s12_plotting <- char_plotting %>%
   filter(study %in% c("study 1", "study 2")) %>%
@@ -2074,10 +2087,10 @@ s12_plotting <- char_plotting %>%
 
 # plot! (ordered by study 3 factor loadings)
 s12 <- ggplot(s12_plotting,
-               aes(y = mean_na, x = reorder(wording, desc(s1_order)), colour = factor(s1_color),
-                   shape = study)) +
+               aes(y = summary_mean_na, x = reorder(wording, desc(s1_order)),
+                   colour = factor(s1_color), shape = study)) +
   geom_point(stat = "identity", position = position_dodge(width = 0.6), size = 2) +
-  geom_errorbar(aes(ymin = ci_lower_na, ymax = ci_upper_na), width = 0.4,
+  geom_errorbar(aes(ymin = summary_ci_lower_na, ymax = summary_ci_upper_na), width = 0.4,
                 position = position_dodge(width = 0.6)) +
   facet_wrap(~ character) +
   theme_bw() +
@@ -2091,8 +2104,8 @@ s12 <- ggplot(s12_plotting,
   #                     type = "qual", palette = 6,
   #                     guide = FALSE) +
   scale_colour_manual(name = "Factor:",
-                      values = c("#377EB8", "#4DAF4A", "#E41A1C"),
-                      labels = c("HEART", "MIND", "BODY")) +
+                      values = c("#E41A1C", "#4DAF4A", "#377EB8"),
+                      labels = c("BODY", "MIND", "HEART")) +
   coord_flip() +
   theme(text = element_text(size = 9),
       axis.title.y = element_blank(),
@@ -2108,7 +2121,7 @@ s12
 
 Mean ratings of 20 mental capacities for the 9 entities included in Studies 3-4. Participants responded on a 3-point scale (0 = "no", 0.5 = "kinda", 1 = "yes"). Error bars are nonparametric bootstrapped 95% confidence intervals. Mental capacities are grouped according to their dominant factor loading in Study 3 (7-9y).
 
-```{r figure mean ratings s3-s4, fig.width = 10, fig.height = 6}
+```{r figure mean ratings s3-s4, fig.width = 5, fig.height = 3}
 # make dataframe
 s34_plotting <- char_plotting %>%
   filter(study %in% c("study 3", "study 4"),
@@ -2120,12 +2133,12 @@ s34_plotting <- char_plotting %>%
 
 # plot! (ordered by study 3 factor loadings)
 s34 <- ggplot(s34_plotting,
-               aes(y = mean_na, x = reorder(wording, desc(s3_order)), 
+               aes(y = summary_mean_na, x = reorder(wording, desc(s3_order)), 
                    # colour = study,
                    colour = s3_color,
                    shape = study)) +
   geom_point(stat = "identity", position = position_dodge(width = 0.6), size = 2) +
-  geom_errorbar(aes(ymin = ci_lower_na, ymax = ci_upper_na), width = 0.4,
+  geom_errorbar(aes(ymin = summary_ci_lower_na, ymax = summary_ci_upper_na), width = 0.4,
                 position = position_dodge(width = 0.6)) +
   facet_wrap(~ character, ncol = 9) +
   theme_bw() +
@@ -2141,8 +2154,8 @@ s34 <- ggplot(s34_plotting,
   #                     type = "qual", palette = 6,
   #                     guide = FALSE) +
   scale_colour_manual(name = "Factor:",
-                      values = c("#377EB8", "#4DAF4A", "#E41A1C"),
-                      labels = c("HEART", "MIND", "BODY")) +
+                      values = c("#E41A1C", "#377EB8", "#4DAF4A"),
+                      labels = c("BODY", "HEART", "MIND")) +
   coord_flip() +
   theme(text = element_text(size = 9),
       axis.title.y = element_blank(),
@@ -2284,7 +2297,7 @@ summary(r1)
 # summary(r1b)
 ```
 
-```{r s12 figure factor scores by age group, fig.width = 12, fig.height = 6}
+```{r s12 figure factor scores by age group, fig.width = 6, fig.height = 3}
 # plot
 ggplot(scores_s12_plotting %>%
          ungroup() %>%
@@ -2297,13 +2310,13 @@ ggplot(scores_s12_plotting %>%
                                   # labels = c("adults", "children"))),
                                   levels = c("children_79", "adults"),
                                   labels = c("children", "adults"))),
-       aes(x = age_group, y = mean, color = character, shape = character)) +
+       aes(x = age_group, y = summary_mean, color = character, shape = character)) +
   facet_wrap("factor", ncol = 3) +
   theme_bw() +
   theme(text = element_text(size = 28),
         legend.position = "bottom") +
   geom_point(size = 5, position = position_dodge(width = 0.4)) +
-  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
+  geom_errorbar(aes(ymin = summary_ci_lower, ymax = summary_ci_upper),
                 width = 0.2, position = position_dodge(width = 0.4)) +
   scale_shape_manual(values = c(19, 15)) +
   labs(title = "Factor scores by age group",
@@ -2332,7 +2345,7 @@ scores_s3_plotting <- d3 %>%
              statistics_functions = c("mean", "ci_lower", "ci_upper"))
 ```
 
-```{r s3 figure factor scores by character, fig.width = 12, fig.height = 6}
+```{r s3 figure factor scores by character, fig.width = 6, fig.height = 3}
 ggplot(scores_s3_plotting %>%
          ungroup() %>%
          mutate(character = factor(character, 
@@ -2343,14 +2356,14 @@ ggplot(scores_s3_plotting %>%
                 factor = factor(factor,
                                 levels = c("score_F2", "score_F1", "score_F3"),
                                 labels = c("Social-emotional", "Bodily", "Perceptual-cognitive"))),
-       aes(x = character, y = mean, color = character, shape = character)) +
+       aes(x = character, y = summary_mean, color = character, shape = character)) +
   facet_wrap(~ factor, ncol = 3) +
   theme_bw() +
   theme(text = element_text(size = 28),
         axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
         legend.position = "none") +
   geom_point(size = 5, position = position_dodge(width = 0.4)) +
-  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+  geom_errorbar(aes(ymin = summary_ci_lower, ymax = summary_ci_upper), 
                 width = 0.2, position = position_dodge(width = 0.4)) +
   # scale_color_manual(values = c("black", "#00BFC4", "#F8766D", rep("black", 4))) +
   # scale_shape_manual(values = c(17, 15, 19, rep(17, 4))) +
@@ -2463,7 +2476,7 @@ scores_s34_plotting <- d3 %>%
              statistics_functions = c("mean", "ci_lower", "ci_upper"))
 ```
 
-```{r s34 figure factor scores by age group, fig.width = 12, fig.height = 6}
+```{r s34 figure factor scores by age group, fig.width = 6, fig.height = 3}
 # plot
 ggplot(scores_s34_plotting %>%
          ungroup() %>%
@@ -2478,14 +2491,14 @@ ggplot(scores_s34_plotting %>%
                 age_group = factor(age_group,
                                   levels = c("children_46", "children_79"),
                                   labels = c("4-6y", "7-9y"))),
-       aes(x = character, y = mean, color = character, shape = age_group)) +
+       aes(x = character, y = summary_mean, color = character, shape = age_group)) +
   facet_wrap(~ factor, ncol = 3) +
   theme_bw() +
   theme(text = element_text(size = 28),
         axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
         legend.position = "bottom") +
   geom_point(size = 5, position = position_dodge(width = 0.4)) +
-  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), 
+  geom_errorbar(aes(ymin = summary_ci_lower, ymax = summary_ci_upper), 
                 width = 0.2, position = position_dodge(width = 0.4)) +
   # scale_color_manual(values = c("black", "#00BFC4", "#F8766D", rep("black", 4))) +
   # scale_shape_manual(values = c(17, 15, 19, rep(17, 4))) +
@@ -2501,7 +2514,7 @@ ggplot(scores_s34_plotting %>%
 
 ## Study 1
 
-```{r s1 factor scores by age setup, fig.width = 12, fig.height = 6}
+```{r s1 factor scores by age setup, fig.width = 6, fig.height = 3}
 scores_s1_plotting <- d1 %>% 
   select(subid, age, character) %>% 
   distinct() %>% 
@@ -2518,7 +2531,7 @@ scores_s1_plotting <- d1 %>%
 ggplot(scores_s1_plotting %>%
          ungroup() %>%
          mutate(factor = factor(factor,
-                                levels = c("score_F2", "score_F1", "score_F3"),
+                                levels = c("score_F1", "score_F2", "score_F3"),
                                 labels = c("Social-emotional",
                                            "Bodily",
                                            "Perceptual-cognitive"))),
@@ -2539,7 +2552,7 @@ ggplot(scores_s1_plotting %>%
 
 ## Study 2
 
-```{r s2 factor scores by age setup, fig.width = 12, fig.height = 6}
+```{r s2 factor scores by age setup, fig.width = 6, fig.height = 3}
 scores_s2_plotting <- d2 %>% 
   select(subid, age, character) %>% 
   distinct() %>% 
@@ -2576,7 +2589,7 @@ ggplot(scores_s2_plotting %>%
 
 ## Studies 1-2
 
-```{r s12 scatter plus mean scores by age setup, fig.width = 10, fig.height = 6}
+```{r s12 scatter plus mean scores by age setup, fig.width = 5, fig.height = 3}
 tempA <- d2 %>% 
   select(subid, age, character) %>% 
   distinct() %>% 
@@ -2612,9 +2625,9 @@ ggplot(tempA,
   # geom_smooth(method = "loess", alpha = 0.4) +
   geom_smooth(method = "lm", alpha = 0.4) +
   geom_point(size = 2) +
-  geom_point(data = tempB, aes(y = mean),
+  geom_point(data = tempB, aes(y = summary_mean),
              size = 4, position = position_dodge(width = 0.6)) +
-  geom_errorbar(data = tempB, aes(ymin = ci_lower, ymax = ci_upper, y = mean), width = 0.4,
+  geom_errorbar(data = tempB, aes(ymin = summary_ci_lower, ymax = summary_ci_upper, y = summary_mean), width = 0.4,
                 position = position_dodge(width = 0.6)) +
   scale_shape_manual(values = c(19, 15)) +
   scale_x_continuous(breaks = c(7:11), labels = c("7y", "8y", "9y", "10y", "adults")) +
@@ -2626,7 +2639,7 @@ ggplot(tempA,
 
 ## Studies 3-4
 
-```{r s34 factor scores by age setup, fig.width = 10, fig.height = 20}
+```{r s34 factor scores by age setup, fig.width = 5, fig.height = 10}
 scores_s34_plotting <- d3 %>%
   select(age_group, subid, age, character) %>%
   distinct() %>%
@@ -2648,15 +2661,47 @@ scores_s34_plotting <- d3 %>%
 ggplot(scores_s34_plotting %>%
          ungroup() %>%
          mutate(factor = factor(factor,
-                                levels = c("score_F3", "score_F1", "score_F2"),
+                                levels = c("score_F1", "score_F2", "score_F3"),
                                 labels = c("Social-emotional",
-                                           "Bodily",
-                                           "Perceptual-cognitive")),
+                                           "Perceptual-cognitive",
+                                           "Bodily")),
                 character = factor(character,
                                    levels = c("computer", "robot", "doll", "teddy_bear",
                                               "beetle", "bird", "mouse", "goat", "elephant"))),
        # aes(x = age, y = score, color = character, fill = character, shape = character)) +
-       aes(x = age, y = score, gropu = age_group)) +
+       aes(x = age, y = score, group = age_group)) +
+  # facet_wrap("factor", ncol = 3) +
+  # facet_grid(factor ~ character) +
+  facet_grid(character ~ factor) +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        legend.position = "none") +
+  # geom_smooth(method = "loess", alpha = 0.4) +
+  geom_smooth(method = "lm", alpha = 0.4) +
+  # geom_smooth(method = "lm", alpha = 0.4, formula = y ~ poly(x, 2)) +
+  # geom_smooth(method = "lm", alpha = 0.4, formula = y ~ poly(x, 3)) +
+  geom_point(size = 2) +
+  scale_x_continuous(breaks = seq(2, 12, 2)) +
+  # scale_fill_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
+  # scale_color_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
+  # scale_shape_manual(values = c(17, 15, rep(17, 2), 19, rep(17, 4))) +
+  labs(title = "Factor scores by children's age",
+       # subtitle = "Children (Studies 3-4)\n",
+       x = "Age (years)",
+       y = "Factor score") # 1000 by 500
+
+ggplot(scores_s34_plotting %>%
+         ungroup() %>%
+         mutate(factor = factor(factor,
+                                levels = c("score_F1", "score_F2", "score_F3"),
+                                labels = c("Social-emotional",
+                                           "Perceptual-cognitive",
+                                           "Bodily")),
+                character = factor(character,
+                                   levels = c("computer", "robot", "doll", "teddy_bear",
+                                              "beetle", "bird", "mouse", "goat", "elephant"))),
+       aes(x = age, y = score)) +
+       # aes(x = age, y = score, group = age_group)) +
   # facet_wrap("factor", ncol = 3) +
   # facet_grid(factor ~ character) +
   facet_grid(character ~ factor) +
