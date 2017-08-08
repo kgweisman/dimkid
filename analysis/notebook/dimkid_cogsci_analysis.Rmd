@@ -1686,7 +1686,7 @@ figs4
 
 ### Study 1 (adults)
 
-```{r figure heatmap s1, fig.width = 14, fig.height = 14}
+```{r figure heatmap s1, fig.width = 7, fig.height = 7}
 factors_s1 <- fa.sort(fa(d1_all, nfactors = 3, cor = chosenCorType, rotate = chosenRotType)$loadings[]) %>%
   data.frame() %>%
   rownames_to_column(var = "item") %>%
@@ -1759,7 +1759,7 @@ factors_s1_blank3 <- factors_s1_long %>%
 ggplot(factors_s1_long, aes(x = factor,
                             y = reorder(capacity, desc(order)), fill = loading)) +
   geom_tile(color = "black") +
-  # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+  geom_text(aes(label = format(round(loading, 2), nsmall = 2)), size = 6) +
   scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
                        guide = guide_colorbar(title = element_blank(),
                                               barheight = 20)) +
@@ -1780,7 +1780,7 @@ ggplot(factors_s1_long, aes(x = factor,
 
 ### Study 2 (7-9y)
 
-```{r figure heatmap s2, fig.width = 14, fig.height = 14}
+```{r figure heatmap s2, fig.width = 7, fig.height = 7}
 factors_s2 <- fa.sort(fa(d2_all, nfactors = 3, cor = chosenCorType, rotate = chosenRotType)$loadings[]) %>%
   data.frame() %>%
   rownames_to_column(var = "item") %>%
@@ -1853,7 +1853,7 @@ factors_s2_blank3 <- factors_s2_long %>%
 ggplot(factors_s2_long, aes(x = factor,
                             y = reorder(capacity, desc(order)), fill = loading)) +
   geom_tile(color = "black") +
-  # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+  geom_text(aes(label = format(round(loading, 2), nsmall = 2)), size = 6) +
   scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
                        guide = guide_colorbar(title = element_blank(),
                                               barheight = 20)) +
@@ -2677,4 +2677,3 @@ ggplot(scores_s34_plotting %>%
        x = "Age (years)",
        y = "Factor score") # 1000 by 500
 ```
-
