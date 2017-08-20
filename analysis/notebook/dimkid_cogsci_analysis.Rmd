@@ -704,7 +704,7 @@ demoSampleSize("study 3")
 fa.parallel(d3_all)
 
 # run EFA without rotation with N factors
-efa_d3_all_unrotated <- fa(d3_all, 13, rotate = "none",
+efa_d3_all_unrotated <- fa(d3_all, 6, rotate = "none",
                            cor = chosenCorType, fm = "minres")
 print(efa_d3_all_unrotated)
 
@@ -825,7 +825,7 @@ demoAge("study 4")
 fa.parallel(d4_all)
 
 # run EFA without rotation with N factors
-efa_d4_all_unrotated <- fa(d4_all, 13, rotate = "none",
+efa_d4_all_unrotated <- fa(d4_all, 6, rotate = "none", 
                            cor = chosenCorType, fm = "minres")
 print(efa_d4_all_unrotated)
 
