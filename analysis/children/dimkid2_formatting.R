@@ -86,7 +86,7 @@ d_tidy = d_run_02 %>%
     hoverTime = as.numeric(hoverTime),
     rt = as.numeric(rt),
     response = factor(response)) %>%
-  select(-gender, -ethnicity) %>%
+  # select(-gender, -ethnicity) %>%
   # left_join(ages) %>%
   mutate(subid = factor(subid))
 
@@ -100,9 +100,9 @@ glimpse(d_tidy)
 write.csv(d_tidy %>% filter(run == "run_02"), "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-08-08_anonymized.csv")
 
 # run 03
-write.csv(d_tidy %>% filter(run == "run_03"), "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-10_anonymized.csv")
+write.csv(d_tidy %>% filter(run == "run_03"), "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-21_anonymized.csv")
 
 # read in
 d2 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-08-08_anonymized.csv")[-1]        
 
-d3 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-10_anonymized.csv")[-1]        
+d3 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-21_anonymized.csv")[-1]        
