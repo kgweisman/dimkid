@@ -316,8 +316,7 @@ demoRace <- function(datasource) {
 
     race <- race %>%
       mutate(character = factor(ifelse(character == "Sum",
-                                       "all", as.character(character)),
-                                levels = c("beetle", "robot", "all"))) %>%
+                                       "all", as.character(character)))) %>%
       arrange(character, race_cat) %>%
       spread(race_cat, n)
   
@@ -400,7 +399,7 @@ d_raw_study3 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects
   select(-dateOfBirth, -dateOfTest, -dob, -dot)
 
 # study 4 (Mary 2017 - present, 4-6yo, 9 conditions, 3-point-scale, "decide what to do" and "make plans")
-d_raw_study4 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-10_anonymized.csv") %>%
+d_raw_study4 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-21_anonymized.csv") %>%
   mutate(study = "study 4", age_group = "children_46") %>% select(-X) %>%
   mutate(dob = parse_datetime(dateOfBirth, "%m/%d/%y"),
          dot = parse_datetime(gsub("2017", "17", dateOfTest), "%m/%d/%y"), 
@@ -427,7 +426,27 @@ d3 <- d3 %>%
   filter(!is.na(character), character != "")
 
 d4 <- d4 %>%
-  filter(!is.na(character), character != "")
+  filter(!is.na(character), character != "") %>%
+  filter(age >= 4, age < 7) %>%
+  mutate(ethnicity = gsub(" SN", "", ethnicity)) %>%
+  mutate(race_cat = ifelse(grepl("bing", tolower(testingSite)),
+                           ifelse(ethnicity == "A", "east_asian",
+                                  ifelse(ethnicity == "C" | ethnicity == "Cj", "white",
+                                         ifelse(ethnicity == "I", "south_asian",
+                                                ifelse(ethnicity == "ME", "middle_eastern",
+                                                       ifelse(ethnicity == "Af", "black",
+                                                              ifelse(ethnicity == "H", "hispanic",
+                                                                     ifelse(grepl(" ", ethnicity) |
+                                                                              grepl("/", ethnicity), "multiracial",
+                                                                            NA))))))),
+                           ifelse(tolower(ethnicity) == "black or african american", "black",
+                                  ifelse(tolower(ethnicity) == "hispanic or latino/a", "hispanic",
+                                         ifelse(tolower(ethnicity) == "east asian", "east_asian",
+                                                ifelse(tolower(ethnicity) == "native american, american indian, or alaska native", "native_american",
+                                                       ifelse(tolower(ethnicity) == "white" |
+                                                                tolower(ethnicity) == "white, caucasian, or european american", "white",
+                                                              ifelse(tolower(ethnicity) == "south or southeast asian" | tolower(ethnicity) == "south asian", "south_asian",
+                                                                     ifelse(tolower(ethnicity) == "" | is.na(ethnicity), NA, "multiracial")))))))))
 ```
 
 ```{r dataframes for dimension reducation}
@@ -811,7 +830,7 @@ demoSampleSize("study 4")
 # demoDuration("study 4")
 demoAge("study 4")
 # demoGender("study 4")
-# demoRace("study 4")
+demoRace("study 4")
 ```
 
 <p style="text-align:right"><a href="#header">back to TOC</a></p>

@@ -32,7 +32,7 @@ jsonFormat = function(wd, runName) {
     # read in file
     d.temp <- read.csv(paste0("./", runName, " individual sessions/", files[i])) %>%
       mutate(run = runName) %>%
-      mutate_all(funs("as.character"))
+      mutate_all(funs("as.character")) 
     
     # bind into same dataframe
     d.raw = bind_rows(d.raw, d.temp)
@@ -80,7 +80,7 @@ d_tidy = d_run_02 %>%
     run = factor(run),
     subid = toupper(as.character(subid)),
     character = factor(character),
-    gender = factor(gender),
+    gender = factor(tolower(gsub("FALSE", "f", gender))),
     ethnicity = factor(ethnicity),
     bgColor = factor(bgColor),
     hoverTime = as.numeric(hoverTime),
