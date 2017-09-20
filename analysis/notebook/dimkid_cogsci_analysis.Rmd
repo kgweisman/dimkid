@@ -24,6 +24,7 @@ library(langcog) # source: https://github.com/langcog/langcog
 library(RColorBrewer)
 library(plotly)
 library(lubridate)
+library(rms)
 
 # clear workspace
 rm(list = ls(all = T))
@@ -31,11 +32,6 @@ graphics.off()
 ```
 
 ```{r functions}
-# make na.rm = T versions of summary functions
-mean_na <- function(x) {mean(x, na.rm = T)}
-ci_lower_na <- function(x) {quantile(x, 0.025, na.rm = T)}
-ci_upper_na <- function(x) {quantile(x, 0.975, na.rm = T)}
-
 # make rounding function
 round2 <- function(x) {format(round(x, 2), nsmall = 2)}
 
@@ -423,7 +419,27 @@ d2 <- d2 %>%
   filter(character != "elephant")
 
 d3 <- d3 %>%
-  filter(!is.na(character), character != "")
+  filter(!is.na(character), character != "") %>%
+  # filter(age >= 7, age < 10) %>%
+  mutate(ethnicity = gsub(" SN", "", ethnicity)) %>%
+  mutate(race_cat = ifelse(grepl("bing", tolower(testingSite)),
+                           ifelse(ethnicity == "A", "east_asian",
+                                  ifelse(ethnicity == "C" | ethnicity == "Cj", "white",
+                                         ifelse(ethnicity == "I", "south_asian",
+                                                ifelse(ethnicity == "ME", "middle_eastern",
+                                                       ifelse(ethnicity == "Af", "black",
+                                                              ifelse(ethnicity == "H", "hispanic",
+                                                                     ifelse(grepl(" ", ethnicity) |
+                                                                              grepl("/", ethnicity), "multiracial",
+                                                                            NA))))))),
+                           ifelse(tolower(ethnicity) == "black or african american", "black",
+                                  ifelse(tolower(ethnicity) == "hispanic or latino/a", "hispanic",
+                                         ifelse(tolower(ethnicity) == "east asian", "east_asian",
+                                                ifelse(tolower(ethnicity) == "native american, american indian, or alaska native", "native_american",
+                                                       ifelse(tolower(ethnicity) == "white" |
+                                                                tolower(ethnicity) == "white, caucasian, or european american", "white",
+                                                              ifelse(tolower(ethnicity) == "south or southeast asian" | tolower(ethnicity) == "south asian", "south_asian",
+                                                                     ifelse(tolower(ethnicity) == "" | is.na(ethnicity), NA, "multiracial")))))))))
 
 d4 <- d4 %>%
   filter(!is.na(character), character != "") %>%
@@ -707,7 +723,7 @@ Study information:
 # make demographics tables
 demoSampleSize("study 3")
 # demoDuration("study 3")
-# demoAge("study 3")
+demoAge("study 3")
 # demoGender("study 3")
 # demoRace("study 3")
 ```
@@ -862,7 +878,7 @@ efa_d4_all_unrotated_nfactors
 ```
 
 ```{r s4 all rotation}
-efa_d4_all_rotated_max <- fa(d4_all, 13, rotate = chosenRotType,
+efa_d4_all_rotated_max <- fa(d4_all, 6, rotate = chosenRotType,
                            cor = chosenCorType, fm = "minres")
 
 efa_d4_all_rotated <- fa(d4_all, efa_d4_all_unrotated_nfactors, rotate = chosenRotType,
@@ -976,40 +992,32 @@ bigTable
 # study 1
 char_plotting_ratings_s1 <- d1 %>% 
   select(subid, character, capacity, responseNum) %>%
-  multi_boot(column = "responseNum",
-             summary_function = "mean_na",
-             summary_groups = c("character", "capacity"),
-             statistics_functions = c("ci_lower_na", "mean_na", "ci_upper_na")) %>%
+  group_by(character, capacity) %>%
+  do(data.frame(rbind(smean.cl.boot(.$responseNum)))) %>%
   full_join(demoSampleSize("study 1") %>% filter(character != "all")) %>%
   mutate(study = "study 1")
 
 # study 2
 char_plotting_ratings_s2 <- d2 %>% 
   select(subid, character, capacity, responseNum) %>%
-  multi_boot(column = "responseNum",
-             summary_function = "mean_na",
-             summary_groups = c("character", "capacity"),
-             statistics_functions = c("ci_lower_na", "mean_na", "ci_upper_na")) %>%
+  group_by(character, capacity) %>%
+  do(data.frame(rbind(smean.cl.boot(.$responseNum)))) %>%
   full_join(demoSampleSize("study 2") %>% filter(character != "all")) %>%
   mutate(study = "study 2")
 
 # study 3
 char_plotting_ratings_s3 <- d3 %>% 
   select(subid, character, capacity, responseNum) %>%
-  multi_boot(column = "responseNum",
-             summary_function = "mean_na",
-             summary_groups = c("character", "capacity"),
-             statistics_functions = c("ci_lower_na", "mean_na", "ci_upper_na")) %>%
+  group_by(character, capacity) %>%
+  do(data.frame(rbind(smean.cl.boot(.$responseNum)))) %>%
   full_join(demoSampleSize("study 3") %>% filter(character != "all")) %>%
   mutate(study = "study 3")
 
 # study 4
 char_plotting_ratings_s4 <- d4 %>% 
   select(subid, character, capacity, responseNum) %>%
-  multi_boot(column = "responseNum",
-             summary_function = "mean_na",
-             summary_groups = c("character", "capacity"),
-             statistics_functions = c("ci_lower_na", "mean_na", "ci_upper_na")) %>%
+  group_by(character, capacity) %>%
+  do(data.frame(rbind(smean.cl.boot(.$responseNum)))) %>%
   full_join(demoSampleSize("study 4") %>% filter(character != "all")) %>%
   mutate(study = "study 4")
 ```
@@ -1073,7 +1081,7 @@ char_plotting_wordings <- char_plotting_ratings_all %>%
            morality = "know what's nice and what's mean",
            personality = "have a personality...",
            pleasure = "feel pleasure...",
-           proud = "feel proud")))
+           pride = "feel proud")))
 ```
 
 ```{r plotting setup loadings, include = F}
@@ -1248,7 +1256,7 @@ wording_s1 <- loadings(efa_d1_all_rotatedN)[] %>%
            morality = "know what's nice and what's mean",
            personality = "have a personality, like when someone is shy and somebody else is silly",
            pleasure = "feel pleasure, like when something feels really good",
-           proud = "feel proud"))) %>%
+           pride = "feel proud"))) %>%
     mutate(short = factor(
       recode(item,
              happy = "happy",
@@ -1290,7 +1298,7 @@ wording_s1 <- loadings(efa_d1_all_rotatedN)[] %>%
            morality = "morality",
            personality = "personality",
            pleasure = "pleasure",
-           proud = "proud")))
+           pride = "pride")))
 
 # make dataframe for plotting
 scatter_plotting <- loadings(efa_d1_all_rotatedN)[] %>%
@@ -1376,7 +1384,7 @@ wording_s2 <- loadings(efa_d2_all_rotatedN)[] %>%
            morality = "know what's nice and what's mean",
            personality = "have a personality, like when someone is shy and somebody else is silly",
            pleasure = "feel pleasure, like when something feels really good",
-           proud = "feel proud"))) %>%
+           pride = "feel proud"))) %>%
     mutate(short = factor(
       recode(item,
              happy = "happy",
@@ -1418,7 +1426,7 @@ wording_s2 <- loadings(efa_d2_all_rotatedN)[] %>%
            morality = "morality",
            personality = "personality",
            pleasure = "pleasure",
-           proud = "proud")))
+           pride = "pride")))
 
 # make dataframe for plotting
 scatter_plotting <- loadings(efa_d2_all_rotatedN)[] %>%
@@ -1474,16 +1482,19 @@ wording_s3 <- loadings(efa_d3_all_rotatedN)[] %>%
            seeing = "see things",
            temperature = "sense temperatures",
            odors = "smell things",
-           depth = "sense whether something is close by or far away",
+           # depth = "sense whether something is close by or far away",
+           depth = "sense... far away",
            computations = "do math",
            thoughts = "have thoughts",
            reasoning = "figure out how to do things",
            remembering = "remember things",
-           beliefs = "have beliefs, like when you think something is true",
+           # beliefs = "have beliefs, like when you think something is true",
+           beliefs = "have beliefs...",
            hungry = "get hungry",
            tired = "feel tired",
            pain = "feel pain",
-           nauseated = "feel sick, like when you feel like you might throw up",
+           # nauseated = "feel sick, like when you feel like you might throw up",
+           nauseated = "feel sick...",
            safe = "feel safe",
            love = "feel love",
            recognizing = "recognize somebody else",
@@ -1492,19 +1503,24 @@ wording_s3 <- loadings(efa_d3_all_rotatedN)[] %>%
            disrespected = "get hurt feelings",
            free_will = "decide what to do",
            choices = "make choices",
-           self_restraint = "have self-control, like when you stop yourself from doing something you shouldn't do",
+           # self_restraint = "have self-control, like when you stop yourself from doing something you shouldn't do",
+           self_restraint = "have self-control...",
            intentions = "make plans",
-           goal = "have goals, like when you're working hard to do something or make something happen",
+           # goal = "have goals, like when you're working hard to do something or make something happen",
+           goal = "have goals...",
            conscious = "be aware of things",
            self_aware = "be aware of itself",
-           desires = "have desires, like when you really want something",
+           # desires = "have desires, like when you really want something",
+           desires = "have desires...",
            embarrassed = "feel embarrassed",
            emo_recog = "understand how somebody else is feeling",
            joy = "feel joy",
            morality = "know what's nice and what's mean",
-           personality = "have a personality, like when someone is shy and somebody else is silly",
-           pleasure = "feel pleasure, like when something feels really good",
-           proud = "feel proud"))) %>%
+           # personality = "have a personality, like when someone is shy and somebody else is silly",
+           personality = "have a personality...",
+           # pleasure = "feel pleasure, like when something feels really good",
+           pleasure = "feel pleasure...",
+           pride = "feel proud"))) %>%
     mutate(short = factor(
       recode(item,
              happy = "happy",
@@ -1546,7 +1562,7 @@ wording_s3 <- loadings(efa_d3_all_rotatedN)[] %>%
            morality = "morality",
            personality = "personality",
            pleasure = "pleasure",
-           proud = "proud")))
+           pride = "pride")))
 
 # make dataframe for plotting
 scatter_plotting <- loadings(efa_d3_all_rotatedN)[] %>%
@@ -1602,16 +1618,19 @@ wording_s4 <- loadings(efa_d4_all_rotatedN)[] %>%
            seeing = "see things",
            temperature = "sense temperatures",
            odors = "smell things",
-           depth = "sense whether something is close by or far away",
+           # depth = "sense whether something is close by or far away",
+           depth = "sense... far away",
            computations = "do math",
            thoughts = "have thoughts",
            reasoning = "figure out how to do things",
            remembering = "remember things",
-           beliefs = "have beliefs, like when you think something is true",
+           # beliefs = "have beliefs, like when you think something is true",
+           beliefs = "have beliefs...",
            hungry = "get hungry",
            tired = "feel tired",
            pain = "feel pain",
-           nauseated = "feel sick, like when you feel like you might throw up",
+           # nauseated = "feel sick, like when you feel like you might throw up",
+           nauseated = "feel sick...",
            safe = "feel safe",
            love = "feel love",
            recognizing = "recognize somebody else",
@@ -1620,19 +1639,24 @@ wording_s4 <- loadings(efa_d4_all_rotatedN)[] %>%
            disrespected = "get hurt feelings",
            free_will = "decide what to do",
            choices = "make choices",
-           self_restraint = "have self-control, like when you stop yourself from doing something you shouldn't do",
+           # self_restraint = "have self-control, like when you stop yourself from doing something you shouldn't do",
+           self_restraint = "have self-control...",
            intentions = "make plans",
-           goal = "have goals, like when you're working hard to do something or make something happen",
+           # goal = "have goals, like when you're working hard to do something or make something happen",
+           goal = "have goals...",
            conscious = "be aware of things",
            self_aware = "be aware of itself",
-           desires = "have desires, like when you really want something",
+           # desires = "have desires, like when you really want something",
+           desires = "have desires...",
            embarrassed = "feel embarrassed",
            emo_recog = "understand how somebody else is feeling",
            joy = "feel joy",
            morality = "know what's nice and what's mean",
-           personality = "have a personality, like when someone is shy and somebody else is silly",
-           pleasure = "feel pleasure, like when something feels really good",
-           proud = "feel proud"))) %>%
+           # personality = "have a personality, like when someone is shy and somebody else is silly",
+           personality = "have a personality...",
+           # pleasure = "feel pleasure, like when something feels really good",
+           pleasure = "feel pleasure...",
+           pride = "feel proud"))) %>%
     mutate(short = factor(
       recode(item,
              happy = "happy",
@@ -1674,7 +1698,7 @@ wording_s4 <- loadings(efa_d4_all_rotatedN)[] %>%
            morality = "morality",
            personality = "personality",
            pleasure = "pleasure",
-           proud = "proud")))
+           pride = "pride")))
 
 # # make dataframe for plotting
 # scatter_plotting <- loadings(efa_d4_all_rotatedN)[] %>%
@@ -1905,11 +1929,11 @@ ggplot(factors_s2_long, aes(x = factor,
 
 ### Study 3 (7-9y)
 
-```{r figure heatmap s3, fig.width = 5, fig.height = 7}
+```{r figure heatmap s3, fig.width = 4, fig.height = 7}
 factors_s3 <- fa.sort(fa(d3_all, nfactors = 3, cor = chosenCorType, rotate = chosenRotType)$loadings[]) %>%
   data.frame() %>%
   rownames_to_column(var = "item") %>%
-  left_join(wording_s3) %>%
+  left_join(char_plotting_wordings, by = c("item" = "capacity")) %>%
   select(wording, MR1, MR2, MR3) %>%
   rename(capacity = wording, Factor1 = MR1, Factor2 = MR2, Factor3 = MR3) %>%
   rownames_to_column(var = "order") %>%
@@ -1975,7 +1999,7 @@ factors_s3_blank3 <- factors_s3_long %>%
 #         axis.title = element_blank(),
 #         panel.grid = element_blank()) # 1000 by 1000
 
-ggplot(factors_s3_long, aes(x = factor,
+ggplot(factors_s3_long, aes(x = factor(factor, labels = c("Body", "Mind", "Heart")),
                             y = reorder(capacity, desc(order)), fill = loading)) +
   geom_tile(color = "black") +
   geom_text(aes(label = format(round(loading, 2), nsmall = 2)), size = 6) +
@@ -1991,22 +2015,22 @@ ggplot(factors_s3_long, aes(x = factor,
   #           alpha = 0, color = "black", size = .5) +
   # theme_bw() +
   theme_minimal() +
-  theme(text = element_text(size = 24),
-        axis.text.x = element_text(size = 28),
-        axis.title = element_blank(),
+  labs(x = "Study 2 (7-9y)") +
+  theme(text = element_text(size = 28),
+        axis.text.x = element_blank(),
+        axis.title.y = element_blank(),
         panel.grid = element_blank()) # 1000 by 1000
 ```
 
 ### Study 4 (4-6y)
-(3 factors by force)
 
-```{r figure heatmap s4, fig.width = 5, fig.height = 7}
-factors_s4 <- fa.sort(fa(d4_all, nfactors = 3, cor = chosenCorType, rotate = chosenRotType)$loadings[]) %>%
+```{r figure heatmap s4, fig.width = 4, fig.height = 7}
+factors_s4 <- fa.sort(fa(d4_all, nfactors = nfactors_d4_all, cor = chosenCorType, rotate = chosenRotType)$loadings[]) %>%
   data.frame() %>%
   rownames_to_column(var = "item") %>%
-  left_join(wording_s4) %>%
-  select(wording, MR1, MR2, MR3) %>%
-  rename(capacity = wording, Factor1 = MR1, Factor2 = MR2, Factor3 = MR3) %>%
+  left_join(char_plotting_wordings, by = c("item" = "capacity")) %>%
+  select(wording, starts_with("MR")) %>%
+  rename(capacity = wording, Factor1 = MR1, Factor2 = MR2) %>% #, Factor3 = MR3) %>%
   rownames_to_column(var = "order") %>%
   mutate(order = as.numeric(order))
 
@@ -2070,7 +2094,7 @@ factors_s4_blank3 <- factors_s4_long %>%
 #         axis.title = element_blank(),
 #         panel.grid = element_blank()) # 1000 by 1000
 
-ggplot(factors_s4_long, aes(x = factor,
+ggplot(factors_s4_long, aes(x = factor(factor, labels = c("Body-Heart", "Mind")),
                             y = reorder(capacity, desc(order)), fill = loading)) +
   geom_tile(color = "black") +
   geom_text(aes(label = format(round(loading, 2), nsmall = 2)), size = 6) +
@@ -2086,11 +2110,13 @@ ggplot(factors_s4_long, aes(x = factor,
   #           alpha = 0, color = "black", size = .5) +
   # theme_bw() +
   theme_minimal() +
-  theme(text = element_text(size = 24),
-        axis.text.x = element_text(size = 28),
-        axis.title = element_blank(),
+  labs(x = "Study 1 (4-6y)") +
+  theme(text = element_text(size = 28),
+        axis.text.x = element_blank(),
+        axis.title.y = element_blank(),
         panel.grid = element_blank()) # 1000 by 1000
 ```
+
 
 ## Mean ratings
 
@@ -2106,10 +2132,10 @@ s12_plotting <- char_plotting %>%
 
 # plot! (ordered by study 3 factor loadings)
 s12 <- ggplot(s12_plotting,
-               aes(y = summary_mean_na, x = reorder(wording, desc(s1_order)),
+               aes(y = Mean, x = reorder(wording, desc(s1_order)),
                    colour = factor(s1_color), shape = study)) +
   geom_point(stat = "identity", position = position_dodge(width = 0.6), size = 2) +
-  geom_errorbar(aes(ymin = summary_ci_lower_na, ymax = summary_ci_upper_na), width = 0.4,
+  geom_errorbar(aes(ymin = Lower, ymax = Upper), width = 0.4,
                 position = position_dodge(width = 0.6)) +
   facet_wrap(~ character) +
   theme_bw() +
@@ -2152,12 +2178,12 @@ s34_plotting <- char_plotting %>%
 
 # plot! (ordered by study 3 factor loadings)
 s34 <- ggplot(s34_plotting,
-               aes(y = summary_mean_na, x = reorder(wording, desc(s3_order)), 
+               aes(y = Mean, x = reorder(wording, desc(s3_order)), 
                    # colour = study,
                    colour = s3_color,
                    shape = study)) +
   geom_point(stat = "identity", position = position_dodge(width = 0.6), size = 2) +
-  geom_errorbar(aes(ymin = summary_ci_lower_na, ymax = summary_ci_upper_na), width = 0.4,
+  geom_errorbar(aes(ymin = Lower, ymax = Upper), width = 0.4,
                 position = position_dodge(width = 0.6)) +
   facet_wrap(~ character, ncol = 9) +
   theme_bw() +
@@ -2284,9 +2310,8 @@ scores_s12_plotting <- d1 %>%
   filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age_group)) %>%
   gather(factor, score, starts_with("score_")) %>%
   mutate(factor = factor(factor)) %>%
-  multi_boot(column = "score",
-             summary_groups = c("age_group", "character", "factor"),
-             statistics_functions = c("mean", "ci_lower", "ci_upper"))
+  group_by(age_group, character, factor) %>%
+  do(data.frame(rbind(smean.cl.boot(.$score))))
 ```
 
 ```{r s12 regression}
@@ -2329,13 +2354,13 @@ ggplot(scores_s12_plotting %>%
                                   # labels = c("adults", "children"))),
                                   levels = c("children_79", "adults"),
                                   labels = c("children", "adults"))),
-       aes(x = age_group, y = summary_mean, color = character, shape = character)) +
+       aes(x = age_group, y = Mean, color = character, shape = character)) +
   facet_wrap("factor", ncol = 3) +
   theme_bw() +
   theme(text = element_text(size = 28),
         legend.position = "bottom") +
   geom_point(size = 5, position = position_dodge(width = 0.4)) +
-  geom_errorbar(aes(ymin = summary_ci_lower, ymax = summary_ci_upper),
+  geom_errorbar(aes(ymin = Lower, ymax = Upper),
                 width = 0.2, position = position_dodge(width = 0.4)) +
   scale_shape_manual(values = c(19, 15)) +
   labs(title = "Factor scores by age group",
@@ -2359,9 +2384,8 @@ scores_s3_plotting <- d3 %>%
   filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age_group)) %>%
   gather(factor, score, starts_with("score_")) %>%
   mutate(factor = factor(factor)) %>%
-  multi_boot(column = "score",
-             summary_groups = c("age_group", "character", "factor"),
-             statistics_functions = c("mean", "ci_lower", "ci_upper"))
+  group_by(age_group, character, factor) %>%
+  do(data.frame(rbind(smean.cl.boot(.$score))))
 ```
 
 ```{r s3 figure factor scores by character, fig.width = 6, fig.height = 3}
@@ -2375,14 +2399,14 @@ ggplot(scores_s3_plotting %>%
                 factor = factor(factor,
                                 levels = c("score_F2", "score_F1", "score_F3"),
                                 labels = c("Social-emotional", "Bodily", "Perceptual-cognitive"))),
-       aes(x = character, y = summary_mean, color = character, shape = character)) +
+       aes(x = character, y = Mean, color = character, shape = character)) +
   facet_wrap(~ factor, ncol = 3) +
   theme_bw() +
   theme(text = element_text(size = 28),
         axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
         legend.position = "none") +
   geom_point(size = 5, position = position_dodge(width = 0.4)) +
-  geom_errorbar(aes(ymin = summary_ci_lower, ymax = summary_ci_upper), 
+  geom_errorbar(aes(ymin = Lower, ymax = Upper), 
                 width = 0.2, position = position_dodge(width = 0.4)) +
   # scale_color_manual(values = c("black", "#00BFC4", "#F8766D", rep("black", 4))) +
   # scale_shape_manual(values = c(17, 15, 19, rep(17, 4))) +
@@ -2406,7 +2430,7 @@ d34_all <- d3_all %>% rownames_to_column("subid") %>%
 fa.parallel(d34_all)
 
 # run EFA without rotation with N factors
-efa_d34_all_unrotated <- fa(d34_all, 13, rotate = "none",
+efa_d34_all_unrotated <- fa(d34_all, 6, rotate = "none",
                            cor = chosenCorType, fm = "minres")
 print(efa_d34_all_unrotated)
 
@@ -2424,7 +2448,7 @@ efa_d34_all_unrotated_nfactors
 ```
 
 ```{r s34 all rotation, include = F}
-efa_d34_all_rotated_max <- fa(d34_all, 13, rotate = chosenRotType,
+efa_d34_all_rotated_max <- fa(d34_all, 6, rotate = chosenRotType,
                            cor = chosenCorType, fm = "minres")
 
 efa_d34_all_rotated <- fa(d34_all, efa_d34_all_unrotated_nfactors, rotate = chosenRotType,
@@ -2455,8 +2479,14 @@ nfactors_d34_all
 ```
 
 ```{r s34 all varimax rotation, include = F}
-# run EFA with rotation with N factors
-efa_d34_all_rotatedN <- fa(d34_all, nfactors_d34_all, 
+# # run EFA with rotation with N factors
+# efa_d34_all_rotatedN <- fa(d34_all, nfactors_d34_all, 
+#                           rotate = chosenRotType, cor = chosenCorType, fm = "minres",
+#                           scores = "tenBerge", missing = TRUE) # impute missing values
+# print(efa_d34_all_rotatedN)
+
+# force 3 factors
+efa_d34_all_rotatedN <- fa(d34_all, 3, 
                           rotate = chosenRotType, cor = chosenCorType, fm = "minres",
                           scores = "tenBerge", missing = TRUE) # impute missing values
 print(efa_d34_all_rotatedN)
@@ -2487,12 +2517,13 @@ scores_s34_plotting <- d3 %>%
               rownames_to_column("subid")) %>%
   mutate(character = factor(character)) %>%
   rename(score_F1 = MR1, score_F2 = MR2, score_F3 = MR3) %>%
-  filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age_group)) %>%
+  filter(!is.na(score_F1), !is.na(score_F2), 
+         !is.na(score_F3),
+         !is.na(age_group)) %>%
   gather(factor, score, starts_with("score_")) %>%
   mutate(factor = factor(factor)) %>%
-  multi_boot(column = "score",
-             summary_groups = c("age_group", "character", "factor"),
-             statistics_functions = c("mean", "ci_lower", "ci_upper"))
+  group_by(age_group, character, factor) %>%
+  do(data.frame(rbind(smean.cl.boot(.$score))))
 ```
 
 ```{r s34 figure factor scores by age group, fig.width = 6, fig.height = 3}
@@ -2505,28 +2536,32 @@ ggplot(scores_s34_plotting %>%
                                    labels = c("computer", "robot", "doll", "teddy bear",
                                               "beetle", "bird", "mouse", "goat", "elephant")),
                 factor = factor(factor,
-                                levels = c("score_F2", "score_F1", "score_F3"),
-                                labels = c("Social-emotional", "Bodily", "Perceptual-cognitive")),
+                                levels = c("score_F1", "score_F2", "score_F3"),
+                                labels = c("Heart", "Mind", "Body")),
                 age_group = factor(age_group,
                                   levels = c("children_46", "children_79"),
-                                  labels = c("4-6y", "7-9y"))),
-       aes(x = character, y = summary_mean, color = character, shape = age_group)) +
+                                  labels = c("Study 1 (4-6y)", "Study 2 (7-9y)"))),
+       aes(x = character, y = Mean, 
+           color = age_group)) +
+           # color = character, 
+           # shape = age_group)) +
   facet_wrap(~ factor, ncol = 3) +
   theme_bw() +
   theme(text = element_text(size = 28),
         axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
         legend.position = "bottom") +
   geom_point(size = 5, position = position_dodge(width = 0.4)) +
-  geom_errorbar(aes(ymin = summary_ci_lower, ymax = summary_ci_upper), 
+  geom_errorbar(aes(ymin = Lower, ymax = Upper), 
                 width = 0.2, position = position_dodge(width = 0.4)) +
   # scale_color_manual(values = c("black", "#00BFC4", "#F8766D", rep("black", 4))) +
   # scale_shape_manual(values = c(17, 15, 19, rep(17, 4))) +
-  scale_color_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4)),
-                     guide = FALSE) +
-  labs(title = "Factor scores by character and age group",
+  # scale_color_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4)),
+                     # guide = FALSE) +
+  scale_color_brewer(palette = "Set1") +
+  labs(#title = "Factor scores by character and age group",
        x = "Character",
        y = "Mean factor score",
-       shape = "Age group: ") # 1000 by 500
+       color = "Study: ") # 1000 by 500
 ```
 
 # Factor scores by age
@@ -2644,9 +2679,9 @@ ggplot(tempA,
   # geom_smooth(method = "loess", alpha = 0.4) +
   geom_smooth(method = "lm", alpha = 0.4) +
   geom_point(size = 2) +
-  geom_point(data = tempB, aes(y = summary_mean),
+  geom_point(data = tempB, aes(y = Mean),
              size = 4, position = position_dodge(width = 0.6)) +
-  geom_errorbar(data = tempB, aes(ymin = summary_ci_lower, ymax = summary_ci_upper, y = summary_mean), width = 0.4,
+  geom_errorbar(data = tempB, aes(ymin = Lower, ymax = Upper, y = Mean), width = 0.4,
                 position = position_dodge(width = 0.6)) +
   scale_shape_manual(values = c(19, 15)) +
   scale_x_continuous(breaks = c(7:11), labels = c("7y", "8y", "9y", "10y", "adults")) +
@@ -2658,7 +2693,7 @@ ggplot(tempA,
 
 ## Studies 3-4
 
-```{r s34 factor scores by age setup, fig.width = 5, fig.height = 10}
+```{r s34 factor scores by age setup, fig.width = 7, fig.height = 10}
 scores_s34_plotting <- d3 %>%
   select(age_group, subid, age, character) %>%
   distinct() %>%
@@ -2681,9 +2716,9 @@ ggplot(scores_s34_plotting %>%
          ungroup() %>%
          mutate(factor = factor(factor,
                                 levels = c("score_F1", "score_F2", "score_F3"),
-                                labels = c("Social-emotional",
-                                           "Perceptual-cognitive",
-                                           "Bodily")),
+                                labels = c("Heart",
+                                           "Mind",
+                                           "Body")),
                 character = factor(character,
                                    levels = c("computer", "robot", "doll", "teddy_bear",
                                               "beetle", "bird", "mouse", "goat", "elephant"))),
@@ -2712,10 +2747,12 @@ ggplot(scores_s34_plotting %>%
 ggplot(scores_s34_plotting %>%
          ungroup() %>%
          mutate(factor = factor(factor,
-                                levels = c("score_F1", "score_F2", "score_F3"),
-                                labels = c("Social-emotional",
-                                           "Perceptual-cognitive",
-                                           "Bodily")),
+                                levels = c("score_F3", "score_F1", "score_F2"),
+                                labels = c("Body", "Heart", "Mind")),
+                                # levels = c("score_F1", "score_F2", "score_F3"),
+                                # labels = c("Heart",
+                                #            "Mind",
+                                #            "Body")),
                 character = factor(character,
                                    levels = c("computer", "robot", "doll", "teddy_bear",
                                               "beetle", "bird", "mouse", "goat", "elephant"))),
@@ -2728,16 +2765,20 @@ ggplot(scores_s34_plotting %>%
   theme(text = element_text(size = 28),
         legend.position = "none") +
   # geom_smooth(method = "loess", alpha = 0.4) +
-  geom_smooth(method = "lm", alpha = 0.4) +
+  geom_smooth(method = "lm", alpha = 0.2, color = "black") +
   # geom_smooth(method = "lm", alpha = 0.4, formula = y ~ poly(x, 2)) +
   # geom_smooth(method = "lm", alpha = 0.4, formula = y ~ poly(x, 3)) +
-  geom_point(size = 2) +
+  geom_point(size = 2, aes(color = age_group)) +
   scale_x_continuous(breaks = seq(2, 12, 2)) +
   # scale_fill_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
   # scale_color_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
   # scale_shape_manual(values = c(17, 15, rep(17, 2), 19, rep(17, 4))) +
-  labs(title = "Factor scores by children's age",
+  scale_color_brewer(palette = "Set1") +
+  labs(#title = "Factor scores by children's age",
        # subtitle = "Children (Studies 3-4)\n",
        x = "Age (years)",
        y = "Factor score") # 1000 by 500
 ```
+
+
+
