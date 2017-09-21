@@ -418,8 +418,11 @@ d2 <- d2 %>%
   filter(age >= 7, age < 10) %>%
   filter(character != "elephant")
 
+d3_outsideage <- d3 %>% filter(age < 7 | age >= 10) %>% distinct(subid)
+
 d3 <- d3 %>%
   filter(!is.na(character), character != "") %>%
+  filter(!subid %in% d3_outsideage$subid) %>%
   # filter(age >= 7, age < 10) %>%
   mutate(ethnicity = gsub(" SN", "", ethnicity)) %>%
   mutate(race_cat = ifelse(grepl("bing", tolower(testingSite)),
@@ -817,7 +820,7 @@ data.frame(loadings(fa.sort(efa_d3_all_rotatedN))[]) %>%
 
 ```{r s3 subscale reliability}
 # Cronbach's alpha (subscales)
-keys.list <- list(SOUL = c("pride", "depressed", "disrespected", "guilt", 
+keys.list <- list(HEART = c("pride", "depressed", "disrespected", "guilt", 
                            "embarrassed", "happy", "love"),
                   BODY = c("hungry", "odors", "fear", "pain", "tired", "angry", "nauseated"),
                   MIND = c("reasoning", "choices", "remembering", "temperature", 
@@ -2503,6 +2506,21 @@ data.frame(loadings(fa.sort(efa_d34_all_rotatedN))[]) %>%
   mutate_at(vars(starts_with("M")), funs(round2))
 ```
 
+```{r s34 subscale reliability}
+# Cronbach's alpha (subscales)
+keys.list_s34 <- list(HEART = c("pride", "depressed", "disrespected", "happy", 
+                           "love", "embarrassed", "angry", "guilt"),
+                  BODY = c("hungry", "odors", "fear", "tired", "pain", "nauseated"),
+                  MIND = c("temperature", "reasoning", "remembering", "choices",  
+                           "depth", "conscious")) 
+scores <- scoreItems(keys.list_s34, d34_all, min = 0, max = 1)  # or just use the keys.lit
+# summary(scores)
+scores
+
+# omega
+omega(d34_all, plot = F)
+```
+
 ```{r s34 figure setup, include = F}
 scores_s34_plotting <- d3 %>% 
   select(subid, age_group, character) %>% 
@@ -2693,7 +2711,7 @@ ggplot(tempA,
 
 ## Studies 3-4
 
-```{r s34 factor scores by age setup, fig.width = 7, fig.height = 10}
+```{r s34 factor scores by age setup, fig.width = 5, fig.height = 10}
 scores_s34_plotting <- d3 %>%
   select(age_group, subid, age, character) %>%
   distinct() %>%
@@ -2781,4 +2799,112 @@ ggplot(scores_s34_plotting %>%
 ```
 
 
+```{r}
+contrasts(scores_s34_plotting$factor) <- cbind(heart = c(1, 0, -1),
+                                               mind = c(0, 1, -1))
+contrasts(scores_s34_plotting$character) <- cbind(animate = c(5, 5, -4, -4, 5, 5, 5, -4, -4),
+                                                  mammal = c(-3, -3, 0, 0, 2, 2, 2, 0, 0),
+                                                  elephant = c(0, 0, 0, 0, 2, -1, -1, 0, 0),
+                                                  goat = c(0, 0, 0, 0, 0, 1, -1, 0, 0),
+                                                  bird = c(-1, 1, 0, 0, 0, 0, 0, 0, 0),
+                                                  tech = c(0, 0, 1, -1, 0, 0, 0, 1, -1),
+                                                  robot = c(0, 0, -1, 0, 0, 0, 0, 1, 0),
+                                                  teddy = c(0, 0, 0, -1, 0, 0, 0, 0, 1))
+
+# reg_temp <- lmer(score ~ factor * character * scale(age, scale = F) + (1 | character) + (1 | subid), data = scores_s34_plotting)
+
+# summary(reg_temp)
+
+pvals <- data.frame()
+for(i in levels(scores_s34_plotting$character)) {
+  for(j in levels(scores_s34_plotting$factor)) {
+    res <- summary(lm(score ~ scale(age, scale = F),
+                      data = scores_s34_plotting %>% filter(character == i, factor == j)))
+    p <- round(res$coefficients[2, 4], 3)
+    pvals[i, j] <- p
+  }
+}
+
+pvals <- pvals %>% 
+  select(score_F3, score_F1, score_F2) %>%
+  rownames_to_column("character") %>%
+  mutate(character = factor(character, 
+                            levels = c("computer", "robot", "doll", "teddy_bear",
+                                       "beetle", "bird", "mouse", "goat", "elephant"))) %>%
+  arrange(character)
+
+pvals
+
+pvals %>% 
+  gather(factor, p, -character) %>%
+  filter(p < 0.05/(nrow(pvals) * ncol(pvals))) %>%
+  spread(factor, p)
+
+pvals_cat <- data.frame()
+for(i in levels(scores_s34_plotting$character)) {
+  for(j in levels(scores_s34_plotting$factor)) {
+    res <- summary(lm(score ~ age_group,
+                      data = scores_s34_plotting %>% filter(character == i, factor == j)))
+    p <- round(res$coefficients[2, 4], 3)
+    pvals_cat[i, j] <- p
+  }
+}
+
+pvals_cat <- pvals_cat %>% 
+  select(score_F3, score_F1, score_F2) %>%
+  rownames_to_column("character") %>%
+  mutate(character = factor(character, 
+                            levels = c("computer", "robot", "doll", "teddy_bear",
+                                       "beetle", "bird", "mouse", "goat", "elephant"))) %>%
+  arrange(character)
+
+pvals_cat
+
+pvals_cat %>% 
+  gather(factor, p, -character) %>%
+  filter(p < 0.05/(nrow(pvals_cat) * ncol(pvals_cat))) %>%
+  spread(factor, p)
+```
+
+```{r s34 robot proportions, fig.width=3, fig.height=3}
+# plot! (ordered by study 3 factor loadings)
+s34_robot_cat <- ggplot(d34_all %>%
+                      rownames_to_column("subid") %>%
+                      filter(grepl("robot", subid)) %>%
+                      mutate(subid = gsub("robot_", "", subid),
+                             subid = as.character(subid)) %>%
+                      left_join(d3 %>% 
+                                  select(subid, study) %>% 
+                                  mutate(subid = as.character(subid)) %>% 
+                                  distinct() %>%
+                                  full_join(d4 %>%
+                                              select(subid, study) %>%
+                                              mutate(subid = as.character(subid)) %>%
+                                              distinct())) %>%
+                      mutate(study = factor(study,
+                                            levels = c("study 4", "study 3"),
+                                            labels = c("Study 1 (4-6y)", "Study 2 (7-9y)"))) %>%
+                      gather(capacity, response, angry:tired) %>%
+                      full_join(s34_plotting %>% 
+                                  select(capacity, wording, s3_factor, s3_order)) %>%
+                        mutate(wording = reorder(wording, s3_order)),
+               aes(x = study, 
+                   fill = study,
+                   alpha = factor(response))) + 
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_brewer(name = "Study:", palette = "Set1") +
+  scale_alpha_discrete(name = "Response:", labels = c("NO", "KINDA", "YES")) +
+  theme_bw() +
+  theme(text = element_text(),
+        axis.title.x = element_blank(),
+      axis.text.x = element_text(angle = 90, hjust = 1),
+      legend.position = "top") +
+  labs(x = "Study",
+       y = "Proportion of Responses") +
+  # coord_flip() +
+  # facet_grid(capacity ~ ., switch = "y")
+  facet_wrap(~ wording, ncol = 5)
+
+s34_robot_cat
+```
 
