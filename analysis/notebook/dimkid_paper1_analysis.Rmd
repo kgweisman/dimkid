@@ -1,0 +1,1766 @@
+---
+title: "Dimkid Paper #1 Analysis (7-9yo and Adults)"
+output:
+  html_notebook:
+    theme: flatly
+    toc: yes
+  html_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+# Setup
+
+```{r workspace setup}
+# load libraries
+library(tidyverse)
+library(psych)
+library(langcog) # source: https://github.com/langcog/langcog
+library(RColorBrewer)
+library(plotly)
+library(lubridate)
+library(rms)
+library(lme4)
+library(brms)
+library(parallel)
+
+# clear workspace
+# rm(list = ls(all = T))
+graphics.off()
+
+# set number of cores for brms
+n_cores <- detectCores()
+```
+
+```{r functions}
+# make rounding function
+round2 <- function(x) {format(round(x, 2), nsmall = 2)}
+
+# make cleanup function
+cleanup <- function(datasource, age_group) {
+  if(grepl("adult", age_group)) {
+    
+    # set target dataset
+    if(datasource == "study 1"){d <- d_raw_study1}
+    if(datasource == "study 1b"){d <- d_raw_study1b}
+    if(datasource == "study 1c"){d <- d_raw_study1c}
+    
+    # enact exclusionary criteria
+    d_clean_1 <- d
+    
+    # recode background and demographic variables
+    d_clean <- d_clean_1 %>%
+      mutate( # deal with study number
+        study = factor(study)) %>%
+      mutate( # deal with race
+        race_cat2 = factor(sub(" +$", "", ethnicity)),
+        race_cat3 = factor(ifelse(grepl(" ", race_cat2) == T, "multiracial",
+                                  as.character(race_cat2)))) %>%
+      dplyr::select(study, subid:country_selfrep, age_group, race_cat3) %>%
+      rename(race_cat = race_cat3) %>%
+      mutate( # deal with religion (note: only dealing with childhood religion for now)
+        religion_cat2 = factor(sub(" +$", "", religionChild)),
+        religion_cat3 = factor(ifelse(grepl(" ", religion_cat2) == T, 
+                                      "multireligious",
+                                      as.character(religion_cat2)))) %>%
+      dplyr::select(study:race_cat, religion_cat3) %>%
+      rename(religion_cat = religion_cat3)
+    
+    # remove extraneous dfs and variables
+    rm(d, d_clean_1)
+  }
+  
+  if(grepl("child", age_group)) {
+    
+    # set target dataset
+    if(datasource == "study 2"){d <- d_raw_study2}
+    # if(datasource == "study 3"){d <- d_raw_study3}
+    # if(datasource == "study 4"){d <- d_raw_study4}
+    
+    # recode background and demographic variables
+    d_clean_2 <- d %>%
+      mutate( # deal with study number
+        study = factor(study),
+        responseNum = ifelse(!is.na(responseNum), responseNum,
+                             ifelse(response == "no", 0, 
+                                    ifelse(response == "kinda", 0.5, 
+                                           ifelse(response == "yes", 1, NA)))))
+    # NOTE: need to reconcile race/ethnicity at some point...
+    # NOTE: need to deal with gender at some point...
+  
+    d_clean <- d_clean_2
+    
+    # remove extraneous dfs and variables
+    rm(d, d_clean_2)
+  }
+  
+  # remove outliers if desired
+  if(chosenOutlierHandling == "remove") {
+    
+    d_clean <- d_clean %>%
+      gather(capacity, score, happy:pride) %>%
+      group_by(character, capacity) %>%
+      filter(!score %in% boxplot.stats(score, 2.5)$out) %>%
+      spread(capacity, score) %>%
+      arrange(character, subid)
+    
+  }
+  
+  # filter characters if desired
+  if(is.element("none", chosenExclude)) {} else {
+    
+    d_clean <- d_clean %>%
+      filter(!character %in% chosenExclude)
+    
+    }
+    
+  # filter items if desired
+  if(is.element("none", chosenExcludeItem)) {} else {
+    d_clean <- d_clean %>%
+      dplyr::filter(!capacity %in% chosenExcludeItem)
+  }
+  
+  # drop trials <250 ms
+  d_clean <- d_clean %>%
+    filter(rt >= 250 | is.na(rt))
+  
+  # center response variable
+  if(datasource == "study 1b") {
+    d_clean <- d_clean %>%
+      mutate(responseNumC = responseNum - 4)
+  } else {
+    d_clean <- d_clean %>%
+      mutate(responseNumC = responseNum - 0.5)
+  }
+
+    # rename character name variables
+  if("charName" %in% names(d_clean)) {
+    d_clean <- d_clean %>% rename(character = charName)
+  }
+  
+  # cleanup
+  d_clean <- d_clean %>%
+    filter(!is.na(subid), !is.na(character), !is.na(capacity))
+  
+  # return cleaned dataset
+  return(d_clean)
+}
+
+# make function for stripping dataframes for dimension reducation
+makeDRDF <- function(datasource, chosenCondition) {
+  
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 1b"){d <- d1b}
+  if(datasource == "study 1c"){d <- d1c}
+  if(datasource == "study 2"){d <- d2}
+
+  # filter by character if specified
+  if(chosenCondition %in% c("beetle", "robot")) {
+    d <- d %>% filter(character == chosenCondition)
+  }
+
+  # make stripped dataframe for dimension reducation analyses
+  d_strip <- d %>%
+    filter(!is.na(character), !is.na(subid), !is.na(capacity), capacity != "") %>%
+    mutate(subid = paste(character, subid, sep = "_")) %>%
+    select(subid, capacity, responseNum) %>%
+    spread(capacity, responseNum) %>%
+    remove_rownames() %>%
+    column_to_rownames(var = "subid")
+
+  # return stripped dataframe
+  return(d_strip)
+}
+
+# make demographics functions
+demoSampleSize <- function(datasource) {
+
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 1b"){d <- d1b}
+  if(datasource == "study 1c"){d <- d1c}
+  if(datasource == "study 2"){d <- d2}
+
+  # get distinct subids
+  sample_size <- d %>% distinct(subid, character) %>% count(character) %>% data.frame()
+
+  # add total sample size  
+  sample_size <- rbind(sample_size %>% mutate(character = as.character(character)),
+                       c(character = "all", n = d %>% distinct(subid) %>% count() %>% as.numeric()))
+  
+  # return dataframe
+  return(sample_size)
+}
+demoDuration <- function(datasource) {
+
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 1b"){d <- d1b}
+  if(datasource == "study 1c"){d <- d1c}
+  if(datasource == "study 2"){d <- d2 %>% rename(duration = sessionDuration)}
+
+  # get sample size per character
+  duration <- d %>%
+    distinct(subid, character, duration) %>%
+    mutate(duration = as.numeric(duration)) %>%
+    group_by(character) %>%
+    summarise(min_duration = min(duration, na.rm = T),
+              max_duration = max(duration, na.rm = T),
+              median_duration = median(duration, na.rm = T),
+              mean_duration = mean(duration, na.rm = T),
+              sd_duration = sd(duration, na.rm = T))
+
+  # add total duration
+  all <- d %>%
+    distinct(subid, character, duration) %>%
+    mutate(duration = as.numeric(duration)) %>%
+    summarise(min_duration = min(duration, na.rm = T),
+              max_duration = max(duration, na.rm = T),
+              median_duration = median(duration, na.rm = T),
+              mean_duration = mean(duration, na.rm = T),
+              sd_duration = sd(duration, na.rm = T)) %>%
+    mutate(character = "all")
+  
+  duration <- rbind(duration, all) # not sure why full_join doesn't work    
+
+  # return dataframe
+  return(duration)
+}
+demoAge <- function(datasource) {
+
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 1b"){d <- d1b}
+  if(datasource == "study 1c"){d <- d1c}
+  if(datasource == "study 2"){d <- d2}
+
+  # get sample size per character
+  age <- d %>%
+    distinct(subid, character, age) %>%
+    mutate(age = as.numeric(age)) %>%
+    group_by(character) %>%
+    summarise(min_age = min(age, na.rm = T),
+              max_age = max(age, na.rm = T),
+              median_age = median(age, na.rm = T),
+              mean_age = mean(age, na.rm = T),
+              sd_age = sd(age, na.rm = T))
+
+  # add total age
+  all <- d %>%
+    distinct(subid, character, age) %>%
+    mutate(age = as.numeric(age)) %>%
+    summarise(min_age = min(age, na.rm = T),
+              max_age = max(age, na.rm = T),
+              median_age = median(age, na.rm = T),
+              mean_age = mean(age, na.rm = T),
+              sd_age = sd(age, na.rm = T)) %>%
+    mutate(character = "all")
+  age <- full_join(age, all)
+
+  # return dataframe
+  return(age)
+}
+demoGender <- function(datasource) {
+
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 1b"){d <- d1b}
+  if(datasource == "study 1c"){d <- d1c}
+  if(datasource == "study 2"){d <- d2}
+
+  # get gender per character and overall
+  gender <- data.frame(addmargins(with(d %>% distinct(subid, character, gender), 
+                                       table(character, gender)))) %>%
+    filter(gender != "Sum") %>%
+    rename(n = Freq)
+  
+  gender <- gender %>%
+    mutate(character = factor(ifelse(character == "Sum",
+                                     "all", as.character(character)),
+                              levels = c("beetle", "robot", "all"))) %>%
+    arrange(character, gender) %>%
+    spread(gender, n)
+  
+  # return dataframe
+  return(gender)
+}
+demoRace <- function(datasource) {
+
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 1b"){d <- d1b}
+  if(datasource == "study 1c"){d <- d1c}
+  if(datasource == "study 2"){d <- d2 %>% 
+    mutate(ethnicity = as.character(ethnicity),
+           white = grepl("white", ethnicity) | grepl("cauc", ethnicity) | 
+             grepl("euro", ethnicity) | grepl("australia", ethnicity),
+           black = grepl("black", ethnicity) | grepl("africa", ethnicity),
+           latinx = grepl("hisp", ethnicity) | grepl("latin", ethnicity),
+           E_asian = (grepl("east asian", ethnicity) & grepl("southeast", ethnicity) == F) | 
+             grepl("chin", ethnicity) | grepl("korea", ethnicity) 
+           | grepl("\\(asian\\)", ethnicity) | 
+             grepl("\\/asian", ethnicity),
+           SSE_asian = grepl("south or southeast", ethnicity) | 
+             (grepl("india", ethnicity) & grepl("native", ethnicity) == F) |
+             grepl("vietnam", ethnicity) | grepl("pakistan", ethnicity),
+           nat_am = grepl("native american", ethnicity),
+           middle_east = grepl("middle", ethnicity)) %>%
+    mutate(race_cat = ifelse(white + black + latinx + E_asian + SSE_asian + 
+                               nat_am + middle_east > 1,
+                             "multiracial",
+                             ifelse(white, "white",
+                                    ifelse(black, "black",
+                                           ifelse(latinx, "latinx",
+                                                  ifelse(E_asian, "east_asian",
+                                                         ifelse(SSE_asian, "south_southeast_asian",
+                                                                ifelse(nat_am, "native_american",
+                                                                       ifelse(middle_east, "middle_eastern",
+                                                                              NA)))))))))
+  }
+
+  # get race per character and overall
+  race <- data.frame(addmargins(with(d %>% distinct(subid, character, race_cat), 
+                                     table(character, race_cat)))) %>%
+    filter(race_cat != "Sum") %>%
+    rename(n = Freq)
+
+    race <- race %>%
+      mutate(character = factor(ifelse(character == "Sum",
+                                       "all", as.character(character)))) %>%
+      arrange(character, race_cat) %>%
+      spread(race_cat, n)
+  
+  # return dataframe
+  return(race)
+}
+
+# plotting functions
+makeFacetLabs <- function(df_plotting) {
+  facet_labels <- array()
+  df_plotting <- df_plotting %>% mutate(character = factor(character))
+  for(i in 1:length(levels(df_plotting$character))) {
+    df <- df_plotting %>% filter(character == levels(df_plotting$character)[i]) %>%
+      select(character, n) %>% unique()
+    facet_labels[i] <- paste0(df$character, " (n = ", df$n, ")")
+  }
+  names(facet_labels) <- levels(df_plotting$character)
+  return(facet_labels)
+}
+```
+
+```{r modeling decisions}
+# remove outliers?
+chosenOutlierHandling <- "keep"
+# chosenOutlierHandling <- "remove"
+
+# exclude any conditions (characters)?
+chosenExclude <- "none"
+# chosenExclude <- c("stapler", "car", "computer")
+
+# exclude any items (mental capacities)?
+# chosenExcludeItem <- "none"
+# chosenExcludeItem <- "computations"
+chosenExcludeItem <- c("metal", "on_off")
+
+# NOTE: always choose minimal residual (fm = "minres") instead of ML because of non-normality
+
+# for EFAs, what kind of correlation?
+chosenCorType <- "cor" # pearson correlation
+# chosenCorType <- "poly" # polychoric correlation
+
+# for EFAs, what kind of rotation?
+chosenRotType <- "oblimin" # oblimin rotation
+# chosenRotType <- "oblimin" # oblimin rotation
+# chosenRotType <- "none" # no rotation
+
+data.frame("conditionsExcluded" = chosenExclude,
+           "outlierHandling" = chosenOutlierHandling,
+           "EFA_correlation" = chosenCorType,
+           "EFA_rotation" = chosenRotType)
+```
+
+<p style="text-align:right"><a href="#header">back to TOC</a></p>
+
+# Data preparation
+
+```{r data upload}
+# study 1 (2016-07-06, adults, 2 conditions, 3-point scale, "decide what to do" and "make plans")
+d_raw_study1 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv") %>%
+  mutate(study = "study 1", age_group = "adults") %>% select(-X)
+
+# study 1b (2017-07-19, adults, 2 conditions, 7-point scale, "decide what to do" and "make plans")
+d_raw_study1b <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-02_2016-07-19_anonymized.csv") %>%
+  mutate(study = "study 1b", age_group = "adults") %>% select(-X)
+
+# study 1c (2016-12-08, adults, 2 conditions, 3-point scale, "have free will" and "have intentions")
+d_raw_study1c <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-03_2016-12-08_anonymized.csv") %>%
+  mutate(study = "study 1c", age_group = "adults") %>% select(-X)
+
+# study 2 (June - December 2016, 7-9yo, 2 conditions, 3-point-scale, "decide what to do" and "make plans")
+d_raw_study2 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2017-07-24_anonymized.csv") %>%
+  mutate(study = "study 2", age_group = "children_79") %>% select(-X)
+```
+
+```{r data cleanup}
+# clean up datasets
+d1 <- cleanup("study 1", "adults")
+d1b <- cleanup("study 1", "adults")
+d1c <- cleanup("study 1", "adults")
+d2 <- cleanup("study 2", "children")
+
+# tweak by hand
+d2 <- d2 %>%
+  filter(!is.na(age)) %>%
+  filter(age >= 7, age < 10) %>%
+  filter(character != "elephant")
+```
+
+```{r data cleanup report}
+# fast rt
+d_raw_study1 %>% 
+  full_join(d_raw_study2) %>%
+  filter(!is.na(rt)) %>%
+  mutate(rt_cat = ifelse(rt < 250, "<250ms", ">=250ms")) %>% 
+  count(age_group, rt_cat) %>%
+  group_by(age_group) %>%
+  mutate(prop = round(n/sum(n), 2))
+
+# skipped trials
+d_raw_study1 %>% 
+  full_join(d_raw_study2) %>%
+  filter((age >= 7 & age < 10) | (age >= 18)) %>%
+  filter(!is.na(response), !response %in% c("bail", "skip")) %>%
+  count(age_group, subid) %>%
+  filter(n != 40) %>%
+  mutate(skipped = 40 - n) %>%
+  group_by(age_group) %>%
+  summarise(total_skipped = sum(skipped))
+
+# total mising
+d1 %>% 
+  full_join(d2) %>%
+  filter((age >= 7 & age < 10) | (age >= 18)) %>%
+  filter(!is.na(response), !response %in% c("bail", "skip")) %>%
+  count(age_group, subid) %>%
+  filter(n != 40) %>%
+  mutate(missing = 40 - n) %>%
+  group_by(age_group) %>%
+  summarise(total_missing = sum(missing),
+            prop_missing = round(total_missing/(40*200), 3))
+```
+
+
+```{r dataframes for dimension reducation}
+# make dataframes for s1
+# d1_beetle <- makeDRDF("study 1", "beetle")
+# d1_robot <- makeDRDF("study 1", "robot")
+d1_all <- makeDRDF("study 1", "all")
+
+# make dataframes for follow-up studies to s1
+d1b_all <- makeDRDF("study 1b", "all")
+d1c_all <- makeDRDF("study 1c", "all")
+
+# make dataframes for study 2
+# d2_beetle <- makeDRDF("study 2", "beetle")
+# d2_robot <- makeDRDF("study 2", "robot")
+d2_all <- makeDRDF("study 2", "all")
+```
+
+<p style="text-align:right"><a href="#header">back to TOC</a></p>
+
+# Analysis plan
+
+For all studies we conduct exploratory factor analyses using Pearson correlations to find minimum residual solutions. 
+
+For each study, we first examine maximal unrotated and rotated solutions. To determine the maximum number of factors to extract, we use the following rule of thumb: With $p$ observations per participant, we can extract a maximum of $k$ factors, where $(p-k)*2 > p+k$, i.e., $k < p/3$. Thus, with 40 mental capacity items, we can extract a maximum of 13 factors.
+
+To determine how many factors to retain, we use the following preset retention criteria, considering the unrotated maximal solution (unless otherwise noted):
+
+  - Each factor must have an eigenvalue >1.0.
+  - Each factor must individually account for >5% of the total variance in the maximal model.
+  - After rotation, each factor must be the dominant factor (i.e., the factor with the highest factor loading) for ≥1 mental capacity item.
+
+We then examine and interpret oblimin-rotated solutions, extracting only the number of factors that meet these criteria.
+
+# Adults
+
+Study information:
+
+* Design: 2 conditions (beetle, robot), 3-point response scale, "decide what to do" and "have intentions"
+* Population: adults
+* Date conducted: 2016-07-06 (MTurk)
+
+## Demographics
+
+```{r s1 demographics}
+# make demographics tables
+demoSampleSize("study 1")
+demoDuration("study 1")
+demoAge("study 1")
+demoGender("study 1")
+demoRace("study 1") %>%
+  filter(character == "all") %>%
+  gather(ethnicity, count, -character) %>%
+  mutate(prop = round(count/sum(count), 2)) %>% 
+  arrange(desc(prop))
+```
+
+```{r s1 demographics by condition}
+# gender
+with(d1 %>%
+       distinct(subid, character, gender) %>%
+       filter(!is.na(gender)) %>%
+       mutate(character = factor(character)),
+     table(character, gender)) %>%
+  summary()
+
+# age
+with(d1 %>%
+       distinct(subid, character, age),
+     t.test(age ~ character))
+```
+
+<p style="text-align:right"><a href="#header">back to TOC</a></p>
+
+## Exploratory factor analysis
+
+### Step 1: Run maximal EFA (without and with rotation)
+
+```{r s1 all no rotation}
+# examine scree plot
+# fa.parallel(d1_all)
+
+# run EFA without rotation with N factors
+efa_d1_all_unrotated <- fa(d1_all, 13, rotate = "none",
+                           cor = chosenCorType, fm = "minres")
+fa.sort(efa_d1_all_unrotated)
+```
+
+```{r s1 how many factors part 1, include = F}
+# examine eigenvalues and variance explained
+efa_d1_all_unrotated_eigenvalues <- print(efa_d1_all_unrotated)$Vaccounted %>%
+  t() %>%
+  data.frame()
+```
+
+```{r s1 how many factors part 2}
+# count factors with eigenvalues > 1 and variance explained > 5%
+efa_d1_all_unrotated_nfactors <- efa_d1_all_unrotated_eigenvalues %>%
+  filter(SS.loadings > 1, Proportion.Explained > 0.05) %>%
+  count() %>%
+  as.numeric()
+efa_d1_all_unrotated_nfactors
+```
+
+```{r s1 all rotated, include = F}
+efa_d1_all_rotated <- fa(d1_all, 13, rotate = chosenRotType,
+                           cor = chosenCorType, fm = "minres")
+fa.sort(efa_d1_all_rotated)
+```
+
+```{r s1 n rotated}
+efa_d1_rotatedN <- fa(d1_all, efa_d1_all_unrotated_nfactors, rotate = chosenRotType,
+                           cor = chosenCorType, fm = "minres")
+
+# check that each of these factors is the dominant factor for at least one mental capacity item
+efa_d1_rotatedN_loadings <- fa.sort(loadings(efa_d1_rotatedN)[]) %>%
+  data.frame() %>%
+  rownames_to_column("capacity") %>%
+  gather(factor, loading, -capacity) %>%
+  mutate(loading_abs = abs(loading)) %>%
+  group_by(capacity) %>%
+  top_n(1, loading_abs) %>%
+  ungroup()
+efa_d1_rotatedN_loadings
+
+# drop any factors where n < 1
+efa_d1_rotatedN_loadings %>% 
+  count(factor) %>% 
+  filter(n > 0)
+
+# set number of factors to extract
+nfactors_d1_all <- efa_d1_rotatedN_loadings %>% 
+  count(factor) %>% 
+  filter(n > 0) %>%
+  nrow()
+nfactors_d1_all
+```
+
+### Step 2: Run EFA with oblimin rotation
+
+```{r s1 all oblimin rotation}
+# run EFA with rotation with N factors
+efa_d1_rotatedN <- fa(d1_all, nfactors_d1_all, 
+                          rotate = chosenRotType, cor = chosenCorType, fm = "minres")
+fa.sort(efa_d1_rotatedN)
+
+# get loadings for each factor
+efa_d1_rotatedN_loadings <- loadings(efa_d1_rotatedN)[] %>%
+  data.frame() %>% 
+  rownames_to_column(var = "capacity")
+```
+
+<p style="text-align:right"><a href="#header">back to TOC</a></p>
+
+#### Factor loadings table
+
+```{r s1 loadings table}
+data.frame(loadings(fa.sort(efa_d1_rotatedN))[]) %>%
+  rownames_to_column("capacity") %>%
+  mutate_at(vars(starts_with("M")), funs(round2))
+```
+
+# Children (7-9y)
+
+Study information:
+
+* Design: 2 conditions (beetle, robot), 3-point response scale, "decide what to do" and "have intentions"
+* Population: 7-9yo children
+* Date conducted: June - December 2016
+
+## Demographics
+
+```{r s2 demographics}
+# make demographics tables
+demoSampleSize("study 2")
+demoDuration("study 2")
+demoAge("study 2")
+demoGender("study 2")
+demoRace("study 2") %>%
+  filter(character == "all") %>%
+  gather(ethnicity, count, -character) %>%
+  mutate(prop = round(count/sum(count), 2)) %>% 
+  arrange(desc(prop))
+```
+
+```{r s2 demographics by condition}
+# gender
+with(d2 %>%
+       distinct(subid, character, gender) %>%
+       filter(!is.na(gender)) %>%
+       mutate(character = factor(character)),
+     table(character, gender)) %>%
+  summary()
+
+# age
+with(d2 %>%
+       distinct(subid, character, age),
+     t.test(age ~ character))
+```
+
+
+<p style="text-align:right"><a href="#header">back to TOC</a></p>
+
+## Exploratory factor analysis
+
+### Step 1: Run maximal EFA (without and with rotation)
+
+```{r s2 all no rotation}
+# examine scree plot
+# fa.parallel(d2_all)
+
+# run EFA without rotation with N factors
+efa_d2_all_unrotated <- fa(d2_all, 13, rotate = "none",
+                           cor = chosenCorType, fm = "minres")
+fa.sort(efa_d2_all_unrotated)
+```
+
+```{r s2 how many factors part 1, include = FALSE}
+# examine eigenvalues and variance explained
+efa_d2_all_unrotated_eigenvalues <- print(efa_d2_all_unrotated)$Vaccounted %>%
+  t() %>%
+  data.frame()
+```
+
+```{r s2 how many factors part 2}
+# count factors with eigenvalues > 1 and variance explained > 5%
+efa_d2_all_unrotated_nfactors <- efa_d2_all_unrotated_eigenvalues %>%
+  filter(SS.loadings > 1, Proportion.Explained > 0.05) %>%
+  count() %>%
+  as.numeric()
+efa_d2_all_unrotated_nfactors
+```
+
+```{r s2 all rotated, include = FALSE}
+efa_d2_all_rotated <- fa(d2_all, 13, rotate = chosenRotType,
+                           cor = chosenCorType, fm = "minres")
+fa.sort(efa_d2_all_rotated)
+```
+
+```{r s2 n rotated}
+efa_d2_rotatedN <- fa(d2_all, efa_d2_all_unrotated_nfactors, rotate = chosenRotType,
+                           cor = chosenCorType, fm = "minres")
+
+# check that each of these factors is the dominant factor for at least one mental capacity item
+efa_d2_rotatedN_loadings <- fa.sort(loadings(efa_d2_rotatedN)[]) %>%
+  data.frame() %>%
+  rownames_to_column("capacity") %>%
+  gather(factor, loading, -capacity) %>%
+  mutate(loading_abs = abs(loading)) %>%
+  group_by(capacity) %>%
+  top_n(1, loading_abs) %>%
+  ungroup()
+efa_d2_rotatedN_loadings
+
+# drop any factors where n < 1
+efa_d2_rotatedN_loadings %>% 
+  count(factor) %>% 
+  filter(n > 0)
+
+# set number of factors to extract
+nfactors_d2_all <- efa_d2_rotatedN_loadings %>% 
+  count(factor) %>% 
+  filter(n > 0) %>%
+  nrow()
+nfactors_d2_all
+```
+
+### Step 2: Run EFA with oblimin rotation
+
+```{r s2 all oblimin rotation}
+# run EFA with rotation with N factors
+efa_d2_rotatedN <- fa(d2_all, nfactors_d2_all, 
+                          rotate = chosenRotType, cor = chosenCorType, fm = "minres")
+fa.sort(efa_d2_rotatedN)
+
+# get loadings for each factor
+efa_d2_rotatedN_loadings <- loadings(efa_d2_rotatedN)[] %>%
+  data.frame() %>% 
+  rownames_to_column(var = "capacity")
+```
+
+<p style="text-align:right"><a href="#header">back to TOC</a></p>
+
+#### Factor loadings table
+
+```{r s2 loadings table}
+data.frame(loadings(fa.sort(efa_d2_rotatedN))[]) %>%
+  rownames_to_column("capacity") %>%
+  mutate_at(vars(starts_with("M")), funs(round2))
+```
+
+# Big factor loadings table
+
+```{r all studies loadings table}
+# manually set 3 factors
+order_s1_manual <- loadings(fa.sort(fa(d1_all, nfactors = 3,
+                                       rotate = chosenRotType, cor = chosenCorType)))[] %>%
+  data.frame() %>%
+  rownames_to_column(var = "capacity") %>%
+  rownames_to_column(var = "order1_manual") %>%
+  rename(s1_heart = MR1, s1_body = MR2, s1_mind = MR3)
+
+order_s1 <- loadings(fa.sort(efa_d1_rotatedN))[] %>%
+  data.frame() %>%
+  rownames_to_column(var = "capacity") %>%
+  rownames_to_column(var = "order1") %>%
+  rename(s1_heart = MR1, s1_body = MR2, s1_mind = MR3)
+
+order_s2 <- loadings(fa.sort(efa_d2_rotatedN))[] %>%
+  data.frame() %>%
+  rownames_to_column(var = "capacity") %>%
+  rename(s2_body = MR2, s2_heart = MR1, s2_mind = MR3)
+
+bigTable <- order_s1 %>% 
+  # order_s1_manual %>% # could substitute
+  full_join(order_s2) %>%
+  mutate_at(vars(starts_with("s")), funs(round2)) %>%
+  select(order1, # could subistitute order_s1
+  # select(order1_manual, # could subistitute order_s1
+         capacity, ends_with("heart"), ends_with("body"), ends_with("mind")) 
+
+bigTable
+```
+
+# Figures
+
+```{r plotting setup character means, include = F}
+# bootstrap 95% CIs for ratings by character (nonparametric)
+# study 1
+char_plotting_ratings_s1 <- d1 %>% 
+  select(subid, character, capacity, responseNum) %>%
+  group_by(character, capacity) %>%
+  do(data.frame(rbind(smean.cl.boot(.$responseNum)))) %>%
+  full_join(demoSampleSize("study 1") %>% filter(character != "all")) %>%
+  mutate(study = "study 1")
+
+# study 2
+char_plotting_ratings_s2 <- d2 %>% 
+  select(subid, character, capacity, responseNum) %>%
+  group_by(character, capacity) %>%
+  do(data.frame(rbind(smean.cl.boot(.$responseNum)))) %>%
+  full_join(demoSampleSize("study 2") %>% filter(character != "all")) %>%
+  mutate(study = "study 2")
+```
+
+```{r plotting setup character means merge, include = F}
+char_plotting_ratings_all <- char_plotting_ratings_s1 %>%
+  full_join(char_plotting_ratings_s2) %>%
+  filter(!is.na(character)) %>%
+  ungroup() %>%
+  mutate(study = factor(study),
+         condition = factor(character,
+                            levels = c("computer", "doll", "teddy_bear", "robot", 
+                                       "beetle", "bird", "mouse", "goat", "elephant")))
+```
+
+```{r plotting setup capacity wordings, include = F}
+char_plotting_wordings <- char_plotting_ratings_all %>%
+  ungroup() %>%
+  select(capacity) %>%
+  distinct() %>% 
+  mutate(wording = factor(
+    recode(capacity,
+           happy = "feel happy",
+           depressed = "feel sad",
+           fear = "feel scared",
+           angry = "get angry",
+           calm = "feel calm",
+           sounds = "hear sounds",
+           seeing = "see things",
+           temperature = "sense temperatures",
+           odors = "smell things",
+           depth = "sense... close by or far away",
+           computations = "do math",
+           thoughts = "have thoughts",
+           reasoning = "figure out how to do things",
+           remembering = "remember things",
+           beliefs = "have beliefs...",
+           hungry = "get hungry",
+           tired = "feel tired",
+           pain = "feel pain",
+           nauseated = "feel sick...",
+           safe = "feel safe",
+           love = "feel love",
+           recognizing = "recognize somebody else",
+           communicating = "communicate with somebody else",
+           guilt = "feel guilty",
+           disrespected = "get hurt feelings",
+           free_will = "decide what to do",
+           choices = "make choices",
+           self_restraint = "have self-control...",
+           intentions = "make plans",
+           goal = "have goals...",
+           conscious = "be aware of things",
+           self_aware = "be aware of itself",
+           desires = "have desires...",
+           embarrassed = "feel embarrassed",
+           emo_recog = "understand how somebody else is feeling",
+           joy = "feel joy",
+           morality = "know what's nice and what's mean",
+           personality = "have a personality...",
+           pleasure = "feel pleasure...",
+           pride = "feel proud")))
+```
+
+```{r plotting setup loadings, include = F}
+# merge with loadings, orderings, and dominant factors from each study 
+char_plotting <- char_plotting_ratings_all %>%
+  full_join(char_plotting_wordings) %>%
+  full_join(order_s1 %>%
+              rename(s1_MR1 = s1_body, s1_MR2 = s1_heart, s1_MR3 = s1_mind) %>%
+              mutate(s1_MR1_abs = abs(s1_MR1),
+                     s1_MR2_abs = abs(s1_MR2),
+                     s1_MR3_abs = abs(s1_MR3),
+                     s1_factor = 
+                       ifelse(s1_MR1_abs > s1_MR2_abs &
+                                s1_MR1_abs > s1_MR3_abs, "BODY",
+                              ifelse(s1_MR2_abs > s1_MR1_abs &
+                                       s1_MR2_abs > s1_MR3_abs, "HEART",
+                                     ifelse(s1_MR3_abs > s1_MR1_abs &
+                                              s1_MR3_abs > s1_MR2_abs, "MIND",
+                                            NA))),
+                     s1_color = recode(s1_factor,
+                                       "BODY" = "#E41A1C",
+                                       "HEART" = "#377EB8",
+                                       "MIND" = "#4DAF4A"),
+                     s1_order = as.numeric(order1)) %>%
+              select(-s1_MR1_abs, -s1_MR2_abs, -s1_MR3_abs)) %>%
+  full_join(order_s2 %>%
+              data.frame() %>%
+              rename(s2_MR1 = s2_heart, s2_MR2 = s2_body, s2_MR3 = s2_mind) %>%
+              mutate(s2_MR1_abs = abs(s2_MR1),
+                     s2_MR2_abs = abs(s2_MR2),
+                     s2_MR3_abs = abs(s2_MR3),
+                     s2_factor = 
+                       ifelse(s2_MR1_abs > s2_MR2_abs &
+                                s2_MR1_abs > s2_MR3_abs, "BODY",
+                              ifelse(s2_MR2_abs > s2_MR1_abs &
+                                       s2_MR2_abs > s2_MR3_abs, "HEART",
+                                     ifelse(s2_MR3_abs > s2_MR1_abs &
+                                              s2_MR3_abs > s2_MR2_abs, "MIND",
+                                            NA))),
+                     s2_color = recode(s2_factor,
+                                       "BODY" = "#E41A1C",
+                                       "HEART" = "#377EB8",
+                                       "MIND" = "#4DAF4A")) %>%
+              rownames_to_column(var = "s2_order") %>%
+              mutate(s2_order = as.numeric(s2_order)) %>%
+              select(-s2_MR1_abs, -s2_MR2_abs, -s2_MR3_abs))
+
+# configure plot labels
+label_df_s1 <- char_plotting %>% filter(study == "study 1") %>% select(condition, n) %>% unique()
+label_df_s2 <- char_plotting %>% filter(study == "study 2") %>% select(condition, n) %>% unique()
+
+facetLabs_s1 <- gsub(" \\(", "\n(", makeFacetLabs(char_plotting %>% filter(study == "study 1")))
+facetLabs_s2 <- gsub(" \\(", "\n(", makeFacetLabs(char_plotting %>% filter(study == "study 2")))
+
+# configure custom palette
+myPalette <- brewer.pal(3, "Set1"); names(myPalette) <- c("HEART", "BODY", "MIND")
+
+palette_base <- char_plotting %>% 
+  select(capacity, ends_with("_factor")) %>%
+  distinct()
+# adjust by hand depending on order of factors!!
+palette_s1 <- c(rep(myPalette["MIND"], palette_base %>% filter(s1_factor == "MIND") %>% count()),
+                rep(myPalette["HEART"], palette_base %>% filter(s1_factor == "HEART") %>% count()),
+                rep(myPalette["BODY"], palette_base %>% filter(s1_factor == "BODY") %>% count()))
+palette_s2 <- c(rep(myPalette["MIND"], palette_base %>% filter(s2_factor == "MIND") %>% count()),
+                rep(myPalette["BODY"], palette_base %>% filter(s2_factor == "BODY") %>% count()),
+                rep(myPalette["HEART"], palette_base %>% filter(s2_factor == "HEART") %>% count()))
+```
+
+## 3D scatterplots
+
+Factor loadings for the 40 mental capacities on the three rotated factors in Study 1. Items are colored by their dominant factor loading: Items that loaded most strongly on the body factor (bodily states and will) are in red; items that loaded most strongly on the heart factor (social-emotional experiences and morality) are in blue; and items that loaded most strongly on the mind factor (perceptual-cognitive abilities and goal pursuit) are in green.
+
+### Study 1 (adults)
+
+```{r figure 3d scatter s1}
+# set up labels for plot (shortened version of mental capacity items)
+wording_s1 <- loadings(efa_d1_rotatedN)[] %>%
+  data.frame() %>%
+  rownames_to_column(var = "item") %>%
+  select(item) %>%
+  mutate(wording = factor(
+    recode(item,
+           happy = "feel happy",
+           depressed = "feel sad",
+           fear = "feel scared",
+           angry = "get angry",
+           calm = "feel calm",
+           sounds = "hear sounds",
+           seeing = "see things",
+           temperature = "sense temperatures",
+           odors = "smell things",
+           depth = "sense whether something is close by or far away",
+           computations = "do math",
+           thoughts = "have thoughts",
+           reasoning = "figure out how to do things",
+           remembering = "remember things",
+           beliefs = "have beliefs, like when you think something is true",
+           hungry = "get hungry",
+           tired = "feel tired",
+           pain = "feel pain",
+           nauseated = "feel sick, like when you feel like you might throw up",
+           safe = "feel safe",
+           love = "feel love",
+           recognizing = "recognize somebody else",
+           communicating = "communicate with somebody else",
+           guilt = "feel guilty",
+           disrespected = "get hurt feelings",
+           free_will = "decide what to do",
+           choices = "make choices",
+           self_restraint = "have self-control, like when you stop yourself from doing something you shouldn't do",
+           intentions = "make plans",
+           goal = "have goals, like when you're working hard to do something or make something happen",
+           conscious = "be aware of things",
+           self_aware = "be aware of itself",
+           desires = "have desires, like when you really want something",
+           embarrassed = "feel embarrassed",
+           emo_recog = "understand how somebody else is feeling",
+           joy = "feel joy",
+           morality = "know what's nice and what's mean",
+           personality = "have a personality, like when someone is shy and somebody else is silly",
+           pleasure = "feel pleasure, like when something feels really good",
+           pride = "feel proud"))) %>%
+    mutate(short = factor(
+      recode(item,
+             happy = "happy",
+             depressed = "sad",
+           fear = "scared",
+           angry = "angry",
+           calm = "calm",
+           sounds = "hear",
+           seeing = "see",
+           temperature = "temperatures",
+           odors = "smell",
+           depth = "depth",
+           computations = "math",
+           thoughts = "thoughts",
+           reasoning = "figure out",
+           remembering = "remember",
+           beliefs = "beliefs",
+           hungry = "hungry",
+           tired = "tired",
+           pain = "pain",
+           nauseated = "sick",
+           safe = "safe",
+           love = "love",
+           recognizing = "recognize",
+           communicating = "communicate",
+           guilt = "guilty",
+           disrespected = "hurt feelings",
+           free_will = "decide",
+           choices = "choices",
+           self_restraint = "self-control",
+           intentions = "plans",
+           goal = "goals",
+           conscious = "aware",
+           self_aware = "self-aware",
+           desires = "desires",
+           embarrassed = "embarrassed",
+           emo_recog = "empathy",
+           joy = "joy",
+           morality = "morality",
+           personality = "personality",
+           pleasure = "pleasure",
+           pride = "pride")))
+
+# make dataframe for plotting
+scatter_plotting <- loadings(efa_d1_rotatedN)[] %>%
+  data.frame() %>%
+  rownames_to_column(var = "item") %>%
+  rename(HEART = MR1,
+         BODY = MR2,
+         MIND = MR3) %>%
+  full_join(wording_s1) %>%
+  mutate(dominant = factor(
+    ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(BODY), "BODY",
+           ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(HEART), "HEART",
+                  ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(MIND), "MIND",
+                         NA)))),
+    size = ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(BODY), abs(BODY),
+                  ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(HEART), abs(HEART),
+                         ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(MIND), abs(MIND),
+                                NA))),
+    color = ifelse(dominant == "BODY", "#E41A1C",
+                   ifelse(dominant == "HEART", "#377EB8",
+                          ifelse(dominant == "MIND", "#4DAF4A",
+                                 NA))))
+
+# plot!
+figS1 <- plot_ly(scatter_plotting, x = ~HEART, y = ~BODY, z = ~MIND,
+             type = "scatter3d",
+             color = ~dominant, colors = c("#E41A1C", "#377EB8", "#4DAF4A"),
+             marker = list(size = 4),
+             text = ~short,
+             textfont = list(size = 15),
+             mode = "text+markers",
+             showlegend = TRUE)
+
+figS1
+```
+
+### Study 2 (7-9yo)
+
+```{r figure 3d scatter s2}
+# set up labels for plot (shortened version of mental capacity items)
+wording_s2 <- loadings(efa_d2_rotatedN)[] %>%
+  data.frame() %>%
+  rownames_to_column(var = "item") %>%
+  select(item) %>%
+  mutate(wording = factor(
+    recode(item,
+           happy = "feel happy",
+           depressed = "feel sad",
+           fear = "feel scared",
+           angry = "get angry",
+           calm = "feel calm",
+           sounds = "hear sounds",
+           seeing = "see things",
+           temperature = "sense temperatures",
+           odors = "smell things",
+           depth = "sense whether something is close by or far away",
+           computations = "do math",
+           thoughts = "have thoughts",
+           reasoning = "figure out how to do things",
+           remembering = "remember things",
+           beliefs = "have beliefs, like when you think something is true",
+           hungry = "get hungry",
+           tired = "feel tired",
+           pain = "feel pain",
+           nauseated = "feel sick, like when you feel like you might throw up",
+           safe = "feel safe",
+           love = "feel love",
+           recognizing = "recognize somebody else",
+           communicating = "communicate with somebody else",
+           guilt = "feel guilty",
+           disrespected = "get hurt feelings",
+           free_will = "decide what to do",
+           choices = "make choices",
+           self_restraint = "have self-control, like when you stop yourself from doing something you shouldn't do",
+           intentions = "make plans",
+           goal = "have goals, like when you're working hard to do something or make something happen",
+           conscious = "be aware of things",
+           self_aware = "be aware of itself",
+           desires = "have desires, like when you really want something",
+           embarrassed = "feel embarrassed",
+           emo_recog = "understand how somebody else is feeling",
+           joy = "feel joy",
+           morality = "know what's nice and what's mean",
+           personality = "have a personality, like when someone is shy and somebody else is silly",
+           pleasure = "feel pleasure, like when something feels really good",
+           pride = "feel proud"))) %>%
+    mutate(short = factor(
+      recode(item,
+             happy = "happy",
+             depressed = "sad",
+           fear = "scared",
+           angry = "angry",
+           calm = "calm",
+           sounds = "hear",
+           seeing = "see",
+           temperature = "temperatures",
+           odors = "smell",
+           depth = "depth",
+           computations = "math",
+           thoughts = "thoughts",
+           reasoning = "figure out",
+           remembering = "remember",
+           beliefs = "beliefs",
+           hungry = "hungry",
+           tired = "tired",
+           pain = "pain",
+           nauseated = "sick",
+           safe = "safe",
+           love = "love",
+           recognizing = "recognize",
+           communicating = "communicate",
+           guilt = "guilty",
+           disrespected = "hurt feelings",
+           free_will = "decide",
+           choices = "choices",
+           self_restraint = "self-control",
+           intentions = "plans",
+           goal = "goals",
+           conscious = "aware",
+           self_aware = "self-aware",
+           desires = "desires",
+           embarrassed = "embarrassed",
+           emo_recog = "empathy",
+           joy = "joy",
+           morality = "morality",
+           personality = "personality",
+           pleasure = "pleasure",
+           pride = "pride")))
+
+# make dataframe for plotting
+scatter_plotting <- loadings(efa_d2_rotatedN)[] %>%
+  data.frame() %>%
+  rownames_to_column(var = "item") %>%
+  rename(HEART = MR1,
+         BODY = MR2,
+         MIND = MR3) %>%
+  full_join(wording_s2) %>%
+  mutate(dominant = factor(
+    ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(BODY), "BODY",
+           ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(HEART), "HEART",
+                  ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(MIND), "MIND",
+                         NA)))),
+    size = ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(BODY), abs(BODY),
+                  ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(HEART), abs(HEART),
+                         ifelse(pmax(abs(BODY), abs(HEART), abs(MIND)) == abs(MIND), abs(MIND),
+                                NA))),
+    color = ifelse(dominant == "BODY", "#E41A1C",
+                   ifelse(dominant == "HEART", "#4DAF4A",
+                          ifelse(dominant == "MIND", "#E41A1C",
+                                 NA))))
+
+# plot!
+figS2 <- plot_ly(scatter_plotting, x = ~HEART, y = ~BODY, z = ~MIND,
+             type = "scatter3d",
+             color = ~dominant, colors = c("#E41A1C", "#377EB8", "#4DAF4A"),
+             marker = list(size = 4),
+             text = ~short,
+             textfont = list(size = 15),
+             mode = "text+markers",
+             showlegend = TRUE)
+
+figS2
+```
+
+## Heatmaps
+
+*NOTE: set to 3 factors manually, for now.*
+
+### Study 1 (adults)
+
+```{r figure heatmap s1, fig.width = 7, fig.height = 7}
+factors_s1 <- fa.sort(fa(d1_all, nfactors = 3, cor = chosenCorType, rotate = chosenRotType)$loadings[]) %>%
+  data.frame() %>%
+  rownames_to_column(var = "item") %>%
+  full_join(wording_s1) %>%
+  select(wording, MR1, MR2, MR3) %>%
+  rename(capacity = wording, Factor1 = MR1, Factor2 = MR2, Factor3 = MR3) %>%
+  rownames_to_column(var = "order") %>%
+  mutate(order = as.numeric(order))
+
+factors_s1_long <- factors_s1 %>%
+  gather(factor, loading, -capacity, -order) %>%
+  mutate(factor = factor(gsub("Factor", "F", factor))) %>%
+  # mutate(factor = factor(gsub("Factor", "F", factor),
+  #                        levels = c("F1", "F3", "F2"))) %>%
+  # mutate(factor = factor(gsub("Factor", "F", factor),
+  #                        levels = c("F2", "F1", "F3"))) %>%
+  arrange(order, factor)
+
+factors_s1_blank1 <- factors_s1_long %>%
+  mutate(loading = rep(100, length(factors_s1_long$loading)))
+# factors_s1_blank2 <- factors_s1_long %>%
+#   mutate(loading = ifelse(factor == "F1", loading, rep(100, length(factors_s1_long$loading)*2/3)))
+factors_s1_blank2 <- factors_s1_long %>%
+  mutate(loading = ifelse(factor == "F2", loading, rep(100, length(factors_s1_long$loading)*2/3)))
+factors_s1_blank3 <- factors_s1_long %>%
+  mutate(loading = ifelse(factor != "F3", loading, rep(100, length(factors_s1_long$loading)*1/3)))
+
+# ggplot(factors_s1_blank1, aes(x = factor,
+#                             y = reorder(capacity, desc(order)), fill = loading)) +
+#   geom_tile(color = "black") +
+#   # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+#   scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
+#                        guide = guide_colorbar(title = element_blank(),
+#                                               barheight = 20)) +
+#   scale_x_discrete(position = "top") +
+#   theme_minimal() +
+#   theme(text = element_text(size = 24),
+#         axis.text.x = element_text(size = 28),
+#         axis.title = element_blank(),
+#         panel.grid = element_blank()) # 1000 by 1000
+# 
+# ggplot(factors_s1_blank2, aes(x = factor,
+#                               y = reorder(capacity, desc(order)), fill = loading)) +
+#   geom_tile(color = "black") +
+#   # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+#   scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
+#                        guide = guide_colorbar(title = element_blank(),
+#                                               barheight = 20)) +
+#   scale_x_discrete(position = "top") +
+#   theme_minimal() +
+#   theme(text = element_text(size = 24),
+#         axis.text.x = element_text(size = 28),
+#         axis.title = element_blank(),
+#         panel.grid = element_blank()) # 1000 by 1000
+# 
+# ggplot(factors_s1_blank3, aes(x = factor,
+#                               y = reorder(capacity, desc(order)), fill = loading)) +
+#   geom_tile(color = "black") +
+#   # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+#   scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
+#                        guide = guide_colorbar(title = element_blank(),
+#                                               barheight = 20)) +
+#   scale_x_discrete(position = "top") +
+#   theme_minimal() +
+#   theme(text = element_text(size = 24),
+#         axis.text.x = element_text(size = 28),
+#         axis.title = element_blank(),
+#         panel.grid = element_blank()) # 1000 by 1000
+
+ggplot(factors_s1_long, aes(x = factor,
+                            y = reorder(capacity, desc(order)), fill = loading)) +
+  geom_tile(color = "black") +
+  geom_text(aes(label = format(round(loading, 2), nsmall = 2)), size = 6) +
+  scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
+                       guide = guide_colorbar(title = element_blank(),
+                                              barheight = 20)) +
+  scale_x_discrete(position = "top") +
+  # geom_rect(aes(xmin = 0.51, xmax = 1.49, ymin = 14.55, ymax = 20.45),
+  #           alpha = 0, color = "black", size = .5) +
+  # geom_rect(aes(xmin = 1.51, xmax = 2.49, ymin = 6.55, ymax = 14.45),
+  #           alpha = 0, color = "black", size = .5) +
+  # geom_rect(aes(xmin = 2.51, xmax = 3.49, ymin = 0.55, ymax = 6.45),
+  #           alpha = 0, color = "black", size = .5) +
+  # theme_bw() +
+  theme_minimal() +
+  theme(text = element_text(size = 24),
+        axis.text.x = element_text(size = 28),
+        axis.title = element_blank(),
+        panel.grid = element_blank()) # 1000 by 1000
+```
+
+### Study 2 (7-9y)
+
+```{r figure heatmap s2, fig.width = 7, fig.height = 7}
+factors_s2 <- fa.sort(fa(d2_all, nfactors = 3, cor = chosenCorType, rotate = chosenRotType)$loadings[]) %>%
+  data.frame() %>%
+  rownames_to_column(var = "item") %>%
+  full_join(wording_s2) %>%
+  select(wording, MR1, MR2, MR3) %>%
+  rename(capacity = wording, Factor1 = MR1, Factor2 = MR2, Factor3 = MR3) %>%
+  rownames_to_column(var = "order") %>%
+  mutate(order = as.numeric(order))
+
+factors_s2_long <- factors_s2 %>%
+  gather(factor, loading, -capacity, -order) %>%
+  mutate(factor = factor(gsub("Factor", "F", factor))) %>%
+  # mutate(factor = factor(gsub("Factor", "F", factor),
+  #                        levels = c("F1", "F3", "F2"))) %>%
+  # mutate(factor = factor(gsub("Factor", "F", factor),
+  #                        levels = c("F2", "F1", "F3"))) %>%
+  arrange(order, factor)
+
+factors_s2_blank1 <- factors_s2_long %>%
+  mutate(loading = rep(100, length(factors_s2_long$loading)))
+factors_s2_blank2 <- factors_s2_long %>%
+  mutate(loading = ifelse(factor == "F1", loading, rep(100, length(factors_s2_long$loading)*2/3)))
+# factors_s2_blank2 <- factors_s2_long %>%
+#   mutate(loading = ifelse(factor == "F2", loading, rep(100, length(factors_s2_long$loading)*2/3)))
+factors_s2_blank3 <- factors_s2_long %>%
+  mutate(loading = ifelse(factor != "F3", loading, rep(100, length(factors_s2_long$loading)*1/3)))
+
+# ggplot(factors_s2_blank1, aes(x = factor,
+#                             y = reorder(capacity, desc(order)), fill = loading)) +
+#   geom_tile(color = "black") +
+#   # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+#   scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
+#                        guide = guide_colorbar(title = element_blank(),
+#                                               barheight = 20)) +
+#   scale_x_discrete(position = "top") +
+#   theme_minimal() +
+#   theme(text = element_text(size = 24),
+#         axis.text.x = element_text(size = 28),
+#         axis.title = element_blank(),
+#         panel.grid = element_blank()) # 1000 by 1000
+# 
+# ggplot(factors_s2_blank2, aes(x = factor,
+#                               y = reorder(capacity, desc(order)), fill = loading)) +
+#   geom_tile(color = "black") +
+#   # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+#   scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
+#                        guide = guide_colorbar(title = element_blank(),
+#                                               barheight = 20)) +
+#   scale_x_discrete(position = "top") +
+#   theme_minimal() +
+#   theme(text = element_text(size = 24),
+#         axis.text.x = element_text(size = 28),
+#         axis.title = element_blank(),
+#         panel.grid = element_blank()) # 1000 by 1000
+# 
+# ggplot(factors_s2_blank3, aes(x = factor,
+#                               y = reorder(capacity, desc(order)), fill = loading)) +
+#   geom_tile(color = "black") +
+#   # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+#   scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
+#                        guide = guide_colorbar(title = element_blank(),
+#                                               barheight = 20)) +
+#   scale_x_discrete(position = "top") +
+#   theme_minimal() +
+#   theme(text = element_text(size = 24),
+#         axis.text.x = element_text(size = 28),
+#         axis.title = element_blank(),
+#         panel.grid = element_blank()) # 1000 by 1000
+
+ggplot(factors_s2_long, aes(x = factor,
+                            y = reorder(capacity, desc(order)), fill = loading)) +
+  geom_tile(color = "black") +
+  geom_text(aes(label = format(round(loading, 2), nsmall = 2)), size = 6) +
+  scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
+                       guide = guide_colorbar(title = element_blank(),
+                                              barheight = 20)) +
+  scale_x_discrete(position = "top") +
+  # geom_rect(aes(xmin = 0.51, xmax = 1.49, ymin = 14.55, ymax = 20.45),
+  #           alpha = 0, color = "black", size = .5) +
+  # geom_rect(aes(xmin = 1.51, xmax = 2.49, ymin = 6.55, ymax = 14.45),
+  #           alpha = 0, color = "black", size = .5) +
+  # geom_rect(aes(xmin = 2.51, xmax = 3.49, ymin = 0.55, ymax = 6.45),
+  #           alpha = 0, color = "black", size = .5) +
+  # theme_bw() +
+  theme_minimal() +
+  theme(text = element_text(size = 24),
+        axis.text.x = element_text(size = 28),
+        axis.title = element_blank(),
+        panel.grid = element_blank()) # 1000 by 1000
+```
+
+## Mean ratings
+
+### Studies 1-2
+
+Mean ratings of 40 mental capacities for the 2 entities included in Studies 1-2. Participants responded on a 3-point scale (0 = "no", 0.5 = "kinda", 1 = "yes"). Error bars are nonparametric bootstrapped 95% confidence intervals. Mental capacities are grouped according to their dominant factor loading in Study 1 (adults).
+
+```{r figure mean ratings s1-s2, fig.width = 3, fig.height = 3}
+# make dataframe
+s12_plotting <- char_plotting %>%
+  filter(study %in% c("study 1", "study 2")) %>%
+  distinct()
+
+# plot! (ordered by study 1 factor loadings)
+s12 <- ggplot(s12_plotting,
+               aes(y = Mean, x = reorder(wording, desc(s1_order)),
+                   colour = factor(s1_color), shape = study)) +
+  geom_point(stat = "identity", position = position_dodge(width = 0.6), size = 2) +
+  geom_errorbar(aes(ymin = Lower, ymax = Upper), width = 0.4,
+                position = position_dodge(width = 0.6)) +
+  facet_wrap(~ character) +
+  theme_bw() +
+  scale_y_continuous(name = "\nMean rating",
+                     limits = c(0, 1),
+                     breaks = c(0, 0.5, 1),
+                     labels = c("0\n(no)", "0.5\n(kinda)", "1\n(yes)")) +
+  scale_shape_discrete(name = "Study:",
+                       labels = c("Study 1: adults", "Study 2: 7-9y")) +
+  # scale_colour_brewer(name = "Factor:",
+  #                     type = "qual", palette = 6,
+  #                     guide = FALSE) +
+  scale_colour_manual(name = "Factor:",
+                      values = c("#E41A1C", "#4DAF4A", "#377EB8"),
+                      labels = c("BODY", "MIND", "HEART")) +
+  coord_flip() +
+  theme(text = element_text(size = 9),
+      axis.title.y = element_blank(),
+      axis.text.y = element_text(face = "italic",
+                                 colour = palette_s1),
+      panel.grid.minor = element_blank(),
+      legend.position = "right")
+
+s12
+```
+
+# Mean factor scores
+
+## Studies 1-2
+
+```{r s12 all no rotation, include = F}
+# make combined dataset
+d12_all <- d1_all %>% rownames_to_column("subid") %>%
+  full_join(d2_all %>% rownames_to_column("subid")) %>%
+  column_to_rownames("subid")
+
+# examine scree plot
+# fa.parallel(d12_all)
+
+# run EFA without rotation with N factors
+efa_d12_all_unrotated <- fa(d12_all, 13, rotate = "none",
+                           cor = chosenCorType, fm = "minres")
+fa.sort(efa_d12_all_unrotated)
+
+# examine eigenvalues and variance explained
+efa_d12_all_unrotated_eigenvalues <- print(efa_d12_all_unrotated)$Vaccounted %>%
+  t() %>%
+  data.frame()
+
+# count factors with eigenvalues > 1 and variance explained > 5%
+efa_d12_all_unrotated_nfactors <- efa_d12_all_unrotated_eigenvalues %>%
+  filter(SS.loadings > 1, Proportion.Explained > 0.05) %>%
+  count() %>%
+  as.numeric()
+efa_d12_all_unrotated_nfactors
+```
+
+```{r s12 all rotation, include = F}
+efa_d12_all_rotated_max <- fa(d12_all, 13, rotate = chosenRotType,
+                           cor = chosenCorType, fm = "minres")
+
+efa_d12_all_rotated <- fa(d12_all, efa_d12_all_unrotated_nfactors, rotate = chosenRotType,
+                           cor = chosenCorType, fm = "minres")
+
+# check that each of these factors is the dominant factor for at least one mental capacity item
+efa_d12_all_rotated_loadings <- fa.sort(loadings(efa_d12_all_rotated)[]) %>%
+  data.frame() %>%
+  rownames_to_column("capacity") %>%
+  gather(factor, loading, -capacity) %>%
+  mutate(loading_abs = abs(loading)) %>%
+  group_by(capacity) %>%
+  top_n(1, loading_abs) %>%
+  ungroup()
+efa_d12_all_rotated_loadings
+
+# drop any factors where n < 1
+efa_d12_all_rotated_loadings %>% 
+  count(factor) %>% 
+  filter(n > 0)
+
+# set number of factors to extract
+nfactors_d12_all <- efa_d12_all_rotated_loadings %>% 
+  count(factor) %>% 
+  filter(n > 0) %>%
+  nrow()
+nfactors_d12_all
+```
+
+```{r s12 all oblimin rotation, include = F}
+# run EFA with rotation with N factors
+efa_d12_all_rotatedN <- fa(d12_all, nfactors_d12_all, 
+                          rotate = chosenRotType, cor = chosenCorType, fm = "minres",
+                          scores = "tenBerge", missing = TRUE) # impute missing values
+fa.sort(efa_d12_all_rotatedN)
+
+# get loadings for each factor
+efa_d12_all_rotatedN_loadings <- loadings(efa_d12_all_rotatedN)[] %>%
+  data.frame() %>% 
+  rownames_to_column(var = "capacity")
+```
+
+```{r s12 loadings table, include = F}
+data.frame(loadings(fa.sort(efa_d12_all_rotatedN))[]) %>%
+  rownames_to_column("capacity") %>%
+  mutate_at(vars(starts_with("M")), funs(round2))
+```
+
+```{r s12 figure setup, include = F}
+scores_s12_plotting <- d1 %>% 
+  select(subid, age_group, character) %>% 
+  distinct() %>% 
+  mutate(subid = paste(character, subid, sep = "_")) %>%
+  full_join(d2 %>% 
+              select(subid, age_group, character) %>% 
+              distinct() %>% 
+              mutate(subid = paste(character, subid, sep = "_"))) %>%
+  full_join(efa_d12_all_rotatedN$scores %>% 
+              data.frame() %>% 
+              rownames_to_column("subid")) %>%
+  mutate(character = factor(character)) %>%
+  rename(score_F1 = MR1, score_F2 = MR2, score_F3 = MR3) %>%
+  filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age_group)) %>%
+  gather(factor, score, starts_with("score_")) %>%
+  mutate(factor = factor(factor)) %>%
+  group_by(age_group, character, factor) %>%
+  do(data.frame(rbind(smean.cl.boot(.$score))))
+```
+
+```{r s12 regression}
+tempC <- d1 %>% mutate(subid = paste(character, subid, sep = "_")) %>%
+  full_join(d2 %>% mutate(subid = paste(character, subid, sep = "_"))) %>%
+  full_join(data.frame(efa_d12_all_rotatedN$scores) %>%
+            rownames_to_column("subid") %>%
+              gather(factor, score, -subid)) %>%
+  mutate(factor = factor(factor),
+         age_group = factor(age_group),
+         character = factor(character)) # %>%
+  # filter(!is.na(factor), !is.na(age_group), !is.na(character))
+
+contrasts(tempC$factor) = cbind(factor1 = c(1, -1, 0),
+                                factor3 = c(0, -1, 1))
+
+contrasts(tempC$age_group) = cbind(children = c(-1, 1))
+contrasts(tempC$character) = cbind(robot = c(-1, 1))
+
+r1 <- lmer(score ~ character * factor * age_group + (1 | subid) , tempC)
+summary(r1)
+
+r1b <- brm(score ~ character * factor * age_group + (1 | subid) , tempC,
+            family = "gaussian", cores = n_cores)
+summary(r1b)
+```
+
+```{r}
+# r1c <- brm(score ~ character * factor * age_group + (factor | subid) , tempC,
+#             family = "gaussian", cores = n_cores)
+# summary(r1c)
+```
+
+```{r s12 figure factor scores by age group, fig.width = 8, fig.height = 3}
+# plot
+ggplot(scores_s12_plotting %>%
+         ungroup() %>%
+         mutate(factor = factor(factor,
+                                # labels = c("Social-emotional",
+                                #            "Bodily",
+                                #            "Perceptual-cognitive")),
+                                labels = c("Heart",
+                                           "Body",
+                                           "Mind")),
+                age_group = factor(age_group,
+                                  # levels = c("adults", "children_79"),
+                                  # labels = c("adults", "children"))),
+                                  levels = c("children_79", "adults"),
+                                  labels = c("children", "adults"))),
+       aes(x = age_group, y = Mean, color = character, shape = character)) +
+  facet_wrap("factor", ncol = 3) +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        legend.position = "bottom") +
+  geom_point(size = 5, position = position_dodge(width = 0.4)) +
+  geom_errorbar(aes(ymin = Lower, ymax = Upper),
+                width = 0, position = position_dodge(width = 0.4)) +
+  scale_shape_manual(values = c(19, 15)) +
+  labs(title = "Factor scores by age group",
+       # subtitle = "Adults (Study 1) vs. children (Study 2)\n",
+       x = "Age group",
+       y = "Mean factor score") # 1000 by 500
+```
+
+# Factor scores by age
+
+## Study 1
+
+```{r s1 factor scores by age setup, fig.width = 8, fig.height = 3}
+scores_s1_plotting <- d1 %>% 
+  select(subid, age, character) %>% 
+  distinct() %>% 
+  mutate(subid = paste(character, subid, sep = "_")) %>%
+  full_join(efa_d1_rotatedN$scores %>% 
+              data.frame() %>% 
+              rownames_to_column("subid")) %>%
+  mutate(character = factor(character)) %>%
+  rename(score_F1 = MR1, score_F2 = MR2, score_F3 = MR3) %>%
+  filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age)) %>%
+  gather(factor, score, starts_with("score_")) %>%
+  mutate(factor = factor(factor))
+
+ggplot(scores_s1_plotting %>%
+         ungroup() %>%
+         mutate(factor = factor(factor,
+                                levels = c("score_F1", "score_F2", "score_F3"),
+                                # labels = c("Social-emotional",
+                                #            "Bodily",
+                                #            "Perceptual-cognitive"))),
+                                labels = c("Heart",
+                                           "Body",
+                                           "Mind"))),
+       aes(x = age, y = score, color = character, fill = character, shape = character)) +
+  facet_wrap("factor", ncol = 3) +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        legend.position = "bottom") +
+  # geom_smooth(method = "loess", alpha = 0.4) +
+  geom_smooth(method = "lm", alpha = 0.4) +
+  geom_point(size = 2) +
+  scale_shape_manual(values = c(19, 15)) +
+  labs(title = "Factor scores by adults' age",
+       # subtitle = "Adults (Study 1)\n",
+       x = "Age (years)",
+       y = "Factor score") # 1000 by 500
+```
+
+## Study 2
+
+```{r s2 factor scores by age regression}
+scores_s2_plotting <- d2 %>% 
+  select(subid, age, character) %>% 
+  distinct() %>% 
+  mutate(subid = paste(character, subid, sep = "_")) %>%
+  # full_join(efa_d2_rotatedN$scores %>% 
+  full_join(efa_d12_all_rotated$scores %>% 
+              data.frame() %>% 
+              rownames_to_column("subid")) %>%
+  mutate(character = factor(character)) %>%
+  rename(score_F1 = MR1, score_F2 = MR2, score_F3 = MR3) %>%
+  filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age)) %>%
+  gather(factor, score, starts_with("score_")) %>%
+  mutate(factor = factor(factor))
+
+contrasts(scores_s2_plotting$factor) = cbind(factor1 = c(1, -1, 0),
+                                factor3 = c(0, -1, 1))
+
+contrasts(scores_s2_plotting$character) = cbind(robot = c(-1, 1))
+
+r2 <- lmer(score ~ character * factor * scale(age, scale = F) + (1 | subid) , scores_s2_plotting)
+summary(r2)
+
+# r2b <- brm(score ~ character * factor * age + (1 | subid) , scores_s2_plotting %>% mutate(age = scale(age, scale = F)), family = "gaussian", cores = n_cores)
+# summary(r2b)
+
+# look at heart only
+# r2c_heart <- brm(score ~ character * age, 
+#            data = scores_s2_plotting %>% 
+#              filter(factor == "score_F1") %>% 
+#              mutate(age = scale(age, scale = F)), 
+#            family = "gaussian", cores = n_cores)
+# summary(r2c_heart)
+
+# look at body only
+# r2c_body <- brm(score ~ character * age, 
+#            data = scores_s2_plotting %>% 
+#              filter(factor == "score_F2") %>% 
+#              mutate(age = scale(age, scale = F)), 
+#            family = "gaussian", cores = n_cores)
+# summary(r2c_body)
+
+# look at mind only
+# r2c_mind <- brm(score ~ character * age, 
+#            data = scores_s2_plotting %>% 
+#              filter(factor == "score_F3") %>% 
+#              mutate(age = scale(age, scale = F)), 
+#            family = "gaussian", cores = n_cores)
+# summary(r2c_mind)
+```
+
+```{r s2 factor scores by age plot, fig.width = 8, fig.height = 3}
+ggplot(scores_s2_plotting %>%
+         ungroup() %>%
+         mutate(factor = factor(factor,
+                                labels = c("Heart",
+                                           "Body",
+                                           "Mind"))),
+                         # labels = c("Social-emotional",
+                         #            "Bodily",
+                         #            "Perceptual-cognitive"))),
+       aes(x = age, y = score, color = character, fill = character, shape = character)) +
+  facet_wrap("factor", ncol = 3) +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        legend.position = "bottom") +
+  # geom_smooth(method = "loess", alpha = 0.4) +
+  geom_smooth(method = "lm", alpha = 0.4) +
+  geom_point(size = 2) +
+  scale_shape_manual(values = c(19, 15)) +
+  labs(title = "Factor scores by children's age",
+       # subtitle = "Children (Study 2)\n",
+       x = "Age (years)",
+       y = "Factor score") # 1000 by 500
+```
+
+## Studies 1-2
+
+```{r s12 scatter plus mean scores by age setup, fig.width = 8, fig.height = 3}
+tempA <- d2 %>% 
+  select(subid, age, character) %>% 
+  distinct() %>% 
+  mutate(subid = paste(character, subid, sep = "_")) %>%
+  full_join(efa_d12_all_rotatedN$scores %>% 
+              data.frame() %>% 
+              rownames_to_column("subid")) %>%
+  mutate(character = factor(character)) %>%
+  rename(score_F1 = MR1, score_F2 = MR2, score_F3 = MR3) %>%
+  filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age)) %>%
+  gather(factor, score, starts_with("score_")) %>%
+  mutate(factor = factor(factor,
+                         labels = c("Heart",
+                                    "Body",
+                                    "Mind")))
+                         # labels = c("Social-emotional",
+                         #            "Bodily",
+                         #            "Perceptual-cognitive")))
+
+tempB <- scores_s12_plotting %>%
+  filter(age_group == "adults") %>%
+  ungroup() %>%
+  mutate(factor = factor(factor,
+                         labels = c("Heart",
+                                    "Body",
+                                    "Mind")),
+                         # labels = c("Social-emotional",
+                         #            "Bodily",
+                         #            "Perceptual-cognitive")),
+         age = 11) 
+
+ggplot(tempA,
+       aes(x = age, y = score, color = character, fill = character, shape = character)) +
+  facet_wrap("factor", ncol = 3) +
+  theme_bw() +
+  theme(text = element_text(size = 28),
+        axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom") +
+  geom_hline(data = tempB, aes(yintercept = Mean, color = character), lty = 2) +
+  # geom_smooth(method = "loess", alpha = 0.4) +
+  geom_smooth(method = "lm", alpha = 0.4) +
+  geom_point(size = 2) +
+  geom_point(data = tempB, aes(y = Mean),
+             size = 4, position = position_dodge(width = 0.6)) +
+  geom_errorbar(data = tempB, aes(ymin = Lower, ymax = Upper, y = Mean), width = 0,
+                position = position_dodge(width = 0.6)) +
+  scale_shape_manual(values = c(19, 15)) +
+  scale_x_continuous(breaks = c(7:11), labels = c("7y", "8y", "9y", "10y", "adults")) +
+  labs(title = "Factor scores by age",
+       # subtitle = "Children (Study 2)\n",
+       x = "Age",
+       y = "Factor score") # 1000 by 500
+```
+
