@@ -2557,8 +2557,8 @@ ggplot(scores_s34_plotting %>%
                                 levels = c("score_F1", "score_F2", "score_F3"),
                                 labels = c("Heart", "Mind", "Body")),
                 age_group = factor(age_group,
-                                  levels = c("children_46", "children_79"),
-                                  labels = c("Study 1 (4-6y)", "Study 2 (7-9y)"))),
+                                  levels = c("children_79", "children_46"),
+                                  labels = c("Study 1 (7-9y)", "Study 2 (4-6y)"))),
        aes(x = character, y = Mean, 
            color = age_group)) +
            # color = character, 
