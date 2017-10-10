@@ -54,6 +54,11 @@ d_run_03 = jsonFormat(
   wd = "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/data/",
   runName = "run_03")
 
+# Kid run 04 (2017-10-01 to ...)
+d_run_04 = jsonFormat(
+  wd = "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/data/",
+  runName = "run_04")
+
 # --- TIDYING -----------------------------------------------------------------
 
 # read in ages
@@ -76,6 +81,7 @@ d_run_03 = jsonFormat(
 # clean up variables
 d_tidy = d_run_02 %>%
   full_join(d_run_03) %>%
+  full_join(d_run_04) %>%
   mutate(
     run = factor(run),
     subid = toupper(as.character(subid)),
@@ -102,7 +108,12 @@ write.csv(d_tidy %>% filter(run == "run_02"), "/Users/kweisman/Documents/Researc
 # run 03
 write.csv(d_tidy %>% filter(run == "run_03"), "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-21_anonymized.csv")
 
+# run 04
+write.csv(d_tidy %>% filter(run == "run_04"), "/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-04_2017-10-10_anonymized.csv")
+
 # read in
 d2 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-08-08_anonymized.csv")[-1]        
 
 d3 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-21_anonymized.csv")[-1]        
+
+d4 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-04_2017-10-10_anonymized.csv")[-1]        

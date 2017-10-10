@@ -75,6 +75,7 @@ cleanup <- function(datasource, age_group) {
     if(datasource == "study 2"){d <- d_raw_study2}
     if(datasource == "study 3"){d <- d_raw_study3}
     if(datasource == "study 4"){d <- d_raw_study4}
+    if(datasource == "study 5"){d <- d_raw_study5}
     
     # recode background and demographic variables
     d_clean_2 <- d %>%
@@ -155,6 +156,7 @@ makeDRDF <- function(datasource, chosenCondition) {
   if(datasource == "study 2"){d <- d2}
   if(datasource == "study 3"){d <- d3}
   if(datasource == "study 4"){d <- d4}
+  if(datasource == "study 5"){d <- d5}
 
   # filter by character if specified
   if(chosenCondition %in% c("beetle", "robot")) {
@@ -184,6 +186,7 @@ demoSampleSize <- function(datasource) {
   if(datasource == "study 2"){d <- d2}
   if(datasource == "study 3"){d <- d3}
   if(datasource == "study 4"){d <- d4}
+  if(datasource == "study 5"){d <- d5}
 
   # get distinct subids
   sample_size <- d %>% distinct(subid, character) %>% count(character) %>% data.frame()
@@ -204,6 +207,7 @@ demoDuration <- function(datasource) {
   if(datasource == "study 2"){d <- d2}
   if(datasource == "study 3"){d <- d3}
   if(datasource == "study 4"){d <- d4}
+  if(datasource == "study 5"){d <- d5}
 
   # get sample size per character
   duration <- d %>%
@@ -241,6 +245,7 @@ demoAge <- function(datasource) {
   if(datasource == "study 2"){d <- d2}
   if(datasource == "study 3"){d <- d3}
   if(datasource == "study 4"){d <- d4}
+  if(datasource == "study 5"){d <- d5}
 
   # get sample size per character
   age <- d %>%
@@ -277,6 +282,7 @@ demoGender <- function(datasource) {
   if(datasource == "study 2"){d <- d2}
   if(datasource == "study 3"){d <- d3}
   if(datasource == "study 4"){d <- d4}
+  if(datasource == "study 5"){d <- d5}
 
   # get gender per character and overall
   gender <- data.frame(addmargins(with(d %>% distinct(subid, character, gender), 
@@ -303,6 +309,7 @@ demoRace <- function(datasource) {
   if(datasource == "study 2"){d <- d2}
   if(datasource == "study 3"){d <- d3}
   if(datasource == "study 4"){d <- d4}
+  if(datasource == "study 5"){d <- d5}
 
   # get race per character and overall
   race <- data.frame(addmargins(with(d %>% distinct(subid, character, race_cat), 
@@ -355,8 +362,8 @@ chosenCorType <- "cor" # pearson correlation
 # chosenCorType <- "poly" # polychoric correlation
 
 # for EFAs, what kind of rotation?
-chosenRotType <- "varimax" # varimax rotation
-# chosenRotType <- "oblimin" # oblimin rotation
+# chosenRotType <- "varimax" # varimax rotation
+chosenRotType <- "oblimin" # oblimin rotation
 # chosenRotType <- "none" # no rotation
 
 data.frame("conditionsExcluded" = chosenExclude,
@@ -394,9 +401,17 @@ d_raw_study3 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects
          age = interval(start = dob, end = dot) / duration(num = 1, units = "years")) %>%
   select(-dateOfBirth, -dateOfTest, -dob, -dot)
 
-# study 4 (Mary 2017 - present, 4-6yo, 9 conditions, 3-point-scale, "decide what to do" and "make plans")
+# study 4 (May 2017 - present, 4-6yo, 9 conditions, 3-point-scale, "decide what to do" and "make plans")
 d_raw_study4 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-21_anonymized.csv") %>%
   mutate(study = "study 4", age_group = "children_46") %>% select(-X) %>%
+  mutate(dob = parse_datetime(dateOfBirth, "%m/%d/%y"),
+         dot = parse_datetime(gsub("2017", "17", dateOfTest), "%m/%d/%y"), 
+         age = interval(start = dob, end = dot) / duration(num = 1, units = "years")) %>%
+  select(-dateOfBirth, -dateOfTest, -dob, -dot)
+
+# study 5 (Fall 2017 - present, 5.5-7.5yo (plus), 9 conditions, 3-point-scale, "decide what to do" and "make plans")
+d_raw_study5 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-04_2017-10-10_anonymized.csv") %>%
+  mutate(study = "study 5", age_group = "children_5.57.5") %>% select(-X) %>%
   mutate(dob = parse_datetime(dateOfBirth, "%m/%d/%y"),
          dot = parse_datetime(gsub("2017", "17", dateOfTest), "%m/%d/%y"), 
          age = interval(start = dob, end = dot) / duration(num = 1, units = "years")) %>%
@@ -411,6 +426,7 @@ d1c <- cleanup("study 1", "adults")
 d2 <- cleanup("study 2", "children")
 d3 <- cleanup("study 3", "children")
 d4 <- cleanup("study 4", "children")
+d5 <- cleanup("study 5", "children")
 
 # tweak by hand
 d2 <- d2 %>%
@@ -447,6 +463,29 @@ d3 <- d3 %>%
 d4 <- d4 %>%
   filter(!is.na(character), character != "") %>%
   filter(age >= 4, age < 7) %>%
+  mutate(ethnicity = gsub(" SN", "", ethnicity)) %>%
+  mutate(race_cat = ifelse(grepl("bing", tolower(testingSite)),
+                           ifelse(ethnicity == "A", "east_asian",
+                                  ifelse(ethnicity == "C" | ethnicity == "Cj", "white",
+                                         ifelse(ethnicity == "I", "south_asian",
+                                                ifelse(ethnicity == "ME", "middle_eastern",
+                                                       ifelse(ethnicity == "Af", "black",
+                                                              ifelse(ethnicity == "H", "hispanic",
+                                                                     ifelse(grepl(" ", ethnicity) |
+                                                                              grepl("/", ethnicity), "multiracial",
+                                                                            NA))))))),
+                           ifelse(tolower(ethnicity) == "black or african american", "black",
+                                  ifelse(tolower(ethnicity) == "hispanic or latino/a", "hispanic",
+                                         ifelse(tolower(ethnicity) == "east asian", "east_asian",
+                                                ifelse(tolower(ethnicity) == "native american, american indian, or alaska native", "native_american",
+                                                       ifelse(tolower(ethnicity) == "white" |
+                                                                tolower(ethnicity) == "white, caucasian, or european american", "white",
+                                                              ifelse(tolower(ethnicity) == "south or southeast asian" | tolower(ethnicity) == "south asian", "south_asian",
+                                                                     ifelse(tolower(ethnicity) == "" | is.na(ethnicity), NA, "multiracial")))))))))
+
+d5 <- d5 %>%
+  filter(!is.na(character), character != "") %>%
+  filter(age >= 5.5, age < 7.5) %>%
   mutate(ethnicity = gsub(" SN", "", ethnicity)) %>%
   mutate(race_cat = ifelse(grepl("bing", tolower(testingSite)),
                            ifelse(ethnicity == "A", "east_asian",
