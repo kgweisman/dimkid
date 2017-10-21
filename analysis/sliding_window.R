@@ -1,6 +1,7 @@
 # first run dimkid_cogsci_analysis.Rmd
 library(ggrepel)
 # library(directlabels)
+library(gganimate)
 
 # data prep -----
 
@@ -639,6 +640,33 @@ ggplot(all_dom, aes(x = median, y = combo,
         text = element_text(size = 30),
         legend.position = "none")
         # legend.position = "top") # 2000 by 1500
+
+domovertime <- ggplot(all_dom, aes(x = median, y = combo, 
+                                   color = old_dom, group = capacity, label = capacity,
+                                   frame = median)) +
+  geom_point(aes(cumulative = TRUE), size = 4) +
+  geom_line(aes(cumulative = TRUE), alpha = 0.5) +
+  theme_bw() +
+  scale_x_continuous(name = "median age in years (by window)", 
+                     limits = c(all_dom$median[all_dom$window == 2 & 
+                                                 !is.na(all_dom$median)][1] - 0.5, 
+                                all_dom$median[all_dom$window == max(all_dom$window) & 
+                                                 !is.na(all_dom$median)][1] + 0.5)) +
+  scale_y_continuous(name = "factor + loading (higher = stronger)") +
+  scale_color_brewer(name = "dominant factor loading in final window: ",
+                     palette = "Set1") +
+  theme(axis.text.y = element_blank(), 
+        axis.ticks.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        text = element_text(size = 30),
+        legend.position = "none") # 2000 by 1500
+
+gganimate(domovertime, 
+          "domovertime.gif",
+          title_frame = FALSE,
+          interval=0.2,
+          ani.width=2000, ani.height=1500)
 
 # plot of % var explained -----
 
