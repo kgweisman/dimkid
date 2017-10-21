@@ -1,6 +1,6 @@
 # first run dimkid_cogsci_analysis.Rmd
 library(ggrepel)
-library(directlabels)
+# library(directlabels)
 
 # data prep -----
 
@@ -34,7 +34,7 @@ ggplot(d_slide %>% distinct(subid, age),
             xmin = 5.5, xmax = 7.5, ymin = 0, ymax = 12,
             fill = "red", alpha = 0.5) +
   geom_histogram(binwidth = 3/12) +
-  scale_x_continuous(breaks = seq(4, 10, 1)) +
+  scale_x_continuous("age in years", breaks = seq(4, 10, 1)) +
   theme_bw() + 
   theme(text = element_text(size = 20))
 
@@ -130,10 +130,50 @@ window_size <- 120
 
 # loop over sliding window -----
 
+# get the "right" number of factors
 all_efa <- list(NULL)
 for(i in 1:(length(d_slide_subid$subid)-window_size)) {
   efa_temp <- fa_fun(d_slide, first_sub = i, last_sub = i+window_size-1, n_var = 20)
   all_efa[[i]] <- efa_temp
+}
+
+# force 1 factor
+all_efa_1 <- list(NULL)
+for(i in 1:(length(d_slide_subid$subid)-window_size)) {
+  d <- d_slide %>%
+    filter(subid %in% d_slide_subid[i:(i+window_size-1),"subid"]) %>%
+    select(subid, capacity, responseNum) %>%
+    spread(capacity, responseNum) %>%
+    remove_rownames() %>%
+    column_to_rownames("subid")
+  efa_temp <- fa(d, nfactors = 1, rotate = "oblimin")
+  all_efa_1[[i]] <- efa_temp
+}
+
+# force 2 factors
+all_efa_2 <- list(NULL)
+for(i in 1:(length(d_slide_subid$subid)-window_size)) {
+  d <- d_slide %>%
+    filter(subid %in% d_slide_subid[i:(i+window_size-1),"subid"]) %>%
+    select(subid, capacity, responseNum) %>%
+    spread(capacity, responseNum) %>%
+    remove_rownames() %>%
+    column_to_rownames("subid")
+  efa_temp <- fa(d, nfactors = 2, rotate = "oblimin")
+  all_efa_2[[i]] <- efa_temp
+}
+
+# force 3 factors
+all_efa_3 <- list(NULL)
+for(i in 1:(length(d_slide_subid$subid)-window_size)) {
+  d <- d_slide %>%
+    filter(subid %in% d_slide_subid[i:(i+window_size-1),"subid"]) %>%
+    select(subid, capacity, responseNum) %>%
+    spread(capacity, responseNum) %>%
+    remove_rownames() %>%
+    column_to_rownames("subid")
+  efa_temp <- fa(d, nfactors = 3, rotate = "oblimin")
+  all_efa_3[[i]] <- efa_temp
 }
 
 # get min, max, mean, median age -----
@@ -216,6 +256,7 @@ top5_items <- topN_items_fun(5)
 
 # get percent variance explained in final solution for each factor -----
 
+# "right" number of factors
 per_var <- list(NULL)
 for(i in 1:length(all_efa)) {
   efa_temp <- all_efa[[i]]
@@ -246,22 +287,186 @@ per_var <- data.frame(per_var) %>%
   remove_rownames() %>%
   rownames_to_column("window")
 
-# get RMSEA in final solution for each factor -----
-
-rmsea <- NULL
+# force 1 factor
+per_var_1 <- list(NULL)
 for(i in 1:length(all_efa)) {
-  efa_temp <- all_efa[[i]]
+  d <- d_slide %>%
+    filter(subid %in% d_slide_subid[i:(i+window_size-1),"subid"]) %>%
+    select(subid, capacity, responseNum) %>%
+    spread(capacity, responseNum) %>%
+    remove_rownames() %>%
+    column_to_rownames("subid")
   
-  rmsea_temp <- efa_temp$RMSEA
+  efa_temp <- fa(d, nfactors = 1, rotate = "oblimin")
   
-  rmsea <- rbind(rmsea, rmsea_temp)
+  per_var_MR1 <- efa_temp$Vaccounted["Proportion Var","MR1"]
+  
+  if("MR2" %in% names(data.frame(efa_temp$loadings[]))) {
+    per_var_MR2 <- efa_temp$Vaccounted["Proportion Var","MR2"]
+  } else { per_var_MR2 <- "NA" }
+  
+  if("MR3" %in% names(data.frame(efa_temp$loadings[]))) {
+    per_var_MR3 <- efa_temp$Vaccounted["Proportion Var","MR3"]
+  } else { per_var_MR3 <- "NA" }
+  
+  if("MR4" %in% names(data.frame(efa_temp$loadings[]))) {
+    per_var_MR4 <- efa_temp$Vaccounted["Proportion Var","MR4"]
+  } else { per_var_MR4 <- "NA" }
+  
+  per_vars <- c("MR1" = per_var_MR1, "MR2" = per_var_MR2, 
+                "MR3" = per_var_MR3, "MR4" = per_var_MR4)
+  
+  per_var_1[[i]] <- per_vars
 }
 
-rmsea <- data.frame(rmsea) %>%
+per_var_1 <- data.frame(per_var_1) %>%
+  t() %>% 
   data.frame() %>% 
   remove_rownames() %>%
   rownames_to_column("window")
 
+# force 2 factors
+per_var_2 <- list(NULL)
+for(i in 1:length(all_efa)) {
+  d <- d_slide %>%
+    filter(subid %in% d_slide_subid[i:(i+window_size-1),"subid"]) %>%
+    select(subid, capacity, responseNum) %>%
+    spread(capacity, responseNum) %>%
+    remove_rownames() %>%
+    column_to_rownames("subid")
+  
+  efa_temp <- fa(d, nfactors = 2, rotate = "oblimin")
+  
+  per_var_MR1 <- efa_temp$Vaccounted["Proportion Var","MR1"]
+  
+  if("MR2" %in% names(data.frame(efa_temp$loadings[]))) {
+    per_var_MR2 <- efa_temp$Vaccounted["Proportion Var","MR2"]
+  } else { per_var_MR2 <- "NA" }
+  
+  if("MR3" %in% names(data.frame(efa_temp$loadings[]))) {
+    per_var_MR3 <- efa_temp$Vaccounted["Proportion Var","MR3"]
+  } else { per_var_MR3 <- "NA" }
+  
+  if("MR4" %in% names(data.frame(efa_temp$loadings[]))) {
+    per_var_MR4 <- efa_temp$Vaccounted["Proportion Var","MR4"]
+  } else { per_var_MR4 <- "NA" }
+  
+  per_vars <- c("MR1" = per_var_MR1, "MR2" = per_var_MR2, 
+                "MR3" = per_var_MR3, "MR4" = per_var_MR4)
+  
+  per_var_2[[i]] <- per_vars
+}
+
+per_var_2 <- data.frame(per_var_2) %>%
+  t() %>% 
+  data.frame() %>% 
+  remove_rownames() %>%
+  rownames_to_column("window")
+
+# force 3 factors
+per_var_3 <- list(NULL)
+for(i in 1:length(all_efa)) {
+  d <- d_slide %>%
+    filter(subid %in% d_slide_subid[i:(i+window_size-1),"subid"]) %>%
+    select(subid, capacity, responseNum) %>%
+    spread(capacity, responseNum) %>%
+    remove_rownames() %>%
+    column_to_rownames("subid")
+  
+  efa_temp <- fa(d, nfactors = 3, rotate = "oblimin")
+  
+  per_var_MR1 <- efa_temp$Vaccounted["Proportion Var","MR1"]
+  
+  if("MR2" %in% names(data.frame(efa_temp$loadings[]))) {
+    per_var_MR2 <- efa_temp$Vaccounted["Proportion Var","MR2"]
+  } else { per_var_MR2 <- "NA" }
+  
+  if("MR3" %in% names(data.frame(efa_temp$loadings[]))) {
+    per_var_MR3 <- efa_temp$Vaccounted["Proportion Var","MR3"]
+  } else { per_var_MR3 <- "NA" }
+  
+  if("MR4" %in% names(data.frame(efa_temp$loadings[]))) {
+    per_var_MR4 <- efa_temp$Vaccounted["Proportion Var","MR4"]
+  } else { per_var_MR4 <- "NA" }
+  
+  per_vars <- c("MR1" = per_var_MR1, "MR2" = per_var_MR2, 
+                "MR3" = per_var_MR3, "MR4" = per_var_MR4)
+  
+  per_var_3[[i]] <- per_vars
+}
+
+per_var_3 <- data.frame(per_var_3) %>%
+  t() %>% 
+  data.frame() %>% 
+  remove_rownames() %>%
+  rownames_to_column("window")
+
+per_var_all <- per_var %>% mutate(factors = "n") %>%
+  full_join(per_var_1 %>% mutate(factors = "1")) %>%
+  full_join(per_var_2 %>% mutate(factors = "2")) %>%
+  full_join(per_var_3 %>% mutate(factors = "3")) %>%
+  mutate_at(vars(window, starts_with("MR")), funs(as.numeric)) %>%
+  select(-MR4) %>%
+  gather(factor, per_var, starts_with("MR")) %>%
+  # mutate(per_var = ifelse(is.na(per_var), 0, per_var)) %>%
+  group_by(window, factors) %>%
+  summarise(total_var_exp = sum(per_var, na.rm = T))
+  
+# get RMSEA in final solution for each factor -----
+
+# "right" number of factors
+rmsea <- NULL
+for(i in 1:length(all_efa)) {
+  efa_temp <- all_efa[[i]]
+  rmsea_temp <- efa_temp$RMSEA
+  rmsea <- rbind(rmsea, rmsea_temp)
+}
+
+rmsea <- data.frame(rmsea) %>%
+  remove_rownames() %>%
+  rownames_to_column("window")
+
+# force 1 factor
+rmsea_1 <- NULL
+for(i in 1:length(all_efa)) {
+  efa_temp <- all_efa[[i]]
+  rmsea_temp <- efa_temp$RMSEA
+  rmsea_1 <- rbind(rmsea_1, rmsea_temp)
+}
+
+rmsea_1 <- data.frame(rmsea_1) %>%
+  remove_rownames() %>%
+  rownames_to_column("window")
+
+# force 2 factors
+rmsea_2 <- NULL
+for(i in 1:length(all_efa)) {
+  efa_temp <- all_efa[[i]]
+  rmsea_temp <- efa_temp$RMSEA
+  rmsea_2 <- rbind(rmsea_2, rmsea_temp)
+}
+
+rmsea_2 <- data.frame(rmsea_2) %>%
+  remove_rownames() %>%
+  rownames_to_column("window")
+
+# force 3 factors
+rmsea_3 <- NULL
+for(i in 1:length(all_efa)) {
+  efa_temp <- all_efa[[i]]
+  rmsea_temp <- efa_temp$RMSEA
+  rmsea_3 <- rbind(rmsea_3, rmsea_temp)
+}
+
+rmsea_3 <- data.frame(rmsea_3) %>%
+  remove_rownames() %>%
+  rownames_to_column("window")
+
+all_rmsea <- rmsea %>% mutate(factors = "n") %>%
+  full_join(rmsea_1 %>% mutate(factors = "1")) %>%
+  full_join(rmsea_2 %>% mutate(factors = "2")) %>%
+  full_join(rmsea_3 %>% mutate(factors = "3"))
+  
 # put them all together -----
 all_data <- ages %>%
   full_join(n_factors) %>%
@@ -383,7 +588,7 @@ ggplot(all_dom, aes(x = median, y = combo,
   geom_point(size = 4) +
   geom_line(alpha = 0.5) +
   geom_label_repel(data = all_dom %>% filter(window == min(all_dom$window)), size = 7,
-                   segment.color = "black", segment.size = 0.1,
+                   segment.color = "black", segment.size = 0.4,
                    xlim = c(all_dom$median[all_dom$window == min(all_dom$window) &
                                              !is.na(all_dom$median)][1] - 0.2,
                             all_dom$median[all_dom$window == min(all_dom$window) &
@@ -475,36 +680,155 @@ ggplot(var_plot %>%
         legend.position = "right")
 # legend.position = "top") # 2000 by 1500
 
+ggplot(per_var_all %>%
+         spread(factors, total_var_exp) %>%
+         mutate(best = ifelse(`1` == n, 1,
+                              ifelse(`2` == n, 2,
+                                     ifelse(`3` == n, 3,
+                                            NA)))) %>%
+         select(-n) %>%
+         gather(factors, total_var_exp, c(`1`, `2`, `3`)) %>%
+         mutate(factors = as.numeric(as.character(factors)),
+                best_cat = ifelse(factors == best, "yes", "no")) %>%
+         mutate_at(vars(factors, best_cat), funs(factor)) %>%
+         left_join(all_data %>% 
+                     select(window, median) %>% 
+                     mutate(window = as.numeric(window))),
+       aes(x = median, y = total_var_exp, 
+           color = factors, fill  = best_cat, group = factors)) +
+  geom_smooth(alpha = 0.2) +
+  geom_line(alpha = 0.8) +
+  geom_point(shape = 21) +
+  scale_fill_manual(values = c("white", "black")) +
+  scale_x_continuous(name = "median age in years (by window)", 
+                     breaks = seq(5, 10, 1),
+                     limits = c(floor(all_dom$median[all_dom$window == min(all_dom$window) & !is.na(all_dom$median)][1]),
+                                ceiling(all_dom$median[all_dom$window == max(all_dom$window) & !is.na(all_dom$median)][1]))) +
+  scale_y_continuous(name = "TOTAL variance explained") + #, limits = c(0, 1)) +
+  labs(fill = "best solution?: ", color = "number of factors: ") +
+  theme_bw()
+
+ggplot(per_var_all %>%
+         spread(factors, total_var_exp) %>%
+         mutate(two.v.one = `2` - `1`,
+                three.v.two = `3` - `2`) %>%
+         gather(contrast, diff, c(two.v.one, three.v.two)),
+       aes(x = window, y = diff, color = contrast)) +
+  geom_point() +
+  geom_line(alpha = 0.8) +
+  theme_bw()
+
 # plot of RMSEA -----
 
-rmsea_plot <- rmsea %>% 
-  mutate_all(funs(as.character)) %>%
-  mutate_all(funs(as.numeric)) %>%
-  left_join(all_data %>%
-              filter(!is.na(median)) %>%
-              mutate(window = as.numeric(window)) %>% 
-              distinct(window, median))
+# rmsea_plot <- all_rmsea %>% 
+#   mutate(window = as.numeric(as.character(window))) %>%
+#   left_join(all_data %>%
+#               filter(!is.na(median)) %>%
+#               mutate(window = as.numeric(window)) %>% 
+#               distinct(window, median)) %>%
+#   mutate(factors = factor(factors))
+# 
+# ggplot(rmsea_plot, 
+#        aes(x = median, y = RMSEA, color = factors, group = factors)) +
+#   geom_hline(yintercept = 0.05, lty = 3, color = "blue") +
+#   geom_ribbon(aes(ymin = lower, ymax = upper), alpha = 0.3) +
+#   geom_line(alpha = 0.8) +
+#   geom_point(size = 4) +
+#   theme_bw() +
+#   scale_x_continuous(name = "median age in years (by window)") +
+#   scale_y_continuous(name = "RMSEA") +
+#   theme(#axis.text.y = element_blank(), 
+#     #axis.ticks.y = element_blank(),
+#     # panel.grid.major.y = element_blank(),
+#     # panel.grid.minor.y = element_blank(),
+#     text = element_text(size = 20),
+#     legend.position = "right")
+# # legend.position = "top") # 2000 by 1500
+# plot of mean response across windows -----
 
-ggplot(rmsea_plot, 
-       aes(x = median, y = RMSEA)) +
-  geom_ribbon(aes(ymin = lower, ymax = upper)) +
+mean_responses <- NULL
+for(i in 1:length(all_efa)) {
+  subids <- d_slide_subid[i:(i+119),]
+  d <- d_slide %>%
+    filter(subid %in% subids$subid)
+  boot <- d %>%
+    mutate(window = i) %>%
+    group_by(window, character, capacity) %>%
+    do(data.frame(rbind(smean.cl.boot(.$responseNum))))
+  mean_responses <- rbind(mean_responses, boot)
+}
+
+mean_responses <- mean_responses %>%
+  ungroup() %>%
+  full_join(ages %>% mutate(window = as.numeric(as.character(window)))) %>%
+  full_join(all_efa[[length(all_efa)]]$loadings[] %>%
+              data.frame() %>%
+              rownames_to_column("capacity") %>%
+              gather(factor, loading, starts_with("MR")) %>%
+              group_by(capacity) %>%
+              top_n(1, abs(loading)) %>%
+              # select(-loading) %>%
+              rename(old_dom = factor) %>%
+              arrange(old_dom, abs(loading)) %>%
+              data.frame() %>%
+              rownames_to_column("order") %>%
+              mutate(order = as.numeric(as.character(order))))
+  
+ggplot(mean_responses %>% 
+         mutate(capacity = reorder(capacity, order),
+                character = factor(character,
+                                   levels = c("computer", "robot", "doll", 
+                                              "teddy_bear", "beetle", "bird", 
+                                              "mouse", "goat", "elephant"))), 
+       aes(x = median, y = Mean, color = old_dom, fill = old_dom)) +
+  facet_grid(character ~ capacity) +
+  geom_hline(yintercept = 0.5, lty = 3, color = "blue") +
+  geom_ribbon(aes(ymin = Lower, ymax = Upper), alpha = 0.3, lty = 0) +
   geom_line(alpha = 0.8) +
-  geom_point(size = 4) +
-  geom_point(aes(y = total_var_expl), color = "gray", size = 4) +
-  geom_line(aes(y = total_var_expl), color = "gray", alpha = 0.8) +
+  geom_point(size = 2) +
   theme_bw() +
-  scale_x_continuous(name = "median age in years (by window)", 
-                     limits = c(all_dom$median[all_dom$window == 2 & 
-                                                 !is.na(all_dom$median)][1], 
-                                all_dom$median[all_dom$window == 114 & 
-                                                 !is.na(all_dom$median)][1])) +
-  scale_y_continuous(name = "proportion variance explained", limits = c(0, 1)) +
-  scale_color_brewer(name = "factor: ",
-                     palette = "Set2") +
+  scale_x_continuous(name = "median age in years (by window)") +
+  scale_y_continuous(name = "mean response (0 = no, 0.5 = kinda, 1 = yes)") +
   theme(#axis.text.y = element_blank(), 
     #axis.ticks.y = element_blank(),
     # panel.grid.major.y = element_blank(),
     # panel.grid.minor.y = element_blank(),
     text = element_text(size = 20),
-    legend.position = "right")
-# legend.position = "top") # 2000 by 1500
+    legend.position = "none")
+
+ggplot(mean_responses %>% 
+         mutate(capacity = reorder(capacity, order),
+                character = factor(character,
+                                   levels = c("computer", "robot", "doll", 
+                                              "teddy_bear", "beetle", "bird", 
+                                              "mouse", "goat", "elephant"))), 
+       aes(x = median, y = Mean, color = old_dom, fill = old_dom, group = capacity)) +
+  facet_wrap(~ character, ncol = 3) +
+  geom_hline(yintercept = 0.5, lty = 3, color = "blue") +
+  geom_line(alpha = 0.8) +
+  geom_point(size = 2) +
+  # geom_ribbon(aes(ymin = Lower, ymax = Upper), alpha = 0.02, lty = 0) +
+  # geom_label(data = mean_responses %>%
+  #              data.frame() %>%
+  #              filter(window == max(mean_responses$window)) %>%
+  #              distinct(character, capacity, Mean, median, old_dom),
+  #            aes(x = median + 0.01, y = Mean, label = capacity),
+  #            fill = "white", color = "black") +
+  geom_label_repel(data = mean_responses %>%
+                     data.frame() %>%
+                     filter(window == max(mean_responses$window)) %>%
+                     distinct(character, capacity, Mean, median, old_dom), 
+                   aes(label = capacity), fill = "white",
+                   # size = 7,
+                   segment.color = "black", segment.size = 0.1,
+                   xlim = c(9, 10)) +
+  theme_bw() +
+  scale_x_continuous(name = "median age in years (by window)",
+                     limits = c(5, 10)) +
+  scale_y_continuous(name = "mean response (0 = no, 0.5 = kinda, 1 = yes)") +
+  theme(#axis.text.y = element_blank(), 
+    #axis.ticks.y = element_blank(),
+    # panel.grid.major.y = element_blank(),
+    # panel.grid.minor.y = element_blank(),
+    text = element_text(size = 20),
+    legend.position = "none")
