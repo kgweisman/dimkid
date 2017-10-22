@@ -523,7 +523,10 @@ all_data <- ages %>%
               filter(!is.na(per_var), per_var != "NA")) %>%
   full_join(congruence) %>%
   mutate(window = as.numeric(as.character(window)),
-         per_var = as.numeric(as.character(per_var)))
+         per_var = as.numeric(as.character(per_var))) %>%
+  group_by(window) %>% 
+  mutate(total_var_explained = sum(per_var)) %>%
+  ungroup()
 
 # plots of loadings -----
 
@@ -593,10 +596,10 @@ all_loadings <- all_loadings %>%
   full_join(oldest_kid_factors) %>%
   mutate(old_dom = factor(old_dom,
                           levels = c("MR1", "MR3", "MR2"),
-                          labels = c("BODY", "HEART", "MIND")))
+                          labels = c("BODY", "HEART", "MIND"))) %>%
   full_join(all_data) %>%
   select(window, min, max, mean, median, n_factors, 
-         factor, label, top5, per_var, 
+         factor, label, top5, per_var, old_dom,
          capacity, loading) %>%
   mutate_at(vars(window, min, max, mean, median, n_factors, per_var, loading), 
             funs(as.numeric))
@@ -718,43 +721,33 @@ gganimate(domovertime,
 
 # plot of % var explained -----
 
-var_plot <- per_var %>% 
-  mutate_all(funs(as.character)) %>%
-  mutate_all(funs(as.numeric)) %>%
-  gather(factor, per_var, -window) %>%
-  left_join(all_data %>% 
-              filter(!is.na(median)) %>%
-              mutate(window = as.numeric(window)) %>% 
-              distinct(window, median))
-
-ggplot(var_plot %>%
-         full_join(var_plot %>%
-                     group_by(window) %>%
-                     summarise(total_var_expl = sum(per_var, na.rm = T)) %>%
-                     ungroup() %>%
-                     distinct(window, factor, per_var, total_var_expl)) %>%
-         filter(factor != "MR4") %>%
-         mutate(factor = factor(as.character(factor))), 
-       aes(x = median, y = per_var, color = factor)) +
-  geom_point(size = 4) +
-  geom_line(alpha = 0.8) +
-  geom_point(aes(y = total_var_expl), color = "gray", size = 4) +
-  geom_line(aes(y = total_var_expl), color = "gray", alpha = 0.8) +
+varovertime <- ggplot(all_data, 
+       aes(x = median, y = per_var, color = label, frame = median)) +
+  geom_point(aes(y = total_var_explained, group = factor, cumulative = TRUE), 
+             color = "black", size = 4) +
+  geom_line(aes(y = total_var_explained, group = factor, cumulative = TRUE), 
+            color = "black", alpha = 0.8) +
+  geom_point(aes(group = factor, cumulative = TRUE), size = 4) +
+  geom_line(aes(group = factor, cumulative = TRUE), alpha = 0.8) +
   theme_bw() +
   scale_x_continuous(name = "median age in years (by window)", 
                      breaks = seq(5, 10, 1),
                      limits = c(floor(all_dom$median[all_dom$window == min(all_dom$window) & !is.na(all_dom$median)][1]),
                                 ceiling(all_dom$median[all_dom$window == max(all_dom$window) & !is.na(all_dom$median)][1]))) +
   scale_y_continuous(name = "proportion variance explained", limits = c(0, 1)) +
-  scale_color_brewer(name = "factor: ",
-                     palette = "Set2") +
-  theme(#axis.text.y = element_blank(), 
-        #axis.ticks.y = element_blank(),
-        # panel.grid.major.y = element_blank(),
-        # panel.grid.minor.y = element_blank(),
-        text = element_text(size = 20),
-        legend.position = "right")
-# legend.position = "top") # 2000 by 1500
+  scale_color_manual(name = "factor according to\ncongruance with\nfinal factors: ",
+                     values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a")) +
+  theme(text = element_text(size = 20),
+        legend.position = c(.8, .8),
+        legend.background = element_rect(color = "black", 
+                                         fill = "white",
+                                         size = 0.2)) # 1200 by 900
+
+gganimate(varovertime, 
+          "varovertime.gif",
+          title_frame = FALSE,
+          interval=0.1,
+          ani.width=1200, ani.height=900)
 
 ggplot(per_var_all %>%
          spread(factors, total_var_exp) %>%
