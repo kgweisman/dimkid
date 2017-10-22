@@ -2952,3 +2952,30 @@ s34_robot_cat <- ggplot(d34_all %>%
 s34_robot_cat
 ```
 
+```{r kinda, fig.width=3, fig.height=3}
+ggplot(d3_all %>%
+         rownames_to_column("subid") %>%
+         gather(capacity, response, -subid) %>%
+         mutate(age_group = "7-9y") %>%
+         full_join(d4_all %>%
+                     rownames_to_column("subid") %>%
+                     gather(capacity, response, -subid) %>%
+                     mutate(age_group = "4-6y")) %>%
+         mutate(response_cat = factor(response,
+                                      levels = c(0, 0.5, 1),
+                                      labels = c("no", "kinda", "yes"))),
+       aes(x = age_group,
+           fill = age_group,
+           alpha = response_cat)) + 
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_brewer(name = "Study:", palette = "Set1", direction = -1) +
+  scale_alpha_discrete(name = "Response:", labels = c("NO", "KINDA", "YES")) +
+  theme_bw() +
+  theme(text = element_text(),
+        axis.title.x = element_blank(),
+      axis.text.x = element_text(angle = 90, hjust = 1),
+      legend.position = "top") +
+  labs(x = "Study",
+       y = "Proportion of Responses")
+```
+
