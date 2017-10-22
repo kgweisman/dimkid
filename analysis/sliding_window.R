@@ -202,7 +202,7 @@ ages <- data.frame(ages) %>%
 
 n_factors <- NULL
 for(i in 1:length(all_efa)) {
-  efa_temp <- all_efa[[i]]
+  efa_temp <- c[[i]]
   n_factors[i] <- efa_temp$factors
 }
 
@@ -468,11 +468,62 @@ all_rmsea <- rmsea %>% mutate(factors = "n") %>%
   full_join(rmsea_2 %>% mutate(factors = "2")) %>%
   full_join(rmsea_3 %>% mutate(factors = "3"))
   
+
+# code as BHM -----
+
+# loop it
+congruence <- data.frame(window = numeric(), 
+                         MR1 = character(),
+                         MR2 = character(),
+                         MR3 = character())
+loadings_final <- all_efa[[length(all_efa)]]$loadings[] %>%
+  data.frame() %>%
+  rename(HEART = MR3, BODY = MR1, MIND = MR2) %>%
+  as.matrix()
+for(i in 1:length(all_efa)) {
+  efa_temp <- all_efa[[i]]$loadings[]
+  cong_temp <- factor.congruence(efa_temp, loadings_final) %>%
+    data.frame() %>%
+    rownames_to_column("earlier") %>%
+    gather(later, congruence, -earlier) %>%
+    group_by(earlier) %>%
+    top_n(1, congruence)
+  
+  cong_temp2 <- cong_temp %>% 
+    ungroup() %>% 
+    group_by(earlier) %>% 
+    mutate(later = glue::collapse(later, sep = "-")) %>%
+    # mutate(later = c(cong_temp$later) %>% 
+    #          glue::collapse(sep = "-")) %>% 
+    ungroup() %>% 
+    distinct()
+  
+  cong_temp3 <- cong_temp2 %>%
+    select(-congruence) %>%
+    mutate(window = as.numeric(as.character(i))) %>%
+    spread(earlier, later)
+  
+  congruence <- full_join(congruence, cong_temp3)
+}
+
+congruence <- congruence %>% 
+  gather(factor, label, -window) %>%
+  filter(!is.na(label)) %>%
+  mutate(window = as.character(window))
+  
+
 # put them all together -----
 all_data <- ages %>%
   full_join(n_factors) %>%
-  full_join(top5_items) %>%
-  full_join(per_var)
+  full_join(top5_items %>% 
+              gather(factor, top5, -window) %>% 
+              filter(!is.na(top5), top5 != "NA")) %>%
+  full_join(per_var %>% 
+              gather(factor, per_var, -window) %>% 
+              filter(!is.na(per_var), per_var != "NA")) %>%
+  full_join(congruence) %>%
+  mutate(window = as.numeric(as.character(window)),
+         per_var = as.numeric(as.character(per_var)))
 
 # plots of loadings -----
 
@@ -543,6 +594,12 @@ all_loadings <- all_loadings %>%
   mutate(old_dom = factor(old_dom,
                           levels = c("MR1", "MR3", "MR2"),
                           labels = c("BODY", "HEART", "MIND")))
+  full_join(all_data) %>%
+  select(window, min, max, mean, median, n_factors, 
+         factor, label, top5, per_var, 
+         capacity, loading) %>%
+  mutate_at(vars(window, min, max, mean, median, n_factors, per_var, loading), 
+            funs(as.numeric))
 
 # ggplot(all_loadings,
 #        aes(x = factor, y = loading, label = capacity, color = old_dom)) +
@@ -580,14 +637,42 @@ all_loadings <- all_loadings %>%
 all_dom <- all_loadings %>%
   group_by(window, capacity) %>%
   top_n(1, abs(loading)) %>%
-  mutate(factor_num = factor(factor, levels = c("MR2", "MR1", "MR3")),
+  # mutate(factor_num = factor(factor, levels = c("MR2", "MR1", "MR3")),
+  #        combo = as.numeric(factor_num) + abs(loading) - 1) %>%
+  mutate(factor_num = recode(label,
+                             "HEART-BODY" = 2,
+                             "BODY" = 1,
+                             "HEART" = 2,
+                             "MIND" = 3),
          combo = as.numeric(factor_num) + abs(loading) - 1) %>%
   full_join(all_data %>% mutate(window = as.numeric(window)))
 
-ggplot(all_dom, aes(x = median, y = combo, 
-                    color = old_dom, group = capacity, label = capacity)) +
-  geom_point(size = 4) +
-  geom_line(alpha = 0.5) +
+domovertime <- ggplot(all_dom, aes(x = median, y = combo, 
+                    # color = label, 
+                    color = old_dom, 
+                    group = capacity, label = capacity, frame = median)) +
+  geom_point(aes(group = capacity, cumulative = TRUE), size = 4) +
+  geom_line(aes(group = capacity, cumulative = TRUE), alpha = 0.5) +
+  theme_bw() +
+  scale_x_continuous(name = "median age in years (by window)", 
+                     limits = c(all_dom$median[all_dom$window == 2 & 
+                                                 !is.na(all_dom$median)][1] - 0.5, 
+                                all_dom$median[all_dom$window == max(all_dom$window) & 
+                                                 !is.na(all_dom$median)][1] + 0.5)) +
+  scale_y_continuous(name = "factor + loading (higher = stronger)") +
+  # scale_color_manual(name = "dominant factor loading in final window: ",
+  #                    values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a")) +
+  scale_color_brewer(name = "dominant factor loading in final window: ",
+                     palette = "Set1") +
+  theme(axis.text.y = element_blank(), 
+        axis.ticks.y = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        text = element_text(size = 30),
+        legend.position = "none")
+        # legend.position = "top") # 2000 by 1500
+
+domovertime +
   geom_label_repel(data = all_dom %>% filter(window == min(all_dom$window)), size = 7,
                    segment.color = "black", segment.size = 0.4,
                    xlim = c(all_dom$median[all_dom$window == min(all_dom$window) &
@@ -603,9 +688,9 @@ ggplot(all_dom, aes(x = median, y = combo,
   geom_label_repel(data = all_dom %>% filter(window == 88), size = 7,
                    segment.color = "black", segment.size = 0.4,
                    xlim = c(all_dom$median[all_dom$window == 88 &
-                                            !is.na(all_dom$median)][1] - 0.2,
-                           all_dom$median[all_dom$window == 88 &
-                                            !is.na(all_dom$median)][1] - 0.1)) +
+                                             !is.na(all_dom$median)][1] - 0.2,
+                            all_dom$median[all_dom$window == 88 &
+                                             !is.na(all_dom$median)][1] - 0.1)) +
   geom_label_repel(data = all_dom %>% filter(window == 92), size = 7,
                    segment.color = "black", segment.size = 0.4,
                    xlim = c(all_dom$median[all_dom$window == 92 &
@@ -619,53 +704,16 @@ ggplot(all_dom, aes(x = median, y = combo,
                             all_dom$median[all_dom$window == max(all_dom$window) & 
                                              !is.na(all_dom$median)][1] - 0.1)) +
   geom_label_repel(data = all_dom %>% filter(window == max(all_dom$window)), size = 7, 
-                  segment.color = "black", segment.size = 0.4,
-                  xlim = c(all_dom$median[all_dom$window == max(all_dom$window) & 
-                                            !is.na(all_dom$median)][1] + 0.1, 
-                           all_dom$median[all_dom$window == max(all_dom$window) & 
-                                            !is.na(all_dom$median)][1] + 0.2)) +
-  theme_bw() +
-  scale_x_continuous(name = "median age in years (by window)", 
-                     limits = c(all_dom$median[all_dom$window == 2 & 
-                                                 !is.na(all_dom$median)][1] - 0.5, 
-                                all_dom$median[all_dom$window == max(all_dom$window) & 
-                                                 !is.na(all_dom$median)][1] + 0.5)) +
-  scale_y_continuous(name = "factor + loading (higher = stronger)") +
-  scale_color_brewer(name = "dominant factor loading in final window: ",
-                     palette = "Set1") +
-  theme(axis.text.y = element_blank(), 
-        axis.ticks.y = element_blank(),
-        panel.grid.major.y = element_blank(),
-        panel.grid.minor.y = element_blank(),
-        text = element_text(size = 30),
-        legend.position = "none")
-        # legend.position = "top") # 2000 by 1500
-
-domovertime <- ggplot(all_dom, aes(x = median, y = combo, 
-                                   color = old_dom, group = capacity, label = capacity,
-                                   frame = median)) +
-  geom_point(aes(cumulative = TRUE), size = 4) +
-  geom_line(aes(cumulative = TRUE), alpha = 0.5) +
-  theme_bw() +
-  scale_x_continuous(name = "median age in years (by window)", 
-                     limits = c(all_dom$median[all_dom$window == 2 & 
-                                                 !is.na(all_dom$median)][1] - 0.5, 
-                                all_dom$median[all_dom$window == max(all_dom$window) & 
-                                                 !is.na(all_dom$median)][1] + 0.5)) +
-  scale_y_continuous(name = "factor + loading (higher = stronger)") +
-  scale_color_brewer(name = "dominant factor loading in final window: ",
-                     palette = "Set1") +
-  theme(axis.text.y = element_blank(), 
-        axis.ticks.y = element_blank(),
-        panel.grid.major.y = element_blank(),
-        panel.grid.minor.y = element_blank(),
-        text = element_text(size = 30),
-        legend.position = "none") # 2000 by 1500
+                   segment.color = "black", segment.size = 0.4,
+                   xlim = c(all_dom$median[all_dom$window == max(all_dom$window) & 
+                                             !is.na(all_dom$median)][1] + 0.1, 
+                            all_dom$median[all_dom$window == max(all_dom$window) & 
+                                             !is.na(all_dom$median)][1] + 0.2))
 
 gganimate(domovertime, 
           "domovertime.gif",
           title_frame = FALSE,
-          interval=0.2,
+          interval=0.1,
           ani.width=2000, ani.height=1500)
 
 # plot of % var explained -----
