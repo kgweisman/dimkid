@@ -9,7 +9,28 @@ library(gganimate)
 d_slide <- d3 %>%
   select(-trial.comments) %>%
   full_join(d4 %>% select(-trial.comments)) %>%
-  full_join(d5 %>% select(-trial.comments))
+  full_join(d5 %>% select(-trial.comments)) %>%
+  mutate(capacity = recode(capacity,
+                           angry = "anger",
+                           choices = "choice",
+                           conscious = "awareness",
+                           depressed = "sadness",
+                           depth = "depth",
+                           disrespected = "hurt feelings",
+                           embarrassed = "embarrassment",
+                           fear = "fear",
+                           guilt = "guilt",
+                           happy = "happiness",
+                           hungry = "hunger",
+                           love = "love",
+                           nauseated = "nausea",
+                           odors = "smell",
+                           pain = "pain",
+                           pride = "pride",
+                           reasoning = "figuring out",
+                           remembering = "memory",
+                           temperature = "temperature",
+                           tired = "fatigue"))
 
 # get age ranks
 d_slide_subid <- d_slide %>%
@@ -202,7 +223,7 @@ ages <- data.frame(ages) %>%
 
 n_factors <- NULL
 for(i in 1:length(all_efa)) {
-  efa_temp <- c[[i]]
+  efa_temp <- all_efa[[i]]
   n_factors[i] <- efa_temp$factors
 }
 
@@ -655,7 +676,7 @@ domovertime <- ggplot(all_dom, aes(x = median, y = combo,
                     color = old_dom, 
                     group = capacity, label = capacity, frame = median)) +
   geom_point(aes(group = capacity, cumulative = TRUE), size = 4) +
-  geom_line(aes(group = capacity, cumulative = TRUE), alpha = 0.5) +
+  # geom_line(aes(group = capacity, cumulative = TRUE), alpha = 0.5) +
   theme_bw() +
   scale_x_continuous(name = "median age in years (by window)", 
                      limits = c(all_dom$median[all_dom$window == 2 & 
@@ -723,12 +744,12 @@ gganimate(domovertime,
 
 varovertime <- ggplot(all_data, 
        aes(x = median, y = per_var, color = label, frame = median)) +
-  geom_point(aes(y = total_var_explained, group = factor, cumulative = TRUE), 
-             color = "black", size = 4) +
-  geom_line(aes(y = total_var_explained, group = factor, cumulative = TRUE), 
+  # geom_point(aes(y = total_var_explained, group = factor, cumulative = TRUE), 
+  #            color = "gray", size = 8, shape = 22, fill = "gray") +
+  geom_line(aes(y = total_var_explained, cumulative = TRUE),
             color = "black", alpha = 0.8) +
   geom_point(aes(group = factor, cumulative = TRUE), size = 4) +
-  geom_line(aes(group = factor, cumulative = TRUE), alpha = 0.8) +
+  # geom_line(aes(group = factor, cumulative = TRUE), alpha = 0.8) +
   theme_bw() +
   scale_x_continuous(name = "median age in years (by window)", 
                      breaks = seq(5, 10, 1),
@@ -765,27 +786,37 @@ ggplot(per_var_all %>%
                      mutate(window = as.numeric(window))),
        aes(x = median, y = total_var_exp, 
            color = factors, fill  = best_cat, group = factors)) +
-  geom_smooth(alpha = 0.2) +
+  geom_smooth(alpha = 0.5) +
   geom_line(alpha = 0.8) +
-  geom_point(shape = 21) +
+  geom_point(shape = 21, size = 2) +
   scale_fill_manual(values = c("white", "black")) +
   scale_x_continuous(name = "median age in years (by window)", 
                      breaks = seq(5, 10, 1),
-                     limits = c(floor(all_dom$median[all_dom$window == min(all_dom$window) & !is.na(all_dom$median)][1]),
-                                ceiling(all_dom$median[all_dom$window == max(all_dom$window) & !is.na(all_dom$median)][1]))) +
-  scale_y_continuous(name = "TOTAL variance explained") + #, limits = c(0, 1)) +
+                     limits = c(floor(all_dom$median[all_dom$window == 
+                                                       min(all_dom$window) & 
+                                                       !is.na(all_dom$median)][1]),
+                                ceiling(all_dom$median[all_dom$window == 
+                                                         max(all_dom$window) & 
+                                                         !is.na(all_dom$median)][1]))) +
+  scale_y_continuous(name = "proportion variance explained (TOTAL)") + #, limits = c(0, 1)) +
+  scale_color_brewer(palette = "Dark2") +
   labs(fill = "best solution?: ", color = "number of factors: ") +
-  theme_bw()
+  theme_bw() +
+  theme(text = element_text(size = 20),
+        legend.position = c(.2, .8),
+        legend.background = element_rect(color = "black", 
+                                         fill = "white",
+                                         size = 0.2)) # 1200 by 900
 
-ggplot(per_var_all %>%
-         spread(factors, total_var_exp) %>%
-         mutate(two.v.one = `2` - `1`,
-                three.v.two = `3` - `2`) %>%
-         gather(contrast, diff, c(two.v.one, three.v.two)),
-       aes(x = window, y = diff, color = contrast)) +
-  geom_point() +
-  geom_line(alpha = 0.8) +
-  theme_bw()
+# ggplot(per_var_all %>%
+#          spread(factors, total_var_exp) %>%
+#          mutate(two.v.one = `2` - `1`,
+#                 three.v.two = `3` - `2`) %>%
+#          gather(contrast, diff, c(two.v.one, three.v.two)),
+#        aes(x = window, y = diff, color = contrast)) +
+#   geom_point() +
+#   geom_line(alpha = 0.8) +
+#   theme_bw()
 
 # plot of RMSEA -----
 
@@ -846,11 +877,15 @@ mean_responses <- mean_responses %>%
 ggplot(mean_responses %>% 
          mutate(capacity = reorder(capacity, order),
                 character = factor(character,
-                                   levels = c("computer", "robot", "doll", 
-                                              "teddy_bear", "beetle", "bird", 
-                                              "mouse", "goat", "elephant"))), 
+                                   # levels = c("elephant", "goat", "mouse",
+                                   #            "bird", "beetle", "teddy_bear",
+                                   #            "doll", "robot", "computer"))),
+                                   levels = c("computer", "robot", "doll",
+                                              "teddy_bear", "beetle", "bird",
+                                              "mouse", "goat", "elephant"))),
        aes(x = median, y = Mean, color = old_dom, fill = old_dom)) +
-  facet_grid(character ~ capacity) +
+  # facet_grid(character ~ capacity) +
+  facet_grid(capacity ~ character) +
   geom_hline(yintercept = 0.5, lty = 3, color = "blue") +
   geom_ribbon(aes(ymin = Lower, ymax = Upper), alpha = 0.3, lty = 0) +
   geom_line(alpha = 0.8) +
@@ -858,6 +893,10 @@ ggplot(mean_responses %>%
   theme_bw() +
   scale_x_continuous(name = "median age in years (by window)") +
   scale_y_continuous(name = "mean response (0 = no, 0.5 = kinda, 1 = yes)") +
+  scale_color_manual(values = c("#e41a1c", "#4daf4a", "#377eb8")) +
+  scale_fill_manual(values = c("#e41a1c", "#4daf4a", "#377eb8")) +
+  # scale_color_brewer(palette = "Set1") +
+  # scale_fill_brewer(palette = "Set1") +
   theme(#axis.text.y = element_blank(), 
     #axis.ticks.y = element_blank(),
     # panel.grid.major.y = element_blank(),
