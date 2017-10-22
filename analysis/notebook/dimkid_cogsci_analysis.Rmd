@@ -2979,3 +2979,28 @@ ggplot(d3_all %>%
        y = "Proportion of Responses")
 ```
 
+```{r treat kinda as yes}
+# 7-9y
+d3_all %>% rownames_to_column("subid") %>% gather(key, value, -subid) %>% mutate(value = as.numeric(gsub(0.5, 1, value))) %>% spread(key, value) %>% remove_rownames() %>% column_to_rownames("subid") %>% fa(nfactors = 6, rotate = "none", fm = "minres") %>% fa.sort()
+
+d3_all %>% rownames_to_column("subid") %>% gather(key, value, -subid) %>% mutate(value = as.numeric(gsub(0.5, 1, value))) %>% spread(key, value) %>% remove_rownames() %>% column_to_rownames("subid") %>% fa(nfactors = 3, rotate = "oblimin", fm = "minres") %>% fa.sort()
+
+
+# 4-6y
+d4_all %>% rownames_to_column("subid") %>% gather(key, value, -subid) %>% mutate(value = as.numeric(gsub(0.5, 1, value))) %>% spread(key, value) %>% remove_rownames() %>% column_to_rownames("subid") %>% fa(nfactors = 6, rotate = "none", fm = "minres") %>% fa.sort()
+
+d4_all %>% rownames_to_column("subid") %>% gather(key, value, -subid) %>% mutate(value = as.numeric(gsub(0.5, 1, value))) %>% spread(key, value) %>% remove_rownames() %>% column_to_rownames("subid") %>% fa(nfactors = 2, rotate = "oblimin", fm = "minres") %>% fa.sort()
+```
+
+```{r omit kinda}
+# 7-9y
+d3_all %>% rownames_to_column("subid") %>% gather(key, value, -subid) %>% mutate(value = as.numeric(gsub(0.5, NA, value))) %>% spread(key, value) %>% remove_rownames() %>% column_to_rownames("subid") %>% fa(nfactors = 6, rotate = "none", fm = "minres") %>% fa.sort()
+
+d3_all %>% rownames_to_column("subid") %>% gather(key, value, -subid) %>% mutate(value = as.numeric(gsub(0.5, NA, value))) %>% spread(key, value) %>% remove_rownames() %>% column_to_rownames("subid") %>% fa(nfactors = 3, rotate = "oblimin", fm = "minres") %>% fa.sort()
+
+
+# 4-6y
+d4_all %>% rownames_to_column("subid") %>% gather(key, value, -subid) %>% mutate(value = as.numeric(gsub(0.5, NA, value))) %>% spread(key, value) %>% remove_rownames() %>% column_to_rownames("subid") %>% fa(nfactors = 6, rotate = "none", fm = "minres") %>% fa.sort()
+
+d4_all %>% rownames_to_column("subid") %>% gather(key, value, -subid) %>% mutate(value = as.numeric(gsub(0.5, NA, value))) %>% spread(key, value) %>% remove_rownames() %>% column_to_rownames("subid") %>% fa(nfactors = 2, rotate = "oblimin", fm = "minres") %>% fa.sort()
+```
