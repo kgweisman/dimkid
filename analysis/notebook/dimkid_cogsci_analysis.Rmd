@@ -26,9 +26,9 @@ library(plotly)
 library(lubridate)
 library(rms)
 
-# clear workspace
-rm(list = ls(all = T))
-graphics.off()
+# # clear workspace
+# rm(list = ls(all = T))
+# graphics.off()
 ```
 
 ```{r functions}
@@ -2588,16 +2588,18 @@ scores_s34_plotting <- d3 %>%
 ggplot(scores_s34_plotting %>%
          ungroup() %>%
          mutate(character = factor(character, 
-                                   levels = c("computer", "robot", "doll", "teddy_bear",
-                                              "beetle", "bird", "mouse", "goat", "elephant"),
-                                   labels = c("computer", "robot", "doll", "teddy bear",
-                                              "beetle", "bird", "mouse", "goat", "elephant")),
+                                   levels = c("computer", "robot", "doll", 
+                                              "teddy_bear", "beetle", "bird", 
+                                              "mouse", "goat", "elephant"),
+                                   labels = c("computer", "robot", "doll", 
+                                              "teddy bear", "beetle", "bird", 
+                                              "mouse", "goat", "elephant")),
                 factor = factor(factor,
                                 levels = c("score_F1", "score_F2", "score_F3"),
                                 labels = c("Heart", "Mind", "Body")),
                 age_group = factor(age_group,
-                                  levels = c("children_79", "children_46"),
-                                  labels = c("Study 1 (7-9y)", "Study 2 (4-6y)"))),
+                                   levels = c("children_46", "children_79"),
+                                   labels = c("4-6y", "7-9y"))),
        aes(x = character, y = Mean, 
            color = age_group)) +
            # color = character, 
@@ -2614,11 +2616,11 @@ ggplot(scores_s34_plotting %>%
   # scale_shape_manual(values = c(17, 15, 19, rep(17, 4))) +
   # scale_color_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4)),
                      # guide = FALSE) +
-  scale_color_brewer(palette = "Set1") +
+  scale_color_brewer(palette = "Set1", direction = -1) +
   labs(#title = "Factor scores by character and age group",
        x = "Character",
        y = "Mean factor score",
-       color = "Study: ") # 1000 by 500
+       color = "Age group: ") # 1000 by 500
 ```
 
 # Factor scores by age
@@ -2750,7 +2752,7 @@ ggplot(tempA,
 
 ## Studies 3-4
 
-```{r s34 factor scores by age setup, fig.width = 5, fig.height = 10}
+```{r s34 factor scores by age setup, fig.width = 10, fig.height = 5}
 scores_s34_plotting <- d3 %>%
   select(age_group, subid, age, character) %>%
   distinct() %>%
@@ -2782,8 +2784,8 @@ ggplot(scores_s34_plotting %>%
        # aes(x = age, y = score, color = character, fill = character, shape = character)) +
        aes(x = age, y = score, group = age_group)) +
   # facet_wrap("factor", ncol = 3) +
-  # facet_grid(factor ~ character) +
-  facet_grid(character ~ factor) +
+  facet_grid(factor ~ character) +
+  # facet_grid(character ~ factor) +
   theme_bw() +
   theme(text = element_text(size = 28),
         legend.position = "none") +
@@ -2811,13 +2813,16 @@ ggplot(scores_s34_plotting %>%
                                 #            "Mind",
                                 #            "Body")),
                 character = factor(character,
-                                   levels = c("computer", "robot", "doll", "teddy_bear",
-                                              "beetle", "bird", "mouse", "goat", "elephant"))),
+                                   levels = c("computer", "robot", "doll", 
+                                              "teddy_bear", "beetle", "bird", 
+                                              "mouse", "goat", "elephant")),
+                age_group = factor(age_group,
+                                   levels = c("children_46", "children_79"))),
        aes(x = age, y = score)) +
        # aes(x = age, y = score, group = age_group)) +
   # facet_wrap("factor", ncol = 3) +
-  # facet_grid(factor ~ character) +
-  facet_grid(character ~ factor) +
+  facet_grid(factor ~ character) +
+  # facet_grid(character ~ factor) +
   theme_bw() +
   theme(text = element_text(size = 28),
         legend.position = "none") +
@@ -2830,7 +2835,7 @@ ggplot(scores_s34_plotting %>%
   # scale_fill_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
   # scale_color_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
   # scale_shape_manual(values = c(17, 15, rep(17, 2), 19, rep(17, 4))) +
-  scale_color_brewer(palette = "Set1") +
+  scale_color_brewer(palette = "Set1", direction = -1) +
   labs(#title = "Factor scores by children's age",
        # subtitle = "Children (Studies 3-4)\n",
        x = "Age (years)",
@@ -2922,7 +2927,7 @@ s34_robot_cat <- ggplot(d34_all %>%
                                               distinct())) %>%
                       mutate(study = factor(study,
                                             levels = c("study 4", "study 3"),
-                                            labels = c("Study 1 (4-6y)", "Study 2 (7-9y)"))) %>%
+                                            labels = c("4-6y", "7-9y"))) %>%
                       gather(capacity, response, angry:tired) %>%
                       full_join(s34_plotting %>% 
                                   select(capacity, wording, s3_factor, s3_order)) %>%
@@ -2931,7 +2936,7 @@ s34_robot_cat <- ggplot(d34_all %>%
                    fill = study,
                    alpha = factor(response))) + 
   geom_bar(position = "fill", color = "black") +
-  scale_fill_brewer(name = "Study:", palette = "Set1") +
+  scale_fill_brewer(name = "Study:", palette = "Set1", direction = -1) +
   scale_alpha_discrete(name = "Response:", labels = c("NO", "KINDA", "YES")) +
   theme_bw() +
   theme(text = element_text(),

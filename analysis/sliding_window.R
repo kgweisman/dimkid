@@ -785,11 +785,10 @@ ggplot(per_var_all %>%
                      select(window, median) %>% 
                      mutate(window = as.numeric(window))),
        aes(x = median, y = total_var_exp, 
-           color = factors, fill  = best_cat, group = factors)) +
-  geom_smooth(alpha = 0.5) +
-  geom_line(alpha = 0.8) +
-  geom_point(shape = 21, size = 2) +
-  scale_fill_manual(values = c("white", "black")) +
+           color = factors, group = factors)) +
+  geom_smooth(aes(fill  = factors), alpha = 0.5) +
+  # geom_line(alpha = 0.8) +
+  geom_point(aes(shape  = best_cat), size = 4) +
   scale_x_continuous(name = "median age in years (by window)", 
                      breaks = seq(5, 10, 1),
                      limits = c(floor(all_dom$median[all_dom$window == 
@@ -799,8 +798,10 @@ ggplot(per_var_all %>%
                                                          max(all_dom$window) & 
                                                          !is.na(all_dom$median)][1]))) +
   scale_y_continuous(name = "proportion variance explained (TOTAL)") + #, limits = c(0, 1)) +
-  scale_color_brewer(palette = "Dark2") +
-  labs(fill = "best solution?: ", color = "number of factors: ") +
+  scale_color_brewer("number of factors:", palette = "Dark2") +
+  scale_fill_brewer("number of factors:", palette = "Dark2") +
+  scale_shape_manual("best solution?:", values = c(1, 19)) +
+  # labs(fill = "best solution?: ", color = "number of factors: ") +
   theme_bw() +
   theme(text = element_text(size = 20),
         legend.position = c(.2, .8),
