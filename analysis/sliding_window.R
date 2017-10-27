@@ -1143,9 +1143,12 @@ ggplot(per_var_all %>%
 # project into final window factor space -----
 
 # get final factor space
+final_subids <- d_slide %>%
+  distinct(subid, age) %>%
+  top_n(120, age)
 
 final_data <- d_slide %>%
-  filter(subid %in% top_n(d_slide_subid, -120, age_rank)$subid) %>%
+  filter(subid %in% final_subids$subid) %>%
   select(subid, capacity, responseNum) %>%
   spread(capacity, responseNum) %>%
   remove_rownames() %>%
@@ -1215,15 +1218,6 @@ ggplot(all_cor_project,
   scale_x_continuous("median age in years (by window)") +
   theme_bw() +
   theme(text = element_text(size = 20))
-
-
-
-
-# gganimate(domovertime_project, 
-#           "domovertime_project.gif",
-#           title_frame = FALSE,
-#           interval=0.1,
-#           ani.width=2000, ani.height=1500)
 
 
 # project into final window factor space attributions -----
