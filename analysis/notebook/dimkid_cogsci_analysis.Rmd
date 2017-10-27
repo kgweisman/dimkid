@@ -26,9 +26,9 @@ library(plotly)
 library(lubridate)
 library(rms)
 
-# # clear workspace
-# rm(list = ls(all = T))
-# graphics.off()
+# clear workspace
+rm(list = ls(all = T))
+graphics.off()
 ```
 
 ```{r functions}
@@ -2159,6 +2159,98 @@ ggplot(factors_s4_long, aes(x = factor(factor, labels = c("Body-Heart", "Mind"))
         panel.grid = element_blank()) # 1000 by 1000
 ```
 
+```{r figure heatmap s4 force 3 factors, fig.width = 4, fig.height = 7}
+factors_s4_3fac <- fa.sort(fa(d4_all, nfactors = 3, cor = chosenCorType, rotate = chosenRotType)$loadings[]) %>%
+  data.frame() %>%
+  rownames_to_column(var = "item") %>%
+  left_join(char_plotting_wordings, by = c("item" = "capacity")) %>%
+  select(wording, starts_with("MR")) %>%
+  rename(capacity = wording, Factor1 = MR1, Factor2 = MR2) %>% #, Factor3 = MR3) %>%
+  rownames_to_column(var = "order") %>%
+  mutate(order = as.numeric(order))
+
+factors_s4_3fac_long <- factors_s4_3fac %>%
+  gather(factor, loading, -capacity, -order) %>%
+  mutate(factor = factor(gsub("Factor", "F", factor))) %>%
+  # mutate(factor = factor(gsub("Factor", "F", factor),
+  #                        levels = c("F1", "F3", "F2"))) %>%
+  # mutate(factor = factor(gsub("Factor", "F", factor),
+  #                        levels = c("F2", "F1", "F3"))) %>%
+  arrange(order, factor)
+
+factors_s4_3fac_blank1 <- factors_s4_3fac_long %>%
+  mutate(loading = rep(100, length(factors_s4_3fac_long$loading)))
+# factors_s4_3fac_blank2 <- factors_s4_3fac_long %>%
+#   mutate(loading = ifelse(factor == "F1", loading, rep(100, length(factors_s4_3fac_long$loading)*2/3)))
+factors_s4_3fac_blank2 <- factors_s4_3fac_long %>%
+  mutate(loading = ifelse(factor == "F2", loading, rep(100, length(factors_s4_3fac_long$loading)*2/3)))
+factors_s4_3fac_blank3 <- factors_s4_3fac_long %>%
+  mutate(loading = ifelse(factor != "F3", loading, rep(100, length(factors_s4_3fac_long$loading)*1/3)))
+
+# ggplot(factors_s4_3fac_blank1, aes(x = factor,
+#                             y = reorder(capacity, desc(order)), fill = loading)) +
+#   geom_tile(color = "black") +
+#   # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+#   scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
+#                        guide = guide_colorbar(title = element_blank(),
+#                                               barheight = 20)) +
+#   scale_x_discrete(position = "top") +
+#   theme_minimal() +
+#   theme(text = element_text(size = 24),
+#         axis.text.x = element_text(size = 28),
+#         axis.title = element_blank(),
+#         panel.grid = element_blank()) # 1000 by 1000
+# 
+# ggplot(factors_s4_3fac_blank2, aes(x = factor,
+#                               y = reorder(capacity, desc(order)), fill = loading)) +
+#   geom_tile(color = "black") +
+#   # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+#   scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
+#                        guide = guide_colorbar(title = element_blank(),
+#                                               barheight = 20)) +
+#   scale_x_discrete(position = "top") +
+#   theme_minimal() +
+#   theme(text = element_text(size = 24),
+#         axis.text.x = element_text(size = 28),
+#         axis.title = element_blank(),
+#         panel.grid = element_blank()) # 1000 by 1000
+# 
+# ggplot(factors_s4_3fac_blank3, aes(x = factor,
+#                               y = reorder(capacity, desc(order)), fill = loading)) +
+#   geom_tile(color = "black") +
+#   # geom_text(aes(label = format(round(loading, 2), nsmall = 2))) +
+#   scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
+#                        guide = guide_colorbar(title = element_blank(),
+#                                               barheight = 20)) +
+#   scale_x_discrete(position = "top") +
+#   theme_minimal() +
+#   theme(text = element_text(size = 24),
+#         axis.text.x = element_text(size = 28),
+#         axis.title = element_blank(),
+#         panel.grid = element_blank()) # 1000 by 1000
+
+ggplot(factors_s4_3fac_long, aes(x = factor(factor),
+                            y = reorder(capacity, desc(order)), fill = loading)) +
+  geom_tile(color = "black") +
+  geom_text(aes(label = format(round(loading, 2), nsmall = 2)), size = 6) +
+  scale_fill_distiller(palette = "RdYlBu", limits = c(-1, 1), breaks = c(-1, 0, 1),
+                       guide = guide_colorbar(title = element_blank(),
+                                              barheight = 20)) +
+  scale_x_discrete(position = "top") +
+  # geom_rect(aes(xmin = 0.51, xmax = 1.49, ymin = 14.55, ymax = 20.45),
+  #           alpha = 0, color = "black", size = .5) +
+  # geom_rect(aes(xmin = 1.51, xmax = 2.49, ymin = 6.55, ymax = 14.45),
+  #           alpha = 0, color = "black", size = .5) +
+  # geom_rect(aes(xmin = 2.51, xmax = 3.49, ymin = 0.55, ymax = 6.45),
+  #           alpha = 0, color = "black", size = .5) +
+  # theme_bw() +
+  theme_minimal() +
+  labs(x = "Study 1 (4-6y)") +
+  theme(text = element_text(size = 28),
+        axis.text.x = element_blank(),
+        axis.title.y = element_blank(),
+        panel.grid = element_blank()) # 1000 by 1000
+```
 
 ## Mean ratings
 
@@ -2336,51 +2428,85 @@ data.frame(loadings(fa.sort(efa_d12_all_rotatedN))[]) %>%
 ```
 
 ```{r s12 figure setup, include = F}
-scores_s12_plotting <- d1 %>% 
-  select(subid, age_group, character) %>% 
-  distinct() %>% 
-  mutate(subid = paste(character, subid, sep = "_")) %>%
-  full_join(d2 %>% 
-              select(subid, age_group, character) %>% 
-              distinct() %>% 
-              mutate(subid = paste(character, subid, sep = "_"))) %>%
-  full_join(efa_d12_all_rotatedN$scores %>% 
-              data.frame() %>% 
-              rownames_to_column("subid")) %>%
-  mutate(character = factor(character)) %>%
-  rename(score_F1 = MR1, score_F2 = MR2, score_F3 = MR3) %>%
-  filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age_group)) %>%
-  gather(factor, score, starts_with("score_")) %>%
-  mutate(factor = factor(factor)) %>%
-  group_by(age_group, character, factor) %>%
-  do(data.frame(rbind(smean.cl.boot(.$score))))
+# scores_s12 <- d1 %>% 
+#   select(subid, age_group, character) %>% 
+#   distinct() %>% 
+#   mutate(subid = paste(character, subid, sep = "_")) %>%
+#   full_join(d2 %>% 
+#               select(subid, age_group, character) %>% 
+#               distinct() %>% 
+#               mutate(subid = paste(character, subid, sep = "_"))) %>%
+#   full_join(efa_d12_all_rotatedN$scores %>% 
+#               data.frame() %>% 
+#               rownames_to_column("subid")) %>%
+#   mutate(character = factor(character)) %>%
+#   rename(score_F1 = MR1, score_F2 = MR2, score_F3 = MR3) %>%
+#   filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age_group)) %>%
+#   gather(factor, score, starts_with("score_")) %>%
+#   mutate(factor = factor(factor)) 
+# 
+# scores_s12_plotting <- scores_s12 %>%
+#   group_by(age_group, character, factor) %>%
+#   do(data.frame(rbind(smean.cl.boot(.$score))))
 ```
 
 ```{r s12 regression}
-tempC <- d1 %>% mutate(subid = paste(character, subid, sep = "_")) %>%
-  full_join(d2 %>% mutate(subid = paste(character, subid, sep = "_"))) %>%
-  full_join(data.frame(efa_d12_all_rotatedN$scores) %>%
-            rownames_to_column("subid") %>%
-              gather(factor, score, -subid)) %>%
-  mutate(factor = factor(factor),
-         age_group = factor(age_group),
-         character = factor(character)) # %>%
-  # filter(!is.na(factor), !is.na(age_group), !is.na(character))
+# tempC <- d1 %>% mutate(subid = paste(character, subid, sep = "_")) %>%
+#   full_join(d2 %>% mutate(subid = paste(character, subid, sep = "_"))) %>%
+#   full_join(data.frame(efa_d12_all_rotatedN$scores) %>%
+#             rownames_to_column("subid") %>%
+#               gather(factor, score, -subid)) %>%
+#   mutate(factor = factor(factor),
+#          age_group = factor(age_group),
+#          character = factor(character)) # %>%
+#   # filter(!is.na(factor), !is.na(age_group), !is.na(character))
+# 
+# contrasts(tempC$factor) = cbind(factor1 = c(1, -1, 0),
+#                                 factor3 = c(0, -1, 1))
+# 
+# contrasts(tempC$age_group) = cbind(children = c(-1, 1))
+# contrasts(tempC$character) = cbind(robot = c(-1, 1))
+# 
+# library(lme4)
+# r1 <- lmer(score ~ character * factor * age_group + (1 | subid) , tempC)
+# summary(r1)
+# 
+# # library(brms)
+# # r1b <- brm(score ~ character * factor * age_group + (1 | subid) , tempC,
+# #             family = "gaussian")
+# # summary(r1b)
+```
 
-contrasts(tempC$factor) = cbind(factor1 = c(1, -1, 0),
-                                factor3 = c(0, -1, 1))
+```{r s12 factor scores by age option 2 setup}
+# project 7-9yo data into adult space
+temp_predict_79 <- predict(efa_d1_all_rotatedN, d2_all, d1_all) %>%
+  data.frame() %>%
+  rownames_to_column("subid")
+# round(cor(efa_d1_all_rotatedN$scores, temp_predict_79[,-1], use = "complete.obs"), 3)
 
-contrasts(tempC$age_group) = cbind(children = c(-1, 1))
-contrasts(tempC$character) = cbind(robot = c(-1, 1))
+temp_combo_adult <- efa_d1_all_rotatedN$scores %>% data.frame() %>%
+  rownames_to_column("subid") %>%
+  full_join(temp_predict_79)
 
-library(lme4)
-r1 <- lmer(score ~ character * factor * age_group + (1 | subid) , tempC)
-summary(r1)
+scores_s12 <- d1 %>%
+  select(age_group, subid, age, character) %>%
+  distinct() %>%
+  mutate(subid = paste(character, subid, sep = "_")) %>%
+  full_join(d2 %>%
+              select(age_group, subid, age, character) %>%
+              distinct() %>%
+              mutate(subid = paste(character, subid, sep = "_"))) %>%
+  full_join(temp_combo_adult) %>%
+  mutate(character = factor(character)) %>%
+  mutate(age = ifelse(age < 6.5, NA, age)) %>%
+  rename(score_F1 = MR1, score_F2 = MR2, score_F3 = MR3) %>%
+  filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age)) %>%
+  gather(factor, score, starts_with("score_")) %>%
+  mutate(factor = factor(factor))
 
-# library(brms)
-# r1b <- brm(score ~ character * factor * age_group + (1 | subid) , tempC,
-#             family = "gaussian")
-# summary(r1b)
+scores_s12_plotting <- scores_s12 %>%
+  group_by(age_group, character, factor) %>%
+  do(data.frame(rbind(smean.cl.boot(.$score))))
 ```
 
 ```{r s12 figure factor scores by age group, fig.width = 6, fig.height = 3}
@@ -2388,9 +2514,9 @@ summary(r1)
 ggplot(scores_s12_plotting %>%
          ungroup() %>%
          mutate(factor = factor(factor,
-                                labels = c("Social-emotional",
-                                           "Bodily",
-                                           "Perceptual-cognitive")),
+                                labels = c("HEART",
+                                           "BODY",
+                                           "MIND")),
                 age_group = factor(age_group,
                                   # levels = c("adults", "children_79"),
                                   # labels = c("adults", "children"))),
@@ -2399,11 +2525,11 @@ ggplot(scores_s12_plotting %>%
        aes(x = age_group, y = Mean, color = character, shape = character)) +
   facet_wrap("factor", ncol = 3) +
   theme_bw() +
-  theme(text = element_text(size = 28),
+  theme(text = element_text(size = 20),
         legend.position = "bottom") +
   geom_point(size = 5, position = position_dodge(width = 0.4)) +
   geom_errorbar(aes(ymin = Lower, ymax = Upper),
-                width = 0.2, position = position_dodge(width = 0.4)) +
+                width = 0.1, position = position_dodge(width = 0.4)) +
   scale_shape_manual(values = c(19, 15)) +
   labs(title = "Factor scores by age group",
        # subtitle = "Adults (Study 1) vs. children (Study 2)\n",
@@ -2546,18 +2672,18 @@ data.frame(loadings(fa.sort(efa_d34_all_rotatedN))[]) %>%
 ```
 
 ```{r s34 subscale reliability}
-# Cronbach's alpha (subscales)
-keys.list_s34 <- list(HEART = c("pride", "depressed", "disrespected", "happy", 
-                           "love", "embarrassed", "angry", "guilt"),
-                  BODY = c("hungry", "odors", "fear", "tired", "pain", "nauseated"),
-                  MIND = c("temperature", "reasoning", "remembering", "choices",  
-                           "depth", "conscious")) 
-scores <- scoreItems(keys.list_s34, d34_all, min = 0, max = 1)  # or just use the keys.lit
-# summary(scores)
-scores
-
-# omega
-omega(d34_all, plot = F)
+# # Cronbach's alpha (subscales)
+# keys.list_s34 <- list(HEART = c("pride", "depressed", "disrespected", "happy", 
+#                            "love", "embarrassed", "angry", "guilt"),
+#                   BODY = c("hungry", "odors", "fear", "tired", "pain", "nauseated"),
+#                   MIND = c("temperature", "reasoning", "remembering", "choices",  
+#                            "depth", "conscious")) 
+# scores <- scoreItems(keys.list_s34, d34_all, min = 0, max = 1)  # or just use the keys.lit
+# # summary(scores)
+# scores
+# 
+# # omega
+# omega(d34_all, 3, plot = F)
 ```
 
 ```{r s34 figure setup, include = F}
@@ -2569,6 +2695,7 @@ scores_s34_plotting <- d3 %>%
               select(subid, age_group, character) %>% 
               distinct() %>% 
               mutate(subid = paste(character, subid, sep = "_"))) %>%
+  # note that this is still the old way (not projection into older factor space)
   full_join(efa_d34_all_rotatedN$scores %>% 
               data.frame() %>% 
               rownames_to_column("subid")) %>%
@@ -2584,7 +2711,7 @@ scores_s34_plotting <- d3 %>%
 ```
 
 ```{r s34 figure factor scores by age group, fig.width = 6, fig.height = 3}
-# plot
+# plot (old way, not projection!)
 ggplot(scores_s34_plotting %>%
          ungroup() %>%
          mutate(character = factor(character, 
@@ -2702,49 +2829,57 @@ ggplot(scores_s2_plotting %>%
 
 ## Studies 1-2
 
-```{r s12 scatter plus mean scores by age setup, fig.width = 5, fig.height = 3}
+```{r s12 scatter plus mean scores by age setup, fig.width = 5, fig.height = 2.5}
 tempA <- d2 %>% 
   select(subid, age, character) %>% 
   distinct() %>% 
   mutate(subid = paste(character, subid, sep = "_")) %>%
-  full_join(efa_d12_all_rotatedN$scores %>% 
-              data.frame() %>% 
-              rownames_to_column("subid")) %>%
+  full_join(scores_s12) %>%
   mutate(character = factor(character)) %>%
-  rename(score_F1 = MR1, score_F2 = MR2, score_F3 = MR3) %>%
-  filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age)) %>%
-  gather(factor, score, starts_with("score_")) %>%
+  filter(age_group == "children_79", !is.na(score), !is.na(age)) %>%
+  # spread(factor, score) %>%
+  # filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age)) %>%
+  # gather(factor, score, starts_with("score_")) %>%
   mutate(factor = factor(factor,
-                         labels = c("Social-emotional",
-                                    "Bodily",
-                                    "Perceptual-cognitive")))
+                         # labels = c("Social-emotional",
+                         #            "Bodily",
+                         #            "Perceptual-cognitive")))
+                         labels = c("HEART",
+                                    "BODY",
+                                    "MIND")))
 
 tempB <- scores_s12_plotting %>%
   filter(age_group == "adults") %>%
   ungroup() %>%
   mutate(factor = factor(factor,
-                         labels = c("Social-emotional",
-                                    "Bodily",
-                                    "Perceptual-cognitive")),
-         age = 11) 
+                         # labels = c("Social-emotional",
+                         #            "Bodily",
+                         #            "Perceptual-cognitive")),
+                         labels = c("HEART",
+                                    "BODY",
+                                    "MIND")),
+         age = 11) %>%
+  distinct()
 
 ggplot(tempA,
        aes(x = age, y = score, color = character, fill = character, shape = character)) +
   facet_wrap("factor", ncol = 3) +
   theme_bw() +
-  theme(text = element_text(size = 28),
+  theme(text = element_text(size = 20),
         axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
         legend.position = "bottom") +
   # geom_smooth(method = "loess", alpha = 0.4) +
   geom_smooth(method = "lm", alpha = 0.4) +
   geom_point(size = 2) +
-  geom_point(data = tempB, aes(y = Mean),
+  geom_point(data = tempB %>% 
+               mutate(factor(factor)), 
+             aes(y = Mean),
              size = 4, position = position_dodge(width = 0.6)) +
   geom_errorbar(data = tempB, aes(ymin = Lower, ymax = Upper, y = Mean), width = 0.4,
                 position = position_dodge(width = 0.6)) +
   scale_shape_manual(values = c(19, 15)) +
   scale_x_continuous(breaks = c(7:11), labels = c("7y", "8y", "9y", "10y", "adults")) +
-  labs(title = "Factor scores by age",
+  labs(#title = "Factor scores by age",
        # subtitle = "Children (Study 2)\n",
        x = "Age",
        y = "Factor score") # 1000 by 500
@@ -2752,7 +2887,37 @@ ggplot(tempA,
 
 ## Studies 3-4
 
-```{r s34 factor scores by age setup, fig.width = 10, fig.height = 5}
+```{r s34 factor scores by age option 1 setup}
+# scores_s34_plotting <- d3 %>%
+#   select(age_group, subid, age, character) %>%
+#   distinct() %>%
+#   mutate(subid = paste(character, subid, sep = "_")) %>%
+#   full_join(d4 %>%
+#               select(age_group, subid, age, character) %>%
+#               distinct() %>%
+#               mutate(subid = paste(character, subid, sep = "_"))) %>%
+#   full_join(efa_d34_all_rotatedN$scores %>%
+#               data.frame() %>%
+#               rownames_to_column("subid")) %>%
+#   mutate(character = factor(character)) %>%
+#   mutate(age = ifelse(age < 3.5, NA, age)) %>%
+#   rename(score_F1 = MR1, score_F2 = MR2, score_F3 = MR3) %>%
+#   filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age)) %>%
+#   gather(factor, score, starts_with("score_")) %>%
+#   mutate(factor = factor(factor))
+```
+
+```{r s34 factor scores by age option 2 setup}
+# project 4-6yo data into 7-9yo space
+temp_predict <- predict(efa_d3_all_rotatedN, d4_all, d3_all) %>%
+  data.frame() %>%
+  rownames_to_column("subid")
+# round(cor(efa_d4_all_rotatedN$scores, temp_predict, use = "complete.obs"), 3)
+
+temp_combo <- efa_d3_all_rotatedN$scores %>% data.frame() %>%
+  rownames_to_column("subid") %>%
+  full_join(temp_predict)
+
 scores_s34_plotting <- d3 %>%
   select(age_group, subid, age, character) %>%
   distinct() %>%
@@ -2761,60 +2926,61 @@ scores_s34_plotting <- d3 %>%
               select(age_group, subid, age, character) %>%
               distinct() %>%
               mutate(subid = paste(character, subid, sep = "_"))) %>%
-  full_join(efa_d34_all_rotatedN$scores %>%
-              data.frame() %>%
-              rownames_to_column("subid")) %>%
+  full_join(temp_combo) %>%
   mutate(character = factor(character)) %>%
   mutate(age = ifelse(age < 3.5, NA, age)) %>%
   rename(score_F1 = MR1, score_F2 = MR2, score_F3 = MR3) %>%
   filter(!is.na(score_F1), !is.na(score_F2), !is.na(score_F3), !is.na(age)) %>%
   gather(factor, score, starts_with("score_")) %>%
   mutate(factor = factor(factor))
+```
 
+```{r s34 factor scores by age plot, fig.width = 10, fig.height = 5}
+# ggplot(scores_s34_plotting %>%
+#          ungroup() %>%
+#          mutate(factor = factor(factor,
+#                                 levels = c("score_F1", "score_F2", "score_F3"),
+#                                 labels = c("Heart",
+#                                            "Mind",
+#                                            "Body")),
+#                 character = factor(character,
+#                                    levels = c("computer", "robot", "doll", "teddy_bear",
+#                                               "beetle", "bird", "mouse", "goat", "elephant"))),
+#        # aes(x = age, y = score, color = character, fill = character, shape = character)) +
+#        aes(x = age, y = score, group = age_group)) +
+#   # facet_wrap("factor", ncol = 3) +
+#   facet_grid(factor ~ character) +
+#   # facet_grid(character ~ factor) +
+#   theme_bw() +
+#   theme(text = element_text(size = 28),
+#         legend.position = "none") +
+#   # geom_smooth(method = "loess", alpha = 0.4) +
+#   geom_smooth(method = "lm", alpha = 0.4) +
+#   # geom_smooth(method = "lm", alpha = 0.4, formula = y ~ poly(x, 2)) +
+#   # geom_smooth(method = "lm", alpha = 0.4, formula = y ~ poly(x, 3)) +
+#   geom_point(size = 2) +
+#   scale_x_continuous(breaks = seq(2, 12, 2)) +
+#   # scale_fill_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
+#   # scale_color_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
+#   # scale_shape_manual(values = c(17, 15, rep(17, 2), 19, rep(17, 4))) +
+#   labs(title = "Factor scores by children's age",
+#        # subtitle = "Children (Studies 3-4)\n",
+#        x = "Age (years)",
+#        y = "Factor score") # 1000 by 500
+# 
+# 
 ggplot(scores_s34_plotting %>%
          ungroup() %>%
          mutate(factor = factor(factor,
-                                levels = c("score_F1", "score_F2", "score_F3"),
-                                labels = c("Heart",
-                                           "Mind",
-                                           "Body")),
-                character = factor(character,
-                                   levels = c("computer", "robot", "doll", "teddy_bear",
-                                              "beetle", "bird", "mouse", "goat", "elephant"))),
-       # aes(x = age, y = score, color = character, fill = character, shape = character)) +
-       aes(x = age, y = score, group = age_group)) +
-  # facet_wrap("factor", ncol = 3) +
-  facet_grid(factor ~ character) +
-  # facet_grid(character ~ factor) +
-  theme_bw() +
-  theme(text = element_text(size = 28),
-        legend.position = "none") +
-  # geom_smooth(method = "loess", alpha = 0.4) +
-  geom_smooth(method = "lm", alpha = 0.4) +
-  # geom_smooth(method = "lm", alpha = 0.4, formula = y ~ poly(x, 2)) +
-  # geom_smooth(method = "lm", alpha = 0.4, formula = y ~ poly(x, 3)) +
-  geom_point(size = 2) +
-  scale_x_continuous(breaks = seq(2, 12, 2)) +
-  # scale_fill_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
-  # scale_color_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
-  # scale_shape_manual(values = c(17, 15, rep(17, 2), 19, rep(17, 4))) +
-  labs(title = "Factor scores by children's age",
-       # subtitle = "Children (Studies 3-4)\n",
-       x = "Age (years)",
-       y = "Factor score") # 1000 by 500
-
-ggplot(scores_s34_plotting %>%
-         ungroup() %>%
-         mutate(factor = factor(factor,
-                                levels = c("score_F3", "score_F1", "score_F2"),
-                                labels = c("Body", "Heart", "Mind")),
+                                levels = c("score_F1", "score_F3", "score_F2"),
+                                labels = c("BODY", "HEART", "MIND")),
                                 # levels = c("score_F1", "score_F2", "score_F3"),
                                 # labels = c("Heart",
                                 #            "Mind",
                                 #            "Body")),
                 character = factor(character,
-                                   levels = c("computer", "robot", "doll", 
-                                              "teddy_bear", "beetle", "bird", 
+                                   levels = c("computer", "robot", "doll",
+                                              "teddy_bear", "beetle", "bird",
                                               "mouse", "goat", "elephant")),
                 age_group = factor(age_group,
                                    levels = c("children_46", "children_79"))),
@@ -2825,7 +2991,7 @@ ggplot(scores_s34_plotting %>%
   # facet_grid(character ~ factor) +
   theme_bw() +
   theme(text = element_text(size = 28),
-        legend.position = "none") +
+        legend.position = "bottom") +
   # geom_smooth(method = "loess", alpha = 0.4) +
   geom_smooth(method = "lm", alpha = 0.2, color = "black") +
   # geom_smooth(method = "lm", alpha = 0.4, formula = y ~ poly(x, 2)) +
@@ -2835,7 +3001,8 @@ ggplot(scores_s34_plotting %>%
   # scale_fill_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
   # scale_color_manual(values = c("black", "#00BFC4", rep("gray", 2), "#F8766D", rep("black", 4))) +
   # scale_shape_manual(values = c(17, 15, rep(17, 2), 19, rep(17, 4))) +
-  scale_color_brewer(palette = "Set1", direction = -1) +
+  scale_color_brewer("Age group", labels = c("4-6y", "7-9y"),
+                     palette = "Set1", direction = -1) +
   labs(#title = "Factor scores by children's age",
        # subtitle = "Children (Studies 3-4)\n",
        x = "Age (years)",
@@ -2844,16 +3011,18 @@ ggplot(scores_s34_plotting %>%
 
 
 ```{r}
-contrasts(scores_s34_plotting$factor) <- cbind(heart = c(1, 0, -1),
-                                               mind = c(0, 1, -1))
-contrasts(scores_s34_plotting$character) <- cbind(animate = c(5, 5, -4, -4, 5, 5, 5, -4, -4),
-                                                  mammal = c(-3, -3, 0, 0, 2, 2, 2, 0, 0),
-                                                  elephant = c(0, 0, 0, 0, 2, -1, -1, 0, 0),
-                                                  goat = c(0, 0, 0, 0, 0, 1, -1, 0, 0),
-                                                  bird = c(-1, 1, 0, 0, 0, 0, 0, 0, 0),
-                                                  tech = c(0, 0, 1, -1, 0, 0, 0, 1, -1),
-                                                  robot = c(0, 0, -1, 0, 0, 0, 0, 1, 0),
-                                                  teddy = c(0, 0, 0, -1, 0, 0, 0, 0, 1))
+contrasts(scores_s34_plotting$factor) <- 
+  cbind(heart = c(1, 0, -1),
+        mind = c(0, 1, -1))
+contrasts(scores_s34_plotting$character) <- 
+  cbind(animate = c(5, 5, -4, -4, 5, 5, 5, -4, -4),
+        mammal = c(-3, -3, 0, 0, 2, 2, 2, 0, 0),
+        elephant = c(0, 0, 0, 0, 2, -1, -1, 0, 0),
+        goat = c(0, 0, 0, 0, 0, 1, -1, 0, 0),
+        bird = c(-1, 1, 0, 0, 0, 0, 0, 0, 0),
+        tech = c(0, 0, 1, -1, 0, 0, 0, 1, -1),
+        robot = c(0, 0, -1, 0, 0, 0, 0, 1, 0),
+        teddy = c(0, 0, 0, -1, 0, 0, 0, 0, 1))
 
 # reg_temp <- lmer(score ~ factor * character * scale(age, scale = F) + (1 | character) + (1 | subid), data = scores_s34_plotting)
 
@@ -2910,6 +3079,56 @@ pvals_cat %>%
   spread(factor, p)
 ```
 
+```{r s34 all proportions, fig.width=6.5, fig.height=4}
+# plot! (ordered by study 3 factor loadings)
+s34_all_cat <- ggplot(d34_all %>%
+                        rownames_to_column("subid") %>%
+                        mutate(subid = gsub(".*_", "", subid),
+                               subid = as.character(subid)) %>%
+                        left_join(d3 %>%
+                                    select(subid, study, character) %>%
+                                    mutate(subid = as.character(subid)) %>%
+                                    distinct() %>%
+                                    full_join(d4 %>%
+                                                select(subid, study, character) %>%
+                                                mutate(subid = as.character(subid)) %>%
+                                                distinct())) %>%
+                        mutate(study = factor(study,
+                                              levels = c("study 4", "study 3"),
+                                              labels = c("4-6y", "7-9y"))) %>%
+                        gather(capacity, response, angry:tired) %>%
+                        # filter(!is.na(response)) %>%
+                        full_join(s34_plotting %>%
+                                    select(capacity, s3_factor, s3_order)) %>%
+                        left_join(char_plotting_wordings) %>%
+                        mutate(wording = reorder(wording, s3_order),
+                               character = factor(character,
+                                                  levels = c("elephant", "goat", "mouse",
+                                                             "bird", "beetle",
+                                                             "teddy_bear", "doll",
+                                                             "robot", "computer"))),
+               aes(x = study, 
+                   fill = study,
+                   alpha = factor(response))) + 
+  geom_bar(position = "fill", color = "black") +
+  scale_fill_brewer(name = "Study:", palette = "Set1", direction = -1) +
+  scale_alpha_discrete(name = "Response:", labels = c("NO", "KINDA", "YES"),
+                       na.value = 0) +
+  theme_bw() +
+  theme(text = element_text(),
+        axis.title.x = element_blank(),
+      axis.text.x = element_text(angle = 90, hjust = 1),
+      legend.position = "bottom") +
+  labs(x = "Study",
+       y = "Proportion of Responses") +
+  # coord_flip() +
+  facet_grid(character ~ wording,
+             labeller = labeller(wording = label_wrap_gen(10)))
+  # facet_wrap(~ wording, ncol = 5)
+
+s34_all_cat
+```
+
 ```{r s34 robot proportions, fig.width=3, fig.height=3}
 # plot! (ordered by study 3 factor loadings)
 s34_robot_cat <- ggplot(d34_all %>%
@@ -2937,7 +3156,8 @@ s34_robot_cat <- ggplot(d34_all %>%
                    alpha = factor(response))) + 
   geom_bar(position = "fill", color = "black") +
   scale_fill_brewer(name = "Study:", palette = "Set1", direction = -1) +
-  scale_alpha_discrete(name = "Response:", labels = c("NO", "KINDA", "YES")) +
+  scale_alpha_discrete(name = "Response:", labels = c("NO", "KINDA", "YES"),
+                       na.value = 0) +
   theme_bw() +
   theme(text = element_text(),
         axis.title.x = element_blank(),
@@ -2969,7 +3189,8 @@ ggplot(d3_all %>%
            alpha = response_cat)) + 
   geom_bar(position = "fill", color = "black") +
   scale_fill_brewer(name = "Study:", palette = "Set1", direction = -1) +
-  scale_alpha_discrete(name = "Response:", labels = c("NO", "KINDA", "YES")) +
+  scale_alpha_discrete(name = "Response:", labels = c("NO", "KINDA", "YES"),
+                       na.value = 0) +
   theme_bw() +
   theme(text = element_text(),
         axis.title.x = element_blank(),
