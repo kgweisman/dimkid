@@ -573,8 +573,9 @@ demoRace("study 1")
 ### Step 1: Run maximal EFA (without and with rotation)
 
 ```{r s1 all no rotation}
-# examine scree plot
-fa.parallel(d1_all)
+# # alternative methods of determining how many factors
+# fa.parallel(d1_all)
+# VSS(d1_all)
 
 # run EFA without rotation with N factors
 efa_d1_all_unrotated <- fa(d1_all, 13, rotate = "none",
@@ -675,8 +676,9 @@ demoGender("study 2")
 ### Step 1: Run maximal EFA (without and with rotation)
 
 ```{r s2 all no rotation}
-# examine scree plot
-fa.parallel(d2_all)
+# # alternative methods of determining how many factors
+# fa.parallel(d2_all)
+# VSS(d2_all)
 
 # run EFA without rotation with N factors
 efa_d2_all_unrotated <- fa(d2_all, 13, rotate = "none",
@@ -777,8 +779,9 @@ demoAge("study 3")
 ### Step 1: Run maximal EFA (without and with rotation)
 
 ```{r s3 all no rotation}
-# examine scree plot
-fa.parallel(d3_all)
+# # alternative methods of determining how many factors
+# fa.parallel(d3_all)
+# VSS(d3_all)
 
 # run EFA without rotation with N factors
 efa_d3_all_unrotated <- fa(d3_all, 6, rotate = "none",
@@ -898,8 +901,9 @@ demoRace("study 4")
 ### Step 1: Run maximal EFA (without and with rotation)
 
 ```{r s4 all no rotation}
-# examine scree plot
-fa.parallel(d4_all)
+# # alternative methods of determining how many factors
+# fa.parallel(d4_all)
+# VSS(d4_all)
 
 # run EFA without rotation with N factors
 efa_d4_all_unrotated <- fa(d4_all, 6, rotate = "none", 
@@ -2356,8 +2360,8 @@ d12_all <- d1_all %>% rownames_to_column("subid") %>%
   full_join(d2_all %>% rownames_to_column("subid")) %>%
   column_to_rownames("subid")
 
-# examine scree plot
-fa.parallel(d12_all)
+# # examine scree plot
+# fa.parallel(d12_all)
 
 # run EFA without rotation with N factors
 efa_d12_all_unrotated <- fa(d12_all, 13, rotate = "none",
@@ -2594,8 +2598,8 @@ d34_all <- d3_all %>% rownames_to_column("subid") %>%
   full_join(d4_all %>% rownames_to_column("subid")) %>%
   column_to_rownames("subid")
 
-# examine scree plot
-fa.parallel(d34_all)
+# # examine scree plot
+# fa.parallel(d34_all)
 
 # run EFA without rotation with N factors
 efa_d34_all_unrotated <- fa(d34_all, 6, rotate = "none",

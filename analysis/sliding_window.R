@@ -1,7 +1,7 @@
 # first run dimkid_cogsci_analysis.Rmd
 library(ggrepel)
 # library(directlabels)
-library(gganimate)
+# library(gganimate)
 
 # data prep -----
 
@@ -49,21 +49,31 @@ d_slide <- d_slide %>%
 
 ggplot(d_slide %>% distinct(subid, age),
        aes(x = age)) +
+  # geom_rect(data = d_slide %>% distinct(subid, age) %>% top_n(1),
+  #           xmin = min(d_slide$age), xmax = max(d_slide$age), ymin = 0, ymax = 12,
+  #           fill = "gray", alpha = 0.5) +
+  # geom_rect(data = d_slide %>% distinct(subid, age) %>% top_n(1),
+  #           xmin = 5.5, xmax = 7.5, ymin = 0, ymax = 12,
+  #           fill = "red", alpha = 0.5) +
+  # geom_histogram(binwidth = 3/12) +
   geom_rect(data = d_slide %>% distinct(subid, age) %>% top_n(1),
-            xmin = min(d_slide$age), xmax = max(d_slide$age), ymin = 0, ymax = 12,
+            xmin = min(d_slide$age - 0.5), xmax = max(d_slide$age + 0.5),
+            ymin = 0, ymax = 12,
             fill = "gray", alpha = 0.5) +
   geom_rect(data = d_slide %>% distinct(subid, age) %>% top_n(1),
-            xmin = 5.5, xmax = 7.5, ymin = 0, ymax = 12,
+            xmin = 5.5, xmax = 7.5,
+            ymin = 0, ymax = 12,
             fill = "red", alpha = 0.5) +
-  geom_histogram(binwidth = 3/12) +
-  scale_x_continuous("age in years", breaks = seq(4, 10, 1)) +
+  geom_dotplot(dotsize = 0.5, binwidth = 3/12, method = "histodot") +
+  scale_x_continuous("age in years") +
+  scale_y_continuous(limits = c(0, 18)) +
   theme_bw() + 
   theme(text = element_text(size = 20))
 
 # make functions -----
 
 # for doing efa
-fa_fun <- function(df, first_sub, last_sub, n_var = 20) {
+fa_fun_homebrew <- function(df, first_sub, last_sub, n_var = 20) {
   # make window
   data <- df %>%
     filter(subid %in% d_slide_subid$subid[first_sub:last_sub]) %>%
@@ -110,46 +120,124 @@ fa_fun <- function(df, first_sub, last_sub, n_var = 20) {
   return(efa_final)
 }
 
-# for multiplot (from http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/)
-multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
-  library(grid)
+fa_fun_pa <- function(df, first_sub, last_sub, n_var = 20) {
+  # make window
+  data <- df %>%
+    filter(subid %in% d_slide_subid$subid[first_sub:last_sub]) %>%
+    select(subid, capacity, responseNum) %>%
+    spread(capacity, responseNum) %>%
+    remove_rownames() %>%
+    column_to_rownames("subid")
   
-  # Make a list from the ... arguments and plotlist
-  plots <- c(list(...), plotlist)
+  # do parallel analysis
+  nfact <- fa.parallel(data, fm = "minres", plot = FALSE)$nfact
   
-  numPlots = length(plots)
+  # do factor analysis: final
+  efa_final <- fa(r = data, nfactors = nfact,
+                  rotate = chosenRotType, cor = chosenCorType,
+                  alpha = 0.05) # set alpha for RMSEA
   
-  # If layout is NULL, then use 'cols' to determine layout
-  if (is.null(layout)) {
-    # Make the panel
-    # ncol: Number of columns of plots
-    # nrow: Number of rows needed, calculated from # of cols
-    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
-                     ncol = cols, nrow = ceiling(numPlots/cols))
-  }
-  
-  if (numPlots==1) {
-    print(plots[[1]])
-    
-  } else {
-    # Set up the page
-    grid.newpage()
-    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
-    
-    # Make each plot, in the correct location
-    for (i in 1:numPlots) {
-      # Get the i,j matrix positions of the regions that contain this subplot
-      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
-      
-      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
-                                      layout.pos.col = matchidx$col))
-    }
-  }
+  return(efa_final)
 }
+
+fa_fun_BIC <- function(df, first_sub, last_sub, n_var = 20) {
+  # make window
+  data <- df %>%
+    filter(subid %in% d_slide_subid$subid[first_sub:last_sub]) %>%
+    select(subid, capacity, responseNum) %>%
+    spread(capacity, responseNum) %>%
+    remove_rownames() %>%
+    column_to_rownames("subid")
+  
+  # do VSS
+  VSS <- VSS(data, rotate = "none", n = floor(n_var/3),
+             fm = "minres", plot = FALSE)$vss.stats %>%
+    rownames_to_column("nfact") %>% 
+    mutate(nfact = as.numeric(as.character(nfact))) %>%
+    top_n(-1, BIC)
+  nfact <- VSS$nfact
+  
+  # do factor analysis: final
+  efa_final <- fa(r = data, nfactors = nfact,
+                  rotate = chosenRotType, cor = chosenCorType,
+                  alpha = 0.05) # set alpha for RMSEA
+  
+  return(efa_final)
+}
+
+fa_fun_SABIC <- function(df, first_sub, last_sub, n_var = 20) {
+  # make window
+  data <- df %>%
+    filter(subid %in% d_slide_subid$subid[first_sub:last_sub]) %>%
+    select(subid, capacity, responseNum) %>%
+    spread(capacity, responseNum) %>%
+    remove_rownames() %>%
+    column_to_rownames("subid")
+  
+  # do VSS
+  VSS <- VSS(data, rotate = "none", n = floor(n_var/3),
+             fm = "minres", plot = FALSE)$vss.stats %>%
+    rownames_to_column("nfact") %>% 
+    mutate(nfact = as.numeric(as.character(nfact))) %>%
+    top_n(-1, SABIC)
+  nfact <- VSS$nfact
+  
+  # do factor analysis: final
+  efa_final <- fa(r = data, nfactors = nfact,
+                  rotate = chosenRotType, cor = chosenCorType,
+                  alpha = 0.05) # set alpha for RMSEA
+  
+  return(efa_final)
+}
+
+# choose function for efa
+fa_fun <- fa_fun_homebrew; fa_fun_name <- "fa_fun_homebrew"
+# fa_fun <- fa_fun_pa; fa_fun_name <- "fa_fun_pa"
+# fa_fun <- fa_fun_BIC; fa_fun_name <- "fa_fun_BIC"
+# fa_fun <- fa_fun_SABIC; fa_fun_name <- "fa_fun_SABIC"
+
+# for multiplot (from http://www.cookbook-r.com/Graphs/Multiple_graphs_on_one_page_(ggplot2)/)
+# multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+#   library(grid)
+#   
+#   # Make a list from the ... arguments and plotlist
+#   plots <- c(list(...), plotlist)
+#   
+#   numPlots = length(plots)
+#   
+#   # If layout is NULL, then use 'cols' to determine layout
+#   if (is.null(layout)) {
+#     # Make the panel
+#     # ncol: Number of columns of plots
+#     # nrow: Number of rows needed, calculated from # of cols
+#     layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+#                      ncol = cols, nrow = ceiling(numPlots/cols))
+#   }
+#   
+#   if (numPlots==1) {
+#     print(plots[[1]])
+#     
+#   } else {
+#     # Set up the page
+#     grid.newpage()
+#     pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+#     
+#     # Make each plot, in the correct location
+#     for (i in 1:numPlots) {
+#       # Get the i,j matrix positions of the regions that contain this subplot
+#       matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+#       
+#       print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+#                                       layout.pos.col = matchidx$col))
+#     }
+#   }
+# }
 
 # set window size -----
 
+# window_size <- 200
 window_size <- 120
+# window_size <- 100
 
 # loop over sliding window -----
 
@@ -763,77 +851,116 @@ all_dom <- all_loadings %>%
          combo = as.numeric(factor_num) + abs(loading) - 1) %>%
   full_join(all_data %>% mutate(window = as.numeric(window)))
 
-domovertime <- ggplot(all_dom, aes(x = median, y = combo, 
-                    # color = label, 
-                    color = old_dom, 
-                    group = capacity, label = capacity, frame = median)) +
-  geom_point(aes(group = capacity, cumulative = TRUE), size = 4) +
-  # geom_line(aes(group = capacity, cumulative = TRUE), alpha = 0.5) +
-  theme_bw() +
-  scale_x_continuous(name = "median age in years (by window)", 
-                     limits = c(all_dom$median[all_dom$window == 2 & 
-                                                 !is.na(all_dom$median)][1] - 0.5, 
-                                all_dom$median[all_dom$window == max(all_dom$window) & 
-                                                 !is.na(all_dom$median)][1] + 0.5)) +
-  scale_y_continuous(name = "factor + loading (higher = stronger)\n",
-                     breaks = seq(0.5, 2.5, 1),
-                     labels = c("BODY", "HEART", "MIND")) +
-  # scale_color_manual(name = "dominant factor loading in final window: ",
-  #                    values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a")) +
-  scale_color_brewer(name = "dominant factor loading in final window: ",
-                     palette = "Set1") +
-  theme(# axis.text.y = element_blank(), 
-        # axis.ticks.y = element_blank(),
-        axis.text.y = element_text(angle = 90, hjust = 0.5),
-        panel.grid.major.y = element_blank(),
-        panel.grid.minor.y = element_blank(),
-        text = element_text(size = 30),
-        legend.position = "none")
-        # legend.position = "top") # 2000 by 1500
+if(fa_fun_name == "fa_fun_pa") {
+  domovertime <- ggplot(all_dom, 
+                        aes(x = median, y = combo,
+                            color = old_dom, fill = factor, shape = factor,
+                            group = capacity, label = capacity, frame = median)) +
+    geom_point(aes(group = capacity, cumulative = TRUE), size = 3, stroke = 2) +
+    # geom_line(aes(group = capacity, cumulative = TRUE), alpha = 0.5) +
+    theme_bw() +
+    scale_x_continuous(name = "median age in years (by window)", 
+                       limits = c(all_dom$median[all_dom$window == 2 & 
+                                                   !is.na(all_dom$median)][1] - 0.5, 
+                                  all_dom$median[all_dom$window == max(all_dom$window) & 
+                                                   !is.na(all_dom$median)][1] + 0.5)) +
+    scale_y_continuous(name = "factor + loading (higher = stronger)\n",
+                       breaks = seq(0.5, 2.5, 1),
+                       labels = c("BODY", "HEART", "MIND")) +
+    # scale_color_manual(name = "dominant factor loading in final window: ",
+    #                    values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a")) +
+    # scale_color_brewer(name = "dominant factor loading in final window: ",
+    #                    palette = "Set1") +
+    scale_color_brewer(name = "dominant factor loading in final window: ",
+                       palette = "Set1") +
+    scale_shape_manual(name = "factor #: ", values = c(16, 16, 16, 23)) +
+    theme(# axis.text.y = element_blank(), 
+      # axis.ticks.y = element_blank(),
+      axis.text.y = element_text(angle = 90, hjust = 0.5),
+      panel.grid.major.y = element_blank(),
+      panel.grid.minor.y = element_blank(),
+      text = element_text(size = 30),
+      legend.position = "none")
+  # legend.position = "top") # 2000 by 1500
+} else {
+  domovertime <- ggplot(all_dom, aes(x = median, y = combo, 
+                                     # color = label, 
+                                     color = old_dom, 
+                                     group = capacity, label = capacity, frame = median)) +
+    geom_point(aes(group = capacity, cumulative = TRUE), size = 4) +
+    # geom_line(aes(group = capacity, cumulative = TRUE), alpha = 0.5) +
+    theme_bw() +
+    scale_x_continuous(name = "median age in years (by window)", 
+                       limits = c(all_dom$median[all_dom$window == 2 & 
+                                                   !is.na(all_dom$median)][1] - 0.5, 
+                                  all_dom$median[all_dom$window == max(all_dom$window) & 
+                                                   !is.na(all_dom$median)][1] + 0.5)) +
+    scale_y_continuous(name = "factor + loading (higher = stronger)\n",
+                       breaks = seq(0.5, 2.5, 1),
+                       labels = c("BODY", "HEART", "MIND")) +
+    # scale_color_manual(name = "dominant factor loading in final window: ",
+    #                    values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a")) +
+    scale_color_brewer(name = "dominant factor loading in final window: ",
+                       palette = "Set1") +
+    theme(# axis.text.y = element_blank(), 
+      # axis.ticks.y = element_blank(),
+      axis.text.y = element_text(angle = 90, hjust = 0.5),
+      panel.grid.major.y = element_blank(),
+      panel.grid.minor.y = element_blank(),
+      text = element_text(size = 30),
+      legend.position = "none")
+  # legend.position = "top") # 2000 by 1500 
+}
 
 domovertime +
-  geom_label_repel(data = all_dom %>% filter(window == min(all_dom$window)), size = 7,
+  geom_label_repel(data = all_dom %>% filter(window == min(all_dom$window)), 
+                   fill = "white", size = 7,
                    segment.color = "black", segment.size = 0.4,
                    xlim = c(all_dom$median[all_dom$window == min(all_dom$window) &
                                              !is.na(all_dom$median)][1] - 0.2,
                             all_dom$median[all_dom$window == min(all_dom$window) &
                                              !is.na(all_dom$median)][1] - 0.1)) +
-  geom_label_repel(data = all_dom %>% filter(window == 20), size = 7,
+  geom_label_repel(data = all_dom %>% filter(window == 20), 
+                   fill = "white", size = 7,
                    segment.color = "black", segment.size = 0.4,
                    xlim = c(all_dom$median[all_dom$window == 20 &
                                              !is.na(all_dom$median)][1] + 0.1,
                             all_dom$median[all_dom$window == 20 &
                                              !is.na(all_dom$median)][1] + 0.2)) +
-  geom_label_repel(data = all_dom %>% filter(window == 88), size = 7,
+  geom_label_repel(data = all_dom %>% filter(window == 88), 
+                   fill = "white", size = 7,
                    segment.color = "black", segment.size = 0.4,
                    xlim = c(all_dom$median[all_dom$window == 88 &
                                              !is.na(all_dom$median)][1] - 0.2,
                             all_dom$median[all_dom$window == 88 &
                                              !is.na(all_dom$median)][1] - 0.1)) +
-  geom_label_repel(data = all_dom %>% filter(window == 92), size = 7,
+  geom_label_repel(data = all_dom %>% filter(window == 92), 
+                   fill = "white", size = 7,
                    segment.color = "black", segment.size = 0.4,
                    xlim = c(all_dom$median[all_dom$window == 92 &
                                              !is.na(all_dom$median)][1] + 0.1,
                             all_dom$median[all_dom$window == 92 &
                                              !is.na(all_dom$median)][1] + 0.2)) +
-  geom_label_repel(data = all_dom %>% filter(window == 155), size = 7, 
+  geom_label_repel(data = all_dom %>% filter(window == 155), 
+                   fill = "white", size = 7, 
                    segment.color = "black", segment.size = 0.4,
                    xlim = c(all_dom$median[all_dom$window == 155 & 
                                              !is.na(all_dom$median)][1] - 0.2, 
                             all_dom$median[all_dom$window == max(all_dom$window) & 
                                              !is.na(all_dom$median)][1] - 0.1)) +
-  geom_label_repel(data = all_dom %>% filter(window == max(all_dom$window)), size = 7, 
+  geom_label_repel(data = all_dom %>% filter(window == max(all_dom$window)), 
+                   fill = "white", size = 7, 
                    segment.color = "black", segment.size = 0.4,
                    xlim = c(all_dom$median[all_dom$window == max(all_dom$window) & 
                                              !is.na(all_dom$median)][1] + 0.1, 
                             all_dom$median[all_dom$window == max(all_dom$window) & 
                                              !is.na(all_dom$median)][1] + 0.2))
 
-gganimate(domovertime,
-          "domovertime.gif",
-          title_frame = FALSE,
-          interval=0.1,
-          ani.width=2000, ani.height=1500)
+# gganimate(domovertime,
+#           "domovertime.gif",
+#           title_frame = FALSE,
+#           interval=0.1,
+#           ani.width=2000, ani.height=1500)
 
 # plot of % var explained -----
 
@@ -852,7 +979,7 @@ varovertime <- ggplot(all_data,
                                 ceiling(all_dom$median[all_dom$window == max(all_dom$window) & !is.na(all_dom$median)][1]))) +
   scale_y_continuous(name = "% variance explained", limits = c(0, 1),
                      labels = scales::percent) +
-  scale_color_manual(name = "factor according to\ncongruance with\nfinal factors: ",
+  scale_color_manual(name = "factor according to\ncongruence with\nfinal factors: ",
                      values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a")) +
   theme(text = element_text(size = 20),
         legend.position = "right") # 1200 by 900
@@ -1213,7 +1340,7 @@ ggplot(all_cor_project,
                      labels = c("BODY + HEART", "BODY + MIND", "HEART + MIND"),
                      palette = "Dark2", direction = -1) +
   scale_fill_manual("Number of\nfactors retained:",
-                    values = c("white", "gray", "black")) +
+                    values = c("white", "gray", "black", "blue")) +
   scale_y_continuous(bquote(~r^2), limits = c(0, .6)) +
   scale_x_continuous("median age in years (by window)") +
   theme_bw() +
@@ -1263,3 +1390,4 @@ ggplot(all_predict,
     # subtitle = "Children (Studies 3-4)\n",
     x = "Age (years)",
     y = "Factor score") # 1000 by 500
+
