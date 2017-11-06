@@ -1,7 +1,14 @@
 # first run dimkid_cogsci_analysis.Rmd
+library(tidyverse)
+library(psych)
+library(langcog) # source: https://github.com/langcog/langcog
+library(RColorBrewer)
+library(plotly)
+library(lubridate)
+library(rms)
 library(cowplot)
 
-# make basic efa function
+# make basic functions
 fa_fun_hb <- function(data, n_var = 20) {
   # do factor analysis: maximal, unrotated
   efa_max_unrot <- fa(r = data, nfactors = floor(n_var/3),
@@ -41,6 +48,40 @@ fa_fun_hb <- function(data, n_var = 20) {
   
   return(efa_final)
 }
+fa_fun_pa <- function(data, n_var = 20) {
+  # do parallel analysis
+  nfact <- fa.parallel(data, fm = "minres", plot = FALSE)$nfact
+  
+  # do factor analysis: final
+  efa_final <- fa(r = data, nfactors = nfact,
+                  rotate = chosenRotType, cor = chosenCorType,
+                  alpha = 0.05) %>% # set alpha for RMSEA
+    fa.sort()
+  
+  return(efa_final)
+}
+fa_fun_BIC <- function(data, n_var = 20) {
+  # do VSS
+  VSS <- VSS(data, rotate = "none", n = floor(n_var/3),
+             fm = "minres", plot = FALSE)$vss.stats %>%
+    rownames_to_column("nfact") %>% 
+    mutate(nfact = as.numeric(as.character(nfact))) %>%
+    top_n(-1, BIC)
+  nfact <- VSS$nfact
+  
+  # do factor analysis: final
+  efa_final <- fa(r = data, nfactors = nfact,
+                  rotate = chosenRotType, cor = chosenCorType,
+                  alpha = 0.05) %>% # set alpha for RMSEA
+    fa.sort()
+  
+  return(efa_final)
+}
+
+# choose which efa function
+fa_fun <- fa_fun_hb
+# fa_fun <- fa_fun_pa
+# fa_fun <- fa_fun_BIC
 
 # make function to replace N% of responses
 replace_nprop_fun <- function(df, prop_rep) {
@@ -66,11 +107,11 @@ replace_nprop_fun <- function(df, prop_rep) {
   return(df_new)
 }
 
-d3_orig_efa <- fa_fun_hb(d3_all, n_var = 20)$loadings[] %>%
+d3_orig_efa <- fa_fun(d3_all, n_var = 20)$loadings[] %>%
   data.frame() %>%
   rename(BODY = MR1, HEART = MR3, MIND = MR2)
 
-d3_young_efa <- fa_fun_hb(d4_all, n_var = 20)$loadings[] %>%
+d3_young_efa <- fa_fun(d4_all, n_var = 20)$loadings[] %>%
   data.frame() %>%
   rename(HEART_BODY = MR1, MIND = MR2)
 
@@ -87,7 +128,7 @@ congruence_fun <- function(df, orig_efa, nvar = 20, prop_rep, niter) {
 
   for(i in 1:niter) {
     new_df <- replace_nprop_fun(df, prop_rep)
-    efa <- fa_fun_hb(new_df, n_var = nvar)
+    efa <- fa_fun(new_df, n_var = nvar)
     cong <- fa.congruence(efa, orig_efa) %>%
       data.frame() %>%
       rownames_to_column("factor") %>%
@@ -183,6 +224,42 @@ p10.100 <- plot_fun(d10.100, prop_rep = .10) +
              size = 3, shape = 3, stroke = 2) + 
   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 
+# # replace 12% of 7-9yo responses
+# d12.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+#                           prop_rep = .12, niter = 100)
+# p12.100 <- plot_fun(d12.100, prop_rep = .12) +
+#   geom_point(data = young_cong, 
+#              aes(x = orig_factor, y = congruence, color = factor), 
+#              size = 3, shape = 3, stroke = 2) + 
+#   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
+# 
+# # replace 14% of 7-9yo responses
+# d14.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+#                           prop_rep = .14, niter = 100)
+# p14.100 <- plot_fun(d14.100, prop_rep = .14) +
+#   geom_point(data = young_cong, 
+#              aes(x = orig_factor, y = congruence, color = factor), 
+#              size = 3, shape = 3, stroke = 2) + 
+#   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
+# 
+# # replace 16% of 7-9yo responses
+# d16.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+#                           prop_rep = .16, niter = 100)
+# p16.100 <- plot_fun(d16.100, prop_rep = .16) +
+#   geom_point(data = young_cong, 
+#              aes(x = orig_factor, y = congruence, color = factor), 
+#              size = 3, shape = 3, stroke = 2) + 
+#   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
+# 
+# # replace 18% of 7-9yo responses
+# d18.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+#                           prop_rep = .18, niter = 100)
+# p18.100 <- plot_fun(d18.100, prop_rep = .18) +
+#   geom_point(data = young_cong, 
+#              aes(x = orig_factor, y = congruence, color = factor), 
+#              size = 3, shape = 3, stroke = 2) + 
+#   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
+
 # replace 20% of 7-9yo responses
 d20.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
                           prop_rep = .20, niter = 100)
@@ -256,3 +333,5 @@ p70.100 <- plot_fun(d70.100, prop_rep = .70) +
 # plot_grid(p50.100, p40.100, p30.100, p20.100, p10.100, p00.100)
 plot_grid(p00.100, p10.100, p20.100, p30.100, 
           p40.100, p50.100, p60.100, p70.100, ncol = 4)
+
+# plot_grid(p10.100, p12.100, p14.100, p16.100, p18.100, p20.100, ncol = 4)
