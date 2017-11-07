@@ -79,9 +79,9 @@ fa_fun_BIC <- function(data, n_var = 20) {
 }
 
 # choose which efa function
-fa_fun <- fa_fun_hb
+# fa_fun <- fa_fun_hb
 # fa_fun <- fa_fun_pa
-# fa_fun <- fa_fun_BIC
+fa_fun <- fa_fun_BIC
 
 # make function to replace N% of responses
 replace_nprop_fun <- function(df, prop_rep) {
@@ -205,6 +205,8 @@ plot_fun <- function(cong_list, prop_rep) {
   
   return(p)
 }
+
+# congruence -----
 
 # replace 0% of 7-9yo responses
 d00.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
@@ -335,3 +337,238 @@ plot_grid(p00.100, p10.100, p20.100, p30.100,
           p40.100, p50.100, p60.100, p70.100, ncol = 4)
 
 # plot_grid(p10.100, p12.100, p14.100, p16.100, p18.100, p20.100, ncol = 4)
+
+# loadings -----
+
+# # do efa on noisy data
+# efa10_hb <- fa_fun_hb(replace_nprop_fun(df = d3_all, prop_rep = .10))
+# efa20_hb <- fa_fun_hb(replace_nprop_fun(df = d3_all, prop_rep = .20))
+# efa30_hb <- fa_fun_hb(replace_nprop_fun(df = d3_all, prop_rep = .30))
+# 
+# efa10_pa <- fa_fun_pa(replace_nprop_fun(df = d3_all, prop_rep = .10))
+# efa20_pa <- fa_fun_pa(replace_nprop_fun(df = d3_all, prop_rep = .20))
+# efa30_pa <- fa_fun_pa(replace_nprop_fun(df = d3_all, prop_rep = .30))
+# 
+# efa10_BIC <- fa_fun_BIC(replace_nprop_fun(df = d3_all, prop_rep = .10))
+# efa20_BIC <- fa_fun_BIC(replace_nprop_fun(df = d3_all, prop_rep = .20))
+# efa30_BIC <- fa_fun_BIC(replace_nprop_fun(df = d3_all, prop_rep = .30))
+
+# make function to do efa many times on noisy data
+efa_many_fun <- function(df, orig_efa, prop_rep, niter) {
+  many <- data.frame(capacity = character(),
+                     factor = character(),
+                     loading = numeric(),
+                     orig_factor = character(),
+                     congruence = numeric(),
+                     iter = numeric())
+  
+  for(i in 1:niter) {
+    data <- replace_nprop_fun(df, prop_rep)
+
+    efa <- fa_fun(data)$loadings[] 
+    
+    loadings <- efa %>%
+      data.frame() %>%
+      rownames_to_column("capacity") %>%
+      gather(factor, loading, -capacity)
+    
+    cong <- fa.congruence(efa, orig_efa) %>%
+      data.frame() %>%
+      rownames_to_column("factor") %>%
+      gather(orig_factor, congruence, -factor) %>%
+      group_by(factor) %>%
+      top_n(1, congruence)
+    
+    res <- full_join(loadings, cong) %>%
+      mutate(iter = as.numeric(i)) %>%
+      data.frame()
+    
+    many <- full_join(many, res)
+  }
+  
+  return(many)
+}
+
+# make function to plot factor loadings
+efa_many_plot_fun <- function(df_many, prop_rep) {
+  boot <- df_many %>%
+    group_by(orig_factor, capacity) %>%
+    do(data.frame(rbind(smean.cl.boot(.$loading))))
+  
+  order <- boot %>%
+    group_by(capacity) %>%
+    top_n(1, abs(Mean)) %>%
+    ungroup() %>%
+    data.frame() %>%
+    arrange(orig_factor, desc(Mean)) %>%
+    rownames_to_column("order") %>%
+    mutate(order = as.numeric(order)) %>%
+    rename(dom_factor = orig_factor) %>%
+    select(capacity, order, dom_factor)
+  
+  many <- df_many %>%
+    # group_by(iter, capacity) %>%
+    # top_n(1, abs(loading)) %>%
+    # ungroup() %>%
+    # distinct() %>%
+    rename(dom_loading = loading) %>%
+    select(capacity, orig_factor, dom_loading, iter) %>%
+    full_join(order)
+  
+  df <- full_join(boot, order)
+  
+  p <- ggplot(df,
+              aes(x = reorder(capacity, desc(order)), y = Mean,
+                  color = dom_factor)) +
+    facet_wrap(~ orig_factor) + 
+    geom_point(data = many,
+               aes(x = reorder(capacity, desc(order)), 
+                   y = dom_loading, color = dom_factor),
+               alpha = 0.1,
+               position = position_jitter(width = 0.4, height = 0)) +
+    geom_hline(yintercept = 0, lty = 3) +
+    geom_pointrange(aes(ymin = Lower, ymax = Upper)) +
+    scale_color_brewer("dominant factor (by congruence)", palette = "Set1") +
+    scale_y_continuous(limits = c(-1, 1)) +
+    labs(subtitle = paste0(prop_rep*100, "% noise (", 
+                        max(df_many$iter), " iterations)"),
+         x = "capacity",
+         y = "mean factor loading") +
+    coord_flip() +
+    theme_bw() +
+    theme(legend.position = "bottom")
+  
+  return(p)
+}
+
+# replace 00% of 7-9yo responses
+efa00.100 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
+                          prop_rep = .00, niter = 100)
+pefa00.00 <- efa_many_plot_fun(df_many = efa00.100, prop_rep = .00) +
+  geom_point(data = d3_young_efa %>%
+               data.frame() %>%
+               rownames_to_column("capacity") %>%
+               gather(factor, loading, -capacity) %>%
+               group_by(capacity) %>%
+               top_n(1, abs(loading)),
+             aes(x = capacity,
+                 y = loading,
+                 color = factor),
+             size = 2, shape = 3, stroke = 2) +
+  scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
+
+# replace 10% of 7-9yo responses
+efa10.100 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
+                      prop_rep = .10, niter = 100)
+pefa10.00 <- efa_many_plot_fun(df_many = efa10.100, prop_rep = .10) +
+  geom_point(data = d3_young_efa %>%
+               data.frame() %>%
+               rownames_to_column("capacity") %>%
+               gather(factor, loading, -capacity) %>%
+               group_by(capacity) %>%
+               top_n(1, abs(loading)),
+             aes(x = capacity,
+                 y = loading,
+                 color = factor),
+             size = 2, shape = 3, stroke = 2) +
+  scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
+
+# replace 20% of 7-9yo responses
+efa20.100 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
+                          prop_rep = .20, niter = 100)
+pefa20.00 <- efa_many_plot_fun(df_many = efa20.100, prop_rep = .20) +
+  geom_point(data = d3_young_efa %>%
+               data.frame() %>%
+               rownames_to_column("capacity") %>%
+               gather(factor, loading, -capacity) %>%
+               group_by(capacity) %>%
+               top_n(1, abs(loading)),
+             aes(x = capacity,
+                 y = loading,
+                 color = factor),
+             size = 2, shape = 3, stroke = 2) +
+  scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
+
+# replace 30% of 7-9yo responses
+efa30.100 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
+                          prop_rep = .30, niter = 100)
+pefa30.00 <- efa_many_plot_fun(df_many = efa30.100, prop_rep = .30) +
+  geom_point(data = d3_young_efa %>%
+               data.frame() %>%
+               rownames_to_column("capacity") %>%
+               gather(factor, loading, -capacity) %>%
+               group_by(capacity) %>%
+               top_n(1, abs(loading)),
+             aes(x = capacity,
+                 y = loading,
+                 color = factor),
+             size = 2, shape = 3, stroke = 2) +
+  scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
+
+# replace 40% of 7-9yo responses
+efa40.100 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
+                          prop_rep = .40, niter = 100)
+pefa40.00 <- efa_many_plot_fun(df_many = efa40.100, prop_rep = .40) +
+  geom_point(data = d3_young_efa %>%
+               data.frame() %>%
+               rownames_to_column("capacity") %>%
+               gather(factor, loading, -capacity) %>%
+               group_by(capacity) %>%
+               top_n(1, abs(loading)),
+             aes(x = capacity,
+                 y = loading,
+                 color = factor),
+             size = 2, shape = 3, stroke = 2) +
+  scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
+
+# replace 50% of 7-9yo responses
+efa50.100 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
+                          prop_rep = .50, niter = 100)
+pefa50.00 <- efa_many_plot_fun(df_many = efa50.100, prop_rep = .50) +
+  geom_point(data = d3_young_efa %>%
+               data.frame() %>%
+               rownames_to_column("capacity") %>%
+               gather(factor, loading, -capacity) %>%
+               group_by(capacity) %>%
+               top_n(1, abs(loading)),
+             aes(x = capacity,
+                 y = loading,
+                 color = factor),
+             size = 2, shape = 3, stroke = 2) +
+  scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
+
+# replace 60% of 7-9yo responses
+efa60.100 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
+                          prop_rep = .60, niter = 100)
+pefa60.00 <- efa_many_plot_fun(df_many = efa60.100, prop_rep = .60) +
+  geom_point(data = d3_young_efa %>%
+               data.frame() %>%
+               rownames_to_column("capacity") %>%
+               gather(factor, loading, -capacity) %>%
+               group_by(capacity) %>%
+               top_n(1, abs(loading)),
+             aes(x = capacity,
+                 y = loading,
+                 color = factor),
+             size = 2, shape = 3, stroke = 2) +
+  scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
+
+# replace 70% of 7-9yo responses
+efa70.100 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
+                          prop_rep = .70, niter = 100)
+pefa70.00 <- efa_many_plot_fun(df_many = efa70.100, prop_rep = .70) +
+  geom_point(data = d3_young_efa %>%
+               data.frame() %>%
+               rownames_to_column("capacity") %>%
+               gather(factor, loading, -capacity) %>%
+               group_by(capacity) %>%
+               top_n(1, abs(loading)),
+             aes(x = capacity,
+                 y = loading,
+                 color = factor),
+             size = 2, shape = 3, stroke = 2) +
+  scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
+
+plot_grid(pefa00.00, pefa10.00, pefa20.00, pefa30.00, 
+          pefa40.00, pefa50.00, pefa60.00, #pefa70.00,
+          ncol = 4)
