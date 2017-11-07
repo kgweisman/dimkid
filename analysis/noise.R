@@ -79,9 +79,9 @@ fa_fun_BIC <- function(data, n_var = 20) {
 }
 
 # choose which efa function
-# fa_fun <- fa_fun_hb
+fa_fun <- fa_fun_hb
 # fa_fun <- fa_fun_pa
-fa_fun <- fa_fun_BIC
+# fa_fun <- fa_fun_BIC
 
 # make function to replace N% of responses
 replace_nprop_fun <- function(df, prop_rep) {
@@ -171,8 +171,7 @@ plot_fun <- function(cong_list, prop_rep) {
     mutate(present = ifelse(n > 0, "present", "not_present")) %>%
     count(orig_factor, present)
   congruence6 <- congruence3 %>%
-    full_join(congruence5) %>%
-    mutate(size = nn/10000)
+    full_join(congruence5)
   
   p <- ggplot(congruence2,
               aes(x = orig_factor, y = congruence, color = orig_factor)) +
@@ -209,134 +208,134 @@ plot_fun <- function(cong_list, prop_rep) {
 # congruence -----
 
 # replace 0% of 7-9yo responses
-d00.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
-                          prop_rep = .00, niter = 100)
-p00.100 <- plot_fun(d00.100, prop_rep = .00) +
+d00.500 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+                          prop_rep = .00, niter = 500)
+p00.500 <- plot_fun(d00.500, prop_rep = .00) +
   geom_point(data = young_cong, 
              aes(x = orig_factor, y = congruence, color = factor), 
              size = 3, shape = 3, stroke = 2) + 
   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
   
 # replace 10% of 7-9yo responses
-d10.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
-                          prop_rep = .10, niter = 100)
-p10.100 <- plot_fun(d10.100, prop_rep = .10) +
+d10.500 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+                          prop_rep = .10, niter = 500)
+p10.500 <- plot_fun(d10.500, prop_rep = .10) +
   geom_point(data = young_cong, 
              aes(x = orig_factor, y = congruence, color = factor), 
              size = 3, shape = 3, stroke = 2) + 
   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 
 # # replace 12% of 7-9yo responses
-# d12.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
-#                           prop_rep = .12, niter = 100)
-# p12.100 <- plot_fun(d12.100, prop_rep = .12) +
+# d12.500 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+#                           prop_rep = .12, niter = 500)
+# p12.500 <- plot_fun(d12.500, prop_rep = .12) +
 #   geom_point(data = young_cong, 
 #              aes(x = orig_factor, y = congruence, color = factor), 
 #              size = 3, shape = 3, stroke = 2) + 
 #   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 # 
 # # replace 14% of 7-9yo responses
-# d14.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
-#                           prop_rep = .14, niter = 100)
-# p14.100 <- plot_fun(d14.100, prop_rep = .14) +
+# d14.500 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+#                           prop_rep = .14, niter = 500)
+# p14.500 <- plot_fun(d14.500, prop_rep = .14) +
 #   geom_point(data = young_cong, 
 #              aes(x = orig_factor, y = congruence, color = factor), 
 #              size = 3, shape = 3, stroke = 2) + 
 #   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 # 
 # # replace 16% of 7-9yo responses
-# d16.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
-#                           prop_rep = .16, niter = 100)
-# p16.100 <- plot_fun(d16.100, prop_rep = .16) +
+# d16.500 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+#                           prop_rep = .16, niter = 500)
+# p16.500 <- plot_fun(d16.500, prop_rep = .16) +
 #   geom_point(data = young_cong, 
 #              aes(x = orig_factor, y = congruence, color = factor), 
 #              size = 3, shape = 3, stroke = 2) + 
 #   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 # 
 # # replace 18% of 7-9yo responses
-# d18.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
-#                           prop_rep = .18, niter = 100)
-# p18.100 <- plot_fun(d18.100, prop_rep = .18) +
+# d18.500 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+#                           prop_rep = .18, niter = 500)
+# p18.500 <- plot_fun(d18.500, prop_rep = .18) +
 #   geom_point(data = young_cong, 
 #              aes(x = orig_factor, y = congruence, color = factor), 
 #              size = 3, shape = 3, stroke = 2) + 
 #   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 
 # replace 20% of 7-9yo responses
-d20.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
-                          prop_rep = .20, niter = 100)
-p20.100 <- plot_fun(d20.100, prop_rep = .20) +
+d20.500 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+                          prop_rep = .20, niter = 500)
+p20.500 <- plot_fun(d20.500, prop_rep = .20) +
   geom_point(data = young_cong, 
              aes(x = orig_factor, y = congruence, color = factor), 
              size = 3, shape = 3, stroke = 2) + 
   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 
 # replace 30% of 7-9yo responses
-d30.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
-                          prop_rep = .30, niter = 100)
-p30.100 <- plot_fun(d30.100, prop_rep = .30) +
+d30.500 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+                          prop_rep = .30, niter = 500)
+p30.500 <- plot_fun(d30.500, prop_rep = .30) +
   geom_point(data = young_cong, 
              aes(x = orig_factor, y = congruence, color = factor), 
              size = 3, shape = 3, stroke = 2) + 
   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 
 # replace 40% of 7-9yo responses
-d40.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
-                          prop_rep = .40, niter = 100)
-p40.100 <- plot_fun(d40.100, prop_rep = .40) +
+d40.500 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+                          prop_rep = .40, niter = 500)
+p40.500 <- plot_fun(d40.500, prop_rep = .40) +
   geom_point(data = young_cong, 
              aes(x = orig_factor, y = congruence, color = factor), 
              size = 3, shape = 3, stroke = 2) + 
   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 
 # replace 50% of 7-9yo responses
-d50.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
-                          prop_rep = .50, niter = 100)
-p50.100 <- plot_fun(d50.100, prop_rep = .50) +
+d50.500 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+                          prop_rep = .50, niter = 500)
+p50.500 <- plot_fun(d50.500, prop_rep = .50) +
   geom_point(data = young_cong, 
              aes(x = orig_factor, y = congruence, color = factor), 
              size = 3, shape = 3, stroke = 2) + 
   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 
 # replace 60% of 7-9yo responses
-d60.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
-                          prop_rep = .60, niter = 100)
-p60.100 <- plot_fun(d60.100, prop_rep = .60) +
+d60.500 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+                          prop_rep = .60, niter = 500)
+p60.500 <- plot_fun(d60.500, prop_rep = .60) +
   geom_point(data = young_cong, 
              aes(x = orig_factor, y = congruence, color = factor), 
              size = 3, shape = 3, stroke = 2) + 
   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 
 # replace 70% of 7-9yo responses
-d70.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
-                          prop_rep = .70, niter = 100)
-p70.100 <- plot_fun(d70.100, prop_rep = .70) +
+d70.500 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+                          prop_rep = .70, niter = 500)
+p70.500 <- plot_fun(d70.500, prop_rep = .70) +
   geom_point(data = young_cong, 
              aes(x = orig_factor, y = congruence, color = factor), 
              size = 3, shape = 3, stroke = 2) + 
   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 
 # # replace 80% of 7-9yo responses
-# d80.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20,
-#                           prop_rep = .80, niter = 100)
-# p80.100 <- plot_fun(d80.100, prop_rep = .80)
+# d80.500 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20,
+#                           prop_rep = .80, niter = 500)
+# p80.500 <- plot_fun(d80.500, prop_rep = .80)
 # 
 # # replace 90% of 7-9yo responses
-# d90.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
-#                           prop_rep = .90, niter = 100)
-# p90.100 <- plot_fun(d90.100, prop_rep = .90)
+# d90.500 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+#                           prop_rep = .90, niter = 500)
+# p90.500 <- plot_fun(d90.500, prop_rep = .90)
 # 
 # # replace 100% of 7-9yo responses
-# d100.100 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
-#                           prop_rep = 1, niter = 100)
-# p100.100 <- plot_fun(d100.100, prop_rep = 1)
+# d100.500 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
+#                           prop_rep = 1, niter = 500)
+# p100.500 <- plot_fun(d100.500, prop_rep = 1)
 
-# plot_grid(p00.100, p10.100, p20.100, p30.100, p40.100, p50.100)
-# plot_grid(p50.100, p40.100, p30.100, p20.100, p10.100, p00.100)
-plot_grid(p00.100, p10.100, p20.100, p30.100, 
-          p40.100, p50.100, p60.100, p70.100, ncol = 4)
+# plot_grid(p00.500, p10.500, p20.500, p30.500, p40.500, p50.500)
+# plot_grid(p50.500, p40.500, p30.500, p20.500, p10.500, p00.500)
+plot_grid(p00.500, p10.500, p20.500, p30.500, 
+          p40.500, p50.500, p60.500, p70.500, ncol = 4)
 
-# plot_grid(p10.100, p12.100, p14.100, p16.100, p18.100, p20.100, ncol = 4)
+# plot_grid(p10.500, p12.500, p14.500, p16.500, p18.500, p20.500, ncol = 4)
 
 # loadings -----
 
@@ -424,10 +423,10 @@ efa_many_plot_fun <- function(df_many, prop_rep) {
     geom_point(data = many,
                aes(x = reorder(capacity, desc(order)), 
                    y = dom_loading, color = dom_factor),
-               alpha = 0.1,
+               alpha = 0.03,
                position = position_jitter(width = 0.4, height = 0)) +
     geom_hline(yintercept = 0, lty = 3) +
-    geom_pointrange(aes(ymin = Lower, ymax = Upper)) +
+    geom_pointrange(aes(ymin = Lower, ymax = Upper), color = "black") +
     scale_color_brewer("dominant factor (by congruence)", palette = "Set1") +
     scale_y_continuous(limits = c(-1, 1)) +
     labs(subtitle = paste0(prop_rep*100, "% noise (", 
@@ -442,15 +441,15 @@ efa_many_plot_fun <- function(df_many, prop_rep) {
 }
 
 # replace 00% of 7-9yo responses
-efa00.100 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
-                          prop_rep = .00, niter = 100)
-pefa00.00 <- efa_many_plot_fun(df_many = efa00.100, prop_rep = .00) +
+efa00.500 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
+                          prop_rep = .00, niter = 500)
+pefa00.00 <- efa_many_plot_fun(df_many = efa00.500, prop_rep = .00) +
   geom_point(data = d3_young_efa %>%
                data.frame() %>%
                rownames_to_column("capacity") %>%
-               gather(factor, loading, -capacity) %>%
-               group_by(capacity) %>%
-               top_n(1, abs(loading)),
+               gather(factor, loading, -capacity), # %>%
+               # group_by(capacity) %>%
+               # top_n(1, abs(loading)),
              aes(x = capacity,
                  y = loading,
                  color = factor),
@@ -458,9 +457,9 @@ pefa00.00 <- efa_many_plot_fun(df_many = efa00.100, prop_rep = .00) +
   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 
 # replace 10% of 7-9yo responses
-efa10.100 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
-                      prop_rep = .10, niter = 100)
-pefa10.00 <- efa_many_plot_fun(df_many = efa10.100, prop_rep = .10) +
+efa10.500 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
+                      prop_rep = .10, niter = 500)
+pefa10.00 <- efa_many_plot_fun(df_many = efa10.500, prop_rep = .10) +
   geom_point(data = d3_young_efa %>%
                data.frame() %>%
                rownames_to_column("capacity") %>%
@@ -474,9 +473,9 @@ pefa10.00 <- efa_many_plot_fun(df_many = efa10.100, prop_rep = .10) +
   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 
 # replace 20% of 7-9yo responses
-efa20.100 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
-                          prop_rep = .20, niter = 100)
-pefa20.00 <- efa_many_plot_fun(df_many = efa20.100, prop_rep = .20) +
+efa20.500 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
+                          prop_rep = .20, niter = 500)
+pefa20.00 <- efa_many_plot_fun(df_many = efa20.500, prop_rep = .20) +
   geom_point(data = d3_young_efa %>%
                data.frame() %>%
                rownames_to_column("capacity") %>%
@@ -490,9 +489,9 @@ pefa20.00 <- efa_many_plot_fun(df_many = efa20.100, prop_rep = .20) +
   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 
 # replace 30% of 7-9yo responses
-efa30.100 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
-                          prop_rep = .30, niter = 100)
-pefa30.00 <- efa_many_plot_fun(df_many = efa30.100, prop_rep = .30) +
+efa30.500 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
+                          prop_rep = .30, niter = 500)
+pefa30.00 <- efa_many_plot_fun(df_many = efa30.500, prop_rep = .30) +
   geom_point(data = d3_young_efa %>%
                data.frame() %>%
                rownames_to_column("capacity") %>%
@@ -506,9 +505,9 @@ pefa30.00 <- efa_many_plot_fun(df_many = efa30.100, prop_rep = .30) +
   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 
 # replace 40% of 7-9yo responses
-efa40.100 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
-                          prop_rep = .40, niter = 100)
-pefa40.00 <- efa_many_plot_fun(df_many = efa40.100, prop_rep = .40) +
+efa40.500 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
+                          prop_rep = .40, niter = 500)
+pefa40.00 <- efa_many_plot_fun(df_many = efa40.500, prop_rep = .40) +
   geom_point(data = d3_young_efa %>%
                data.frame() %>%
                rownames_to_column("capacity") %>%
@@ -522,9 +521,9 @@ pefa40.00 <- efa_many_plot_fun(df_many = efa40.100, prop_rep = .40) +
   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 
 # replace 50% of 7-9yo responses
-efa50.100 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
-                          prop_rep = .50, niter = 100)
-pefa50.00 <- efa_many_plot_fun(df_many = efa50.100, prop_rep = .50) +
+efa50.500 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
+                          prop_rep = .50, niter = 500)
+pefa50.00 <- efa_many_plot_fun(df_many = efa50.500, prop_rep = .50) +
   geom_point(data = d3_young_efa %>%
                data.frame() %>%
                rownames_to_column("capacity") %>%
@@ -538,9 +537,9 @@ pefa50.00 <- efa_many_plot_fun(df_many = efa50.100, prop_rep = .50) +
   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 
 # replace 60% of 7-9yo responses
-efa60.100 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
-                          prop_rep = .60, niter = 100)
-pefa60.00 <- efa_many_plot_fun(df_many = efa60.100, prop_rep = .60) +
+efa60.500 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
+                          prop_rep = .60, niter = 500)
+pefa60.00 <- efa_many_plot_fun(df_many = efa60.500, prop_rep = .60) +
   geom_point(data = d3_young_efa %>%
                data.frame() %>%
                rownames_to_column("capacity") %>%
@@ -553,21 +552,21 @@ pefa60.00 <- efa_many_plot_fun(df_many = efa60.100, prop_rep = .60) +
              size = 2, shape = 3, stroke = 2) +
   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 
-# replace 70% of 7-9yo responses
-efa70.100 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
-                          prop_rep = .70, niter = 100)
-pefa70.00 <- efa_many_plot_fun(df_many = efa70.100, prop_rep = .70) +
-  geom_point(data = d3_young_efa %>%
-               data.frame() %>%
-               rownames_to_column("capacity") %>%
-               gather(factor, loading, -capacity) %>%
-               group_by(capacity) %>%
-               top_n(1, abs(loading)),
-             aes(x = capacity,
-                 y = loading,
-                 color = factor),
-             size = 2, shape = 3, stroke = 2) +
-  scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
+# # replace 70% of 7-9yo responses
+# efa70.500 <- efa_many_fun(df = d3_all, orig_efa = d3_orig_efa,
+#                           prop_rep = .70, niter = 500)
+# pefa70.00 <- efa_many_plot_fun(df_many = efa70.500, prop_rep = .70) +
+#   geom_point(data = d3_young_efa %>%
+#                data.frame() %>%
+#                rownames_to_column("capacity") %>%
+#                gather(factor, loading, -capacity) %>%
+#                group_by(capacity) %>%
+#                top_n(1, abs(loading)),
+#              aes(x = capacity,
+#                  y = loading,
+#                  color = factor),
+#              size = 2, shape = 3, stroke = 2) +
+#   scale_color_manual(values = c("#e41a1c", "#377eb8", "#984ea3", "#4daf4a"))
 
 plot_grid(pefa00.00, pefa10.00, pefa20.00, pefa30.00, 
           pefa40.00, pefa50.00, pefa60.00, #pefa70.00,
