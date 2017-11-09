@@ -113,7 +113,8 @@ d3_orig_efa <- fa_fun(d3_all, n_var = 20)$loadings[] %>%
 
 d3_young_efa <- fa_fun(d4_all, n_var = 20)$loadings[] %>%
   data.frame() %>%
-  rename(HEART_BODY = MR1, MIND = MR2)
+  # rename(HEART_BODY = MR1, MIND = MR2) # for homebrew
+  rename(EVERYTHING = MR1) # for minimizing BIC
 
 young_cong <- fa.congruence(d3_young_efa, d3_orig_efa) %>%
   data.frame() %>% 
@@ -209,7 +210,7 @@ plot_fun <- function(cong_list, prop_rep) {
 
 # replace 0% of 7-9yo responses
 d00.500 <- congruence_fun(df = d3_all, orig_efa = d3_orig_efa, nvar = 20, 
-                          prop_rep = .00, niter = 500)
+                          prop_rep = .00, niter = 1)
 p00.500 <- plot_fun(d00.500, prop_rep = .00) +
   geom_point(data = young_cong, 
              aes(x = orig_factor, y = congruence, color = factor), 

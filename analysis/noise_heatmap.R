@@ -34,11 +34,12 @@ grid_plot_fun <- function(df_many, prop_rep) {
                               format(round(congruence, 2), nsmall = 2),
                               ")\n(present in ", 
                               round(prop_iter_present, 2) * 100,
-                              "% of iter.)"))
+                              "% of iter.)")) %>%
+    full_join(wording_s3, by = c("capacity" = "item"))
     
   
   ggplot(temp_plot,
-         aes(x = factor_lab, y = reorder(capacity, desc(order)), 
+         aes(x = factor_lab, y = reorder(short, desc(order)), 
              fill = Mean, label = format(round(Mean, 2), nsmall = 2))) +
     geom_tile() +
     geom_text(size = 3) +
@@ -69,5 +70,5 @@ grid_plot_fun(df_many = efa60.500, prop_rep = .60)
 
 # grid_plot_fun(df_many = d3_young_efa, prop_rep = .00)
 efa_young_true <- efa_many_fun(df = d4_all, orig_efa = d3_orig_efa,
-                               prop_rep = .00, niter = 500)
+                               prop_rep = .00, niter = 1)
 grid_plot_fun(df_many = efa_young_true, prop_rep = .00)
