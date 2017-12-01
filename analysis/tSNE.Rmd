@@ -1,0 +1,1285 @@
+---
+title: "Dimkid: Exploring tSNE"
+output: html_notebook
+---
+
+```{r global_options, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+# Setup
+
+```{r setup, include = F}
+# load libraries
+library(tidyverse)
+library(psych)
+library(langcog) # source: https://github.com/langcog/langcog
+library(RColorBrewer)
+library(plotly)
+library(lubridate)
+library(rms)
+library(Rtsne)
+library(scales)
+```
+
+```{r, include = F}
+# make rounding function
+round2 <- function(x) {format(round(x, 2), nsmall = 2)}
+
+# make cleanup function
+cleanup <- function(datasource, age_group) {
+  if(grepl("adult", age_group)) {
+    
+    # set target dataset
+    if(datasource == "study 1"){d <- d_raw_study1}
+    if(datasource == "study 1b"){d <- d_raw_study1b}
+    if(datasource == "study 1c"){d <- d_raw_study1c}
+    
+    # enact exclusionary criteria
+    d_clean_1 <- d
+    
+    # recode background and demographic variables
+    d_clean <- d_clean_1 %>%
+      mutate( # deal with study number
+        study = factor(study)) %>%
+      mutate( # deal with race
+        race_cat2 = factor(sub(" +$", "", ethnicity)),
+        race_cat3 = factor(ifelse(grepl(" ", race_cat2) == T, "multiracial",
+                                  as.character(race_cat2)))) %>%
+      dplyr::select(study, subid:country_selfrep, age_group, race_cat3) %>%
+      rename(race_cat = race_cat3) %>%
+      mutate( # deal with religion (note: only dealing with childhood religion for now)
+        religion_cat2 = factor(sub(" +$", "", religionChild)),
+        religion_cat3 = factor(ifelse(grepl(" ", religion_cat2) == T, 
+                                      "multireligious",
+                                      as.character(religion_cat2)))) %>%
+      dplyr::select(study:race_cat, religion_cat3) %>%
+      rename(religion_cat = religion_cat3)
+    
+    # remove extraneous dfs and variables
+    rm(d, d_clean_1)
+  }
+  
+  if(grepl("child", age_group)) {
+    
+    # set target dataset
+    if(datasource == "study 2"){d <- d_raw_study2}
+    if(datasource == "study 3"){d <- d_raw_study3}
+    if(datasource == "study 4"){d <- d_raw_study4}
+    if(datasource == "study 5"){d <- d_raw_study5}
+    
+    # recode background and demographic variables
+    d_clean_2 <- d %>%
+      mutate( # deal with study number
+        study = factor(study),
+        responseNum = ifelse(!is.na(responseNum), responseNum,
+                             ifelse(response == "no", 0, 
+                                    ifelse(response == "kinda", 0.5, 
+                                           ifelse(response == "yes", 1, NA)))))
+    # NOTE: need to reconcile race/ethnicity at some point...
+    # NOTE: need to deal with gender at some point...
+  
+    d_clean <- d_clean_2
+    
+    # remove extraneous dfs and variables
+    rm(d, d_clean_2)
+  }
+  
+  # remove outliers if desired
+  if(chosenOutlierHandling == "remove") {
+    
+    d_clean <- d_clean %>%
+      gather(capacity, score, happy:pride) %>%
+      group_by(character, capacity) %>%
+      filter(!score %in% boxplot.stats(score, 2.5)$out) %>%
+      spread(capacity, score) %>%
+      arrange(character, subid)
+    
+  }
+  
+  # filter characters if desired
+  if(is.element("none", chosenExclude)) {} else {
+    
+    d_clean <- d_clean %>%
+      filter(!character %in% chosenExclude)
+    
+    }
+    
+  # filter items if desired
+  if(is.element("none", chosenExcludeItem)) {} else {
+    d_clean <- d_clean %>%
+      dplyr::filter(!capacity %in% chosenExcludeItem)
+  }
+  
+  # drop trials <250 ms
+  d_clean <- d_clean %>%
+    filter(rt >= 250 | is.na(rt))
+  
+  # center response variable
+  if(datasource == "study 1b") {
+    d_clean <- d_clean %>%
+      mutate(responseNumC = responseNum - 4)
+  } else {
+    d_clean <- d_clean %>%
+      mutate(responseNumC = responseNum - 0.5)
+  }
+
+    # rename character name variables
+  if("charName" %in% names(d_clean)) {
+    d_clean <- d_clean %>% rename(character = charName)
+  }
+  
+  # cleanup
+  d_clean <- d_clean %>%
+    filter(!is.na(subid), !is.na(character), !is.na(capacity))
+  
+  # return cleaned dataset
+  return(d_clean)
+}
+
+# make function for stripping dataframes for dimension reducation
+makeDRDF <- function(datasource, chosenCondition) {
+  
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 1b"){d <- d1b}
+  if(datasource == "study 1c"){d <- d1c}
+  if(datasource == "study 2"){d <- d2}
+  if(datasource == "study 3"){d <- d3}
+  if(datasource == "study 4"){d <- d4}
+  if(datasource == "study 5"){d <- d5}
+
+  # filter by character if specified
+  if(chosenCondition %in% c("beetle", "robot")) {
+    d <- d %>% filter(character == chosenCondition)
+  }
+
+  # make stripped dataframe for dimension reducation analyses
+  d_strip <- d %>%
+    filter(!is.na(character), !is.na(subid), !is.na(capacity), capacity != "") %>%
+    mutate(subid = paste(character, subid, sep = "_")) %>%
+    select(subid, capacity, responseNum) %>%
+    spread(capacity, responseNum) %>%
+    remove_rownames() %>%
+    column_to_rownames(var = "subid")
+
+  # return stripped dataframe
+  return(d_strip)
+}
+
+# make demographics functions
+demoSampleSize <- function(datasource) {
+
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 1b"){d <- d1b}
+  if(datasource == "study 1c"){d <- d1c}
+  if(datasource == "study 2"){d <- d2}
+  if(datasource == "study 3"){d <- d3}
+  if(datasource == "study 4"){d <- d4}
+  if(datasource == "study 5"){d <- d5}
+
+  # get distinct subids
+  sample_size <- d %>% distinct(subid, character) %>% count(character) %>% data.frame()
+
+  # add total sample size  
+  sample_size <- rbind(sample_size %>% mutate(character = as.character(character)),
+                       c(character = "all", n = d %>% distinct(subid) %>% count() %>% as.numeric()))
+  
+  # return dataframe
+  return(sample_size)
+}
+demoDuration <- function(datasource) {
+
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 1b"){d <- d1b}
+  if(datasource == "study 1c"){d <- d1c}
+  if(datasource == "study 2"){d <- d2}
+  if(datasource == "study 3"){d <- d3}
+  if(datasource == "study 4"){d <- d4}
+  if(datasource == "study 5"){d <- d5}
+
+  # get sample size per character
+  duration <- d %>%
+    distinct(subid, character, duration) %>%
+    mutate(duration = as.numeric(duration)) %>%
+    group_by(character) %>%
+    summarise(min_duration = min(duration, na.rm = T),
+              max_duration = max(duration, na.rm = T),
+              median_duration = median(duration, na.rm = T),
+              mean_duration = mean(duration, na.rm = T),
+              sd_duration = sd(duration, na.rm = T))
+
+  # add total duration
+  all <- d %>%
+    distinct(subid, character, duration) %>%
+    mutate(duration = as.numeric(duration)) %>%
+    summarise(min_duration = min(duration, na.rm = T),
+              max_duration = max(duration, na.rm = T),
+              median_duration = median(duration, na.rm = T),
+              mean_duration = mean(duration, na.rm = T),
+              sd_duration = sd(duration, na.rm = T)) %>%
+    mutate(character = "all")
+  
+  duration <- rbind(duration, all) # not sure why full_join doesn't work    
+
+  # return dataframe
+  return(duration)
+}
+demoAge <- function(datasource) {
+
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 1b"){d <- d1b}
+  if(datasource == "study 1c"){d <- d1c}
+  if(datasource == "study 2"){d <- d2}
+  if(datasource == "study 3"){d <- d3}
+  if(datasource == "study 4"){d <- d4}
+  if(datasource == "study 5"){d <- d5}
+
+  # get sample size per character
+  age <- d %>%
+    distinct(subid, character, age) %>%
+    mutate(age = as.numeric(age)) %>%
+    group_by(character) %>%
+    summarise(min_age = min(age, na.rm = T),
+              max_age = max(age, na.rm = T),
+              median_age = median(age, na.rm = T),
+              mean_age = mean(age, na.rm = T),
+              sd_age = sd(age, na.rm = T))
+
+  # add total age
+  all <- d %>%
+    distinct(subid, character, age) %>%
+    mutate(age = as.numeric(age)) %>%
+    summarise(min_age = min(age, na.rm = T),
+              max_age = max(age, na.rm = T),
+              median_age = median(age, na.rm = T),
+              mean_age = mean(age, na.rm = T),
+              sd_age = sd(age, na.rm = T)) %>%
+    mutate(character = "all")
+  age <- full_join(age, all)
+
+  # return dataframe
+  return(age)
+}
+demoGender <- function(datasource) {
+
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 1b"){d <- d1b}
+  if(datasource == "study 1c"){d <- d1c}
+  if(datasource == "study 2"){d <- d2}
+  if(datasource == "study 3"){d <- d3}
+  if(datasource == "study 4"){d <- d4}
+  if(datasource == "study 5"){d <- d5}
+
+  # get gender per character and overall
+  gender <- data.frame(addmargins(with(d %>% distinct(subid, character, gender), 
+                                       table(character, gender)))) %>%
+    filter(gender != "Sum") %>%
+    rename(n = Freq)
+  
+  gender <- gender %>%
+    mutate(character = factor(ifelse(character == "Sum",
+                                     "all", as.character(character)),
+                              levels = c("beetle", "robot", "all"))) %>%
+    arrange(character, gender) %>%
+    spread(gender, n)
+  
+  # return dataframe
+  return(gender)
+}
+demoRace <- function(datasource) {
+
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 1b"){d <- d1b}
+  if(datasource == "study 1c"){d <- d1c}
+  if(datasource == "study 2"){d <- d2}
+  if(datasource == "study 3"){d <- d3}
+  if(datasource == "study 4"){d <- d4}
+  if(datasource == "study 5"){d <- d5}
+
+  # get race per character and overall
+  race <- data.frame(addmargins(with(d %>% distinct(subid, character, race_cat), 
+                                     table(character, race_cat)))) %>%
+    filter(race_cat != "Sum") %>%
+    rename(n = Freq)
+
+    race <- race %>%
+      mutate(character = factor(ifelse(character == "Sum",
+                                       "all", as.character(character)))) %>%
+      arrange(character, race_cat) %>%
+      spread(race_cat, n)
+  
+  # return dataframe
+  return(race)
+}
+
+# plotting functions
+makeFacetLabs <- function(df_plotting) {
+  facet_labels <- array()
+  df_plotting <- df_plotting %>% mutate(character = factor(character))
+  for(i in 1:length(levels(df_plotting$character))) {
+    df <- df_plotting %>% filter(character == levels(df_plotting$character)[i]) %>%
+      select(character, n) %>% unique()
+    facet_labels[i] <- paste0(df$character, " (n = ", df$n, ")")
+  }
+  names(facet_labels) <- levels(df_plotting$character)
+  return(facet_labels)
+}
+```
+
+```{r modeling decisions, include = F}
+# remove outliers?
+chosenOutlierHandling <- "keep"
+# chosenOutlierHandling <- "remove"
+
+# exclude any conditions (characters)?
+chosenExclude <- "none"
+# chosenExclude <- c("stapler", "car", "computer")
+
+# exclude any items (mental capacities)?
+# chosenExcludeItem <- "none"
+# chosenExcludeItem <- "computations"
+chosenExcludeItem <- c("metal", "on_off")
+
+# NOTE: always choose minimal residual (fm = "minres") instead of ML because of non-normality
+
+# for EFAs, what kind of correlation?
+chosenCorType <- "cor" # pearson correlation
+# chosenCorType <- "poly" # polychoric correlation
+
+# for EFAs, what kind of rotation?
+# chosenRotType <- "varimax" # varimax rotation
+chosenRotType <- "oblimin" # oblimin rotation
+# chosenRotType <- "none" # no rotation
+
+data.frame("conditionsExcluded" = chosenExclude,
+           "outlierHandling" = chosenOutlierHandling,
+           "EFA_correlation" = chosenCorType,
+           "EFA_rotation" = chosenRotType)
+```
+
+# Data preparation
+
+```{r data upload, include = F}
+# study 1 (2016-07-06, adults, 2 conditions, 3-point scale, "decide what to do" and "make plans")
+d_raw_study1 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv") %>%
+  mutate(study = "study 1", age_group = "adults") %>% select(-X)
+
+# study 1b (2017-07-19, adults, 2 conditions, 7-point scale, "decide what to do" and "make plans")
+d_raw_study1b <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-02_2016-07-19_anonymized.csv") %>%
+  mutate(study = "study 1b", age_group = "adults") %>% select(-X)
+
+# study 1c (2016-12-08, adults, 2 conditions, 3-point scale, "have free will" and "have intentions")
+d_raw_study1c <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-03_2016-12-08_anonymized.csv") %>%
+  mutate(study = "study 1c", age_group = "adults") %>% select(-X)
+
+# study 2 (June - December 2016, 7-9yo, 2 conditions, 3-point-scale, "decide what to do" and "make plans")
+d_raw_study2 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2017-07-24_anonymized.csv") %>%
+  mutate(study = "study 2", age_group = "children_79") %>% select(-X)
+
+# study 3 (January - June 2017, 7-9yo, 9 conditions, 3-point-scale, "decide what to do" and "make plans")
+d_raw_study3 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-08-08_anonymized.csv") %>%
+  mutate(study = "study 3", age_group = "children_79") %>% select(-X) %>%
+  mutate(dob = parse_datetime(dateOfBirth, "%m/%d/%y"),
+         dot = parse_datetime(gsub("2017", "17", dateOfTest), "%m/%d/%y"), 
+         age = interval(start = dob, end = dot) / duration(num = 1, units = "years")) %>%
+  select(-dateOfBirth, -dateOfTest, -dob, -dot)
+
+# study 4 (May 2017 - present, 4-6yo, 9 conditions, 3-point-scale, "decide what to do" and "make plans")
+d_raw_study4 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-21_anonymized.csv") %>%
+  mutate(study = "study 4", age_group = "children_46") %>% select(-X) %>%
+  mutate(dob = parse_datetime(dateOfBirth, "%m/%d/%y"),
+         dot = parse_datetime(gsub("2017", "17", dateOfTest), "%m/%d/%y"), 
+         age = interval(start = dob, end = dot) / duration(num = 1, units = "years")) %>%
+  select(-dateOfBirth, -dateOfTest, -dob, -dot)
+
+# study 5 (Fall 2017 - present, 5.5-7.5yo (plus), 9 conditions, 3-point-scale, "decide what to do" and "make plans")
+d_raw_study5 <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-04_2017-10-10_anonymized.csv") %>%
+  mutate(study = "study 5", age_group = "children_5.57.5") %>% select(-X) %>%
+  mutate(dob = parse_datetime(dateOfBirth, "%m/%d/%y"),
+         dot = parse_datetime(gsub("2017", "17", dateOfTest), "%m/%d/%y"), 
+         age = interval(start = dob, end = dot) / duration(num = 1, units = "years")) %>%
+  select(-dateOfBirth, -dateOfTest, -dob, -dot)
+```
+
+```{r data cleanup, include = F}
+# clean up datasets
+d1 <- cleanup("study 1", "adults")
+d1b <- cleanup("study 1", "adults")
+d1c <- cleanup("study 1", "adults")
+d2 <- cleanup("study 2", "children")
+d3 <- cleanup("study 3", "children")
+d4 <- cleanup("study 4", "children")
+d5 <- cleanup("study 5", "children")
+
+# tweak by hand
+d2 <- d2 %>%
+  filter(!is.na(age)) %>%
+  filter(age >= 7, age < 10) %>%
+  filter(character != "elephant")
+
+d3_outsideage <- d3 %>% filter(age < 7 | age >= 10) %>% distinct(subid)
+
+d3 <- d3 %>%
+  filter(!is.na(character), character != "") %>%
+  filter(!subid %in% d3_outsideage$subid) %>%
+  # filter(age >= 7, age < 10) %>%
+  mutate(ethnicity = gsub(" SN", "", ethnicity)) %>%
+  mutate(race_cat = ifelse(grepl("bing", tolower(testingSite)),
+                           ifelse(ethnicity == "A", "east_asian",
+                                  ifelse(ethnicity == "C" | ethnicity == "Cj", "white",
+                                         ifelse(ethnicity == "I", "south_asian",
+                                                ifelse(ethnicity == "ME", "middle_eastern",
+                                                       ifelse(ethnicity == "Af", "black",
+                                                              ifelse(ethnicity == "H", "hispanic",
+                                                                     ifelse(grepl(" ", ethnicity) |
+                                                                              grepl("/", ethnicity), "multiracial",
+                                                                            NA))))))),
+                           ifelse(tolower(ethnicity) == "black or african american", "black",
+                                  ifelse(tolower(ethnicity) == "hispanic or latino/a", "hispanic",
+                                         ifelse(tolower(ethnicity) == "east asian", "east_asian",
+                                                ifelse(tolower(ethnicity) == "native american, american indian, or alaska native", "native_american",
+                                                       ifelse(tolower(ethnicity) == "white" |
+                                                                tolower(ethnicity) == "white, caucasian, or european american", "white",
+                                                              ifelse(tolower(ethnicity) == "south or southeast asian" | tolower(ethnicity) == "south asian", "south_asian",
+                                                                     ifelse(tolower(ethnicity) == "" | is.na(ethnicity), NA, "multiracial")))))))))
+
+d4 <- d4 %>%
+  filter(!is.na(character), character != "") %>%
+  filter(age >= 4, age < 7) %>%
+  mutate(ethnicity = gsub(" SN", "", ethnicity)) %>%
+  mutate(race_cat = ifelse(grepl("bing", tolower(testingSite)),
+                           ifelse(ethnicity == "A", "east_asian",
+                                  ifelse(ethnicity == "C" | ethnicity == "Cj", "white",
+                                         ifelse(ethnicity == "I", "south_asian",
+                                                ifelse(ethnicity == "ME", "middle_eastern",
+                                                       ifelse(ethnicity == "Af", "black",
+                                                              ifelse(ethnicity == "H", "hispanic",
+                                                                     ifelse(grepl(" ", ethnicity) |
+                                                                              grepl("/", ethnicity), "multiracial",
+                                                                            NA))))))),
+                           ifelse(tolower(ethnicity) == "black or african american", "black",
+                                  ifelse(tolower(ethnicity) == "hispanic or latino/a", "hispanic",
+                                         ifelse(tolower(ethnicity) == "east asian", "east_asian",
+                                                ifelse(tolower(ethnicity) == "native american, american indian, or alaska native", "native_american",
+                                                       ifelse(tolower(ethnicity) == "white" |
+                                                                tolower(ethnicity) == "white, caucasian, or european american", "white",
+                                                              ifelse(tolower(ethnicity) == "south or southeast asian" | tolower(ethnicity) == "south asian", "south_asian",
+                                                                     ifelse(tolower(ethnicity) == "" | is.na(ethnicity), NA, "multiracial")))))))))
+
+d5 <- d5 %>%
+  filter(!is.na(character), character != "") %>%
+  filter(age >= 5.5, age < 7.5) %>%
+  mutate(ethnicity = gsub(" SN", "", ethnicity)) %>%
+  mutate(race_cat = ifelse(grepl("bing", tolower(testingSite)),
+                           ifelse(ethnicity == "A", "east_asian",
+                                  ifelse(ethnicity == "C" | ethnicity == "Cj", "white",
+                                         ifelse(ethnicity == "I", "south_asian",
+                                                ifelse(ethnicity == "ME", "middle_eastern",
+                                                       ifelse(ethnicity == "Af", "black",
+                                                              ifelse(ethnicity == "H", "hispanic",
+                                                                     ifelse(grepl(" ", ethnicity) |
+                                                                              grepl("/", ethnicity), "multiracial",
+                                                                            NA))))))),
+                           ifelse(tolower(ethnicity) == "black or african american", "black",
+                                  ifelse(tolower(ethnicity) == "hispanic or latino/a", "hispanic",
+                                         ifelse(tolower(ethnicity) == "east asian", "east_asian",
+                                                ifelse(tolower(ethnicity) == "native american, american indian, or alaska native", "native_american",
+                                                       ifelse(tolower(ethnicity) == "white" |
+                                                                tolower(ethnicity) == "white, caucasian, or european american", "white",
+                                                              ifelse(tolower(ethnicity) == "south or southeast asian" | tolower(ethnicity) == "south asian", "south_asian",
+                                                                     ifelse(tolower(ethnicity) == "" | is.na(ethnicity), NA, "multiracial")))))))))
+```
+
+```{r dataframes for dimension reducation, include = F}
+# make dataframes for s1
+# d1_beetle <- makeDRDF("study 1", "beetle")
+# d1_robot <- makeDRDF("study 1", "robot")
+d1_all <- makeDRDF("study 1", "all")
+
+# make dataframes for follow-up studies to s1
+d1b_all <- makeDRDF("study 1b", "all")
+d1c_all <- makeDRDF("study 1c", "all")
+
+# make dataframes for study 2
+# d2_beetle <- makeDRDF("study 2", "beetle")
+# d2_robot <- makeDRDF("study 2", "robot")
+d2_all <- makeDRDF("study 2", "all")
+
+# make dataframes for study 3
+# d3_beetle <- makeDRDF("study 3", "beetle")
+# d3_robot <- makeDRDF("study 3", "robot")
+d3_all <- makeDRDF("study 3", "all")
+
+# make dataframes for study 4
+d4_all <- makeDRDF("study 4", "all")
+```
+
+```{r dataframe for sliding window, include = F}
+# merge datasets from studies 3-4 and run 04
+d_slide <- d3 %>%
+  select(-trial.comments) %>%
+  full_join(d4 %>% select(-trial.comments)) %>%
+  full_join(d5 %>% select(-trial.comments)) %>%
+  mutate(capacity = recode(capacity,
+                           angry = "anger",
+                           choices = "choice",
+                           conscious = "awareness",
+                           depressed = "sadness",
+                           depth = "depth",
+                           disrespected = "hurt feelings",
+                           embarrassed = "embarrassment",
+                           fear = "fear",
+                           guilt = "guilt",
+                           happy = "happiness",
+                           hungry = "hunger",
+                           love = "love",
+                           nauseated = "nausea",
+                           odors = "smell",
+                           pain = "pain",
+                           pride = "pride",
+                           reasoning = "figuring out",
+                           remembering = "memory",
+                           temperature = "temperature",
+                           tired = "fatigue"))
+
+# get age ranks
+d_slide_subid <- d_slide %>%
+  distinct(subid, age) %>%
+  arrange(age, subid) %>%
+  rownames_to_column("age_rank") %>%
+  mutate(age_rank = as.numeric(age_rank))
+
+d_slide <- d_slide %>%
+  filter(subid %in% d_slide_subid$subid) %>%
+  left_join(d_slide_subid) %>%
+  arrange(age_rank, trialNum) %>%
+  filter(!is.na(age))
+
+# make wideframe df
+d_slide_all <- d_slide %>%
+  select(subid, age, character, capacity, responseNum) %>%
+  mutate(age = as.numeric(as.character(age))) %>%
+  spread(capacity, responseNum) %>%
+  arrange(age) %>%
+  remove_rownames() %>%
+  column_to_rownames("subid")
+
+# limit to complete cases for tsne
+d_slide_all_complete <- d_slide_all[complete.cases(d_slide_all),]
+```
+
+# t-SNE: on characters
+
+## 2 dimensions
+
+```{r tsne2D}
+# tsne_d1 <- Rtsne(d1_all, dims = 2, initial_dims = 3, 
+#                  check_duplicates = FALSE); plot(tsne_d1$Y)
+# tsne_d2 <- Rtsne(d2_all, dims = 2, initial_dims = 3, 
+#                  check_duplicates = FALSE); plot(tsne_d2$Y)
+# tsne_d3 <- Rtsne(d3_all, dims = 2, initial_dims = 3,
+#                  check_duplicates = FALSE); plot(tsne_d3$Y)
+# tsne_d4 <- Rtsne(d4_all, dims = 2, initial_dims = 3,
+#                  check_duplicates = FALSE); plot(tsne_d4$Y)
+
+# 4-10y on 20 question version
+tsne2D_dslide <- Rtsne(d_slide_all_complete[-c(1,2)], dims = 2, 
+                       initial_dims = 20,
+                       perplexity = 10,
+                       check_duplicates = FALSE)
+
+tsne2D_df <- tsne2D_dslide$Y %>%
+  data.frame() %>%
+  cbind(d_slide_all_complete[,c("age", "character")]) %>%
+  rename(tsne2D_dim1 = X1, tsne2D_dim2 = X2) %>%
+  mutate(character = factor(character,
+                          levels = c("computer", "robot", 
+                                     "doll", "teddy_bear",
+                                     "beetle", "bird",
+                                     "mouse", "goat", "elephant")))
+```
+
+```{r tsne2D scatterplot, fig.width = 5, fig.height = 4}
+ggplot(tsne2D_df,
+       aes(x = tsne2D_dim1, y = tsne2D_dim2, 
+           color = character, 
+           size = age)) +
+  geom_point(alpha = 0.6) + 
+  scale_color_brewer("character", type = "div") +
+  theme_minimal() +
+  theme(text = element_text(size = 14))
+```
+
+```{r tsne2D 3D scatterplot, fig.width = 8, fig.height = 4}
+plot_ly(tsne2D_df, x = ~(age*10), y = ~tsne2D_dim1, z = ~tsne2D_dim2, 
+        color = ~character, colors = "BrBG", 
+        # size = ~age, sizes = c(30, 130),
+        opacity = 0.6)
+```
+
+
+
+## 3 dimensions
+
+```{r tsne3D}
+# tsne_d1 <- Rtsne(d1_all, dims = 3, initial_dims = 3, 
+#                  check_duplicates = FALSE); plot(tsne_d1$Y)
+# tsne_d2 <- Rtsne(d2_all, dims = 3, initial_dims = 3, 
+#                  check_duplicates = FALSE); plot(tsne_d2$Y)
+# tsne_d3 <- Rtsne(d3_all, dims = 3, initial_dims = 3,
+#                  check_duplicates = FALSE); plot(tsne_d3$Y)
+# tsne_d4 <- Rtsne(d4_all, dims = 3, initial_dims = 3,
+#                  check_duplicates = FALSE); plot(tsne_d4$Y)
+
+# 4-10y on 20 question version
+tsne3D_dslide <- Rtsne(d_slide_all_complete[-c(1,2)], dims = 3, 
+                       initial_dims = 20,
+                       perplexity = 10,
+                       check_duplicates = FALSE)
+
+tsne3D_df <- tsne3D_dslide$Y %>%
+  data.frame() %>%
+  cbind(d_slide_all_complete[,c("age", "character")]) %>%
+  rename(tsne3D_dim1 = X1, tsne3D_dim2 = X2, tsne3D_dim3 = X3) %>%
+  mutate(character = factor(character,
+                          levels = c("computer", "robot", 
+                                     "doll", "teddy_bear",
+                                     "beetle", "bird",
+                                     "mouse", "goat", "elephant")))
+```
+
+```{r tsne3D 3D scatterplot, fig.width = 8, fig.height = 8}
+plot_ly(tsne3D_df, x = ~tsne3D_dim1, y = ~tsne3D_dim2, z = ~tsne3D_dim3, 
+        color = ~character, colors = "BrBG", 
+        size = ~age, sizes = c(50, 200),
+        # size = 4,
+        opacity = 0.6)
+```
+
+
+
+## 4 dimensions
+
+```{r tsne4D}
+# tsne_d1 <- Rtsne(d1_all, dims = 4, initial_dims = 4, 
+#                  check_duplicates = FALSE); plot(tsne_d1$Y)
+# tsne_d2 <- Rtsne(d2_all, dims = 4, initial_dims = 4, 
+#                  check_duplicates = FALSE); plot(tsne_d2$Y)
+# tsne_d3 <- Rtsne(d3_all, dims = 4, initial_dims = 4,
+#                  check_duplicates = FALSE); plot(tsne_d3$Y)
+# tsne_d4 <- Rtsne(d4_all, dims = 4, initial_dims = 4,
+#                  check_duplicates = FALSE); plot(tsne_d4$Y)
+
+# 4-10y on 20 question version
+tsne4D_dslide <- Rtsne(d_slide_all_complete[-c(1,2)], dims = 4, 
+                       initial_dims = 20,
+                       perplexity = 10,
+                       check_duplicates = FALSE)
+
+tsne4D_df <- tsne4D_dslide$Y %>%
+  data.frame() %>%
+  cbind(d_slide_all_complete[,c("age", "character")]) %>%
+  rename(tsne4D_dim1 = X1, tsne4D_dim2 = X2, 
+         tsne4D_dim3 = X3, tsne4D_dim4 = X4) %>%
+  mutate(character = factor(character,
+                          levels = c("computer", "robot", 
+                                     "doll", "teddy_bear",
+                                     "beetle", "bird",
+                                     "mouse", "goat", "elephant")))
+```
+
+```{r tsne4D 4D scatterplot, fig.width = 8, fig.height = 8}
+plot_ly(tsne4D_df, x = ~tsne4D_dim1, y = ~tsne4D_dim2, z = ~tsne4D_dim3, 
+        color = ~character, colors = "BrBG", 
+        size = ~tsne4D_dim4, sizes = c(50, 200),
+        # size = ~age, sizes = c(50, 200),
+        # size = 4,
+        opacity = 0.6)
+```
+
+
+```{r}
+tsne2D_df_ver2 <- tsne2D_dslide$Y %>%
+  data.frame() %>%
+  cbind(d_slide_all_complete[]) %>%
+  rename(tsne2D_dim1 = X1, tsne2D_dim2 = X2) %>% #, 
+         # tsne2D_dim3 = X3, tsne2D_dim4 = X4) %>%
+  mutate(character = factor(character,
+                          levels = c("computer", "robot", 
+                                     "doll", "teddy_bear",
+                                     "beetle", "bird",
+                                     "mouse", "goat", "elephant")))
+
+
+
+tsne_cor <- tsne2D_df_ver2 %>% 
+  select(-character) %>% 
+  cor() %>%
+  data.frame() %>% 
+  rownames_to_column("tsne_dim") %>%
+  filter(grepl("tsne", tsne_dim) == T) %>%
+  select(-starts_with("tsne2D")) %>%
+  gather(capacity, cor, -tsne_dim)
+
+tsne_cor_order <- tsne_cor %>%
+  group_by(capacity) %>%
+  top_n(1, abs(cor)) %>%
+  # filter(tsne_dim == "tsne2D_dim1") %>%
+  mutate(tsne_dim = factor(tsne_dim)) %>%
+  arrange(tsne_dim, desc(abs(cor))) %>%
+  data.frame() %>%
+  rownames_to_column("order") %>%
+  mutate(order = as.numeric(as.character(order)))
+
+ggplot(tsne_cor %>% full_join(tsne_cor_order %>% select(capacity, order)),
+       aes(x = tsne_dim, y = reorder(capacity, desc(order)), 
+           fill = cor, label = round(cor, 2))) + 
+  geom_tile() +
+  geom_text() + 
+  scale_fill_distiller(palette = "RdYlBu", 
+                       limits = c(-1, 1), breaks = c(-1, 0, 1)) +
+  theme_minimal() +
+  labs(x = "", y = "")
+
+```
+
+```{r}
+tsne_cor %>%
+  filter(tsne_dim == "tsne2D_dim1") %>%
+  arrange(desc(abs(cor)))
+
+tsne_cor %>%
+  filter(tsne_dim == "tsne2D_dim2") %>%
+  arrange(desc(abs(cor)))
+
+tsne_cor %>%
+  filter(tsne_dim == "tsne2D_dim3") %>%
+  arrange(desc(abs(cor)))
+
+tsne_cor %>%
+  filter(tsne_dim == "tsne2D_dim4") %>%
+  arrange(desc(abs(cor)))
+```
+
+```{r, fig.width=4, fig.height=2}
+tsne2D_df_ver2 %>%
+  select(age, character, starts_with("tsne")) %>%
+  gather(tsne_dim, score, starts_with("tsne")) %>%
+  ggplot(aes(x = age, y = score, color = character, fill = character)) +
+  facet_grid(~tsne_dim) +
+  # geom_smooth(alpha = 0.1) +
+  geom_smooth(method = "lm", alpha = 0.1) +
+  geom_point(size = 1) +
+  scale_color_brewer(type = "div", palette = 1) +
+  scale_fill_brewer(type = "div", palette = 1) +
+  theme_bw()
+```
+
+
+# t-SNE: on capacities
+
+## 2 dimensions
+
+```{r tsne2D mc}
+# 4-10y on 20 question version
+d_slide_all_complete_t <- d_slide_all_complete %>%
+  mutate(character = factor(character,
+                            levels = c("computer", "robot", "doll", 
+                                       "teddy_bear", "beetle", "bird",
+                                       "mouse", "goat", "elephant"))) %>%
+  arrange(character, age) %>%
+  select(-character, -age) %>%
+  t()
+
+tsne2D_mc_dslide <- Rtsne(d_slide_all_complete_t, 
+                          dims = 2, 
+                       initial_dims = 20,
+                       perplexity = 5,
+                       max_iter = 10000,
+                       check_duplicates = FALSE)
+
+tsne2D_mc_df <- tsne2D_mc_dslide$Y %>%
+  data.frame()
+
+rownames(tsne2D_mc_df) <- names(d_slide_all_complete)[-c(1,2)]
+  
+tsne2D_mc_df <- tsne2D_mc_df %>%
+  rownames_to_column("capacity") %>%
+  rename(tsne2D_mc_dim1 = X1, tsne2D_mc_dim2 = X2)
+```
+
+```{r tsne2D_mc scatterplot, fig.width = 2.5, fig.height = 4}
+ggplot(tsne2D_mc_df,
+       aes(x = tsne2D_mc_dim1, y = tsne2D_mc_dim2, 
+           # color = capacity, 
+           label = capacity)) +
+  # geom_point(alpha = 0.6, size = 6) + 
+  geom_label(size = 4) +
+  # scale_color_brewer("capacity", type = "div") +
+  xlim(min(tsne2D_mc_df$X1) - 0.2 * sd(tsne2D_mc_df$X1),
+       max(tsne2D_mc_df$X1) + 0.2 * sd(tsne2D_mc_df$X1)) +
+  ylim(min(tsne2D_mc_df$X2) - 0.2 * sd(tsne2D_mc_df$X2),
+       max(tsne2D_mc_df$X2) + 0.2 * sd(tsne2D_mc_df$X2)) +
+  labs(x = "t-SNE dimension 1", y = "t-SNE dimension 2") +
+  theme_minimal() +
+  theme(text = element_text(size = 14),
+        legend.position = "none")
+```
+
+## 2 dimensions sliding window
+
+```{r}
+efa_colors <- fa(d_slide_all_complete[-c(1,2)], 
+                 nfactors = 3, rotate = "oblimin")$loadings[] %>%
+  fa.sort() %>%
+  data.frame() %>%
+  rownames_to_column("capacity") %>%
+  gather(factor, loading, -capacity) %>%
+  group_by(capacity) %>%
+  top_n(1, abs(loading)) %>%
+  mutate(factor = factor(factor,
+                         levels = c("MR1", "MR2", "MR3"),
+                         labels = c("HEART", "MIND", "BODY")))
+```
+
+```{r}
+# make tsne function
+tsne_fun <- function(df, n = 120,
+                     dims_set = 2, initial_dims_set = 50, 
+                     perplexity_set = 5, max_iter_set = 1000,
+                     theta_set = 0.5,
+                     check_duplicates_set = FALSE){
+  
+  df_temp <- df[complete.cases(df),] %>%
+    top_n(-n, age) %>%
+    mutate(character = factor(character,
+                            levels = c("computer", "robot", "doll", 
+                                       "teddy_bear", "beetle", "bird",
+                                       "mouse", "goat", "elephant"))) %>%
+  arrange(character, age) %>%
+  select(-character, -ends_with("age")) %>%
+  t()
+  
+  tsne2D <- Rtsne(df_temp,
+                  dims = dims_set,
+                  initial_dims = initial_dims_set,
+                  perplexity = perplexity_set,
+                  theta = theta_set,
+                  max_iter = max_iter_set,
+                  check_duplicates = check_duplicates_set)
+  
+  tsne2D_df <- tsne2D$Y %>%
+    data.frame()
+  
+  rownames(tsne2D_df) <- names(df)[-c(1,2)]
+  
+  tsne2D_df <- tsne2D_df %>%
+    rownames_to_column("capacity")
+  
+  return(tsne2D_df)
+}
+```
+
+
+```{r}
+# set window size
+window_size <- 120
+
+# do sliding window
+all_tsne <- list(NULL)
+for(i in 1:(length(d_slide_all_complete$age)-window_size)) {
+  tsne_temp <- tsne_fun(df = d_slide_all_complete, n = window_size)
+  all_tsne[[i]] <- tsne_temp
+}
+
+all_tsne_df <- data.frame()
+
+# get into one df
+for(i in 1:length(all_tsne)){
+  tsne_temp <- all_tsne[[i]] %>%
+    data.frame() %>%
+    mutate(window = i)
+  
+  all_tsne_df <- rbind(all_tsne_df, tsne_temp)
+}
+```
+
+```{r, fig.width = 12, fig.height = 12}
+ggplot(all_tsne_df,
+       aes(x = X1, y = X2, 
+           color = capacity, group = capacity)) +
+           # alpha = window)) +
+  facet_wrap(~ window, scales = "free") +
+  # geom_path() +
+  geom_point() +
+  xlim(min(tsne2D_mc_df$tsne2D_mc_dim1) - 0.2 * sd(tsne2D_mc_df$tsne2D_mc_dim1),
+       max(tsne2D_mc_df$tsne2D_mc_dim1) + 0.2 * sd(tsne2D_mc_df$tsne2D_mc_dim1)) +
+  ylim(min(tsne2D_mc_df$tsne2D_mc_dim2) - 0.2 * sd(tsne2D_mc_df$tsne2D_mc_dim2),
+       max(tsne2D_mc_df$tsne2D_mc_dim2) + 0.2 * sd(tsne2D_mc_df$tsne2D_mc_dim2)) +
+  labs(x = "t-SNE dimension 1", y = "t-SNE dimension 2") +
+  theme_bw() +
+  theme(text = element_text(size = 14),
+        legend.position = "bottom",
+        axis.text = element_blank())
+```
+
+```{r}
+# make quantiles
+d_slide_all_complete_quantile <- d_slide_all_complete %>%
+  mutate(bin = ntile(age, 5)) %>%
+  group_by(bin) %>%
+  mutate(min_age = min(age),
+         max_age = max(age),
+         mean_age = mean(age, na.rm = T),
+         med_age = median(age)) %>%
+  ungroup()
+
+# set perplexity
+perp <- 6
+n_iter <- 10000
+theta <- 0
+
+# 4 age groups
+tsne1 <- tsne_fun(df = d_slide_all_complete_quantile %>% 
+                    filter(bin == 1) %>%
+                    select(-ends_with("_age"), -bin),
+                  perplexity_set = perp, max_iter_set = n_iter,
+                  theta_set = theta)
+tsne2 <- tsne_fun(df = d_slide_all_complete_quantile %>% 
+                    filter(bin == 2) %>%
+                    select(-ends_with("_age"), -bin),
+                  perplexity_set = perp, max_iter_set = n_iter,
+                  theta_set = theta)
+tsne3 <- tsne_fun(df = d_slide_all_complete_quantile %>%
+                    filter(bin == 3) %>%
+                    select(-ends_with("_age"), -bin),
+                  perplexity_set = perp, max_iter_set = n_iter,
+                  theta_set = theta)
+tsne4 <- tsne_fun(df = d_slide_all_complete_quantile %>% 
+                    filter(bin == 4) %>%
+                    select(-ends_with("_age"), -bin),
+                  perplexity_set = perp, max_iter_set = n_iter,
+                  theta_set = theta)
+tsne5 <- tsne_fun(df = d_slide_all_complete_quantile %>% 
+                    filter(bin == 5) %>%
+                    select(-ends_with("_age"), -bin),
+                  perplexity_set = perp, max_iter_set = n_iter,
+                  theta_set = theta)
+
+quantile_all <- tsne1 %>% mutate(bin = 1) %>%
+  full_join(tsne2 %>% mutate(bin = 2)) %>%
+  full_join(tsne3 %>% mutate(bin = 3)) %>%
+  full_join(tsne4 %>% mutate(bin = 4)) %>%
+  full_join(tsne5 %>% mutate(bin = 5)) %>%
+  full_join(d_slide_all_complete_quantile %>%
+              select(bin, ends_with("_age")) %>%
+              distinct()) %>%
+  mutate(bin_label = paste0(round(min_age, 2), "-", round(max_age, 2), "y"))
+```
+
+```{r, fig.width = 9, fig.height = 3}
+ggplot(quantile_all %>%
+         full_join(efa_colors %>% select(capacity, factor)),
+            aes(x = X1, y = X2, label = capacity, color = factor)) +
+  # facet_wrap(~ bin_label, scales = "free") + #, ncol = 5) +
+  facet_grid(~ bin_label, scales = "free_x", space = "free_x") + #, ncol = 5) +
+  geom_point() +
+  ggrepel::geom_text_repel() +
+  theme_bw() +
+  scale_color_manual(values = c("#377eb8", "#4daf4a", "#e41a1c")) +
+  scale_x_continuous(breaks = seq(-1000, 1000, 100)) +
+  scale_y_continuous(breaks = seq(-1000, 1000, 100)) +
+  theme(legend.position = "bottom",
+        panel.grid.minor = element_blank()) +
+  labs(title = "t-SNE by age quintile (see facet labels for age range)",
+      subtitle = paste0("perplexity: ", perp, "; iterations: ", n_iter, "\n(note: scales vary by quintile)"),
+      x = "t-SNE dimension 1",
+      y = "t-SNE dimension 2")
+```
+
+```{r}
+# make tsne function - collapse by character
+tsne_fun_bychar <- function(df, n = 120,
+                            dims_set = 2, initial_dims_set = 50,
+                            perplexity_set = 5, max_iter_set = 1000,
+                            theta_set = 0.5,
+                            check_duplicates_set = FALSE){
+  
+  df_temp <- df[complete.cases(df),] %>%
+    top_n(-n, age) %>%
+    mutate(character = factor(character,
+                            levels = c("computer", "robot", "doll", 
+                                       "teddy_bear", "beetle", "bird",
+                                       "mouse", "goat", "elephant"))) %>%
+    select(-age) %>%
+    remove_rownames() %>%
+    rownames_to_column("subid") %>%
+    gather(capacity, response, -subid, -character) %>%
+    group_by(character, capacity) %>%
+    summarise(mean = mean(response)) %>%
+    arrange(character, capacity) %>%
+    spread(character, mean) %>%
+    data.frame() %>%
+    remove_rownames() %>%
+    column_to_rownames("capacity")
+  
+  # names(df_temp) <- df_temp[1,] %>% t() %>% c()
+  # df_temp <- df_temp[-1,]
+
+  tsne2D <- Rtsne(df_temp,
+                  dims = dims_set,
+                  initial_dims = initial_dims_set,
+                  perplexity = perplexity_set,
+                  theta = theta_set,
+                  max_iter = max_iter_set,
+                  check_duplicates = check_duplicates_set)
+  
+  tsne2D_df <- tsne2D$Y %>%
+    data.frame()
+  
+  rownames(tsne2D_df) <- names(df)[-c(1,2)]
+  
+  tsne2D_df <- tsne2D_df %>%
+    rownames_to_column("capacity")
+  
+  return(tsne2D_df)
+}
+```
+
+```{r}
+# make quantiles
+d_slide_all_complete_quantile <- d_slide_all_complete %>%
+  mutate(bin = ntile(age, 5)) %>%
+  group_by(bin) %>%
+  mutate(min_age = min(age),
+         max_age = max(age),
+         mean_age = mean(age, na.rm = T),
+         med_age = median(age)) %>%
+  ungroup()
+
+# set perplexity
+perp <- 2
+n_iter <- 10000
+theta <- 0
+
+# 4 age groups
+tsne1 <- tsne_fun_bychar(df = d_slide_all_complete_quantile %>% 
+                    filter(bin == 1) %>%
+                    select(-ends_with("_age"), -bin),
+                  perplexity_set = perp, max_iter_set = n_iter,
+                  theta_set = theta)
+tsne2 <- tsne_fun_bychar(df = d_slide_all_complete_quantile %>% 
+                    filter(bin == 2) %>%
+                    select(-ends_with("_age"), -bin),
+                  perplexity_set = perp, max_iter_set = n_iter,
+                  theta_set = theta)
+tsne3 <- tsne_fun_bychar(df = d_slide_all_complete_quantile %>%
+                    filter(bin == 3) %>%
+                    select(-ends_with("_age"), -bin),
+                  perplexity_set = perp, max_iter_set = n_iter,
+                  theta_set = theta)
+tsne4 <- tsne_fun_bychar(df = d_slide_all_complete_quantile %>% 
+                    filter(bin == 4) %>%
+                    select(-ends_with("_age"), -bin),
+                  perplexity_set = perp, max_iter_set = n_iter,
+                  theta_set = theta)
+tsne5 <- tsne_fun_bychar(df = d_slide_all_complete_quantile %>% 
+                    filter(bin == 5) %>%
+                    select(-ends_with("_age"), -bin),
+                  perplexity_set = perp, max_iter_set = n_iter,
+                  theta_set = theta)
+
+quantile_all <- tsne1 %>% mutate(bin = 1) %>%
+  full_join(tsne2 %>% mutate(bin = 2)) %>%
+  full_join(tsne3 %>% mutate(bin = 3)) %>%
+  full_join(tsne4 %>% mutate(bin = 4)) %>%
+  full_join(tsne5 %>% mutate(bin = 5)) %>%
+  full_join(d_slide_all_complete_quantile %>%
+              select(bin, ends_with("_age")) %>%
+              distinct()) %>%
+  mutate(bin_label = paste0(round(min_age, 2), "-", round(max_age, 2), "y"))
+```
+
+```{r, fig.width = 9, fig.height = 3}
+ggplot(quantile_all %>%
+         full_join(efa_colors %>% select(capacity, factor)),
+            aes(x = X1, y = X2, label = capacity, color = factor)) +
+  # facet_wrap(~ bin_label, scales = "free") + #, ncol = 5) +
+  facet_grid(~ bin_label, scales = "free_x", space = "free_x") + #, ncol = 5) +
+  geom_point() +
+  ggrepel::geom_text_repel() +
+  theme_bw() +
+  scale_color_manual(values = c("#377eb8", "#4daf4a", "#e41a1c")) +
+  scale_x_continuous(breaks = seq(-1000, 1000, 100)) +
+  scale_y_continuous(breaks = seq(-1000, 1000, 100)) +
+  theme(legend.position = "bottom",
+        panel.grid.minor = element_blank()) +
+  labs(title = "t-SNE by age quintile (see facet labels for age range)",
+      subtitle = paste0("perplexity: ", perp, "; iterations: ", n_iter, "\n(note: scales vary by quintile)"),
+      x = "t-SNE dimension 1",
+      y = "t-SNE dimension 2")
+```
+
+```{r}
+# make tsne function - collapse by character
+tsne_fun_bychar_ageslice <- function(df, n = 120,
+                                     dims_set = 2, initial_dims_set = 50,
+                                     perplexity_set = 5, max_iter_set = 1000,
+                                     theta_set = 0.5,
+                                     check_duplicates_set = FALSE){
+  
+  df_temp <- df[complete.cases(df),] %>%
+    top_n(-n, age) %>%
+    mutate(character = factor(character,
+                            levels = c("computer", "robot", "doll", 
+                                       "teddy_bear", "beetle", "bird",
+                                       "mouse", "goat", "elephant"))) %>%
+    mutate(age_bin = ntile(age, 5)) %>%
+    remove_rownames() %>%
+    rownames_to_column("subid") %>%
+    select(-age) %>%
+    gather(capacity, response, -subid, -character, -age_bin) %>%
+    group_by(age_bin, character, capacity) %>%
+    summarise(mean = mean(response)) %>%
+    ungroup() %>%
+    mutate(char_age = paste(character, age_bin, sep = "_")) %>%
+    select(-age_bin, -character) %>%
+    spread(char_age, mean) %>%
+    data.frame() %>%
+    remove_rownames() %>%
+    column_to_rownames("capacity")
+  
+  # names(df_temp) <- df_temp[1,] %>% t() %>% c()
+  # df_temp <- df_temp[-1,]
+
+  tsne2D <- Rtsne(df_temp,
+                  dims = dims_set,
+                  initial_dims = initial_dims_set,
+                  perplexity = perplexity_set,
+                  theta = theta_set,
+                  max_iter = max_iter_set,
+                  check_duplicates = check_duplicates_set)
+  
+  tsne2D_df <- tsne2D$Y %>%
+    data.frame()
+  
+  rownames(tsne2D_df) <- names(df)[-c(1,2)]
+  
+  tsne2D_df <- tsne2D_df %>%
+    rownames_to_column("capacity")
+  
+  return(tsne2D_df)
+}
+```
+
+```{r}
+# make quantiles
+d_slide_all_complete_quantile <- d_slide_all_complete %>%
+  mutate(bin = ntile(age, 5)) %>%
+  group_by(bin) %>%
+  mutate(min_age = min(age),
+         max_age = max(age),
+         mean_age = mean(age, na.rm = T),
+         med_age = median(age)) %>%
+  ungroup()
+
+# set perplexity
+perp <- 4
+n_iter <- 10000
+theta <- 0
+
+# 4 age groups
+tsne1 <- tsne_fun_bychar_ageslice(df = d_slide_all_complete_quantile %>% 
+                    filter(bin == 1) %>%
+                    select(-ends_with("_age"), -bin),
+                  perplexity_set = perp, max_iter_set = n_iter,
+                  theta_set = theta)
+tsne2 <- tsne_fun_bychar_ageslice(df = d_slide_all_complete_quantile %>% 
+                    filter(bin == 2) %>%
+                    select(-ends_with("_age"), -bin),
+                  perplexity_set = perp, max_iter_set = n_iter,
+                  theta_set = theta)
+tsne3 <- tsne_fun_bychar_ageslice(df = d_slide_all_complete_quantile %>%
+                    filter(bin == 3) %>%
+                    select(-ends_with("_age"), -bin),
+                  perplexity_set = perp, max_iter_set = n_iter,
+                  theta_set = theta)
+tsne4 <- tsne_fun_bychar_ageslice(df = d_slide_all_complete_quantile %>% 
+                    filter(bin == 4) %>%
+                    select(-ends_with("_age"), -bin),
+                  perplexity_set = perp, max_iter_set = n_iter,
+                  theta_set = theta)
+tsne5 <- tsne_fun_bychar_ageslice(df = d_slide_all_complete_quantile %>% 
+                    filter(bin == 5) %>%
+                    select(-ends_with("_age"), -bin),
+                  perplexity_set = perp, max_iter_set = n_iter,
+                  theta_set = theta)
+
+quantile_all <- tsne1 %>% mutate(bin = 1) %>%
+  full_join(tsne2 %>% mutate(bin = 2)) %>%
+  full_join(tsne3 %>% mutate(bin = 3)) %>%
+  full_join(tsne4 %>% mutate(bin = 4)) %>%
+  full_join(tsne5 %>% mutate(bin = 5)) %>%
+  full_join(d_slide_all_complete_quantile %>%
+              select(bin, ends_with("_age")) %>%
+              distinct()) %>%
+  mutate(bin_label = paste0(round(min_age, 2), "-", round(max_age, 2), "y"))
+```
+
+```{r, fig.width = 9, fig.height = 3}
+ggplot(quantile_all %>%
+         full_join(efa_colors %>% select(capacity, factor)),
+            aes(x = X1, y = X2, label = capacity, color = factor)) +
+  # facet_wrap(~ bin_label, scales = "free") + #, ncol = 5) +
+  facet_grid(~ bin_label, scales = "free_x", space = "free_x") + #, ncol = 5) +
+  geom_point() +
+  ggrepel::geom_text_repel() +
+  theme_bw() +
+  scale_color_manual(values = c("#377eb8", "#4daf4a", "#e41a1c")) +
+  scale_x_continuous(breaks = seq(-1000, 1000, 100)) +
+  scale_y_continuous(breaks = seq(-1000, 1000, 100)) +
+  theme(legend.position = "bottom",
+        panel.grid.minor = element_blank()) +
+  labs(title = "t-SNE by age quintile (see facet labels for age range)",
+      subtitle = paste0("perplexity: ", perp, "; iterations: ", n_iter, "\n(note: scales vary by quintile)"),
+      x = "t-SNE dimension 1",
+      y = "t-SNE dimension 2")
+```
+
+```{r, fig.width = 3, fig.height = 3}
+perp <- 2
+tsne_all <- tsne_fun(df = d_slide_all_complete,
+                     perplexity_set = perp, max_iter_set = n_iter,
+                     theta_set = theta)
+# tsne_all <- tsne_fun_bychar(df = d_slide_all_complete,
+#                             perplexity_set = perp, max_iter_set = n_iter,
+#                             theta_set = theta)
+# tsne_all <- tsne_fun_bychar_ageslice(df = d_slide_all_complete,
+#                                      perplexity_set = perp, max_iter_set = n_iter,
+#                                      theta_set = theta)
+
+ggplot(tsne_all %>%
+         full_join(efa_colors %>% select(capacity, factor)),
+            aes(x = X1, y = X2, label = capacity, color = factor)) +
+  # facet_wrap(~ bin_label, scales = "free") + #, ncol = 5) +
+  # facet_grid(~ bin_label, scales = "free_x", space = "free_x") + #, ncol = 5) +
+  geom_point() +
+  ggrepel::geom_text_repel() +
+  theme_bw() +
+  scale_color_manual(values = c("#377eb8", "#4daf4a", "#e41a1c")) +
+  scale_x_continuous(breaks = seq(-1000, 1000, 100)) +
+  scale_y_continuous(breaks = seq(-1000, 1000, 100)) +
+  theme(legend.position = "bottom",
+        panel.grid.minor = element_blank()) +
+  labs(title = "t-SNE",
+      subtitle = paste0("perplexity: ", perp, "; iterations: ", n_iter),
+      x = "t-SNE dimension 1",
+      y = "t-SNE dimension 2")
+```
+
