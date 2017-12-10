@@ -20,6 +20,453 @@ library(lubridate)
 library(rms)
 library(Rtsne)
 library(scales)
+library(ggrepel)
+```
+
+```{r dataframe from PNAS Study 4, include = F}
+# PNAS studies (from http://rpubs.com/kgweisman/bodyheartmind_analysis)
+
+# functions -----
+# make rounding function
+round2 <- function(x) {format(round(x, 2), nsmall = 2)}
+
+# make cleanup function
+cleanup <- function(datasource) {
+  if(datasource %in% c("study 1", "study 2")) {
+    
+    # set target dataset
+    if(datasource == "study 1"){d <- d_raw_study1}
+    if(datasource == "study 2"){d <- d_raw_study2}
+    
+    # enact exclusionary criteria
+    d_clean_1 <- d %>%
+      mutate(finished_mod = ifelse(is.na(CATCH), 0,
+                                   ifelse(finished == 1, 1,
+                                          0.5))) %>%
+      filter(CATCH == 1, # exclude Ps who fail catch trials 
+             finished_mod != 0) %>% # exclude Ps who did not complete task
+      mutate(yob_correct = as.numeric(
+        ifelse(as.numeric(as.character(yob)) > 1900 & 
+                 as.numeric(as.character(yob)) < 2000, 
+               as.numeric(as.character(yob)), NA)), # correct formatting in yob
+        age_approx = 2016 - yob_correct) %>% # calculate approximate age
+      mutate(gender = factor(gender, levels = c(1, 2, 0), 
+                             labels = c("m", "f", "other"))) %>%
+      filter(age_approx >= 18) # exclude Ps who are younger than 18 years
+    
+    # recode background and demographic variables
+    d_clean <- d_clean_1 %>%
+      mutate( # deal with study number
+        study = factor(study)) %>%
+      mutate( # deal with study duration
+        duration = as.numeric(difftime(strptime(end_time, "%I:%M:%S"),
+                                       strptime(start_time, "%I:%M:%S"),
+                                       units = "mins"))) %>%
+      mutate( # deal with race
+        race_asian_east = 
+          factor(ifelse(is.na(race_asian_east), "", "asian_east ")),
+        race_asian_south = 
+          factor(ifelse(is.na(race_asian_south), "", "asian_south ")),
+        race_asian_other = 
+          factor(ifelse(is.na(race_asian_other), "", "asian_other ")),
+        race_black = 
+          factor(ifelse(is.na(race_black), "", "black ")),
+        race_hispanic = 
+          factor(ifelse(is.na(race_hispanic), "", "hispanic ")),
+        race_middle_eastern = 
+          factor(ifelse(is.na(race_middle_eastern), "", "middle_eastern ")),
+        race_native_american = 
+          factor(ifelse(is.na(race_native_american), "", "native_american ")),
+        race_pac_islander = 
+          factor(ifelse(is.na(race_pac_islander), "", "pac_islander ")),
+        race_white = 
+          factor(ifelse(is.na(race_white), "", "white ")),
+        race_other_prefno = 
+          factor(ifelse(is.na(race_other_prefno), "", "other_prefno ")),
+        race_cat = paste0(race_asian_east, race_asian_south, race_asian_other,
+                          race_black, race_hispanic, race_middle_eastern,
+                          race_native_american, race_pac_islander, race_white,
+                          race_other_prefno),
+        race_cat2 = factor(sub(" +$", "", race_cat)),
+        race_cat3 = factor(ifelse(grepl(" ", race_cat2) == T, "multiracial",
+                                  as.character(race_cat2)))) %>%
+      dplyr::select(study, subid:end_time, duration, finished:gender, 
+             religion_buddhism:age_approx, race_cat3) %>%
+      rename(race_cat = race_cat3) %>%
+      mutate( # deal with religion
+        religion_buddhism = 
+          factor(ifelse(is.na(religion_buddhism), "", "buddhism ")),
+        religion_christianity = 
+          factor(ifelse(is.na(religion_christianity), "", "christianity ")),
+        religion_hinduism = 
+          factor(ifelse(is.na(religion_hinduism), "", "hinduism ")),
+        religion_islam = 
+          factor(ifelse(is.na(religion_islam), "", "islam ")),
+        religion_jainism = 
+          factor(ifelse(is.na(religion_jainism), "", "jainism ")),
+        religion_judaism = 
+          factor(ifelse(is.na(religion_judaism), "", "judaism ")),
+        religion_sikhism = 
+          factor(ifelse(is.na(religion_sikhism), "", "sikhism ")),
+        religion_other = 
+          factor(ifelse(is.na(religion_other), "", "other ")),
+        religion_none = 
+          factor(ifelse(is.na(religion_none), "", "none ")),
+        religion_prefno = 
+          factor(ifelse(is.na(religion_prefno), "", "other_prefno ")),
+        religion_cat = paste0(religion_buddhism, religion_christianity, 
+                              religion_hinduism, religion_islam, 
+                              religion_jainism, religion_judaism, 
+                              religion_sikhism, religion_other, 
+                              religion_none, religion_prefno),
+        religion_cat2 = factor(sub(" +$", "", religion_cat)),
+        religion_cat3 = factor(ifelse(grepl(" ", religion_cat2) == T, 
+                                      "multireligious",
+                                      as.character(religion_cat2)))) %>%
+      dplyr::select(study:gender, feedback:race_cat, religion_cat3) %>%
+      rename(religion_cat = religion_cat3)
+    
+    # remove extraneous dfs and variables
+    rm(d, d_clean_1)
+  }
+  
+  if(datasource == "study 3") {
+    
+    # set target dataset
+    d <- d_raw_study3
+    
+    # enact exclusionary criteria
+    d_clean_1 <- d %>%
+      mutate(finished_mod = ifelse(is.na(CATCH..characterL) | 
+                                     is.na(CATCH..characterR), 0,
+                                   ifelse(finished == 1, 1,
+                                          0.5))) %>%
+      filter(CATCH..characterL == 5, # exclude Ps who fail catch trials 
+             CATCH..characterR == 5,
+             finished_mod != 0) %>% # exclude Ps who did not complete task
+      mutate(yob_correct = as.numeric(
+        ifelse(as.numeric(as.character(yob)) > 1900 & 
+                 as.numeric(as.character(yob)) < 2000, 
+               as.numeric(as.character(yob)), NA)), # correct formatting in yob
+        age_approx = 2016 - yob_correct) %>% # calculate approximate age
+      mutate(gender = factor(gender, levels = c(1, 2, 0), 
+                             labels = c("m", "f", "other"))) %>%
+      filter(age_approx >= 18) # exclude Ps who are younger than 18 years
+    
+    # recode background and demographic variables
+    d_clean_2 <- d_clean_1 %>%
+      mutate( # deal with study number
+        study = factor(study)) %>%
+      mutate( # deal with study duration
+        duration = as.numeric(difftime(strptime(end_time, "%I:%M:%S"),
+                                       strptime(start_time, "%I:%M:%S"),
+                                       units = "mins"))) %>%
+      mutate( # deal with race
+        race_asian_east = 
+          factor(ifelse(is.na(race_asian_east), "", "asian_east ")),
+        race_asian_south = 
+          factor(ifelse(is.na(race_asian_south), "", "asian_south ")),
+        race_asian_other = 
+          factor(ifelse(is.na(race_asian_other), "", "asian_other ")),
+        race_black = 
+          factor(ifelse(is.na(race_black), "", "black ")),
+        race_hispanic = 
+          factor(ifelse(is.na(race_hispanic), "", "hispanic ")),
+        race_middle_eastern = 
+          factor(ifelse(is.na(race_middle_eastern), "", "middle_eastern ")),
+        race_native_american = 
+          factor(ifelse(is.na(race_native_american), "", "native_american ")),
+        race_pac_islander = 
+          factor(ifelse(is.na(race_pac_islander), "", "pac_islander ")),
+        race_white = 
+          factor(ifelse(is.na(race_white), "", "white ")),
+        race_other_prefno = 
+          factor(ifelse(is.na(race_other_prefno), "", "other_prefno ")),
+        race_cat = paste0(race_asian_east, race_asian_south, race_asian_other,
+                          race_black, race_hispanic, race_middle_eastern,
+                          race_native_american, race_pac_islander, race_white,
+                          race_other_prefno),
+        race_cat2 = factor(sub(" +$", "", race_cat)),
+        race_cat3 = factor(ifelse(grepl(" ", race_cat2) == T, "multiracial",
+                                  as.character(race_cat2)))) %>%
+      dplyr::select(study, subid:end_time, duration, finished:gender, 
+             religion_buddhism:age_approx, race_cat3) %>%
+      rename(race_cat = race_cat3) %>%
+      mutate( # deal with religion
+        religion_buddhism = 
+          factor(ifelse(is.na(religion_buddhism), "", "buddhism ")),
+        religion_christianity = 
+          factor(ifelse(is.na(religion_christianity), "", "christianity ")),
+        religion_hinduism = 
+          factor(ifelse(is.na(religion_hinduism), "", "hinduism ")),
+        religion_islam = 
+          factor(ifelse(is.na(religion_islam), "", "islam ")),
+        religion_jainism = 
+          factor(ifelse(is.na(religion_jainism), "", "jainism ")),
+        religion_judaism = 
+          factor(ifelse(is.na(religion_judaism), "", "judaism ")),
+        religion_sikhism = 
+          factor(ifelse(is.na(religion_sikhism), "", "sikhism ")),
+        religion_other = 
+          factor(ifelse(is.na(religion_other), "", "other ")),
+        religion_none = 
+          factor(ifelse(is.na(religion_none), "", "none ")),
+        religion_prefno = 
+          factor(ifelse(is.na(religion_prefno), "", "other_prefno ")),
+        religion_cat = paste0(religion_buddhism, religion_christianity, 
+                              religion_hinduism, religion_islam, 
+                              religion_jainism, religion_judaism, 
+                              religion_sikhism, religion_other, 
+                              religion_none, religion_prefno),
+        religion_cat2 = factor(sub(" +$", "", religion_cat)),
+        religion_cat3 = factor(ifelse(grepl(" ", religion_cat2) == T, 
+                                      "multireligious",
+                                      as.character(religion_cat2)))) %>%
+      dplyr::select(study:gender, feedback:race_cat, religion_cat3) %>%
+      rename(religion_cat = religion_cat3)
+    
+    # rename response variables
+    d_clean_3 <- d_clean_2
+    names(d_clean_3) <- gsub("get", "", names(d_clean_3))
+    names(d_clean_3) <- gsub("\\.", "", names(d_clean_3))
+    names(d_clean_3) <- gsub("char", "_char", names(d_clean_3))
+    names(d_clean_3)[names(d_clean_3) %in% c("_characterL", "_characterR")] <- 
+      c("characterL", "characterR")
+    
+    # recode response variables (center)
+    d_clean_4 <- d_clean_3
+    for(i in 11:92) {
+      d_clean_4[,i] <- d_clean_4[,i] - 4 # transform from 1 to 7 --> -3 to 3
+    }
+    
+    # recode characterL vs. characterR as beetle vs. robot
+    d_clean_5_demo <- d_clean_4 %>%
+      dplyr::select(study:condition, yob:religion_cat)
+    
+    d_clean_5_characterL <- d_clean_4 %>%
+      mutate(target = characterL) %>%
+      dplyr::select(study, subid, target, happy_characterL:CATCH_characterL)
+    names(d_clean_5_characterL) <- gsub("_characterL", "", 
+                                        names(d_clean_5_characterL))
+    
+    d_clean_5_characterR <- d_clean_4 %>%
+      mutate(target = characterR) %>%
+      dplyr::select(study, subid, target, happy_characterR:CATCH_characterR)
+    names(d_clean_5_characterR) <- gsub("_characterR", "", 
+                                        names(d_clean_5_characterR))
+    
+    d_clean <- d_clean_5_characterL %>%
+      full_join(d_clean_5_characterR) %>%
+      full_join(d_clean_5_demo) %>%
+      dplyr::select(study, subid, date:religion_cat, target:CATCH)
+    
+    # remove extraneous dfs and variables
+    rm(d, d_clean_1, d_clean_2, d_clean_3, d_clean_4, d_clean_5_characterL, 
+       d_clean_5_characterR, d_clean_5_demo, i)
+  }
+  
+  if(datasource == "study 4") {
+    
+    # set target dataset
+    d <- d_raw_study4
+
+        # enact exclusionary criteria
+    d_clean_1 <- d %>%
+      mutate(finished_mod = ifelse(is.na(CATCH), 0,
+                                   ifelse(finished == 1, 1,
+                                          0.5))) %>%
+      filter(CATCH == 1, # exclude Ps who fail catch trials 
+             finished_mod != 0) %>% # exclude Ps who did not complete task
+      mutate(yob_correct = as.numeric(
+        ifelse(as.numeric(as.character(yob)) > 1900 & 
+                 as.numeric(as.character(yob)) < 2000, 
+               as.numeric(as.character(yob)), NA)), # correct formatting in yob
+        age_approx = 2016 - yob_correct) %>% # calculate approximate age
+      mutate(gender = factor(gender, levels = c(1, 2, 0), 
+                             labels = c("m", "f", "other"))) %>%
+      filter(age_approx >= 18) # exclude Ps who are younger than 18 years
+    
+    # recode one character
+    d_clean_2 <- d_clean_1 %>%
+      mutate(condition = factor(ifelse(
+        grepl("vegetative", as.character(condition)), "pvs",
+        ifelse(grepl("blue", as.character(condition)), "bluejay",
+               ifelse(grepl("chimp", as.character(condition)), "chimp",
+                      as.character(condition))))))
+
+    # recode background and demographic variables
+    d_clean <- d_clean_2 %>%
+      mutate( # deal with study number
+        study = factor(study)) %>%
+      mutate( # deal with study duration
+        duration = as.numeric(difftime(strptime(end_time, "%I:%M:%S"),
+                                       strptime(start_time, "%I:%M:%S"),
+                                       units = "mins"))) %>%
+      mutate( # deal with race
+        race_asian_east = 
+          factor(ifelse(is.na(race_asian_east), "", "asian_east ")),
+        race_asian_south = 
+          factor(ifelse(is.na(race_asian_south), "", "asian_south ")),
+        race_asian_other = 
+          factor(ifelse(is.na(race_asian_other), "", "asian_other ")),
+        race_black = 
+          factor(ifelse(is.na(race_black), "", "black ")),
+        race_hispanic = 
+          factor(ifelse(is.na(race_hispanic), "", "hispanic ")),
+        race_middle_eastern = 
+          factor(ifelse(is.na(race_middle_eastern), "", "middle_eastern ")),
+        race_native_american = 
+          factor(ifelse(is.na(race_native_american), "", "native_american ")),
+        race_pac_islander = 
+          factor(ifelse(is.na(race_pac_islander), "", "pac_islander ")),
+        race_white = 
+          factor(ifelse(is.na(race_white), "", "white ")),
+        race_other_prefno = 
+          factor(ifelse(is.na(race_other_prefno), "", "other_prefno ")),
+        race_cat = paste0(race_asian_east, race_asian_south, race_asian_other,
+                          race_black, race_hispanic, race_middle_eastern,
+                          race_native_american, race_pac_islander, race_white,
+                          race_other_prefno),
+        race_cat2 = factor(sub(" +$", "", race_cat)),
+        race_cat3 = factor(ifelse(grepl(" ", race_cat2) == T, "multiracial",
+                                  as.character(race_cat2)))) %>%
+      dplyr::select(study, subid:end_time, duration, finished:gender, 
+             education:age_approx, race_cat3) %>%
+      rename(race_cat = race_cat3)
+    
+    # filter conditions if desired
+    if(is.element("none", chosenExclude)) {} else {
+      d_clean <- d_clean %>%
+        filter(!condition %in% chosenExclude)
+    }
+    
+    # remove extraneous dfs and variables
+    rm(d, d_clean_1, d_clean_2)
+  }
+  
+#   # transform to 0 to 6 scale
+#   d_clean <- d_clean %>%
+#     gather(mc, score, happy:pride) %>%
+#     mutate(score = score + 3) %>% # transform from -3 to 3 --> 0 to 6
+#     spread(mc, score)
+  
+  # remove outliers
+  if(chosenOutlierHandling == "remove") {
+    
+    if(datasource %in% c("study 1", "study 2", "study 4")) {
+        d_clean <- d_clean %>%
+        gather(mc, score, happy:pride) %>%
+        group_by(condition, mc) %>%
+        filter(!score %in% boxplot.stats(score, 2.5)$out) %>%
+        spread(mc, score) %>%
+        arrange(condition, subid)
+    }
+    
+    if(datasource == "study 3") {
+      d_clean <- d_clean %>%
+        gather(mc, score, happy:pride) %>%
+        group_by(target, mc) %>%
+        filter(!score %in% boxplot.stats(score, 2.5)$out) %>%
+        spread(mc, score) %>%
+        arrange(target, subid)
+    }
+    
+  }
+  
+  # filter items if desired
+  if(is.element("none", chosenExcludeItem)) {} else {
+    d_clean <- d_clean %>%
+      dplyr::select(-contains(chosenExcludeItem))
+  }
+
+  # return cleaned dataset
+  return(d_clean)
+}
+
+# make function for stripping dataframes for dimension reducation
+makeDRDF <- function(datasource, chosenCondition) {
+  
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 2"){d <- d2}
+  if(datasource == "study 3"){
+    # rename variables for ease of function applpication
+    d <- d3 %>%
+      rename(order = condition,
+             condition = target)
+    
+    # rename subids by condition if collapses across conditions
+    d <- d %>%
+      mutate(subid = paste(condition, subid, sep = "_"))
+  }
+  if(datasource == "study 4"){d <- d4}
+  
+  # filter by condition if specified
+  if(chosenCondition %in% c("beetle", "robot")) {
+    d <- d %>% filter(condition == chosenCondition)
+  }
+  
+  # make stripped dataframe for dimension reducation analyses
+  d_strip <- d %>%
+    dplyr::select(subid, happy:pride)
+  d_strip <- data.frame(d_strip[,-1], row.names = d_strip$subid)
+  
+  # return stripped dataframe
+  return(d_strip)
+}
+
+# parameters -----
+chosenOutlierHandling <- "keep"
+chosenExclude <- "none"
+chosenExcludeItem <- "none"
+chosenCorType <- "cor" # pearson correlation
+chosenRotType <- "varimax" # varimax rotation
+# chosenRotType <- "oblimin" # oblimin rotation
+
+# raw data -----
+# study 1 (2015-12-15, 2 conditions, between-subjects)
+d_raw_study1 <- read.csv("https://osf.io/29vng/download") %>%
+  mutate(study = "study 1")
+
+# study 2 (2016-01-12, 2 conditions, between-subjects - REPLICATION)
+d_raw_study2 <- read.csv("https://osf.io/g76hj/download") %>%
+  mutate(study = "study 2")
+
+# study 3 (2016-01-10, 2 conditions, within-subjects)
+d_raw_study3 <- read.csv("https://osf.io/epykf/download") %>%
+  mutate(study = "study 3")
+
+# study 4 (2016-01-14, 21 conditions, between-subjects)
+d_raw_study4 <- read.csv("https://osf.io/kdzge/download") %>%
+  mutate(study = "study 4")
+
+# data cleanup -----
+d1 <- cleanup("study 1")
+d2 <- cleanup("study 2")
+d3 <- cleanup("study 3")
+d4 <- cleanup("study 4")
+
+# dataframes for dim reduction -----
+# make dataframes for s1
+d1_all <- makeDRDF("study 1", "all")
+
+# make dataframes for study 2
+d2_all <- makeDRDF("study 2", "all")
+
+# make dataframes for study 3
+d3_all <- makeDRDF("study 3", "all")
+
+# make dataframes for study 4
+d4_all <- makeDRDF("study 4", "all")
+
+# rename for current purposes -----
+pnas_d1_all <- d1_all
+pnas_d2_all <- d2_all
+pnas_d3_all <- d3_all
+pnas_d4_all <- d4_all
+
+# get rid of extraneous stuff
+rm(round2, cleanup, makeDRDF, chosenOutlierHandling, chosenExclude, chosenExcludeItem, chosenCorType, chosenRotType, d_raw_study1, d_raw_study2, d_raw_study3, d_raw_study4, d1, d2, d3, d4, d1_all, d2_all, d3_all, d4_all)
 ```
 
 ```{r, include = F}
@@ -574,7 +1021,1058 @@ d_slide_all <- d_slide %>%
 d_slide_all_complete <- d_slide_all[complete.cases(d_slide_all),]
 ```
 
-# t-SNE: on characters
+# t-SNE: on capacities
+
+## PNAS Studies (adults)
+
+### PNAS Study 1
+
+```{r}
+pnas_colors_d1 <- fa(pnas_d1_all, nfactors = 3, rotate = "varimax")$loadings[] %>%
+  data.frame() %>%
+  rownames_to_column("capacity") %>%
+  gather(factor, loading, -capacity) %>%
+  group_by(capacity) %>%
+  top_n(1, abs(loading)) %>%
+  ungroup()
+```
+
+```{r}
+pnas_d1_all_t <- pnas_d1_all %>% t()
+pnas_d1_tsne <- Rtsne(pnas_d1_all_t,
+                      dims = 2,
+                      initial_dims = 40,
+                      perplexity = 6,
+                      max_iter = 10000,
+                      check_duplicates = FALSE)
+
+pnas_d1_tsne_df <- pnas_d1_tsne$Y %>% data.frame()
+
+rownames(pnas_d1_tsne_df) <- names(pnas_d1_all)
+  
+pnas_d1_tsne_df <- pnas_d1_tsne_df %>%
+  rownames_to_column("capacity") %>%
+  rename(dim1 = X1, dim2 = X2)
+```
+
+```{r, fig.width = 5, fig.height = 5}
+ggplot(pnas_d1_tsne_df %>% full_join(pnas_colors_d1),
+       aes(x = dim1, 
+           y = dim2, 
+           color = factor,
+           label = capacity)) +
+  geom_point(alpha = 0.6, size = 4) +
+  geom_text_repel(size = 6) +
+  scale_color_manual("factor (according to EFA): ",
+                     limits = c("MR1", "MR2", "MR3"),
+                     labels = c("BODY", "HEART", "MIND"),
+                     values = c("#e41a1c", "#377eb8", "#4daf4a")) +
+  scale_x_continuous(breaks = seq(-1000, 1000, 50)) +
+  scale_y_continuous(breaks = seq(-1000, 1000, 50)) +
+  labs(x = "t-SNE dimension 1", y = "t-SNE dimension 2") +
+  theme_minimal() +
+  theme(text = element_text(size = 20),
+        legend.position = "top") +
+  coord_fixed()
+```
+
+### PNAS Study 2
+
+```{r}
+pnas_colors_d2 <- fa(pnas_d2_all, nfactors = 3, rotate = "varimax")$loadings[] %>%
+  data.frame() %>%
+  rownames_to_column("capacity") %>%
+  gather(factor, loading, -capacity) %>%
+  group_by(capacity) %>%
+  top_n(1, abs(loading)) %>%
+  ungroup()
+```
+
+```{r}
+pnas_d2_all_t <- pnas_d2_all %>% t()
+pnas_d2_tsne <- Rtsne(pnas_d2_all_t,
+                      dims = 2,
+                      initial_dims = 40,
+                      perplexity = 12,
+                      max_iter = 10000,
+                      check_duplicates = FALSE)
+
+pnas_d2_tsne_df <- pnas_d2_tsne$Y %>% data.frame()
+
+rownames(pnas_d2_tsne_df) <- names(pnas_d2_all)
+  
+pnas_d2_tsne_df <- pnas_d2_tsne_df %>%
+  rownames_to_column("capacity") %>%
+  rename(dim1 = X1, dim2 = X2)
+```
+
+```{r, fig.width = 5, fig.height = 5}
+ggplot(pnas_d2_tsne_df %>% full_join(pnas_colors_d2),
+       aes(y = dim1, 
+           x = dim2, 
+           color = factor,
+           label = capacity)) +
+  geom_point(alpha = 0.6, size = 4) +
+  geom_text_repel(size = 6) +
+  scale_color_manual("factor (according to EFA): ",
+                     limits = c("MR1", "MR2", "MR3"),
+                     labels = c("BODY", "HEART", "MIND"),
+                     values = c("#e41a1c", "#377eb8", "#4daf4a")) +
+  scale_x_continuous(breaks = seq(-1000, 1000, 5)) +
+  scale_y_continuous(breaks = seq(-1000, 1000, 5)) +
+  labs(y = "t-SNE dimension 1", x = "t-SNE dimension 2") +
+  theme_minimal() +
+  theme(text = element_text(size = 20),
+        legend.position = "top") +
+  coord_fixed()
+```
+
+### PNAS Study 3
+
+```{r}
+pnas_colors_d3 <- fa(pnas_d3_all, nfactors = 3, rotate = "varimax")$loadings[] %>%
+  data.frame() %>%
+  rownames_to_column("capacity") %>%
+  gather(factor, loading, -capacity) %>%
+  group_by(capacity) %>%
+  top_n(1, abs(loading)) %>%
+  ungroup()
+```
+
+```{r}
+pnas_d3_all_t <- pnas_d3_all %>% t()
+pnas_d3_tsne <- Rtsne(pnas_d3_all_t,
+                      dims = 2,
+                      initial_dims = 40,
+                      perplexity = 9,
+                      max_iter = 10000,
+                      check_duplicates = FALSE)
+
+pnas_d3_tsne_df <- pnas_d3_tsne$Y %>% data.frame()
+
+rownames(pnas_d3_tsne_df) <- names(pnas_d3_all)
+  
+pnas_d3_tsne_df <- pnas_d3_tsne_df %>%
+  rownames_to_column("capacity") %>%
+  rename(dim1 = X1, dim2 = X2)
+```
+
+```{r, fig.width = 5, fig.height = 5}
+ggplot(pnas_d3_tsne_df %>% full_join(pnas_colors_d3),
+       aes(y = dim1, 
+           x = dim2, 
+           color = factor,
+           label = capacity)) +
+  geom_point(alpha = 0.6, size = 4) +
+  geom_text_repel(size = 6) +
+  scale_color_manual("factor (according to EFA): ",
+                     limits = c("MR3", "MR1", "MR2"),
+                     labels = c("BODY", "HEART", "MIND"),
+                     values = c("#e41a1c", "#377eb8", "#4daf4a")) +
+  scale_x_continuous(breaks = seq(-1000, 1000, 50)) +
+  scale_y_continuous(breaks = seq(-1000, 1000, 50)) +
+  labs(y = "t-SNE dimension 1", x = "t-SNE dimension 2") +
+  theme_minimal() +
+  theme(text = element_text(size = 20),
+        legend.position = "top") +
+  coord_fixed()
+```
+
+### PNAS Study 4
+
+```{r}
+pnas_colors_d4 <- fa(pnas_d4_all, nfactors = 3, rotate = "varimax")$loadings[] %>%
+  data.frame() %>%
+  rownames_to_column("capacity") %>%
+  gather(factor, loading, -capacity) %>%
+  group_by(capacity) %>%
+  top_n(1, abs(loading)) %>%
+  ungroup()
+```
+
+```{r}
+pnas_d4_all_t <- pnas_d4_all %>% t()
+pnas_d4_tsne <- Rtsne(pnas_d4_all_t,
+                      dims = 2,
+                      initial_dims = 40,
+                      perplexity = 9,
+                      max_iter = 10000,
+                      check_duplicates = FALSE)
+
+pnas_d4_tsne_df <- pnas_d4_tsne$Y %>% data.frame()
+
+rownames(pnas_d4_tsne_df) <- names(pnas_d4_all)
+  
+pnas_d4_tsne_df <- pnas_d4_tsne_df %>%
+  rownames_to_column("capacity") %>%
+  rename(dim1 = X1, dim2 = X2)
+```
+
+```{r, fig.width = 5, fig.height = 5}
+ggplot(pnas_d4_tsne_df %>% full_join(pnas_colors_d4),
+       aes(y = dim1, 
+           x = dim2, 
+           color = factor,
+           label = capacity)) +
+  geom_point(alpha = 0.6, size = 4) +
+  geom_text_repel(size = 6) +
+  scale_color_manual("factor (according to EFA): ",
+                     limits = c("MR1", "MR2", "MR3"),
+                     labels = c("BODY", "HEART", "MIND"),
+                     values = c("#e41a1c", "#377eb8", "#4daf4a")) +
+  scale_x_continuous(breaks = seq(-1000, 1000, 10)) +
+  scale_y_continuous(breaks = seq(-1000, 1000, 10)) +
+  labs(y = "t-SNE dimension 1", x = "t-SNE dimension 2") +
+  theme_minimal() +
+  theme(text = element_text(size = 20),
+        legend.position = "top") +
+  coord_fixed()
+```
+
+
+## Dimkid Studies (children)
+
+## Dimkid Study 3 (7-9y)
+
+```{r}
+colors_d3 <- fa(d3_all, nfactors = 3, rotate = "oblimin")$loadings[] %>%
+  data.frame() %>%
+  rownames_to_column("capacity") %>%
+  gather(factor, loading, -capacity) %>%
+  group_by(capacity) %>%
+  top_n(1, abs(loading)) %>%
+  ungroup()
+```
+
+```{r}
+d3_all_t <- d3_all %>% t()
+d3_tsne <- Rtsne(d3_all_t,
+                      dims = 2,
+                      initial_dims = 20,
+                      perplexity = 5,
+                      max_iter = 10000,
+                      check_duplicates = FALSE)
+
+d3_tsne_df <- d3_tsne$Y %>% data.frame()
+
+rownames(d3_tsne_df) <- names(d3_all)
+  
+d3_tsne_df <- d3_tsne_df %>%
+  rownames_to_column("capacity") %>%
+  rename(dim1 = X1, dim2 = X2)
+```
+
+```{r, fig.width = 5, fig.height = 5}
+ggplot(d3_tsne_df %>% full_join(colors_d3),
+       aes(x = dim1, 
+           y = dim2, 
+           color = factor,
+           label = capacity)) +
+  geom_point(alpha = 0.6, size = 4) +
+  geom_text_repel(size = 6) +
+  scale_color_manual("factor (according to EFA): ",
+                     limits = c("MR1", "MR3", "MR2"),
+                     labels = c("BODY", "HEART", "MIND"),
+                     values = c("#e41a1c", "#377eb8", "#4daf4a")) +
+  scale_x_continuous(breaks = seq(-1000, 1000, 100)) +
+  scale_y_continuous(breaks = seq(-1000, 1000, 100)) +
+  labs(x = "t-SNE dimension 1", y = "t-SNE dimension 2") +
+  theme_minimal() +
+  theme(text = element_text(size = 20),
+        legend.position = "top") +
+  coord_fixed()
+```
+
+## Dimkid Study 4 (4-6y)
+
+```{r}
+colors_d4 <- fa(d4_all, nfactors = 2, rotate = "oblimin")$loadings[] %>%
+  data.frame() %>%
+  rownames_to_column("capacity") %>%
+  gather(factor, loading, -capacity) %>%
+  group_by(capacity) %>%
+  top_n(1, abs(loading)) %>%
+  ungroup()
+```
+
+```{r}
+d4_all_t <- d4_all[complete.cases(d4_all),] %>% t()
+d4_tsne <- Rtsne(d4_all_t,
+                 dims = 2,
+                 initial_dims = 20,
+                 perplexity = 5,
+                 max_iter = 10000,
+                 check_duplicates = FALSE)
+
+d4_tsne_df <- d4_tsne$Y %>% data.frame()
+
+rownames(d4_tsne_df) <- names(d4_all)
+  
+d4_tsne_df <- d4_tsne_df %>%
+  rownames_to_column("capacity") %>%
+  rename(dim1 = X1, dim2 = X2)
+```
+
+```{r, fig.width = 5, fig.height = 5}
+ggplot(d4_tsne_df %>% full_join(colors_d3),
+       aes(x = dim1, 
+           y = dim2, 
+           color = factor,
+           label = capacity)) +
+  geom_point(alpha = 0.6, size = 5) +
+  geom_text_repel(size = 6) +
+  scale_color_manual("factor (according to 7-9yo EFA): ",
+                     limits = c("MR1", "MR3", "MR2"),
+                     labels = c("BODY", "HEART", "MIND"),
+                     values = c("#e41a1c", "#377eb8", "#4daf4a")) +
+  scale_x_continuous(breaks = seq(-1000, 1000, 10)) +
+  scale_y_continuous(breaks = seq(-1000, 1000, 10)) +
+  labs(x = "t-SNE dimension 1", y = "t-SNE dimension 2") +
+  theme_minimal() +
+  theme(text = element_text(size = 20),
+        legend.position = "top") +
+  coord_fixed()
+```
+
+## Dimkid Studies 3-4 (4-9y)
+
+### All together
+
+```{r}
+colors_dslide <- fa(d_slide_all_complete %>% select(anger:temperature), 
+                    nfactors = 3, rotate = "oblimin")$loadings[] %>%
+  data.frame() %>%
+  rownames_to_column("capacity") %>%
+  gather(factor, loading, -capacity) %>%
+  group_by(capacity) %>%
+  top_n(1, abs(loading)) %>%
+  ungroup()
+```
+
+```{r}
+d_slide_all_complete_t <- d_slide_all_complete[complete.cases(d_slide_all_complete),-c(1:2)] %>% t()
+
+d_slide_tsne <- Rtsne(d_slide_all_complete_t,
+                 dims = 2,
+                 initial_dims = 20,
+                 perplexity = 5,
+                 max_iter = 10000,
+                 check_duplicates = FALSE)
+
+d_slide_tsne_df <- d_slide_tsne$Y %>% data.frame()
+
+rownames(d_slide_tsne_df) <- names(d_slide_all_complete[-c(1:2)])
+  
+d_slide_tsne_df <- d_slide_tsne_df %>%
+  rownames_to_column("capacity") %>%
+  rename(dim1 = X1, dim2 = X2)
+```
+
+```{r, fig.width = 5, fig.height = 5}
+ggplot(d_slide_tsne_df %>% full_join(colors_dslide),
+       aes(x = dim1, 
+           y = dim2, 
+           color = factor,
+           label = capacity)) +
+  geom_point(alpha = 0.6, size = 5) +
+  geom_text_repel(size = 6) +
+  scale_color_manual("factor (according to 7-9yo EFA): ",
+                     limits = c("MR3", "MR1", "MR2"),
+                     labels = c("BODY", "HEART", "MIND"),
+                     values = c("#e41a1c", "#377eb8", "#4daf4a")) +
+  scale_x_continuous(breaks = seq(-10000, 10000, 200)) +
+  scale_y_continuous(breaks = seq(-10000, 10000, 200)) +
+  labs(x = "t-SNE dimension 1", y = "t-SNE dimension 2") +
+  theme_minimal() +
+  theme(text = element_text(size = 20),
+        legend.position = "top") +
+  coord_fixed()
+```
+
+### Sliding window
+
+```{r}
+# make tsne function
+tsne_fun <- function(df, initial_dims_set = 20, perplexity_set = 5){
+  df_t <- df %>% t()
+  
+  df_tsne <- Rtsne(df_t,
+                   dims = 2,
+                   initial_dims = initial_dims_set,
+                   perplexity = perplexity_set,
+                   max_iter = 10000,
+                   check_duplicates = FALSE)
+
+  df_tsne_df <- df_tsne$Y %>% data.frame()
+  
+  rownames(df_tsne_df) <- names(df)
+    
+  df_tsne_df <- df_tsne_df %>%
+    rownames_to_column("capacity") %>%
+    rename(dim1 = X1, dim2 = X2)
+  
+  return(df_tsne_df)
+}
+```
+
+```{r, message = FALSE}
+# do sliding window, grouping by character
+window_size <- 120
+
+char_means <- data.frame(capacity = character(),
+                         beetle = numeric(),
+                         bird = numeric(),
+                         computer = numeric(),
+                         doll = numeric(),
+                         elephant = numeric(),
+                         goat = numeric(),
+                         mouse = numeric(),
+                         robot = numeric(),
+                         teddy_bear = numeric(),
+                         window = numeric(),
+                         age_min = numeric(),
+                         age_max = numeric(),
+                         age_med = numeric())
+                         
+# get character means for each window
+for(i in 1:(nrow(d_slide_all_complete)-window_size)){
+  df_temp1 <- d_slide_all_complete %>% arrange(age, character)
+  
+  df_temp2 <- df_temp1[i:(i+window_size-1),]
+
+  df_temp3 <- df_temp2 %>%
+    select(-age) %>%
+    gather(capacity, response, -character) %>%
+    group_by(character, capacity) %>%
+    summarise(mean = mean(response, na.rm = T)) %>%
+    ungroup() %>%
+    spread(character, mean) %>%
+    data.frame() %>%
+    mutate(window = i,
+           age_min = min(df_temp2$age),
+           age_max = max(df_temp2$age),
+           age_med = median(df_temp2$age))
+  
+  char_means <- full_join(char_means, df_temp3)
+}
+
+char_means <- char_means %>% 
+  mutate(cap_window = paste(capacity, window, sep = "_"))
+```
+
+```{r}
+temp <- data.frame(d_slide_all_complete %>% 
+                     arrange(desc(age)))[c(1:window_size),-c(1:2)]
+
+colors_dslide_final <- fa(temp, nfactors = 3, rotate = "oblimin")$loadings[] %>%
+  data.frame() %>%
+  rownames_to_column("capacity") %>%
+  gather(factor, loading, -capacity) %>%
+  group_by(capacity) %>%
+  top_n(1, abs(loading)) %>%
+  ungroup()
+```
+
+```{r}
+# do tsne on char_means
+char_means_df <- char_means %>%
+  select(cap_window, beetle:teddy_bear) %>%
+  data.frame() %>%
+  remove_rownames() %>%
+  column_to_rownames("cap_window") %>%
+  t() %>%
+  data.frame()
+
+# take FOREVER to run...
+# char_means_tsne650 <- tsne_fun(char_means_df, perplexity_set = 650)
+# char_means_tsne725 <- tsne_fun(char_means_df, perplexity_set = 725)
+# char_means_tsne800 <- tsne_fun(char_means_df, perplexity_set = 800)
+
+# choose which perplexity
+# char_means_tsne <- char_means_tsne650
+# char_means_tsne <- char_means_tsne725
+char_means_tsne <- char_means_tsne800
+
+char_means_tsne_df <- char_means_tsne %>%
+  mutate(capacity = names(data.frame(char_means_df))) %>%
+  mutate(window = gsub("^.+_", "", capacity),
+         capacity = gsub("_.+$", "", capacity),
+         window = as.numeric(as.character(window))) %>%
+  full_join(char_means %>%
+              select(window, starts_with("age")) %>%
+              mutate(window = as.numeric(as.character(window))) %>%
+              distinct()) %>%
+  full_join(colors_dslide_final %>% ungroup() %>% distinct(capacity, factor))
+```
+
+```{r}
+ggplot(char_means_tsne_df,
+       aes(x = dim1,
+           y = dim2,
+           group = capacity,
+           label = capacity,
+           alpha = window,
+           color = factor)) +
+  geom_path(size = 1) +
+  # geom_point() +
+  geom_label_repel(data = char_means_tsne_df %>%
+                    filter(window == max(window)) %>%
+                    distinct(),
+                  alpha = 1, segment.size = 0) +
+  theme_minimal()
+```
+
+```{r}
+g <- ggplot(char_means_tsne_df %>%
+              mutate(age_range = paste0(round2(age_min), "-", 
+                                        round2(age_max), " years")),
+       aes(x = dim1,
+           y = dim2,
+           group = capacity,
+           label = gsub("\\.", " ", capacity),
+           # alpha = window,
+           # frame = window,
+           frame = age_range,
+           color = factor)) +
+  # geom_path(size = 1) +
+  # geom_point() +
+  # geom_label_repel(data = char_means_tsne_df %>%
+  #                   filter(window == max(window)) %>%
+  #                   distinct(),
+  #                 alpha = 1, segment.size = 0) +
+  geom_text(size = 9) +
+  scale_color_manual("factor (according to EFA in oldest window): ",
+                     limits = c("MR1", "MR3", "MR2"),
+                     labels = c("BODY", "HEART", "MIND"),
+                     values = c("#e41a1c", "#377eb8", "#4daf4a")) +
+  scale_x_continuous(breaks = seq(-10000, 10000, 5),
+                     expand = c(.2, .2)) + # padding for text
+  scale_y_continuous(breaks = seq(-10000, 10000, 5)) +
+  labs(x = "t-SNE dimension 1", 
+       y = "t-SNE dimension 2",
+       title = "Age range:") +
+  theme_minimal() +
+  theme(legend.position = "top",
+        text = element_text(size = 24)) +
+  coord_fixed()
+
+# g
+```
+
+```{r}
+gganimate::gganimate(g, "tsne_animation.gif", 
+                     interval = 0.1, 
+                     ani.width = 1200, ani.height = 700)
+```
+
+
+
+# Old scraps
+
+Need to review and delete...
+
+## 2 dimensions
+
+```{r tsne2D mc}
+# # 4-10y on 20 question version
+# d_slide_all_complete_t <- d_slide_all_complete %>%
+#   mutate(character = factor(character,
+#                             levels = c("computer", "robot", "doll", 
+#                                        "teddy_bear", "beetle", "bird",
+#                                        "mouse", "goat", "elephant"))) %>%
+#   arrange(character, age) %>%
+#   select(-character, -age) %>%
+#   t()
+# 
+# tsne2D_mc_dslide <- Rtsne(d_slide_all_complete_t, 
+#                           dims = 2, 
+#                        initial_dims = 20,
+#                        perplexity = 5,
+#                        max_iter = 10000,
+#                        check_duplicates = FALSE)
+# 
+# tsne2D_mc_df <- tsne2D_mc_dslide$Y %>%
+#   data.frame()
+# 
+# rownames(tsne2D_mc_df) <- names(d_slide_all_complete)[-c(1,2)]
+#   
+# tsne2D_mc_df <- tsne2D_mc_df %>%
+#   rownames_to_column("capacity") %>%
+#   rename(tsne2D_mc_dim1 = X1, tsne2D_mc_dim2 = X2)
+```
+
+```{r tsne2D_mc scatterplot, fig.width = 2.5, fig.height = 4}
+# ggplot(tsne2D_mc_df,
+#        aes(x = tsne2D_mc_dim1, y = tsne2D_mc_dim2, 
+#            # color = capacity, 
+#            label = capacity)) +
+#   # geom_point(alpha = 0.6, size = 6) + 
+#   geom_label(size = 4) +
+#   # scale_color_brewer("capacity", type = "div") +
+#   xlim(min(tsne2D_mc_df$X1) - 0.2 * sd(tsne2D_mc_df$X1),
+#        max(tsne2D_mc_df$X1) + 0.2 * sd(tsne2D_mc_df$X1)) +
+#   ylim(min(tsne2D_mc_df$X2) - 0.2 * sd(tsne2D_mc_df$X2),
+#        max(tsne2D_mc_df$X2) + 0.2 * sd(tsne2D_mc_df$X2)) +
+#   labs(x = "t-SNE dimension 1", y = "t-SNE dimension 2") +
+#   theme_minimal() +
+#   theme(text = element_text(size = 14),
+#         legend.position = "none")
+```
+
+## 2 dimensions sliding window
+
+```{r}
+# efa_colors <- fa(d_slide_all_complete[-c(1,2)], 
+#                  nfactors = 3, rotate = "oblimin")$loadings[] %>%
+#   fa.sort() %>%
+#   data.frame() %>%
+#   rownames_to_column("capacity") %>%
+#   gather(factor, loading, -capacity) %>%
+#   group_by(capacity) %>%
+#   top_n(1, abs(loading)) %>%
+#   mutate(factor = factor(factor,
+#                          levels = c("MR1", "MR2", "MR3"),
+#                          labels = c("HEART", "MIND", "BODY")))
+```
+
+```{r}
+# # make tsne function
+# tsne_fun <- function(df, n = 120,
+#                      dims_set = 2, initial_dims_set = 50, 
+#                      perplexity_set = 5, max_iter_set = 1000,
+#                      theta_set = 0.5,
+#                      check_duplicates_set = FALSE){
+#   
+#   df_temp <- df[complete.cases(df),] %>%
+#     top_n(-n, age) %>%
+#     mutate(character = factor(character,
+#                             levels = c("computer", "robot", "doll", 
+#                                        "teddy_bear", "beetle", "bird",
+#                                        "mouse", "goat", "elephant"))) %>%
+#   arrange(character, age) %>%
+#   select(-character, -ends_with("age")) %>%
+#   t()
+#   
+#   tsne2D <- Rtsne(df_temp,
+#                   dims = dims_set,
+#                   initial_dims = initial_dims_set,
+#                   perplexity = perplexity_set,
+#                   theta = theta_set,
+#                   max_iter = max_iter_set,
+#                   check_duplicates = check_duplicates_set)
+#   
+#   tsne2D_df <- tsne2D$Y %>%
+#     data.frame()
+#   
+#   rownames(tsne2D_df) <- names(df)[-c(1,2)]
+#   
+#   tsne2D_df <- tsne2D_df %>%
+#     rownames_to_column("capacity")
+#   
+#   return(tsne2D_df)
+# }
+```
+
+
+```{r}
+# # set window size
+# window_size <- 120
+# 
+# # do sliding window
+# all_tsne <- list(NULL)
+# for(i in 1:(length(d_slide_all_complete$age)-window_size)) {
+#   tsne_temp <- tsne_fun(df = d_slide_all_complete, n = window_size)
+#   all_tsne[[i]] <- tsne_temp
+# }
+# 
+# all_tsne_df <- data.frame()
+# 
+# # get into one df
+# for(i in 1:length(all_tsne)){
+#   tsne_temp <- all_tsne[[i]] %>%
+#     data.frame() %>%
+#     mutate(window = i)
+#   
+#   all_tsne_df <- rbind(all_tsne_df, tsne_temp)
+# }
+```
+
+```{r, fig.width = 12, fig.height = 12}
+# ggplot(all_tsne_df,
+#        aes(x = X1, y = X2, 
+#            color = capacity, group = capacity)) +
+#            # alpha = window)) +
+#   facet_wrap(~ window, scales = "free") +
+#   # geom_path() +
+#   geom_point() +
+#   xlim(min(tsne2D_mc_df$tsne2D_mc_dim1) - 0.2 * sd(tsne2D_mc_df$tsne2D_mc_dim1),
+#        max(tsne2D_mc_df$tsne2D_mc_dim1) + 0.2 * sd(tsne2D_mc_df$tsne2D_mc_dim1)) +
+#   ylim(min(tsne2D_mc_df$tsne2D_mc_dim2) - 0.2 * sd(tsne2D_mc_df$tsne2D_mc_dim2),
+#        max(tsne2D_mc_df$tsne2D_mc_dim2) + 0.2 * sd(tsne2D_mc_df$tsne2D_mc_dim2)) +
+#   labs(x = "t-SNE dimension 1", y = "t-SNE dimension 2") +
+#   theme_bw() +
+#   theme(text = element_text(size = 14),
+#         legend.position = "bottom",
+#         axis.text = element_blank())
+```
+
+```{r}
+# # make quantiles
+# d_slide_all_complete_quantile <- d_slide_all_complete %>%
+#   mutate(bin = ntile(age, 5)) %>%
+#   group_by(bin) %>%
+#   mutate(min_age = min(age),
+#          max_age = max(age),
+#          mean_age = mean(age, na.rm = T),
+#          med_age = median(age)) %>%
+#   ungroup()
+# 
+# # set perplexity
+# perp <- 6
+# n_iter <- 10000
+# theta <- 0
+# 
+# # 4 age groups
+# tsne1 <- tsne_fun(df = d_slide_all_complete_quantile %>% 
+#                     filter(bin == 1) %>%
+#                     select(-ends_with("_age"), -bin),
+#                   perplexity_set = perp, max_iter_set = n_iter,
+#                   theta_set = theta)
+# tsne2 <- tsne_fun(df = d_slide_all_complete_quantile %>% 
+#                     filter(bin == 2) %>%
+#                     select(-ends_with("_age"), -bin),
+#                   perplexity_set = perp, max_iter_set = n_iter,
+#                   theta_set = theta)
+# tsne3 <- tsne_fun(df = d_slide_all_complete_quantile %>%
+#                     filter(bin == 3) %>%
+#                     select(-ends_with("_age"), -bin),
+#                   perplexity_set = perp, max_iter_set = n_iter,
+#                   theta_set = theta)
+# tsne4 <- tsne_fun(df = d_slide_all_complete_quantile %>% 
+#                     filter(bin == 4) %>%
+#                     select(-ends_with("_age"), -bin),
+#                   perplexity_set = perp, max_iter_set = n_iter,
+#                   theta_set = theta)
+# tsne5 <- tsne_fun(df = d_slide_all_complete_quantile %>% 
+#                     filter(bin == 5) %>%
+#                     select(-ends_with("_age"), -bin),
+#                   perplexity_set = perp, max_iter_set = n_iter,
+#                   theta_set = theta)
+# 
+# quantile_all <- tsne1 %>% mutate(bin = 1) %>%
+#   full_join(tsne2 %>% mutate(bin = 2)) %>%
+#   full_join(tsne3 %>% mutate(bin = 3)) %>%
+#   full_join(tsne4 %>% mutate(bin = 4)) %>%
+#   full_join(tsne5 %>% mutate(bin = 5)) %>%
+#   full_join(d_slide_all_complete_quantile %>%
+#               select(bin, ends_with("_age")) %>%
+#               distinct()) %>%
+#   mutate(bin_label = paste0(round(min_age, 2), "-", round(max_age, 2), "y"))
+```
+
+```{r, fig.width = 9, fig.height = 3}
+# ggplot(quantile_all %>%
+#          full_join(efa_colors %>% select(capacity, factor)),
+#             aes(x = X1, y = X2, label = capacity, color = factor)) +
+#   # facet_wrap(~ bin_label, scales = "free") + #, ncol = 5) +
+#   facet_grid(~ bin_label, scales = "free_x", space = "free_x") + #, ncol = 5) +
+#   geom_point() +
+#   ggrepel::geom_text_repel() +
+#   theme_bw() +
+#   scale_color_manual(values = c("#377eb8", "#4daf4a", "#e41a1c")) +
+#   scale_x_continuous(breaks = seq(-1000, 1000, 100)) +
+#   scale_y_continuous(breaks = seq(-1000, 1000, 100)) +
+#   theme(legend.position = "bottom",
+#         panel.grid.minor = element_blank()) +
+#   labs(title = "t-SNE by age quintile (see facet labels for age range)",
+#       subtitle = paste0("perplexity: ", perp, "; iterations: ", n_iter, "\n(note: scales vary by quintile)"),
+#       x = "t-SNE dimension 1",
+#       y = "t-SNE dimension 2")
+```
+
+```{r}
+# # make tsne function - collapse by character
+# tsne_fun_bychar <- function(df, n = 120,
+#                             dims_set = 2, initial_dims_set = 50,
+#                             perplexity_set = 5, max_iter_set = 1000,
+#                             theta_set = 0.5,
+#                             check_duplicates_set = FALSE){
+#   
+#   df_temp <- df[complete.cases(df),] %>%
+#     top_n(-n, age) %>%
+#     mutate(character = factor(character,
+#                             levels = c("computer", "robot", "doll", 
+#                                        "teddy_bear", "beetle", "bird",
+#                                        "mouse", "goat", "elephant"))) %>%
+#     select(-age) %>%
+#     remove_rownames() %>%
+#     rownames_to_column("subid") %>%
+#     gather(capacity, response, -subid, -character) %>%
+#     group_by(character, capacity) %>%
+#     summarise(mean = mean(response)) %>%
+#     arrange(character, capacity) %>%
+#     spread(character, mean) %>%
+#     data.frame() %>%
+#     remove_rownames() %>%
+#     column_to_rownames("capacity")
+#   
+#   # names(df_temp) <- df_temp[1,] %>% t() %>% c()
+#   # df_temp <- df_temp[-1,]
+# 
+#   tsne2D <- Rtsne(df_temp,
+#                   dims = dims_set,
+#                   initial_dims = initial_dims_set,
+#                   perplexity = perplexity_set,
+#                   theta = theta_set,
+#                   max_iter = max_iter_set,
+#                   check_duplicates = check_duplicates_set)
+#   
+#   tsne2D_df <- tsne2D$Y %>%
+#     data.frame()
+#   
+#   rownames(tsne2D_df) <- names(df)[-c(1,2)]
+#   
+#   tsne2D_df <- tsne2D_df %>%
+#     rownames_to_column("capacity")
+#   
+#   return(tsne2D_df)
+# }
+```
+
+```{r}
+# # make quantiles
+# d_slide_all_complete_quantile <- d_slide_all_complete %>%
+#   mutate(bin = ntile(age, 5)) %>%
+#   group_by(bin) %>%
+#   mutate(min_age = min(age),
+#          max_age = max(age),
+#          mean_age = mean(age, na.rm = T),
+#          med_age = median(age)) %>%
+#   ungroup()
+# 
+# # set perplexity
+# perp <- 2
+# n_iter <- 10000
+# theta <- 0
+# 
+# # 4 age groups
+# tsne1 <- tsne_fun_bychar(df = d_slide_all_complete_quantile %>% 
+#                     filter(bin == 1) %>%
+#                     select(-ends_with("_age"), -bin),
+#                   perplexity_set = perp, max_iter_set = n_iter,
+#                   theta_set = theta)
+# tsne2 <- tsne_fun_bychar(df = d_slide_all_complete_quantile %>% 
+#                     filter(bin == 2) %>%
+#                     select(-ends_with("_age"), -bin),
+#                   perplexity_set = perp, max_iter_set = n_iter,
+#                   theta_set = theta)
+# tsne3 <- tsne_fun_bychar(df = d_slide_all_complete_quantile %>%
+#                     filter(bin == 3) %>%
+#                     select(-ends_with("_age"), -bin),
+#                   perplexity_set = perp, max_iter_set = n_iter,
+#                   theta_set = theta)
+# tsne4 <- tsne_fun_bychar(df = d_slide_all_complete_quantile %>% 
+#                     filter(bin == 4) %>%
+#                     select(-ends_with("_age"), -bin),
+#                   perplexity_set = perp, max_iter_set = n_iter,
+#                   theta_set = theta)
+# tsne5 <- tsne_fun_bychar(df = d_slide_all_complete_quantile %>% 
+#                     filter(bin == 5) %>%
+#                     select(-ends_with("_age"), -bin),
+#                   perplexity_set = perp, max_iter_set = n_iter,
+#                   theta_set = theta)
+# 
+# quantile_all <- tsne1 %>% mutate(bin = 1) %>%
+#   full_join(tsne2 %>% mutate(bin = 2)) %>%
+#   full_join(tsne3 %>% mutate(bin = 3)) %>%
+#   full_join(tsne4 %>% mutate(bin = 4)) %>%
+#   full_join(tsne5 %>% mutate(bin = 5)) %>%
+#   full_join(d_slide_all_complete_quantile %>%
+#               select(bin, ends_with("_age")) %>%
+#               distinct()) %>%
+#   mutate(bin_label = paste0(round(min_age, 2), "-", round(max_age, 2), "y"))
+```
+
+```{r, fig.width = 9, fig.height = 3}
+# ggplot(quantile_all %>%
+#          full_join(efa_colors %>% select(capacity, factor)),
+#             aes(x = X1, y = X2, label = capacity, color = factor)) +
+#   # facet_wrap(~ bin_label, scales = "free") + #, ncol = 5) +
+#   facet_grid(~ bin_label, scales = "free_x", space = "free_x") + #, ncol = 5) +
+#   geom_point() +
+#   ggrepel::geom_text_repel() +
+#   theme_bw() +
+#   scale_color_manual(values = c("#377eb8", "#4daf4a", "#e41a1c")) +
+#   scale_x_continuous(breaks = seq(-1000, 1000, 100)) +
+#   scale_y_continuous(breaks = seq(-1000, 1000, 100)) +
+#   theme(legend.position = "bottom",
+#         panel.grid.minor = element_blank()) +
+#   labs(title = "t-SNE by age quintile (see facet labels for age range)",
+#       subtitle = paste0("perplexity: ", perp, "; iterations: ", n_iter, "\n(note: scales vary by quintile)"),
+#       x = "t-SNE dimension 1",
+#       y = "t-SNE dimension 2")
+```
+
+```{r}
+# # make tsne function - collapse by character
+# tsne_fun_bychar_ageslice <- function(df, n = 120,
+#                                      dims_set = 2, initial_dims_set = 50,
+#                                      perplexity_set = 5, max_iter_set = 1000,
+#                                      theta_set = 0.5,
+#                                      check_duplicates_set = FALSE){
+#   
+#   df_temp <- df[complete.cases(df),] %>%
+#     top_n(-n, age) %>%
+#     mutate(character = factor(character,
+#                             levels = c("computer", "robot", "doll", 
+#                                        "teddy_bear", "beetle", "bird",
+#                                        "mouse", "goat", "elephant"))) %>%
+#     mutate(age_bin = ntile(age, 5)) %>%
+#     remove_rownames() %>%
+#     rownames_to_column("subid") %>%
+#     select(-age) %>%
+#     gather(capacity, response, -subid, -character, -age_bin) %>%
+#     group_by(age_bin, character, capacity) %>%
+#     summarise(mean = mean(response)) %>%
+#     ungroup() %>%
+#     mutate(char_age = paste(character, age_bin, sep = "_")) %>%
+#     select(-age_bin, -character) %>%
+#     spread(char_age, mean) %>%
+#     data.frame() %>%
+#     remove_rownames() %>%
+#     column_to_rownames("capacity")
+#   
+#   # names(df_temp) <- df_temp[1,] %>% t() %>% c()
+#   # df_temp <- df_temp[-1,]
+# 
+#   tsne2D <- Rtsne(df_temp,
+#                   dims = dims_set,
+#                   initial_dims = initial_dims_set,
+#                   perplexity = perplexity_set,
+#                   theta = theta_set,
+#                   max_iter = max_iter_set,
+#                   check_duplicates = check_duplicates_set)
+#   
+#   tsne2D_df <- tsne2D$Y %>%
+#     data.frame()
+#   
+#   rownames(tsne2D_df) <- names(df)[-c(1,2)]
+#   
+#   tsne2D_df <- tsne2D_df %>%
+#     rownames_to_column("capacity")
+#   
+#   return(tsne2D_df)
+# }
+```
+
+```{r}
+# # make quantiles
+# d_slide_all_complete_quantile <- d_slide_all_complete %>%
+#   mutate(bin = ntile(age, 5)) %>%
+#   group_by(bin) %>%
+#   mutate(min_age = min(age),
+#          max_age = max(age),
+#          mean_age = mean(age, na.rm = T),
+#          med_age = median(age)) %>%
+#   ungroup()
+# 
+# # set perplexity
+# perp <- 4
+# n_iter <- 10000
+# theta <- 0
+# 
+# # 4 age groups
+# tsne1 <- tsne_fun_bychar_ageslice(df = d_slide_all_complete_quantile %>% 
+#                     filter(bin == 1) %>%
+#                     select(-ends_with("_age"), -bin),
+#                   perplexity_set = perp, max_iter_set = n_iter,
+#                   theta_set = theta)
+# tsne2 <- tsne_fun_bychar_ageslice(df = d_slide_all_complete_quantile %>% 
+#                     filter(bin == 2) %>%
+#                     select(-ends_with("_age"), -bin),
+#                   perplexity_set = perp, max_iter_set = n_iter,
+#                   theta_set = theta)
+# tsne3 <- tsne_fun_bychar_ageslice(df = d_slide_all_complete_quantile %>%
+#                     filter(bin == 3) %>%
+#                     select(-ends_with("_age"), -bin),
+#                   perplexity_set = perp, max_iter_set = n_iter,
+#                   theta_set = theta)
+# tsne4 <- tsne_fun_bychar_ageslice(df = d_slide_all_complete_quantile %>% 
+#                     filter(bin == 4) %>%
+#                     select(-ends_with("_age"), -bin),
+#                   perplexity_set = perp, max_iter_set = n_iter,
+#                   theta_set = theta)
+# tsne5 <- tsne_fun_bychar_ageslice(df = d_slide_all_complete_quantile %>% 
+#                     filter(bin == 5) %>%
+#                     select(-ends_with("_age"), -bin),
+#                   perplexity_set = perp, max_iter_set = n_iter,
+#                   theta_set = theta)
+# 
+# quantile_all <- tsne1 %>% mutate(bin = 1) %>%
+#   full_join(tsne2 %>% mutate(bin = 2)) %>%
+#   full_join(tsne3 %>% mutate(bin = 3)) %>%
+#   full_join(tsne4 %>% mutate(bin = 4)) %>%
+#   full_join(tsne5 %>% mutate(bin = 5)) %>%
+#   full_join(d_slide_all_complete_quantile %>%
+#               select(bin, ends_with("_age")) %>%
+#               distinct()) %>%
+#   mutate(bin_label = paste0(round(min_age, 2), "-", round(max_age, 2), "y"))
+```
+
+```{r, fig.width = 9, fig.height = 3}
+# ggplot(quantile_all %>%
+#          full_join(efa_colors %>% select(capacity, factor)),
+#             aes(x = X1, y = X2, label = capacity, color = factor)) +
+#   # facet_wrap(~ bin_label, scales = "free") + #, ncol = 5) +
+#   facet_grid(~ bin_label, scales = "free_x", space = "free_x") + #, ncol = 5) +
+#   geom_point() +
+#   ggrepel::geom_text_repel() +
+#   theme_bw() +
+#   scale_color_manual(values = c("#377eb8", "#4daf4a", "#e41a1c")) +
+#   scale_x_continuous(breaks = seq(-1000, 1000, 100)) +
+#   scale_y_continuous(breaks = seq(-1000, 1000, 100)) +
+#   theme(legend.position = "bottom",
+#         panel.grid.minor = element_blank()) +
+#   labs(title = "t-SNE by age quintile (see facet labels for age range)",
+#       subtitle = paste0("perplexity: ", perp, "; iterations: ", n_iter, "\n(note: scales vary by quintile)"),
+#       x = "t-SNE dimension 1",
+#       y = "t-SNE dimension 2")
+```
+
+```{r, fig.width = 3, fig.height = 3}
+# perp <- 2
+# tsne_all <- tsne_fun(df = d_slide_all_complete,
+#                      perplexity_set = perp, max_iter_set = n_iter,
+#                      theta_set = theta)
+# # tsne_all <- tsne_fun_bychar(df = d_slide_all_complete,
+# #                             perplexity_set = perp, max_iter_set = n_iter,
+# #                             theta_set = theta)
+# # tsne_all <- tsne_fun_bychar_ageslice(df = d_slide_all_complete,
+# #                                      perplexity_set = perp, max_iter_set = n_iter,
+# #                                      theta_set = theta)
+# 
+# ggplot(tsne_all %>%
+#          full_join(efa_colors %>% select(capacity, factor)),
+#             aes(x = X1, y = X2, label = capacity, color = factor)) +
+#   # facet_wrap(~ bin_label, scales = "free") + #, ncol = 5) +
+#   # facet_grid(~ bin_label, scales = "free_x", space = "free_x") + #, ncol = 5) +
+#   geom_point() +
+#   ggrepel::geom_text_repel() +
+#   theme_bw() +
+#   scale_color_manual(values = c("#377eb8", "#4daf4a", "#e41a1c")) +
+#   scale_x_continuous(breaks = seq(-1000, 1000, 100)) +
+#   scale_y_continuous(breaks = seq(-1000, 1000, 100)) +
+#   theme(legend.position = "bottom",
+#         panel.grid.minor = element_blank()) +
+#   labs(title = "t-SNE",
+#       subtitle = paste0("perplexity: ", perp, "; iterations: ", n_iter),
+#       x = "t-SNE dimension 1",
+#       y = "t-SNE dimension 2")
+```
+
+
+
+## t-SNE: on characters
 
 ## 2 dimensions
 
@@ -588,42 +2086,40 @@ d_slide_all_complete <- d_slide_all[complete.cases(d_slide_all),]
 # tsne_d4 <- Rtsne(d4_all, dims = 2, initial_dims = 3,
 #                  check_duplicates = FALSE); plot(tsne_d4$Y)
 
-# 4-10y on 20 question version
-tsne2D_dslide <- Rtsne(d_slide_all_complete[-c(1,2)], dims = 2, 
-                       initial_dims = 20,
-                       perplexity = 10,
-                       check_duplicates = FALSE)
-
-tsne2D_df <- tsne2D_dslide$Y %>%
-  data.frame() %>%
-  cbind(d_slide_all_complete[,c("age", "character")]) %>%
-  rename(tsne2D_dim1 = X1, tsne2D_dim2 = X2) %>%
-  mutate(character = factor(character,
-                          levels = c("computer", "robot", 
-                                     "doll", "teddy_bear",
-                                     "beetle", "bird",
-                                     "mouse", "goat", "elephant")))
+# # 4-10y on 20 question version
+# tsne2D_dslide <- Rtsne(d_slide_all_complete[-c(1,2)], dims = 2, 
+#                        initial_dims = 20,
+#                        perplexity = 10,
+#                        check_duplicates = FALSE)
+# 
+# tsne2D_df <- tsne2D_dslide$Y %>%
+#   data.frame() %>%
+#   cbind(d_slide_all_complete[,c("age", "character")]) %>%
+#   rename(tsne2D_dim1 = X1, tsne2D_dim2 = X2) %>%
+#   mutate(character = factor(character,
+#                           levels = c("computer", "robot", 
+#                                      "doll", "teddy_bear",
+#                                      "beetle", "bird",
+#                                      "mouse", "goat", "elephant")))
 ```
 
 ```{r tsne2D scatterplot, fig.width = 5, fig.height = 4}
-ggplot(tsne2D_df,
-       aes(x = tsne2D_dim1, y = tsne2D_dim2, 
-           color = character, 
-           size = age)) +
-  geom_point(alpha = 0.6) + 
-  scale_color_brewer("character", type = "div") +
-  theme_minimal() +
-  theme(text = element_text(size = 14))
+# ggplot(tsne2D_df,
+#        aes(x = tsne2D_dim1, y = tsne2D_dim2, 
+#            color = character, 
+#            size = age)) +
+#   geom_point(alpha = 0.6) + 
+#   scale_color_brewer("character", type = "div") +
+#   theme_minimal() +
+#   theme(text = element_text(size = 14))
 ```
 
 ```{r tsne2D 3D scatterplot, fig.width = 8, fig.height = 4}
-plot_ly(tsne2D_df, x = ~(age*10), y = ~tsne2D_dim1, z = ~tsne2D_dim2, 
-        color = ~character, colors = "BrBG", 
-        # size = ~age, sizes = c(30, 130),
-        opacity = 0.6)
+# plot_ly(tsne2D_df, x = ~(age*10), y = ~tsne2D_dim1, z = ~tsne2D_dim2, 
+#         color = ~character, colors = "BrBG", 
+#         # size = ~age, sizes = c(30, 130),
+#         opacity = 0.6)
 ```
-
-
 
 ## 3 dimensions
 
@@ -637,29 +2133,29 @@ plot_ly(tsne2D_df, x = ~(age*10), y = ~tsne2D_dim1, z = ~tsne2D_dim2,
 # tsne_d4 <- Rtsne(d4_all, dims = 3, initial_dims = 3,
 #                  check_duplicates = FALSE); plot(tsne_d4$Y)
 
-# 4-10y on 20 question version
-tsne3D_dslide <- Rtsne(d_slide_all_complete[-c(1,2)], dims = 3, 
-                       initial_dims = 20,
-                       perplexity = 10,
-                       check_duplicates = FALSE)
-
-tsne3D_df <- tsne3D_dslide$Y %>%
-  data.frame() %>%
-  cbind(d_slide_all_complete[,c("age", "character")]) %>%
-  rename(tsne3D_dim1 = X1, tsne3D_dim2 = X2, tsne3D_dim3 = X3) %>%
-  mutate(character = factor(character,
-                          levels = c("computer", "robot", 
-                                     "doll", "teddy_bear",
-                                     "beetle", "bird",
-                                     "mouse", "goat", "elephant")))
+# # 4-10y on 20 question version
+# tsne3D_dslide <- Rtsne(d_slide_all_complete[-c(1,2)], dims = 3, 
+#                        initial_dims = 20,
+#                        perplexity = 10,
+#                        check_duplicates = FALSE)
+# 
+# tsne3D_df <- tsne3D_dslide$Y %>%
+#   data.frame() %>%
+#   cbind(d_slide_all_complete[,c("age", "character")]) %>%
+#   rename(tsne3D_dim1 = X1, tsne3D_dim2 = X2, tsne3D_dim3 = X3) %>%
+#   mutate(character = factor(character,
+#                           levels = c("computer", "robot", 
+#                                      "doll", "teddy_bear",
+#                                      "beetle", "bird",
+#                                      "mouse", "goat", "elephant")))
 ```
 
 ```{r tsne3D 3D scatterplot, fig.width = 8, fig.height = 8}
-plot_ly(tsne3D_df, x = ~tsne3D_dim1, y = ~tsne3D_dim2, z = ~tsne3D_dim3, 
-        color = ~character, colors = "BrBG", 
-        size = ~age, sizes = c(50, 200),
-        # size = 4,
-        opacity = 0.6)
+# plot_ly(tsne3D_df, x = ~tsne3D_dim1, y = ~tsne3D_dim2, z = ~tsne3D_dim3, 
+#         color = ~character, colors = "BrBG", 
+#         size = ~age, sizes = c(50, 200),
+#         # size = 4,
+#         opacity = 0.6)
 ```
 
 
@@ -676,610 +2172,109 @@ plot_ly(tsne3D_df, x = ~tsne3D_dim1, y = ~tsne3D_dim2, z = ~tsne3D_dim3,
 # tsne_d4 <- Rtsne(d4_all, dims = 4, initial_dims = 4,
 #                  check_duplicates = FALSE); plot(tsne_d4$Y)
 
-# 4-10y on 20 question version
-tsne4D_dslide <- Rtsne(d_slide_all_complete[-c(1,2)], dims = 4, 
-                       initial_dims = 20,
-                       perplexity = 10,
-                       check_duplicates = FALSE)
-
-tsne4D_df <- tsne4D_dslide$Y %>%
-  data.frame() %>%
-  cbind(d_slide_all_complete[,c("age", "character")]) %>%
-  rename(tsne4D_dim1 = X1, tsne4D_dim2 = X2, 
-         tsne4D_dim3 = X3, tsne4D_dim4 = X4) %>%
-  mutate(character = factor(character,
-                          levels = c("computer", "robot", 
-                                     "doll", "teddy_bear",
-                                     "beetle", "bird",
-                                     "mouse", "goat", "elephant")))
+# # 4-10y on 20 question version
+# tsne4D_dslide <- Rtsne(d_slide_all_complete[-c(1,2)], dims = 4, 
+#                        initial_dims = 20,
+#                        perplexity = 10,
+#                        check_duplicates = FALSE)
+# 
+# tsne4D_df <- tsne4D_dslide$Y %>%
+#   data.frame() %>%
+#   cbind(d_slide_all_complete[,c("age", "character")]) %>%
+#   rename(tsne4D_dim1 = X1, tsne4D_dim2 = X2, 
+#          tsne4D_dim3 = X3, tsne4D_dim4 = X4) %>%
+#   mutate(character = factor(character,
+#                           levels = c("computer", "robot", 
+#                                      "doll", "teddy_bear",
+#                                      "beetle", "bird",
+#                                      "mouse", "goat", "elephant")))
 ```
 
 ```{r tsne4D 4D scatterplot, fig.width = 8, fig.height = 8}
-plot_ly(tsne4D_df, x = ~tsne4D_dim1, y = ~tsne4D_dim2, z = ~tsne4D_dim3, 
-        color = ~character, colors = "BrBG", 
-        size = ~tsne4D_dim4, sizes = c(50, 200),
-        # size = ~age, sizes = c(50, 200),
-        # size = 4,
-        opacity = 0.6)
+# plot_ly(tsne4D_df, x = ~tsne4D_dim1, y = ~tsne4D_dim2, z = ~tsne4D_dim3, 
+#         color = ~character, colors = "BrBG", 
+#         size = ~tsne4D_dim4, sizes = c(50, 200),
+#         # size = ~age, sizes = c(50, 200),
+#         # size = 4,
+#         opacity = 0.6)
 ```
 
 
 ```{r}
-tsne2D_df_ver2 <- tsne2D_dslide$Y %>%
-  data.frame() %>%
-  cbind(d_slide_all_complete[]) %>%
-  rename(tsne2D_dim1 = X1, tsne2D_dim2 = X2) %>% #, 
-         # tsne2D_dim3 = X3, tsne2D_dim4 = X4) %>%
-  mutate(character = factor(character,
-                          levels = c("computer", "robot", 
-                                     "doll", "teddy_bear",
-                                     "beetle", "bird",
-                                     "mouse", "goat", "elephant")))
-
-
-
-tsne_cor <- tsne2D_df_ver2 %>% 
-  select(-character) %>% 
-  cor() %>%
-  data.frame() %>% 
-  rownames_to_column("tsne_dim") %>%
-  filter(grepl("tsne", tsne_dim) == T) %>%
-  select(-starts_with("tsne2D")) %>%
-  gather(capacity, cor, -tsne_dim)
-
-tsne_cor_order <- tsne_cor %>%
-  group_by(capacity) %>%
-  top_n(1, abs(cor)) %>%
-  # filter(tsne_dim == "tsne2D_dim1") %>%
-  mutate(tsne_dim = factor(tsne_dim)) %>%
-  arrange(tsne_dim, desc(abs(cor))) %>%
-  data.frame() %>%
-  rownames_to_column("order") %>%
-  mutate(order = as.numeric(as.character(order)))
-
-ggplot(tsne_cor %>% full_join(tsne_cor_order %>% select(capacity, order)),
-       aes(x = tsne_dim, y = reorder(capacity, desc(order)), 
-           fill = cor, label = round(cor, 2))) + 
-  geom_tile() +
-  geom_text() + 
-  scale_fill_distiller(palette = "RdYlBu", 
-                       limits = c(-1, 1), breaks = c(-1, 0, 1)) +
-  theme_minimal() +
-  labs(x = "", y = "")
+# tsne2D_df_ver2 <- tsne2D_dslide$Y %>%
+#   data.frame() %>%
+#   cbind(d_slide_all_complete[]) %>%
+#   rename(tsne2D_dim1 = X1, tsne2D_dim2 = X2) %>% #, 
+#          # tsne2D_dim3 = X3, tsne2D_dim4 = X4) %>%
+#   mutate(character = factor(character,
+#                           levels = c("computer", "robot", 
+#                                      "doll", "teddy_bear",
+#                                      "beetle", "bird",
+#                                      "mouse", "goat", "elephant")))
+# 
+# 
+# 
+# tsne_cor <- tsne2D_df_ver2 %>% 
+#   select(-character) %>% 
+#   cor() %>%
+#   data.frame() %>% 
+#   rownames_to_column("tsne_dim") %>%
+#   filter(grepl("tsne", tsne_dim) == T) %>%
+#   select(-starts_with("tsne2D")) %>%
+#   gather(capacity, cor, -tsne_dim)
+# 
+# tsne_cor_order <- tsne_cor %>%
+#   group_by(capacity) %>%
+#   top_n(1, abs(cor)) %>%
+#   # filter(tsne_dim == "tsne2D_dim1") %>%
+#   mutate(tsne_dim = factor(tsne_dim)) %>%
+#   arrange(tsne_dim, desc(abs(cor))) %>%
+#   data.frame() %>%
+#   rownames_to_column("order") %>%
+#   mutate(order = as.numeric(as.character(order)))
+# 
+# ggplot(tsne_cor %>% full_join(tsne_cor_order %>% select(capacity, order)),
+#        aes(x = tsne_dim, y = reorder(capacity, desc(order)), 
+#            fill = cor, label = round(cor, 2))) + 
+#   geom_tile() +
+#   geom_text() + 
+#   scale_fill_distiller(palette = "RdYlBu", 
+#                        limits = c(-1, 1), breaks = c(-1, 0, 1)) +
+#   theme_minimal() +
+#   labs(x = "", y = "")
 
 ```
 
 ```{r}
-tsne_cor %>%
-  filter(tsne_dim == "tsne2D_dim1") %>%
-  arrange(desc(abs(cor)))
-
-tsne_cor %>%
-  filter(tsne_dim == "tsne2D_dim2") %>%
-  arrange(desc(abs(cor)))
-
-tsne_cor %>%
-  filter(tsne_dim == "tsne2D_dim3") %>%
-  arrange(desc(abs(cor)))
-
-tsne_cor %>%
-  filter(tsne_dim == "tsne2D_dim4") %>%
-  arrange(desc(abs(cor)))
+# tsne_cor %>%
+#   filter(tsne_dim == "tsne2D_dim1") %>%
+#   arrange(desc(abs(cor)))
+# 
+# tsne_cor %>%
+#   filter(tsne_dim == "tsne2D_dim2") %>%
+#   arrange(desc(abs(cor)))
+# 
+# tsne_cor %>%
+#   filter(tsne_dim == "tsne2D_dim3") %>%
+#   arrange(desc(abs(cor)))
+# 
+# tsne_cor %>%
+#   filter(tsne_dim == "tsne2D_dim4") %>%
+#   arrange(desc(abs(cor)))
 ```
 
 ```{r, fig.width=4, fig.height=2}
-tsne2D_df_ver2 %>%
-  select(age, character, starts_with("tsne")) %>%
-  gather(tsne_dim, score, starts_with("tsne")) %>%
-  ggplot(aes(x = age, y = score, color = character, fill = character)) +
-  facet_grid(~tsne_dim) +
-  # geom_smooth(alpha = 0.1) +
-  geom_smooth(method = "lm", alpha = 0.1) +
-  geom_point(size = 1) +
-  scale_color_brewer(type = "div", palette = 1) +
-  scale_fill_brewer(type = "div", palette = 1) +
-  theme_bw()
+# tsne2D_df_ver2 %>%
+#   select(age, character, starts_with("tsne")) %>%
+#   gather(tsne_dim, score, starts_with("tsne")) %>%
+#   ggplot(aes(x = age, y = score, color = character, fill = character)) +
+#   facet_grid(~tsne_dim) +
+#   # geom_smooth(alpha = 0.1) +
+#   geom_smooth(method = "lm", alpha = 0.1) +
+#   geom_point(size = 1) +
+#   scale_color_brewer(type = "div", palette = 1) +
+#   scale_fill_brewer(type = "div", palette = 1) +
+#   theme_bw()
 ```
 
-
-# t-SNE: on capacities
-
-## 2 dimensions
-
-```{r tsne2D mc}
-# 4-10y on 20 question version
-d_slide_all_complete_t <- d_slide_all_complete %>%
-  mutate(character = factor(character,
-                            levels = c("computer", "robot", "doll", 
-                                       "teddy_bear", "beetle", "bird",
-                                       "mouse", "goat", "elephant"))) %>%
-  arrange(character, age) %>%
-  select(-character, -age) %>%
-  t()
-
-tsne2D_mc_dslide <- Rtsne(d_slide_all_complete_t, 
-                          dims = 2, 
-                       initial_dims = 20,
-                       perplexity = 5,
-                       max_iter = 10000,
-                       check_duplicates = FALSE)
-
-tsne2D_mc_df <- tsne2D_mc_dslide$Y %>%
-  data.frame()
-
-rownames(tsne2D_mc_df) <- names(d_slide_all_complete)[-c(1,2)]
-  
-tsne2D_mc_df <- tsne2D_mc_df %>%
-  rownames_to_column("capacity") %>%
-  rename(tsne2D_mc_dim1 = X1, tsne2D_mc_dim2 = X2)
-```
-
-```{r tsne2D_mc scatterplot, fig.width = 2.5, fig.height = 4}
-ggplot(tsne2D_mc_df,
-       aes(x = tsne2D_mc_dim1, y = tsne2D_mc_dim2, 
-           # color = capacity, 
-           label = capacity)) +
-  # geom_point(alpha = 0.6, size = 6) + 
-  geom_label(size = 4) +
-  # scale_color_brewer("capacity", type = "div") +
-  xlim(min(tsne2D_mc_df$X1) - 0.2 * sd(tsne2D_mc_df$X1),
-       max(tsne2D_mc_df$X1) + 0.2 * sd(tsne2D_mc_df$X1)) +
-  ylim(min(tsne2D_mc_df$X2) - 0.2 * sd(tsne2D_mc_df$X2),
-       max(tsne2D_mc_df$X2) + 0.2 * sd(tsne2D_mc_df$X2)) +
-  labs(x = "t-SNE dimension 1", y = "t-SNE dimension 2") +
-  theme_minimal() +
-  theme(text = element_text(size = 14),
-        legend.position = "none")
-```
-
-## 2 dimensions sliding window
-
-```{r}
-efa_colors <- fa(d_slide_all_complete[-c(1,2)], 
-                 nfactors = 3, rotate = "oblimin")$loadings[] %>%
-  fa.sort() %>%
-  data.frame() %>%
-  rownames_to_column("capacity") %>%
-  gather(factor, loading, -capacity) %>%
-  group_by(capacity) %>%
-  top_n(1, abs(loading)) %>%
-  mutate(factor = factor(factor,
-                         levels = c("MR1", "MR2", "MR3"),
-                         labels = c("HEART", "MIND", "BODY")))
-```
-
-```{r}
-# make tsne function
-tsne_fun <- function(df, n = 120,
-                     dims_set = 2, initial_dims_set = 50, 
-                     perplexity_set = 5, max_iter_set = 1000,
-                     theta_set = 0.5,
-                     check_duplicates_set = FALSE){
-  
-  df_temp <- df[complete.cases(df),] %>%
-    top_n(-n, age) %>%
-    mutate(character = factor(character,
-                            levels = c("computer", "robot", "doll", 
-                                       "teddy_bear", "beetle", "bird",
-                                       "mouse", "goat", "elephant"))) %>%
-  arrange(character, age) %>%
-  select(-character, -ends_with("age")) %>%
-  t()
-  
-  tsne2D <- Rtsne(df_temp,
-                  dims = dims_set,
-                  initial_dims = initial_dims_set,
-                  perplexity = perplexity_set,
-                  theta = theta_set,
-                  max_iter = max_iter_set,
-                  check_duplicates = check_duplicates_set)
-  
-  tsne2D_df <- tsne2D$Y %>%
-    data.frame()
-  
-  rownames(tsne2D_df) <- names(df)[-c(1,2)]
-  
-  tsne2D_df <- tsne2D_df %>%
-    rownames_to_column("capacity")
-  
-  return(tsne2D_df)
-}
-```
-
-
-```{r}
-# set window size
-window_size <- 120
-
-# do sliding window
-all_tsne <- list(NULL)
-for(i in 1:(length(d_slide_all_complete$age)-window_size)) {
-  tsne_temp <- tsne_fun(df = d_slide_all_complete, n = window_size)
-  all_tsne[[i]] <- tsne_temp
-}
-
-all_tsne_df <- data.frame()
-
-# get into one df
-for(i in 1:length(all_tsne)){
-  tsne_temp <- all_tsne[[i]] %>%
-    data.frame() %>%
-    mutate(window = i)
-  
-  all_tsne_df <- rbind(all_tsne_df, tsne_temp)
-}
-```
-
-```{r, fig.width = 12, fig.height = 12}
-ggplot(all_tsne_df,
-       aes(x = X1, y = X2, 
-           color = capacity, group = capacity)) +
-           # alpha = window)) +
-  facet_wrap(~ window, scales = "free") +
-  # geom_path() +
-  geom_point() +
-  xlim(min(tsne2D_mc_df$tsne2D_mc_dim1) - 0.2 * sd(tsne2D_mc_df$tsne2D_mc_dim1),
-       max(tsne2D_mc_df$tsne2D_mc_dim1) + 0.2 * sd(tsne2D_mc_df$tsne2D_mc_dim1)) +
-  ylim(min(tsne2D_mc_df$tsne2D_mc_dim2) - 0.2 * sd(tsne2D_mc_df$tsne2D_mc_dim2),
-       max(tsne2D_mc_df$tsne2D_mc_dim2) + 0.2 * sd(tsne2D_mc_df$tsne2D_mc_dim2)) +
-  labs(x = "t-SNE dimension 1", y = "t-SNE dimension 2") +
-  theme_bw() +
-  theme(text = element_text(size = 14),
-        legend.position = "bottom",
-        axis.text = element_blank())
-```
-
-```{r}
-# make quantiles
-d_slide_all_complete_quantile <- d_slide_all_complete %>%
-  mutate(bin = ntile(age, 5)) %>%
-  group_by(bin) %>%
-  mutate(min_age = min(age),
-         max_age = max(age),
-         mean_age = mean(age, na.rm = T),
-         med_age = median(age)) %>%
-  ungroup()
-
-# set perplexity
-perp <- 6
-n_iter <- 10000
-theta <- 0
-
-# 4 age groups
-tsne1 <- tsne_fun(df = d_slide_all_complete_quantile %>% 
-                    filter(bin == 1) %>%
-                    select(-ends_with("_age"), -bin),
-                  perplexity_set = perp, max_iter_set = n_iter,
-                  theta_set = theta)
-tsne2 <- tsne_fun(df = d_slide_all_complete_quantile %>% 
-                    filter(bin == 2) %>%
-                    select(-ends_with("_age"), -bin),
-                  perplexity_set = perp, max_iter_set = n_iter,
-                  theta_set = theta)
-tsne3 <- tsne_fun(df = d_slide_all_complete_quantile %>%
-                    filter(bin == 3) %>%
-                    select(-ends_with("_age"), -bin),
-                  perplexity_set = perp, max_iter_set = n_iter,
-                  theta_set = theta)
-tsne4 <- tsne_fun(df = d_slide_all_complete_quantile %>% 
-                    filter(bin == 4) %>%
-                    select(-ends_with("_age"), -bin),
-                  perplexity_set = perp, max_iter_set = n_iter,
-                  theta_set = theta)
-tsne5 <- tsne_fun(df = d_slide_all_complete_quantile %>% 
-                    filter(bin == 5) %>%
-                    select(-ends_with("_age"), -bin),
-                  perplexity_set = perp, max_iter_set = n_iter,
-                  theta_set = theta)
-
-quantile_all <- tsne1 %>% mutate(bin = 1) %>%
-  full_join(tsne2 %>% mutate(bin = 2)) %>%
-  full_join(tsne3 %>% mutate(bin = 3)) %>%
-  full_join(tsne4 %>% mutate(bin = 4)) %>%
-  full_join(tsne5 %>% mutate(bin = 5)) %>%
-  full_join(d_slide_all_complete_quantile %>%
-              select(bin, ends_with("_age")) %>%
-              distinct()) %>%
-  mutate(bin_label = paste0(round(min_age, 2), "-", round(max_age, 2), "y"))
-```
-
-```{r, fig.width = 9, fig.height = 3}
-ggplot(quantile_all %>%
-         full_join(efa_colors %>% select(capacity, factor)),
-            aes(x = X1, y = X2, label = capacity, color = factor)) +
-  # facet_wrap(~ bin_label, scales = "free") + #, ncol = 5) +
-  facet_grid(~ bin_label, scales = "free_x", space = "free_x") + #, ncol = 5) +
-  geom_point() +
-  ggrepel::geom_text_repel() +
-  theme_bw() +
-  scale_color_manual(values = c("#377eb8", "#4daf4a", "#e41a1c")) +
-  scale_x_continuous(breaks = seq(-1000, 1000, 100)) +
-  scale_y_continuous(breaks = seq(-1000, 1000, 100)) +
-  theme(legend.position = "bottom",
-        panel.grid.minor = element_blank()) +
-  labs(title = "t-SNE by age quintile (see facet labels for age range)",
-      subtitle = paste0("perplexity: ", perp, "; iterations: ", n_iter, "\n(note: scales vary by quintile)"),
-      x = "t-SNE dimension 1",
-      y = "t-SNE dimension 2")
-```
-
-```{r}
-# make tsne function - collapse by character
-tsne_fun_bychar <- function(df, n = 120,
-                            dims_set = 2, initial_dims_set = 50,
-                            perplexity_set = 5, max_iter_set = 1000,
-                            theta_set = 0.5,
-                            check_duplicates_set = FALSE){
-  
-  df_temp <- df[complete.cases(df),] %>%
-    top_n(-n, age) %>%
-    mutate(character = factor(character,
-                            levels = c("computer", "robot", "doll", 
-                                       "teddy_bear", "beetle", "bird",
-                                       "mouse", "goat", "elephant"))) %>%
-    select(-age) %>%
-    remove_rownames() %>%
-    rownames_to_column("subid") %>%
-    gather(capacity, response, -subid, -character) %>%
-    group_by(character, capacity) %>%
-    summarise(mean = mean(response)) %>%
-    arrange(character, capacity) %>%
-    spread(character, mean) %>%
-    data.frame() %>%
-    remove_rownames() %>%
-    column_to_rownames("capacity")
-  
-  # names(df_temp) <- df_temp[1,] %>% t() %>% c()
-  # df_temp <- df_temp[-1,]
-
-  tsne2D <- Rtsne(df_temp,
-                  dims = dims_set,
-                  initial_dims = initial_dims_set,
-                  perplexity = perplexity_set,
-                  theta = theta_set,
-                  max_iter = max_iter_set,
-                  check_duplicates = check_duplicates_set)
-  
-  tsne2D_df <- tsne2D$Y %>%
-    data.frame()
-  
-  rownames(tsne2D_df) <- names(df)[-c(1,2)]
-  
-  tsne2D_df <- tsne2D_df %>%
-    rownames_to_column("capacity")
-  
-  return(tsne2D_df)
-}
-```
-
-```{r}
-# make quantiles
-d_slide_all_complete_quantile <- d_slide_all_complete %>%
-  mutate(bin = ntile(age, 5)) %>%
-  group_by(bin) %>%
-  mutate(min_age = min(age),
-         max_age = max(age),
-         mean_age = mean(age, na.rm = T),
-         med_age = median(age)) %>%
-  ungroup()
-
-# set perplexity
-perp <- 2
-n_iter <- 10000
-theta <- 0
-
-# 4 age groups
-tsne1 <- tsne_fun_bychar(df = d_slide_all_complete_quantile %>% 
-                    filter(bin == 1) %>%
-                    select(-ends_with("_age"), -bin),
-                  perplexity_set = perp, max_iter_set = n_iter,
-                  theta_set = theta)
-tsne2 <- tsne_fun_bychar(df = d_slide_all_complete_quantile %>% 
-                    filter(bin == 2) %>%
-                    select(-ends_with("_age"), -bin),
-                  perplexity_set = perp, max_iter_set = n_iter,
-                  theta_set = theta)
-tsne3 <- tsne_fun_bychar(df = d_slide_all_complete_quantile %>%
-                    filter(bin == 3) %>%
-                    select(-ends_with("_age"), -bin),
-                  perplexity_set = perp, max_iter_set = n_iter,
-                  theta_set = theta)
-tsne4 <- tsne_fun_bychar(df = d_slide_all_complete_quantile %>% 
-                    filter(bin == 4) %>%
-                    select(-ends_with("_age"), -bin),
-                  perplexity_set = perp, max_iter_set = n_iter,
-                  theta_set = theta)
-tsne5 <- tsne_fun_bychar(df = d_slide_all_complete_quantile %>% 
-                    filter(bin == 5) %>%
-                    select(-ends_with("_age"), -bin),
-                  perplexity_set = perp, max_iter_set = n_iter,
-                  theta_set = theta)
-
-quantile_all <- tsne1 %>% mutate(bin = 1) %>%
-  full_join(tsne2 %>% mutate(bin = 2)) %>%
-  full_join(tsne3 %>% mutate(bin = 3)) %>%
-  full_join(tsne4 %>% mutate(bin = 4)) %>%
-  full_join(tsne5 %>% mutate(bin = 5)) %>%
-  full_join(d_slide_all_complete_quantile %>%
-              select(bin, ends_with("_age")) %>%
-              distinct()) %>%
-  mutate(bin_label = paste0(round(min_age, 2), "-", round(max_age, 2), "y"))
-```
-
-```{r, fig.width = 9, fig.height = 3}
-ggplot(quantile_all %>%
-         full_join(efa_colors %>% select(capacity, factor)),
-            aes(x = X1, y = X2, label = capacity, color = factor)) +
-  # facet_wrap(~ bin_label, scales = "free") + #, ncol = 5) +
-  facet_grid(~ bin_label, scales = "free_x", space = "free_x") + #, ncol = 5) +
-  geom_point() +
-  ggrepel::geom_text_repel() +
-  theme_bw() +
-  scale_color_manual(values = c("#377eb8", "#4daf4a", "#e41a1c")) +
-  scale_x_continuous(breaks = seq(-1000, 1000, 100)) +
-  scale_y_continuous(breaks = seq(-1000, 1000, 100)) +
-  theme(legend.position = "bottom",
-        panel.grid.minor = element_blank()) +
-  labs(title = "t-SNE by age quintile (see facet labels for age range)",
-      subtitle = paste0("perplexity: ", perp, "; iterations: ", n_iter, "\n(note: scales vary by quintile)"),
-      x = "t-SNE dimension 1",
-      y = "t-SNE dimension 2")
-```
-
-```{r}
-# make tsne function - collapse by character
-tsne_fun_bychar_ageslice <- function(df, n = 120,
-                                     dims_set = 2, initial_dims_set = 50,
-                                     perplexity_set = 5, max_iter_set = 1000,
-                                     theta_set = 0.5,
-                                     check_duplicates_set = FALSE){
-  
-  df_temp <- df[complete.cases(df),] %>%
-    top_n(-n, age) %>%
-    mutate(character = factor(character,
-                            levels = c("computer", "robot", "doll", 
-                                       "teddy_bear", "beetle", "bird",
-                                       "mouse", "goat", "elephant"))) %>%
-    mutate(age_bin = ntile(age, 5)) %>%
-    remove_rownames() %>%
-    rownames_to_column("subid") %>%
-    select(-age) %>%
-    gather(capacity, response, -subid, -character, -age_bin) %>%
-    group_by(age_bin, character, capacity) %>%
-    summarise(mean = mean(response)) %>%
-    ungroup() %>%
-    mutate(char_age = paste(character, age_bin, sep = "_")) %>%
-    select(-age_bin, -character) %>%
-    spread(char_age, mean) %>%
-    data.frame() %>%
-    remove_rownames() %>%
-    column_to_rownames("capacity")
-  
-  # names(df_temp) <- df_temp[1,] %>% t() %>% c()
-  # df_temp <- df_temp[-1,]
-
-  tsne2D <- Rtsne(df_temp,
-                  dims = dims_set,
-                  initial_dims = initial_dims_set,
-                  perplexity = perplexity_set,
-                  theta = theta_set,
-                  max_iter = max_iter_set,
-                  check_duplicates = check_duplicates_set)
-  
-  tsne2D_df <- tsne2D$Y %>%
-    data.frame()
-  
-  rownames(tsne2D_df) <- names(df)[-c(1,2)]
-  
-  tsne2D_df <- tsne2D_df %>%
-    rownames_to_column("capacity")
-  
-  return(tsne2D_df)
-}
-```
-
-```{r}
-# make quantiles
-d_slide_all_complete_quantile <- d_slide_all_complete %>%
-  mutate(bin = ntile(age, 5)) %>%
-  group_by(bin) %>%
-  mutate(min_age = min(age),
-         max_age = max(age),
-         mean_age = mean(age, na.rm = T),
-         med_age = median(age)) %>%
-  ungroup()
-
-# set perplexity
-perp <- 4
-n_iter <- 10000
-theta <- 0
-
-# 4 age groups
-tsne1 <- tsne_fun_bychar_ageslice(df = d_slide_all_complete_quantile %>% 
-                    filter(bin == 1) %>%
-                    select(-ends_with("_age"), -bin),
-                  perplexity_set = perp, max_iter_set = n_iter,
-                  theta_set = theta)
-tsne2 <- tsne_fun_bychar_ageslice(df = d_slide_all_complete_quantile %>% 
-                    filter(bin == 2) %>%
-                    select(-ends_with("_age"), -bin),
-                  perplexity_set = perp, max_iter_set = n_iter,
-                  theta_set = theta)
-tsne3 <- tsne_fun_bychar_ageslice(df = d_slide_all_complete_quantile %>%
-                    filter(bin == 3) %>%
-                    select(-ends_with("_age"), -bin),
-                  perplexity_set = perp, max_iter_set = n_iter,
-                  theta_set = theta)
-tsne4 <- tsne_fun_bychar_ageslice(df = d_slide_all_complete_quantile %>% 
-                    filter(bin == 4) %>%
-                    select(-ends_with("_age"), -bin),
-                  perplexity_set = perp, max_iter_set = n_iter,
-                  theta_set = theta)
-tsne5 <- tsne_fun_bychar_ageslice(df = d_slide_all_complete_quantile %>% 
-                    filter(bin == 5) %>%
-                    select(-ends_with("_age"), -bin),
-                  perplexity_set = perp, max_iter_set = n_iter,
-                  theta_set = theta)
-
-quantile_all <- tsne1 %>% mutate(bin = 1) %>%
-  full_join(tsne2 %>% mutate(bin = 2)) %>%
-  full_join(tsne3 %>% mutate(bin = 3)) %>%
-  full_join(tsne4 %>% mutate(bin = 4)) %>%
-  full_join(tsne5 %>% mutate(bin = 5)) %>%
-  full_join(d_slide_all_complete_quantile %>%
-              select(bin, ends_with("_age")) %>%
-              distinct()) %>%
-  mutate(bin_label = paste0(round(min_age, 2), "-", round(max_age, 2), "y"))
-```
-
-```{r, fig.width = 9, fig.height = 3}
-ggplot(quantile_all %>%
-         full_join(efa_colors %>% select(capacity, factor)),
-            aes(x = X1, y = X2, label = capacity, color = factor)) +
-  # facet_wrap(~ bin_label, scales = "free") + #, ncol = 5) +
-  facet_grid(~ bin_label, scales = "free_x", space = "free_x") + #, ncol = 5) +
-  geom_point() +
-  ggrepel::geom_text_repel() +
-  theme_bw() +
-  scale_color_manual(values = c("#377eb8", "#4daf4a", "#e41a1c")) +
-  scale_x_continuous(breaks = seq(-1000, 1000, 100)) +
-  scale_y_continuous(breaks = seq(-1000, 1000, 100)) +
-  theme(legend.position = "bottom",
-        panel.grid.minor = element_blank()) +
-  labs(title = "t-SNE by age quintile (see facet labels for age range)",
-      subtitle = paste0("perplexity: ", perp, "; iterations: ", n_iter, "\n(note: scales vary by quintile)"),
-      x = "t-SNE dimension 1",
-      y = "t-SNE dimension 2")
-```
-
-```{r, fig.width = 3, fig.height = 3}
-perp <- 2
-tsne_all <- tsne_fun(df = d_slide_all_complete,
-                     perplexity_set = perp, max_iter_set = n_iter,
-                     theta_set = theta)
-# tsne_all <- tsne_fun_bychar(df = d_slide_all_complete,
-#                             perplexity_set = perp, max_iter_set = n_iter,
-#                             theta_set = theta)
-# tsne_all <- tsne_fun_bychar_ageslice(df = d_slide_all_complete,
-#                                      perplexity_set = perp, max_iter_set = n_iter,
-#                                      theta_set = theta)
-
-ggplot(tsne_all %>%
-         full_join(efa_colors %>% select(capacity, factor)),
-            aes(x = X1, y = X2, label = capacity, color = factor)) +
-  # facet_wrap(~ bin_label, scales = "free") + #, ncol = 5) +
-  # facet_grid(~ bin_label, scales = "free_x", space = "free_x") + #, ncol = 5) +
-  geom_point() +
-  ggrepel::geom_text_repel() +
-  theme_bw() +
-  scale_color_manual(values = c("#377eb8", "#4daf4a", "#e41a1c")) +
-  scale_x_continuous(breaks = seq(-1000, 1000, 100)) +
-  scale_y_continuous(breaks = seq(-1000, 1000, 100)) +
-  theme(legend.position = "bottom",
-        panel.grid.minor = element_blank()) +
-  labs(title = "t-SNE",
-      subtitle = paste0("perplexity: ", perp, "; iterations: ", n_iter),
-      x = "t-SNE dimension 1",
-      y = "t-SNE dimension 2")
-```
 
