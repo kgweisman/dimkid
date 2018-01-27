@@ -1333,9 +1333,31 @@ all_cor_project <- all_cor_project %>%
   distinct() %>%
   mutate(rsq = cor^2)
   
+where_nfactors <- all_cor_project %>%
+  select(window, median, n_factors) %>%
+  distinct() %>%
+  group_by(n_factors) %>%
+  summarise(min_med = min(median),
+            mean_med = mean(median),
+            med_med = median(median),
+            max_med = max(median)) %>%
+  ungroup() %>%
+  mutate(note = c("", #1", # factor retained",
+                  "2 factors retained",
+                  "3 factors retained"))
+
 ggplot(all_cor_project,
-       aes(x = median, y = rsq, color = pair, fill = factor(n_factors))) +
-  geom_point(size = 4, shape = 21, stroke = 1) +
+       aes(x = median, y = rsq, color = pair)) +
+  geom_vline(data = where_nfactors,
+             aes(xintercept = min_med), lty = 2) +
+  geom_text(data = where_nfactors,
+            # aes(x = min_med + 0.1, y = 0, label = note),
+            # angle = 90, hjust = 0, vjust = 1,
+            aes(x = med_med, y = 0.6, label = note),
+            hjust = 0.5,
+            color = "black", size = 6) +
+  geom_point(size = 3) +
+  geom_smooth(method = "loess") +
   scale_color_brewer("Between factors...", 
                      labels = c("BODY + HEART", "BODY + MIND", "HEART + MIND"),
                      palette = "Dark2", direction = -1) +

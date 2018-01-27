@@ -1,5 +1,5 @@
 ---
-title: "Dimkid CogSci 2017 (Weisman, Dweck, & Markman, CogSci 2017)"
+title: "Dimkid CogSci 2017, 2018"
 output:
   html_notebook:
     theme: flatly
@@ -25,6 +25,7 @@ library(RColorBrewer)
 library(plotly)
 library(lubridate)
 library(rms)
+library(lme4)
 
 # clear workspace
 rm(list = ls(all = T))
@@ -547,7 +548,7 @@ To determine how many factors to retain, we use the following preset retention c
 
 We then examine and interpret varimax-rotated solutions, extracting only the number of factors that meet these criteria.
 
-# Study 1
+# Study 1 (CogSci 2017)
 
 Study information:
 
@@ -626,9 +627,9 @@ nfactors_d1_all <- efa_d1_all_rotated_loadings %>%
 nfactors_d1_all
 ```
 
-### Step 2: Run EFA with varimax rotation
+### Step 2: Run EFA with rotation
 
-```{r s1 all varimax rotation}
+```{r s1 all rotation2}
 # run EFA with rotation with N factors
 efa_d1_all_rotatedN <- fa(d1_all, nfactors_d1_all, 
                           rotate = chosenRotType, cor = chosenCorType, fm = "minres")
@@ -650,7 +651,7 @@ data.frame(loadings(fa.sort(efa_d1_all_rotatedN))[]) %>%
   mutate_at(vars(starts_with("M")), funs(round2))
 ```
 
-# Study 2
+# Study 2 (CogSci 2017)
 
 Study information:
 
@@ -729,9 +730,9 @@ nfactors_d2_all <- efa_d2_all_rotated_loadings %>%
 nfactors_d2_all
 ```
 
-### Step 2: Run EFA with varimax rotation
+### Step 2: Run EFA with rotation
 
-```{r s2 all varimax rotation}
+```{r s2 all rotation 2}
 # run EFA with rotation with N factors
 efa_d2_all_rotatedN <- fa(d2_all, nfactors_d2_all, 
                           rotate = chosenRotType, cor = chosenCorType, fm = "minres")
@@ -753,7 +754,7 @@ data.frame(loadings(fa.sort(efa_d2_all_rotatedN))[]) %>%
   mutate_at(vars(starts_with("M")), funs(round2))
 ```
 
-# Study 3 
+# Study 3 (CogSci 2018)
 
 Study information:
 
@@ -802,7 +803,7 @@ efa_d3_all_unrotated_nfactors
 ```
 
 ```{r s3 all rotation}
-efa_d3_all_rotated_max <- fa(d3_all, 13, rotate = chosenRotType,
+efa_d3_all_rotated_max <- fa(d3_all, 6, rotate = chosenRotType,
                            cor = chosenCorType, fm = "minres")
 
 efa_d3_all_rotated <- fa(d3_all, efa_d3_all_unrotated_nfactors, rotate = chosenRotType,
@@ -832,12 +833,14 @@ nfactors_d3_all <- efa_d3_all_rotated_loadings %>%
 nfactors_d3_all
 ```
 
-### Step 2: Run EFA with varimax rotation
+### Step 2: Run EFA with rotation
 
-```{r s3 all varimax rotation}
+```{r s3 all rotation 2}
 # run EFA with rotation with N factors
 efa_d3_all_rotatedN <- fa(d3_all, nfactors_d3_all, 
-                          rotate = chosenRotType, cor = chosenCorType, fm = "minres")
+                          rotate = chosenRotType, cor = chosenCorType, 
+                          fm = "minres", 
+                          n.iter = 5000) # many iter for bootstrapped CIs
 print(efa_d3_all_rotatedN)
 
 # get loadings for each factor
@@ -875,7 +878,7 @@ scores
 omega(d3_all, plot = F)
 ```
 
-# Study 4
+# Study 4 (CogSci 2018)
 
 Study information:
 
@@ -954,13 +957,16 @@ nfactors_d4_all <- efa_d4_all_rotated_loadings %>%
 nfactors_d4_all
 ```
 
-### Step 2: Run EFA with varimax rotation
+### Step 2: Run EFA with rotation
 
-```{r s4 all varimax rotation}
+```{r s4 all rotation 2}
 # run EFA with rotation with N factors
 efa_d4_all_rotatedN <- fa(d4_all, nfactors_d4_all, 
-                          rotate = chosenRotType, cor = chosenCorType, fm = "minres")
+                          rotate = chosenRotType, cor = chosenCorType, 
+                          fm = "minres", 
+                          n.iter = 5000) # many iter for bootstrapped CIs
 print(efa_d4_all_rotatedN)
+
 
 # get loadings for each factor
 efa_d4_all_rotatedN_loadings <- loadings(efa_d4_all_rotatedN)[] %>%
@@ -2164,12 +2170,13 @@ ggplot(factors_s4_long, aes(x = factor(factor, labels = c("Body-Heart", "Mind"))
 ```
 
 ```{r figure heatmap s4 force 3 factors, fig.width = 4, fig.height = 7}
-factors_s4_3fac <- fa.sort(fa(d4_all, nfactors = 3, cor = chosenCorType, rotate = chosenRotType)$loadings[]) %>%
+efa_d4_all_forced3N <- fa(d4_all, nfactors = 3, cor = chosenCorType, rotate = chosenRotType)
+factors_s4_3fac <- fa.sort(efa_d_all_forced3N$loadings[]) %>%
   data.frame() %>%
   rownames_to_column(var = "item") %>%
   left_join(char_plotting_wordings, by = c("item" = "capacity")) %>%
   select(wording, starts_with("MR")) %>%
-  rename(capacity = wording, Factor1 = MR1, Factor2 = MR2) %>% #, Factor3 = MR3) %>%
+  rename(capacity = wording, Factor1 = MR1, Factor2 = MR2, Factor3 = MR3) %>%
   rownames_to_column(var = "order") %>%
   mutate(order = as.numeric(order))
 
@@ -2254,6 +2261,14 @@ ggplot(factors_s4_3fac_long, aes(x = factor(factor),
         axis.text.x = element_blank(),
         axis.title.y = element_blank(),
         panel.grid = element_blank()) # 1000 by 1000
+```
+
+## Congruence
+
+```{r}
+# factor congruence
+factor.congruence(efa_d3_all_rotatedN, efa_d4_all_rotatedN)
+factor.congruence(efa_d3_all_rotatedN, efa_d4_all_forced3N)
 ```
 
 ## Mean ratings
@@ -2412,7 +2427,7 @@ nfactors_d12_all <- efa_d12_all_rotated_loadings %>%
 nfactors_d12_all
 ```
 
-```{r s12 all varimax rotation, include = F}
+```{r s12 all rotation 2, include = F}
 # run EFA with rotation with N factors
 efa_d12_all_rotatedN <- fa(d12_all, nfactors_d12_all, 
                           rotate = chosenRotType, cor = chosenCorType, fm = "minres",
@@ -2650,7 +2665,7 @@ nfactors_d34_all <- efa_d34_all_rotated_loadings %>%
 nfactors_d34_all
 ```
 
-```{r s34 all varimax rotation, include = F}
+```{r s34 all rotation 2, include = F}
 # # run EFA with rotation with N factors
 # efa_d34_all_rotatedN <- fa(d34_all, nfactors_d34_all, 
 #                           rotate = chosenRotType, cor = chosenCorType, fm = "minres",
@@ -2982,9 +2997,9 @@ ggplot(scores_s34_plotting %>%
                                 # labels = c("Heart",
                                 #            "Mind",
                                 #            "Body")),
-                character = factor(character,
+                character = factor(gsub("_", " ", character),
                                    levels = c("computer", "robot", "doll",
-                                              "teddy_bear", "beetle", "bird",
+                                              "teddy bear", "beetle", "bird",
                                               "mouse", "goat", "elephant")),
                 age_group = factor(age_group,
                                    levels = c("children_46", "children_79"))),
@@ -3012,7 +3027,6 @@ ggplot(scores_s34_plotting %>%
        x = "Age (years)",
        y = "Factor score") # 1000 by 500
 ```
-
 
 ```{r}
 contrasts(scores_s34_plotting$factor) <- 
@@ -3082,6 +3096,76 @@ pvals_cat %>%
   filter(p < 0.05/(nrow(pvals_cat) * ncol(pvals_cat))) %>%
   spread(factor, p)
 ```
+
+```{r s34 correlations}
+ggplot(scores_s34_plotting %>%
+         mutate(factor = factor(factor,
+                                levels = c("score_F1", "score_F3", "score_F2"),
+                                labels = c("BODY", "HEART", "MIND"))) %>%
+         spread(factor, score),
+       aes(x = BODY, y = HEART, 
+           color = age_group, fill = age_group, group = age_group)) +
+  geom_point() +
+  geom_smooth(method = "lm", alpha = 0.2) +
+  theme_bw()
+
+ggplot(scores_s34_plotting %>%
+         mutate(factor = factor(factor,
+                                levels = c("score_F1", "score_F3", "score_F2"),
+                                labels = c("BODY", "HEART", "MIND"))) %>%
+         spread(factor, score),
+       aes(x = BODY, y = MIND, 
+           color = age_group, fill = age_group, group = age_group)) +
+  geom_point() +
+  geom_smooth(method = "lm", alpha = 0.2) +
+  theme_bw()
+
+ggplot(scores_s34_plotting %>%
+         mutate(factor = factor(factor,
+                                levels = c("score_F1", "score_F3", "score_F2"),
+                                labels = c("BODY", "HEART", "MIND"))) %>%
+         spread(factor, score),
+       aes(x = HEART, y = MIND, 
+           color = age_group, fill = age_group, group = age_group)) +
+  geom_point() +
+  geom_smooth(method = "lm", alpha = 0.2) +
+  theme_bw()
+
+scores_s34_plotting %>%
+  filter(age_group == "children_79") %>%
+  mutate(factor = factor(factor,
+                         levels = c("score_F1", "score_F3", "score_F2"),
+                         labels = c("BODY", "HEART", "MIND"))) %>%
+  spread(factor, score) %>%
+  select(BODY, HEART, MIND) %>%
+  cor()
+
+scores_s34_plotting %>%
+  filter(age_group == "children_46") %>%
+  mutate(factor = factor(factor,
+                         levels = c("score_F1", "score_F3", "score_F2"),
+                         labels = c("BODY", "HEART", "MIND"))) %>%
+  spread(factor, score) %>%
+  select(BODY, HEART, MIND) %>%
+  cor()
+```
+
+```{r}
+scores_s34_lm <- scores_s34_plotting %>%
+  filter(age_group == "children_46") %>%
+  mutate(factor = factor(factor,
+                         levels = c("score_F1", "score_F3", "score_F2"),
+                         labels = c("BODY", "HEART", "MIND"))) %>%
+  spread(factor, score)
+
+summary(lmer(HEART ~ BODY * scale(age, scale = F) + (1 | character), 
+             scores_s34_lm))
+summary(lmer(MIND ~ BODY * scale(age, scale = F) + (1 | character), 
+             scores_s34_lm))
+summary(lmer(HEART ~ MIND * scale(age, scale = F) + (1 | character), 
+             scores_s34_lm))
+```
+
 
 ```{r s34 all proportions, fig.width=6.5, fig.height=4}
 # plot! (ordered by study 3 factor loadings)

@@ -341,17 +341,17 @@ mds_quant_fun <- function(df, which_quantile) {
               aes(x = X1, y = X2,
                   color = factor,
                   label = mc)) +
-    geom_rect(aes(xmin = bounding_min_x, xmax = bounding_max_x,
-                 ymin = bounding_min_y, ymax = bounding_max_y),
-              alpha = 0.005, fill = "yellow", color = "black",
-              size = 0.1) +
+    # geom_rect(aes(xmin = bounding_min_x, xmax = bounding_max_x,
+    #              ymin = bounding_min_y, ymax = bounding_max_y),
+    #           alpha = 0.005, fill = "yellow", color = "black",
+    #           size = 0.1) +
     # geom_path() +
     geom_point() +
-    geom_text_repel(size = 2, segment.alpha = 0.5) +
+    geom_text_repel(size = 3, segment.alpha = 0.5) +
     # geom_text() +
-    scale_color_brewer(palette = "Dark2", direction = -1,
-                       limits = c("MR1", "MR3", "MR2"),
-                       labels = c("HEART", "BODY", "MIND")) +
+    scale_color_manual(limits = c("MR3", "MR1", "MR2"),
+                       labels = c("BODY", "HEART", "MIND"),
+                       values = c("#e41a1c", "#377eb8", "#4daf4a")) +
     theme_bw() +
     xlim(-1.2, 1.2) +
     ylim(-1.2, 1.2) +
