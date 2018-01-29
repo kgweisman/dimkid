@@ -3,23 +3,23 @@ library(emo)
 
 # BODY vs. HEART
 
-temp2_BminH <- temp2 %>% 
-  filter(comparison == "BminH", !is.na(age)) %>%
+temp2_HminB <- temp2 %>% 
+  filter(comparison == "HminB", !is.na(age)) %>%
   mutate(sign = factor(sign(diff), labels = c("neg", "zero", "pos")))
 
-contrasts(temp2_BminH$sign) <- cbind(neg_GM = c(1, -1, 0),
+contrasts(temp2_HminB$sign) <- cbind(neg_GM = c(1, -1, 0),
                                      pos_GM = c(0, -1, 1))
 
 p1 <- glm(abs(diff) ~ scale(age, scale = F), # + scale(age, scale = F):sign,
-          family = "poisson", data = temp2_BminH)
+          family = "poisson", data = temp2_HminB)
 
-temp2_BminH$phat <- predict(p1, type = "response")
+temp2_HminB$phat <- predict(p1, type = "response")
 
-g1 <- ggplot(temp2_BminH %>%
+g1 <- ggplot(temp2_HminB %>%
                mutate(sign = factor(sign(diff),
-                                    labels = c("HEART > BODY", 
+                                    labels = c("BODY > HEART", 
                                                "no difference",
-                                               "BODY > HEART"))), 
+                                               "HEART > BODY"))), 
              aes(x = age, y = abs(diff))) +
   geom_point(position = position_jitter(width = 0, height = 0.2),
              size = 3,
@@ -39,23 +39,23 @@ g1 <- ggplot(temp2_BminH %>%
 
 # BODY vs. MIND
 
-temp2_BminM <- temp2 %>% 
-  filter(comparison == "BminM", !is.na(age)) %>%
+temp2_MminB <- temp2 %>% 
+  filter(comparison == "MminB", !is.na(age)) %>%
   mutate(sign = factor(sign(diff), labels = c("neg", "zero", "pos")))
 
-contrasts(temp2_BminM$sign) <- cbind(neg_GM = c(1, -1, 0),
+contrasts(temp2_MminB$sign) <- cbind(neg_GM = c(1, -1, 0),
                                      pos_GM = c(0, -1, 1))
 
 p2 <- glm(abs(diff) ~ scale(age, scale = F), # + scale(age, scale = F):sign,
-          family = "poisson", data = temp2_BminM)
+          family = "poisson", data = temp2_MminB)
 
-temp2_BminM$phat <- predict(p2, type = "response")
+temp2_MminB$phat <- predict(p2, type = "response")
 
-g2 <- ggplot(temp2_BminM %>%
+g2 <- ggplot(temp2_MminB %>%
                mutate(sign = factor(sign(diff),
-                                    labels = c("MIND > BODY", 
+                                    labels = c("BODY > MIND", 
                                                "no difference",
-                                               "BODY > MIND"))), 
+                                               "MIND > BODY"))), 
              aes(x = age, y = abs(diff))) +
   geom_point(position = position_jitter(width = 0, height = 0.2),
              size = 3,
@@ -77,23 +77,23 @@ g2 <- ggplot(temp2_BminM %>%
 
 # HEART vs. MIND
 
-temp2_HminM <- temp2 %>% 
-  filter(comparison == "HminM", !is.na(age)) %>%
+temp2_MminH <- temp2 %>% 
+  filter(comparison == "MminH", !is.na(age)) %>%
   mutate(sign = factor(sign(diff), labels = c("neg", "zero", "pos")))
 
-contrasts(temp2_HminM$sign) <- cbind(neg_GM = c(1, -1, 0),
+contrasts(temp2_MminH$sign) <- cbind(neg_GM = c(1, -1, 0),
                                      pos_GM = c(0, -1, 1))
 
 p3 <- glm(abs(diff) ~ scale(age, scale = F), # + scale(age, scale = F):sign,
-          family = "poisson", data = temp2_HminM)
+          family = "poisson", data = temp2_MminH)
 
-temp2_HminM$phat <- predict(p3, type = "response")
+temp2_MminH$phat <- predict(p3, type = "response")
 
-g3 <- ggplot(temp2_HminM %>%
+g3 <- ggplot(temp2_MminH %>%
                mutate(sign = factor(sign(diff),
-                                    labels = c("MIND > HEART", 
+                                    labels = c("HEART > MIND", 
                                                "no difference",
-                                               "HEART > MIND"))), 
+                                               "MIND > HEART"))), 
              aes(x = age, y = abs(diff))) +
   geom_point(position = position_jitter(width = 0, height = 0.2),
              size = 3,
@@ -102,7 +102,7 @@ g3 <- ggplot(temp2_HminM %>%
   scale_x_continuous(breaks = 0:100) +
   scale_y_continuous(breaks = 0:100, limits = c(-0.2, 6.2)) +
   scale_color_brewer(palette = "Set3", guide = "none") +
-  labs(title = "HEART vs. MIND",
+  labs(title = "MIND vs. HEART",
        shape = "Direction of difference",
        color = "Target character",
        x = "Age (years)",
@@ -111,7 +111,7 @@ g3 <- ggplot(temp2_HminM %>%
   theme(text = element_text(size = 12),
         legend.position = "none")
 
-cowplot::plot_grid(g1, g2, g3, nrow = 1)
+# cowplot::plot_grid(g1, g2, g3, nrow = 1)
 
 
 
@@ -121,25 +121,25 @@ cowplot::plot_grid(g1, g2, g3, nrow = 1)
 
 temp2_all <- temp2 %>%
   spread(comparison, diff) %>%
-  mutate(BminH_sign = 
-           factor(sign(BminH),
-                  labels = c("HEART > BODY", "no difference", 
-                             "BODY > HEART")),
-         BminM_sign = 
-           factor(sign(BminM),
-                  labels = c("MIND > BODY", "no difference", 
-                             "BODY > MIND")),
-         HminM_sign = 
-           factor(sign(HminM),
-                  labels = c("MIND > HEART", "no difference", 
-                             "HEART > MIND"))) %>%
-  select(-BminH, -BminM, -HminM) %>%
+  mutate(HminB_sign = 
+           factor(sign(HminB),
+                  labels = c("BODY > HEART", "no difference", 
+                             "HEART > BODY")),
+         MminB_sign = 
+           factor(sign(MminB),
+                  labels = c("BODY > MIND", "no difference", 
+                             "MIND > BODY")),
+         MminH_sign = 
+           factor(sign(MminH),
+                  labels = c("HEART > MIND", "no difference", 
+                             "MIND > HEART"))) %>%
+  select(-HminB, -MminB, -MminH) %>%
   gather(comparison, sign, ends_with("_sign")) %>%
   mutate(comparison = gsub("_sign", "", comparison),
          comparison_lab = recode(comparison,
-                                 "BminH" = "BODY vs. HEART",
-                                 "BminM" = "BODY vs. MIND",
-                                 "HminM" = "HEART vs. MIND")) %>%
+                                 "HminB" = "HEART vs. BODY",
+                                 "MminB" = "MIND vs. BODY",
+                                 "MminH" = "MIND vs. HEART")) %>%
   left_join(temp2) %>%
   distinct() %>%
   filter(!is.na(age)) %>%
@@ -180,8 +180,8 @@ d_pval <- data.frame(label =
                                  round(summary(p3)$coefficients[
                                    "scale(age, scale = F)", "Pr(>|z|)"], 3),
                                  nsmall = 3))),
-                     comparison_lab = c("BODY vs. HEART",
-                                        "BODY vs. MIND",
+                     comparison_lab = c("HEART vs. BODY",
+                                        "MIND vs. BODY",
                                         "HEART vs. MIND"))
 
 ggplot(temp2_all,
@@ -215,8 +215,8 @@ ggplot(temp2_all,
 ggplot(temp2_all,
        aes(x = age, y = abs(diff))) +
   facet_grid(~ comparison_lab) +
-  geom_point(aes(shape = character, # size = character,
-                 color = sign, fill = sign),
+  geom_point(aes(shape = character, size = character,
+                 color = sign), #, fill = sign),
              alpha = 0.8, size = 3,
              # stroke = 1,
              position = position_jitter(width = 0, height = 0.2)) +
@@ -241,13 +241,13 @@ ggplot(temp2_all,
                                 "#7570b3", "#7570b3", 
                                 "#1b9e77", "#1b9e77",
                                 "#999999")) +
-  scale_fill_manual(values = c("#fc8d62", "#fc8d62", 
-                               "#8da0cb", "#8da0cb", 
-                               "#66c2a5", "#66c2a5",
-                               "#d9d9d9")) +
-  # scale_shape_manual(values = c(22, 23, 24, 25, 10, 7, 20, 17, 15)) +
-  scale_shape_manual(values = c(15, 20)) +
-  # scale_size_manual(values = c(3, 3, 2, 2, 4, 4, 3, 3.5, 4)) +
+  # scale_fill_manual(values = c("#fc8d62", "#fc8d62", 
+  #                              "#8da0cb", "#8da0cb", 
+  #                              "#66c2a5", "#66c2a5",
+  #                              "#d9d9d9")) +
+  scale_shape_manual(values = c(22, 23, 24, 25, 10, 7, 20, 17, 15)) +
+  # scale_shape_manual(values = c(15, 20)) +
+  scale_size_manual(values = c(3, 3, 2, 2, 4, 4, 3, 3.5, 4)) +
   labs(title = "Differentiation of BODY, HEART, and MIND capacities by individual participants",
        # shape = "Character",
        # size = "Character",
@@ -263,8 +263,8 @@ ggplot(temp2_all %>%
          mutate(comparison_lab = factor(comparison_lab,
                                         labels = c("HEART vs. BODY",
                                                    "MIND vs. BODY",
-                                                   "MIND vs. HEART"))),
-       aes(x = age, y = -1*diff)) +
+                                                   "HEART vs. MIND"))),
+       aes(x = age, y = diff)) +
   facet_grid(~ comparison_lab) +
   geom_point(aes(shape = character, size = character,
     color = sign), #, fill = sign),
@@ -293,8 +293,8 @@ ggplot(temp2_all %>%
   #                              "#8da0cb", "#8da0cb", 
   #                              "#66c2a5", "#66c2a5",
   #                              "#d9d9d9")) +
-  # scale_shape_manual(values = c(22, 23, 24, 25, 10, 7, 20, 17, 15)) +
-  scale_shape_manual(values = c(15, 20)) +
+  scale_shape_manual(values = c(22, 23, 24, 25, 10, 7, 20, 17, 15)) +
+  # scale_shape_manual(values = c(15, 20)) +
   scale_size_manual(values = c(2.5, 2.5, 1.5, 1.5, 3.5, 3.5, 2.5, 3, 3.5)) +
   labs(title = "Differentiation of BODY, HEART, and MIND capacities by individual participants",
        shape = "Character",

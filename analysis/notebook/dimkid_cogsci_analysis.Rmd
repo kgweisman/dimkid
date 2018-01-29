@@ -2171,7 +2171,7 @@ ggplot(factors_s4_long, aes(x = factor(factor, labels = c("Body-Heart", "Mind"))
 
 ```{r figure heatmap s4 force 3 factors, fig.width = 4, fig.height = 7}
 efa_d4_all_forced3N <- fa(d4_all, nfactors = 3, cor = chosenCorType, rotate = chosenRotType)
-factors_s4_3fac <- fa.sort(efa_d_all_forced3N$loadings[]) %>%
+factors_s4_3fac <- fa.sort(efa_d4_all_forced3N$loadings[]) %>%
   data.frame() %>%
   rownames_to_column(var = "item") %>%
   left_join(char_plotting_wordings, by = c("item" = "capacity")) %>%
