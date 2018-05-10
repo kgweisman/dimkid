@@ -1,0 +1,846 @@
+---
+title: "Exploration with SVD"
+output: html_notebook
+---
+
+```{r, include = F}
+# FOR OLDER KIDS
+# first run cogsci2018_dimkid.Rmd
+# get means by character by capacity for old cohort
+d_79_mean <- d_old %>%
+  group_by(character, capacity) %>%
+  summarise(mean = mean(responseNum)) %>%
+  ungroup() %>%
+  group_by(character) %>%
+  mutate(cap_mean = mean(mean),
+         mean_cent = mean - cap_mean) %>%
+  ungroup() %>%
+  select(character, capacity, mean_cent) %>%
+  spread(character, mean_cent) %>%
+  remove_rownames() %>%
+  data.frame() %>%
+  column_to_rownames("capacity")
+
+# FOR ADULTS (PNAS STUDY 4)
+# ... oriented like Saxe et al.
+# d_adult_mean <- read.csv("https://osf.io/kdzge/download") %>%
+#   select(subid, condition, happy:pride) %>%
+#   gather(capacity, response, -subid, -condition) %>%
+#   group_by(condition, capacity) %>%
+#   summarise(mean = mean(response, na.rm = T)) %>%
+#   ungroup() %>%
+#   group_by(condition) %>%
+#   mutate(cap_mean = mean(mean),
+#          mean_cent = mean - cap_mean) %>%
+#   ungroup() %>%
+#   select(condition, capacity, mean_cent) %>%
+#   spread(condition, mean_cent) %>%
+#   remove_rownames() %>%
+#   data.frame() %>%
+#   column_to_rownames("capacity")
+
+# ... oriented like Jay
+# d_adult_mean <- read.csv("https://osf.io/kdzge/download") %>%
+#   select(subid, condition, happy:pride) %>%
+#   gather(capacity, response, -subid, -condition) %>%
+#   group_by(condition, capacity) %>%
+#   summarise(mean = mean(response, na.rm = T)) %>%
+#   ungroup() %>%
+#   group_by(capacity) %>%
+#   mutate(cond_mean = mean(mean),
+#          mean_cent = mean - cond_mean) %>%
+#   ungroup() %>%
+#   select(condition, capacity, mean_cent) %>%
+#   spread(capacity, mean_cent) %>%
+#   remove_rownames() %>%
+#   data.frame() %>%
+#   column_to_rownames("condition")
+
+# set base
+d_base_mean <- d_79_mean
+# d_base_mean <- d_adult_mean
+
+# check zero-centering
+max(abs(colMeans(d_base_mean)))
+max(abs(rowMeans(d_base_mean)))
+
+# set scale limits
+scale_lim <- c(min(d_base_mean) + 0.25, max(d_base_mean) + 0.25)
+
+# get item and property names
+item_names <- names(d_base_mean)
+property_names <- rownames(d_base_mean)
+
+# do efa
+efa_factors <- data.frame(property = property_names) %>%
+  mutate(factor =
+           ifelse(property %in% c("hunger", "hungry",
+                                  "pain",
+                                  "fatigue", "tired",
+                                  "fear",
+                                  "pleasure",
+                                  "free_will",
+                                  "conscious",
+                                  "safe",
+                                  "desires",
+                                  "nausea", "nauseated",
+                                  "calm",
+                                  "anger", "angry",
+                                  "intentions",
+                                  "awareness", "self_aware"),
+                  "BODY",
+                  ifelse(property %in% c("embarrassment", "embarrassed",
+                                         "pride",
+                                         "love",
+                                         "guilt",
+                                         "beliefs",
+                                         "hurt_feelings", "disrespected",
+                                         "sadness", "depressed",
+                                         "emo_recog",
+                                         "joy",
+                                         "personality",
+                                         "happiness", "happy",
+                                         "morality",
+                                         "self_restraint",
+                                         "thoughts"),
+                         "HEART",
+                         ifelse(property %in% c("memory", "remembering",
+                                                "recognizing",
+                                                "temperature",
+                                                "communicating",
+                                                "seeing",
+                                                "depth",
+                                                "sounds",
+                                                "goal",
+                                                "choice", "choices",
+                                                "figuring_out",
+                                                "reasoning",
+                                                "smell", "odors",
+                                                "computations"),
+                                "MIND",
+                                NA))))
+
+# efa_factors <- data.frame(item = item_names) %>%
+#   mutate(factor =
+#            ifelse(item %in% c("hunger", "hungry",
+#                                   "pain",
+#                                   "fatigue", "tired",
+#                                   "fear",
+#                                   "pleasure",
+#                                   "free_will",
+#                                   "conscious",
+#                                   "safe",
+#                                   "desires",
+#                                   "nausea", "nauseated",
+#                                   "calm",
+#                                   "anger", "angry",
+#                                   "intentions",
+#                                   "awareness", "self_aware"),
+#                   "BODY",
+#                   ifelse(item %in% c("embarrassment", "embarrassed",
+#                                          "pride",
+#                                          "love",
+#                                          "guilt",
+#                                          "beliefs",
+#                                          "hurt_feelings", "disrespected",
+#                                          "sadness", "depressed",
+#                                          "emo_recog",
+#                                          "joy",
+#                                          "personality",
+#                                          "happiness", "happy",
+#                                          "morality",
+#                                          "self_restraint",
+#                                          "thoughts"),
+#                          "HEART",
+#                          ifelse(item %in% c("memory", "remembering",
+#                                                 "recognizing",
+#                                                 "temperature",
+#                                                 "communicating",
+#                                                 "seeing",
+#                                                 "depth",
+#                                                 "sounds",
+#                                                 "goal",
+#                                                 "choice", "choices",
+#                                                 "figuring_out",
+#                                                 "reasoning",
+#                                                 "smell", "odors",
+#                                                 "computations"),
+#                                 "MIND",
+#                                 NA))))
+
+# efa_factors <- psych::fa(t(d_base_mean), 3, rotate = "varimax")$loadings[] %>%
+#   data.frame() %>%
+#   rownames_to_column("property") %>%
+#   gather(factor, loading, -property) %>%
+#   group_by(property) %>%
+#   top_n(1, abs(loading)) %>%
+#   mutate(factor = factor(factor, 
+#                          levels = c("MR3", "MR1", "MR2"),
+#                          labels = c("BODY", "HEART", "MIND")))
+```
+
+# Feature and classification vectors
+
+```{r, include = F}
+# do svd for old cohort (get N modes)
+svd_base <- svd(d_base_mean, 6, 6)
+# svd_base <- svd(d_base_mean, 4, 4)
+# svd_base <- svd(d_base_mean, 6, 2)
+u_old <- svd_base$u
+s_old <- svd_base$d
+v_old <- svd_base$v
+```
+
+```{r, fig.width = 4, fig.asp = 0.8}
+# visualize feature vectors (u)
+ggplot(data.frame(u_old) %>%
+         mutate(X1 = X1 * s_old[1],
+                X2 = X2 * s_old[2],
+                X3 = X3 * s_old[3],
+                X4 = X4 * s_old[4],
+                X5 = X5 * s_old[5],
+                X6 = X6 * s_old[6]) %>%
+         rownames_to_column("property") %>%
+         arrange(desc(abs(X1)), desc(abs(X2)), 
+                 desc(abs(X3)), desc(abs(X4))) %>%
+         mutate(order = 1:nrow(.)) %>%
+         gather(mode, value, -property, -order) %>%
+         mutate(mode = gsub("X", "", mode)) %>%
+         mutate_at(vars(property, mode), funs(as.numeric)) %>%
+         mutate(mode = factor(mode, labels = c("mode_1", "mode_2", 
+                                               "mode_3", "mode_4",
+                                               "mode_5", "mode_6")),
+                property = factor(property, labels = property_names)),
+       aes(x = mode, y = reorder(property, desc(order)),
+           fill = value)) + 
+  geom_tile(color = "black") +
+  geom_text(aes(label = format(round(value, 2), nsmall = 2)), size = 3) +
+  scale_fill_distiller(type = "div", palette = "RdBu") +
+  theme_minimal() +
+  labs(title = "U * S: Feature vectors multiplied by singular value (by mode)",
+       x = "mode",
+       y = "property")
+```
+
+```{r, fig.width = 6, fig.asp = 2.5}
+# alternative visualization of feature vectors (u)
+data.frame(u_old) %>%
+  mutate(X1 = X1 * s_old[1],
+         X2 = X2 * s_old[2],
+         X3 = X3 * s_old[3],
+         X4 = X4 * s_old[4],
+         X5 = X5 * s_old[5],
+         X6 = X6 * s_old[6]) %>%
+  rownames_to_column("property") %>%
+  arrange(desc(abs(X1)), desc(abs(X2)), 
+          desc(abs(X3)), desc(abs(X4)),
+          desc(abs(X5)), desc(abs(X6))) %>%
+  mutate(order = 1:nrow(.)) %>%
+  gather(mode, value, -property, -order) %>%
+  mutate(mode = gsub("X", "", mode)) %>%
+  mutate_at(vars(property, mode), funs(as.numeric)) %>%
+  mutate(mode = factor(mode, labels = c("mode_1", "mode_2", 
+                                        "mode_3", "mode_4",
+                                        "mode_5", "mode_6")),
+         property = factor(property, labels = property_names)) %>%
+  full_join(efa_factors %>% select(property, factor)) %>%
+  ggplot(aes(x = mode, y = value, label = property, color = factor)) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point() +
+  ggrepel::geom_text_repel(size = 3, segment.size = 0.1) + #, direction = "x") +
+  # geom_text(size = 2, position = position_nudge(x = 0.06), hjust = 0) +
+  scale_color_brewer(palette = "Set1") +
+  theme_minimal() +
+  labs(title = "U * S: Feature vectors multiplied by singular value (by mode)",
+       x = "mode",
+       y = "U-vector value * singular value")
+```
+
+```{r, fig.width = 4, fig.asp = 0.6}
+# visualize classifier vectors (v)
+ggplot(data.frame(v_old) %>%
+         mutate(X1 = X1 * s_old[1],
+                X2 = X2 * s_old[2],
+                X3 = X3 * s_old[3],
+                X4 = X4 * s_old[4],
+                X5 = X5 * s_old[5],
+                X6 = X6 * s_old[6]) %>%
+         rownames_to_column("item") %>%
+         arrange(desc(abs(X1)), desc(abs(X2)), 
+                 desc(abs(X3)), desc(abs(X4)),
+                 desc(abs(X5)), desc(abs(X6))) %>%
+         mutate(order = 1:nrow(.)) %>%
+         gather(mode, value, -item, -order) %>%
+         mutate(mode = gsub("X", "", mode)) %>%
+         mutate_at(vars(item, mode), funs(as.numeric)) %>%
+         mutate(mode = factor(mode, labels = c("mode_1", "mode_2", 
+                                               "mode_3", "mode_4",
+                                               "mode_5", "mode_6")),
+                item = factor(item, labels = item_names)),
+       aes(x = mode, y = reorder(item, desc(order)),
+           fill = value)) + 
+  geom_tile(color = "black") +
+  geom_text(aes(label = format(round(value, 2), nsmall = 2)), size = 3) +
+  scale_fill_distiller(type = "div", palette = "RdBu") +
+  theme_minimal() +
+  labs(title = "V * S: Classification vectors multiplied by singular value (by mode)",
+       x = "mode",
+       y = "item")
+```
+
+```{r, fig.width = 6, fig.asp = 1}
+# alternative visualization of feature vectors (u)
+data.frame(v_old) %>%
+  mutate(X1 = X1 * s_old[1],
+         X2 = X2 * s_old[2],
+         X3 = X3 * s_old[3],
+         X4 = X4 * s_old[4],
+         X5 = X5 * s_old[5],
+         X6 = X6 * s_old[6]) %>%
+  rownames_to_column("item") %>%
+  arrange(desc(abs(X1)), desc(abs(X2)),
+          desc(abs(X3)), desc(abs(X4)),
+          desc(abs(X5)), desc(abs(X6))) %>%
+  mutate(order = 1:nrow(.)) %>%
+  gather(mode, value, -item, -order) %>%
+  mutate(mode = gsub("X", "", mode)) %>%
+  mutate_at(vars(item, mode), funs(as.numeric)) %>%
+  mutate(mode = factor(mode, labels = c("mode_1", "mode_2",
+                                        "mode_3", "mode_4",
+                                        "mode_5", "mode_6")),
+         item = factor(item, labels = item_names)) %>%
+  # full_join(efa_factors %>% select(item, factor)) %>%
+  ggplot(aes(x = mode, y = value, label = item)) + # , color = factor)) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point() +
+  ggrepel::geom_text_repel(size = 3, segment.size = 0.1) + #, direction = "x") +
+  # geom_text(size = 2, position = position_nudge(x = 0.06), hjust = 0) +
+  scale_color_brewer(palette = "Set1") +
+  theme_minimal() +
+  labs(title = "V * S: Feature vectors multiplied by singular value (by mode)",
+       x = "mode",
+       y = "V-vector value * singular value")
+```
+
+# Outer products
+
+```{r}
+# OUTER PRODUCTS * SINGULAR VALUE -----
+# calculate outer products, multiply by singular value
+m_d1 <- outer(u_old[,1], v_old[,1]) * s_old[1]
+m_d2 <- outer(u_old[,2], v_old[,2]) * s_old[2]
+m_d3 <- outer(u_old[,3], v_old[,3]) * s_old[3]
+m_d4 <- outer(u_old[,4], v_old[,4]) * s_old[4]
+m_d5 <- outer(u_old[,5], v_old[,5]) * s_old[5]
+m_d6 <- outer(u_old[,6], v_old[,6]) * s_old[6]
+
+# add together
+m_sum <- m_d1 + m_d2 + m_d3 + m_d4 + m_d5 + m_d6
+m_diff <- as.matrix(d_base_mean) - m_sum
+```
+
+```{r, fig.width = 8, fig.asp = 2}
+# ggplot(data.frame(m_d1) %>%
+#          rownames_to_column("property") %>%
+#          gather(item, value, -property) %>%
+#          mutate(item = gsub("X", "", item)) %>%
+#          mutate_at(vars(property, item), funs(as.numeric)) %>%
+#          mutate(item = factor(item, labels = item_names),
+#                 property = factor(property, labels = property_names)),
+#        aes(x = item, y = property,
+#            # x = reorder(item, value), y = reorder(property, value), 
+#            fill = value)) + 
+#   geom_tile(color = "black") +
+#   geom_text(aes(label = format(round(value, 2), nsmall = 2)), size = 3) +
+#   scale_fill_distiller(type = "div", 
+#                        limits = scale_lim,
+#                        palette = "PRGn") +
+#   theme_minimal() +
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+#   labs(title = "Mode 1: outer product * singular value matrix",
+#        x = "item",
+#        y = "property")
+# 
+# ggplot(data.frame(m_d2) %>%
+#          rownames_to_column("property") %>%
+#          gather(item, value, -property) %>%
+#          mutate(item = gsub("X", "", item)) %>%
+#          mutate_at(vars(property, item), funs(as.numeric)) %>%
+#          mutate(item = factor(item, labels = item_names),
+#                 property = factor(property, labels = property_names)),
+#        aes(x = item, y = property,
+#          # x = reorder(item, value), y = reorder(property, value), 
+#          fill = value)) + 
+#   geom_tile(color = "black") +
+#   geom_text(aes(label = format(round(value, 2), nsmall = 2)), size = 3) +
+#   scale_fill_distiller(type = "div", 
+#                        limits = scale_lim,
+#                        palette = "PRGn") +
+#   theme_minimal() +
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+#   labs(title = "Mode 2: outer product * singular value matrix",
+#        x = "item",
+#        y = "property")
+# 
+# ggplot(data.frame(m_d3) %>%
+#          rownames_to_column("property") %>%
+#          gather(item, value, -property) %>%
+#          mutate(item = gsub("X", "", item)) %>%
+#          mutate_at(vars(property, item), funs(as.numeric)) %>%
+#          mutate(item = factor(item, labels = item_names),
+#                 property = factor(property, labels = property_names)),
+#        aes(x = item, y = property,
+#          # x = reorder(item, value), y = reorder(property, value), 
+#          fill = value)) + 
+#   geom_tile(color = "black") +
+#   geom_text(aes(label = format(round(value, 2), nsmall = 2)), size = 3) +
+#   scale_fill_distiller(type = "div", 
+#                        limits = scale_lim,
+#                        palette = "PRGn") +
+#   theme_minimal() +
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+#   labs(title = "Mode 3: outer product * singular value matrix",
+#        x = "item",
+#        y = "property")
+# 
+# ggplot(data.frame(m_d4) %>%
+#          rownames_to_column("property") %>%
+#          gather(item, value, -property) %>%
+#          mutate(item = gsub("X", "", item)) %>%
+#          mutate_at(vars(property, item), funs(as.numeric)) %>%
+#          mutate(item = factor(item, labels = item_names),
+#                 property = factor(property, labels = property_names)),
+#        aes(x = item, y = property,
+#          # x = reorder(item, value), y = reorder(property, value), 
+#          fill = value)) + 
+#   geom_tile(color = "black") +
+#   geom_text(aes(label = format(round(value, 2), nsmall = 2)), size = 3) +
+#   scale_fill_distiller(type = "div", 
+#                        limits = scale_lim,
+#                        palette = "PRGn") +
+#   theme_minimal() +
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+#   labs(title = "Mode 4: outer product * singular value matrix",
+#        x = "item",
+#        y = "property")
+
+g_actual <- ggplot(data.frame(d_base_mean) %>%
+                     rownames_to_column("property") %>%
+                     gather(item, value, -property) %>%
+                     mutate(item = factor(item, levels = item_names),
+                            property = factor(property, 
+                                              levels = property_names)),
+                   aes(x = item, y = property,
+                       # x = reorder(item, value), y = reorder(property, value),
+                       fill = value)) +
+  geom_tile(color = "black") +
+  geom_text(aes(label = format(round(value, 2), nsmall = 2)), size = 3) +
+  scale_fill_distiller(type = "div", 
+                       # limits = scale_lim,
+                       limits = c(-1, 1),
+                       palette = "PRGn") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "Actual data",
+       x = "item",
+       y = "property")
+
+g_lincomb <- ggplot(data.frame(m_sum) %>%
+                      rownames_to_column("property") %>%
+                      gather(item, value, -property) %>%
+                      mutate(item = gsub("X", "", item)) %>%
+                      mutate_at(vars(property, item), funs(as.numeric)) %>%
+                      mutate(item = factor(item, labels = item_names),
+                             property = factor(property, 
+                                               labels = property_names)),
+                    aes(x = item, y = property,
+                        # x = reorder(item, value), 
+                        # y = reorder(property, value),
+                        fill = value)) +
+  geom_tile(color = "black") +
+  geom_text(aes(label = format(round(value, 2), nsmall = 2)), size = 3) +
+  scale_fill_distiller(type = "div", 
+                       # limits = scale_lim,
+                       limits = c(-1, 1),
+                       palette = "PRGn") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "Linear combination of all modes",
+       x = "item",
+       y = "property")
+
+g_diff <- ggplot(data.frame(m_diff) %>%
+                   rownames_to_column("property") %>%
+                   gather(item, value, -property) %>%
+                   mutate(item = gsub("X", "", item)) %>%
+                   mutate_at(vars(property, item), 
+                             funs(. %>% factor %>% as.numeric)) %>%
+                   mutate(item = factor(item, labels = item_names),
+                          property = factor(property, labels = property_names)),
+                 aes(x = item, y = property,
+                     # x = reorder(item, value), y = reorder(property, value),
+                     fill = value)) + 
+  geom_tile(color = "black") +
+  geom_text(aes(label = format(round(value, 2), nsmall = 2)), size = 3) +
+  scale_fill_distiller(type = "div", 
+                       # limits = scale_lim,
+                       limits = c(-1, 1),
+                       palette = "PRGn") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "Difference: data - linear combination of modes",
+       x = "item",
+       y = "property")
+
+cowplot::plot_grid(g_actual, g_lincomb, g_diff, ncol = 1)
+```
+
+```{r}
+# REGRESSION -----
+
+# turn everything into vectors
+# data
+d_base_vec <- d_base_mean %>% 
+  rownames_to_column("property") %>%
+  gather(item, mean, -property) %>%
+  mutate(item = factor(item, labels = item_names),
+         property = factor(property, labels = property_names)) %>%
+  arrange(item, property) %>%
+  select(mean)
+
+# mode_1
+mode_1_vec <- outer(u_old[,1], v_old[,1]) %>%
+  data.frame() %>%
+  rownames_to_column("property") %>%
+  gather(item, value, -property) %>%
+  mutate(item = gsub("X", "", item)) %>%
+  mutate_at(vars(property, item), funs(as.numeric)) %>%
+  mutate(item = factor(item, labels = item_names),
+         property = factor(property, labels = property_names)) %>%
+  arrange(item, property) %>%
+  select(value) %>%
+  rename(mode_1 = value)
+
+# mode_2
+mode_2_vec <- outer(u_old[,2], v_old[,2]) %>%
+  data.frame() %>%
+  rownames_to_column("property") %>%
+  gather(item, value, -property) %>%
+  mutate(item = gsub("X", "", item)) %>%
+  mutate_at(vars(property, item), funs(as.numeric)) %>%
+  mutate(item = factor(item, labels = item_names),
+         property = factor(property, labels = property_names)) %>%
+  arrange(item, property) %>%
+  select(value) %>%
+  rename(mode_2 = value)
+
+# mode_3
+mode_3_vec <- outer(u_old[,3], v_old[,3]) %>%
+  data.frame() %>%
+  rownames_to_column("property") %>%
+  gather(item, value, -property) %>%
+  mutate(item = gsub("X", "", item)) %>%
+  mutate_at(vars(property, item), funs(as.numeric)) %>%
+  mutate(item = factor(item, labels = item_names),
+         property = factor(property, labels = property_names)) %>%
+  arrange(item, property) %>%
+  select(value) %>%
+  rename(mode_3 = value)
+
+# mode_4
+mode_4_vec <- outer(u_old[,4], v_old[,4]) %>%
+  data.frame() %>%
+  rownames_to_column("property") %>%
+  gather(item, value, -property) %>%
+  mutate(item = gsub("X", "", item)) %>%
+  mutate_at(vars(property, item), funs(as.numeric)) %>%
+  mutate(item = factor(item, labels = item_names),
+         property = factor(property, labels = property_names)) %>%
+  arrange(item, property) %>%
+  select(value) %>%
+  rename(mode_4 = value)
+
+# mode_5
+mode_5_vec <- outer(u_old[,5], v_old[,5]) %>%
+  data.frame() %>%
+  rownames_to_column("property") %>%
+  gather(item, value, -property) %>%
+  mutate(item = gsub("X", "", item)) %>%
+  mutate_at(vars(property, item), funs(as.numeric)) %>%
+  mutate(item = factor(item, labels = item_names),
+         property = factor(property, labels = property_names)) %>%
+  arrange(item, property) %>%
+  select(value) %>%
+  rename(mode_5 = value)
+
+# mode_6
+mode_6_vec <- outer(u_old[,6], v_old[,6]) %>%
+  data.frame() %>%
+  rownames_to_column("property") %>%
+  gather(item, value, -property) %>%
+  mutate(item = gsub("X", "", item)) %>%
+  mutate_at(vars(property, item), funs(as.numeric)) %>%
+  mutate(item = factor(item, labels = item_names),
+         property = factor(property, labels = property_names)) %>%
+  arrange(item, property) %>%
+  select(value) %>%
+  rename(mode_6 = value)
+
+# combine
+d_reg <- cbind(d_base_vec, 
+               mode_1_vec, mode_2_vec, mode_3_vec, mode_4_vec,
+               mode_5_vec, mode_6_vec)
+
+# regression
+r1 <- lm(mean ~ mode_1, d_reg); #summary(r1)
+# r2 <- lm(mean ~ mode_2, d_reg); #summary(r2)
+# r3 <- lm(mean ~ mode_3, d_reg); #summary(r3)
+# r4 <- lm(mean ~ mode_4, d_reg); #summary(r4)
+r12 <- lm(mean ~ mode_1 + mode_2, d_reg); #summary(r12)
+r123 <- lm(mean ~ mode_1 + mode_2 + mode_3, d_reg); #summary(r123)
+r1234 <- lm(mean ~ mode_1 + mode_2 + mode_3 + mode_4, d_reg); #summary(r1234)
+r12345 <- lm(mean ~ mode_1 + mode_2 + mode_3 + mode_4 + mode_5, d_reg); #summary(r12345)
+# r1234_0 <- lm(mean ~ 0 + mode_1 + mode_2 + mode_3 + mode_4, d_reg); summary(r1234_0)
+r123456 <- lm(mean ~ mode_1 + mode_2 + mode_3 + mode_4 + mode_5 + mode_6, 
+              d_reg); summary(r123456)
+```
+
+```{r}
+anova(r1, r12, r123, r1234, r12345, r123456)
+```
+
+```{r, results = "as.is"}
+summary(r123456)$coefficients %>%
+  data.frame() %>%
+  rownames_to_column("parameter") %>%
+  mutate(SV = c(NA, s_old[1:6])) %>%
+  rename(beta = Estimate,
+         beta_se = Std..Error,
+         beta_t = t.value,
+         beta_p = Pr...t..) %>%
+  mutate(signif = ifelse(beta_p < 0.001, "***",
+                         ifelse(beta_p < 0.01, "**",
+                                ifelse(beta_p < 0.05, "*",
+                                       "n.s.")))) %>%
+  filter(grepl("mode", parameter)) %>%
+  select(parameter, SV, starts_with("beta"), signif) %>%
+  knitr::kable(digits = 3)
+```
+
+# Plotting properties in 2D spaces
+
+```{r, fig.width = 6, fig.asp = 0.6}
+data.frame(u_old) %>%
+  mutate(X1 = X1 * s_old[1],
+         X2 = X2 * s_old[2],
+         X3 = X3 * s_old[3],
+         X4 = X4 * s_old[4],
+         X5 = X5 * s_old[5],
+         X6 = X6 * s_old[6]) %>%
+  rownames_to_column("property") %>%
+  arrange(desc(abs(X1)), desc(abs(X2)), 
+          desc(abs(X3)), desc(abs(X4)),
+          desc(abs(X5)), desc(abs(X6))) %>%
+  mutate(order = 1:nrow(.)) %>%
+  gather(mode, value, -property, -order) %>%
+  mutate(mode = gsub("X", "", mode)) %>%
+  mutate_at(vars(property, mode), funs(as.numeric)) %>%
+  mutate(mode = factor(mode, labels = c("mode_1", "mode_2", 
+                                        "mode_3", "mode_4",
+                                        "mode_5", "mode_6")),
+         property = factor(property, labels = property_names)) %>%
+  full_join(efa_factors %>% select(property, factor)) %>%
+  spread(mode, value) %>%
+  ggplot(aes(x = mode_1, y = mode_2, color = factor, 
+             label = property)) +
+  geom_text() +
+  scale_color_brewer(palette = "Set1") +
+  theme_minimal() +
+  coord_fixed() +
+  scale_x_continuous(breaks = 
+                       seq(-10, 10,
+                           by = round((scale_lim[2] - scale_lim[1])/4, 2)),
+                     expand = c(0.25, 0.25)) +
+  scale_y_continuous(breaks = 
+                       seq(-10, 10,
+                           by = round((scale_lim[2] - scale_lim[1])/4, 2))) +  labs(title = "properties in 2D space: modes 1 & 2",
+       x = "mode 1", y = "mode 2")
+
+data.frame(u_old) %>%
+  mutate(X1 = X1 * s_old[1],
+         X2 = X2 * s_old[2],
+         X3 = X3 * s_old[3],
+         X4 = X4 * s_old[4],
+         X5 = X5 * s_old[5],
+         X6 = X6 * s_old[6]) %>%
+  rownames_to_column("property") %>%
+  arrange(desc(abs(X1)), desc(abs(X2)), 
+          desc(abs(X3)), desc(abs(X4)),
+          desc(abs(X5)), desc(abs(X6))) %>%
+  mutate(order = 1:nrow(.)) %>%
+  gather(mode, value, -property, -order) %>%
+  mutate(mode = gsub("X", "", mode)) %>%
+  mutate_at(vars(property, mode), funs(as.numeric)) %>%
+  mutate(mode = factor(mode, labels = c("mode_1", "mode_2", 
+                                        "mode_3", "mode_4",
+                                        "mode_5", "mode_6")),
+         property = factor(property, labels = property_names)) %>%
+  full_join(efa_factors %>% select(property, factor)) %>%
+  spread(mode, value) %>%
+  ggplot(aes(x = mode_1, y = mode_3, color = factor, label = property)) +
+  geom_text() +
+  scale_color_brewer(palette = "Set1") +
+  theme_minimal() +
+  coord_fixed() +
+  scale_x_continuous(breaks = 
+                       seq(-10, 10,
+                           by = round((scale_lim[2] - scale_lim[1])/4, 2)),
+                     expand = c(0.25, 0.25)) +
+  scale_y_continuous(breaks = 
+                       seq(-10, 10,
+                           by = round((scale_lim[2] - scale_lim[1])/4, 2))) +  labs(title = "properties in 2D space: modes 1 & 3",
+       x = "mode 1", y = "mode 3")
+
+data.frame(u_old) %>%
+  mutate(X1 = X1 * s_old[1],
+         X2 = X2 * s_old[2],
+         X3 = X3 * s_old[3],
+         X4 = X4 * s_old[4],
+         X5 = X5 * s_old[5],
+         X6 = X6 * s_old[6]) %>%
+  rownames_to_column("property") %>%
+  arrange(desc(abs(X1)), desc(abs(X2)), 
+          desc(abs(X3)), desc(abs(X4)),
+          desc(abs(X5)), desc(abs(X6))) %>%
+  mutate(order = 1:nrow(.)) %>%
+  gather(mode, value, -property, -order) %>%
+  mutate(mode = gsub("X", "", mode)) %>%
+  mutate_at(vars(property, mode), funs(as.numeric)) %>%
+  mutate(mode = factor(mode, labels = c("mode_1", "mode_2", 
+                                        "mode_3", "mode_4",
+                                        "mode_5", "mode_6")),
+         property = factor(property, labels = property_names)) %>%
+  full_join(efa_factors %>% select(property, factor)) %>%
+  spread(mode, value) %>%
+  ggplot(aes(x = mode_2, y = mode_3, color = factor, label = property)) +
+  geom_text() +
+  scale_color_brewer(palette = "Set1") +
+  theme_minimal() +
+  coord_fixed() +
+  scale_x_continuous(breaks = 
+                       seq(-10, 10,
+                           by = round((scale_lim[2] - scale_lim[1])/4, 2)),
+                     expand = c(0.25, 0.25)) +
+  scale_y_continuous(breaks = 
+                       seq(-10, 10,
+                           by = round((scale_lim[2] - scale_lim[1])/4, 2))) +
+  labs(title = "properties in 2D space: modes 2 & 3",
+       x = "mode 2", y = "mode 3")
+```
+
+
+
+# Plotting items in 2D spaces
+
+```{r, fig.width = 6, fig.asp = 0.6}
+data.frame(v_old) %>%
+  mutate(X1 = X1 * s_old[1],
+         X2 = X2 * s_old[2],
+         X3 = X3 * s_old[3],
+         X4 = X4 * s_old[4],
+         X5 = X5 * s_old[5],
+         X6 = X6 * s_old[6]) %>%
+  rownames_to_column("item") %>%
+  arrange(desc(abs(X1)), desc(abs(X2)), 
+          desc(abs(X3)), desc(abs(X4)),
+          desc(abs(X5)), desc(abs(X6))) %>%
+  mutate(order = 1:nrow(.)) %>%
+  gather(mode, value, -item, -order) %>%
+  mutate(mode = gsub("X", "", mode)) %>%
+  mutate_at(vars(item, mode), funs(as.numeric)) %>%
+  mutate(mode = factor(mode, labels = c("mode_1", "mode_2", 
+                                        "mode_3", "mode_4",
+                                        "mode_5", "mode_6")),
+         item = factor(item, labels = item_names)) %>%
+  spread(mode, value) %>%
+  ggplot(aes(x = mode_1, y = mode_2, label = item)) +
+  geom_text() +
+  theme_minimal() +
+  coord_fixed() +
+  scale_x_continuous(breaks = 
+                       seq(-10, 10,
+                           by = round((scale_lim[2] - scale_lim[1])/4, 2)),
+                     expand = c(0.25, 0.25)) +
+  scale_y_continuous(breaks = 
+                       seq(-10, 10,
+                           by = round((scale_lim[2] - scale_lim[1])/4, 2))) +  labs(title = "items in 2D space: modes 1 & 2",
+       x = "mode 1", y = "mode 2")
+
+data.frame(v_old) %>%
+  mutate(X1 = X1 * s_old[1],
+         X2 = X2 * s_old[2],
+         X3 = X3 * s_old[3],
+         X4 = X4 * s_old[4],
+         X5 = X5 * s_old[5],
+         X6 = X6 * s_old[6]) %>%
+  rownames_to_column("item") %>%
+  arrange(desc(abs(X1)), desc(abs(X2)), 
+          desc(abs(X3)), desc(abs(X4)),
+          desc(abs(X5)), desc(abs(X6))) %>%
+  mutate(order = 1:nrow(.)) %>%
+  gather(mode, value, -item, -order) %>%
+  mutate(mode = gsub("X", "", mode)) %>%
+  mutate_at(vars(item, mode), funs(as.numeric)) %>%
+  mutate(mode = factor(mode, labels = c("mode_1", "mode_2", 
+                                        "mode_3", "mode_4",
+                                        "mode_5", "mode_6")),
+         item = factor(item, labels = item_names)) %>%
+  spread(mode, value) %>%
+  ggplot(aes(x = mode_1, y = mode_3, label = item)) +
+  geom_text() +
+  theme_minimal() +
+  coord_fixed() +
+  scale_x_continuous(breaks = 
+                       seq(-10, 10,
+                           by = round((scale_lim[2] - scale_lim[1])/4, 2)),
+                     expand = c(0.25, 0.25)) +
+  scale_y_continuous(breaks = 
+                       seq(-10, 10,
+                           by = round((scale_lim[2] - scale_lim[1])/4, 2))) +  labs(title = "items in 2D space: modes 1 & 3",
+       x = "mode 1", y = "mode 3")
+
+data.frame(v_old) %>%
+  mutate(X1 = X1 * s_old[1],
+         X2 = X2 * s_old[2],
+         X3 = X3 * s_old[3],
+         X4 = X4 * s_old[4],
+         X5 = X5 * s_old[5],
+         X6 = X6 * s_old[6]) %>%
+  rownames_to_column("item") %>%
+  arrange(desc(abs(X1)), desc(abs(X2)), 
+          desc(abs(X3)), desc(abs(X4)),
+          desc(abs(X5)), desc(abs(X6))) %>%
+  mutate(order = 1:nrow(.)) %>%
+  gather(mode, value, -item, -order) %>%
+  mutate(mode = gsub("X", "", mode)) %>%
+  mutate_at(vars(item, mode), funs(as.numeric)) %>%
+  mutate(mode = factor(mode, labels = c("mode_1", "mode_2", 
+                                        "mode_3", "mode_4",
+                                        "mode_5", "mode_6")),
+         item = factor(item, labels = item_names)) %>%
+  spread(mode, value) %>%
+  ggplot(aes(x = mode_2, y = mode_3, label = item)) +
+  geom_text() +
+  theme_minimal() +
+  coord_fixed() +
+  scale_x_continuous(breaks = 
+                       seq(-10, 10,
+                           by = round((scale_lim[2] - scale_lim[1])/4, 2)),
+                     expand = c(0.25, 0.25)) +
+  scale_y_continuous(breaks = 
+                       seq(-10, 10,
+                           by = round((scale_lim[2] - scale_lim[1])/4, 2))) +
+  labs(title = "items in 2D space: modes 2 & 3",
+       x = "mode 2", y = "mode 3")
+```
+

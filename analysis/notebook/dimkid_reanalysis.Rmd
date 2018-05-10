@@ -1,0 +1,353 @@
+---
+title: "Quick dimkid check"
+output: html_notebook
+---
+
+We were using the wrong "maximal" model! This is a quick notebook to check what we see when we use the right maximal model to determine how many factors to extract.
+
+```{r global_options, include = F}
+knitr::opts_chunk$set(echo=F, warning=F, cache=F, message=F)
+```
+
+```{r libraries, include = F}
+library(tidyverse)
+library(lubridate)
+library(psych)
+library(rms)
+library(dendextend)
+```
+
+```{r functions, include = F}
+# make function to clean up kid data from US
+clean_kid_us_fun <- function(df, n_trials, age_lower, age_upper) {
+  
+  if(!("age" %in% names(df))) {
+    df <- df %>%
+      mutate(age = NA)
+  }
+  
+  df_clean <- df %>%
+    mutate(dob = parse_datetime(dateOfBirth, "%m/%d/%y"),
+           dot = parse_datetime(gsub("2017", "17", dateOfTest), "%m/%d/%y"),
+           age = ifelse(is.na(age),
+                        interval(start = dob, end = dot) /
+                          duration(num = 1, units = "years"),
+                        age)) %>%
+    filter(trialNum <= n_trials) %>%
+    filter((age >= age_lower & age < age_upper + 1) | # outside of age range
+             is.na(age), # missing age
+           (rt >= 250 | is.na(rt)), # fast RTs
+           response %in% c("no", "kinda", "yes"), # skipped trials
+           !is.na(subid), !is.na(capacity)) %>%
+    mutate(responseNum = recode(response,
+                                "no" = 0,
+                                "kinda" = 0.5,
+                                "yes" = 1),
+           responseNum = as.numeric(responseNum)) %>%
+    distinct(subid, capacity, responseNum) %>%
+    mutate(capacity = recode(capacity,
+                             "conscious" = "awareness",
+                             "embarrassed" = "embarrassment",
+                             "guilt" = "guilt",
+                             "happy" = "happiness",
+                             "love" = "love",
+                             "pain" = "pain",
+                             "pride" = "pride",
+                             "depressed" = "sadness",
+                             "fear" = "fear",
+                             "nauseated" = "nausea",
+                             "tired" = "fatigue",
+                             "reasoning" = "figuring_out",
+                             "angry" = "anger",
+                             "hungry" = "hunger",
+                             "disrespected" = "hurt_feelings",
+                             "choices" = "choice",
+                             "remembering" = "memory",
+                             "temperature" = "temperature",
+                             "depth" = "depth",
+                             "odors" = "smell")) %>%
+    spread(capacity, responseNum) %>%
+    remove_rownames() %>%
+    column_to_rownames("subid")
+  
+  return(df_clean)
+  
+}
+
+# make function to determine max n_factors, given n_obs variables
+max_fact_fun <- function(p) {
+  
+  s_moments <- function(p) {p*(p+1)/2}
+  param_est <- function(p, k) {p*k + p - (k*(k-1)/2)}
+  check_ok <- function(p, k) {
+    a <- (p-k)^2
+    b <- p+k
+    return(ifelse(a>b, TRUE, FALSE))
+  }
+  
+  df_check <- data.frame()
+  for(i in 1:p){
+    df_check[i,"check"] <- check_ok(p,i)
+  }
+  
+  max <- df_check %>% filter(check) %>% nrow()
+  return(max)
+  
+}
+
+# make function to implement factor retention criteria
+reten_fact_fun <- function(df, rot) {
+  
+  max_efa <- fa(df, nfactors = max_fact_fun(ncol(df)), rotate = "none")
+  max_vacc <- max_efa$Vaccounted %>%
+    data.frame() %>%
+    rownames_to_column("stat") %>%
+    gather(factor, value, -stat) %>%
+    spread(stat, value) %>%
+    filter(`SS loadings` > 1, `Proportion Explained` > 0.05)
+  n_reten1 <- nrow(max_vacc)
+  
+  reten_efa <- fa(df, nfactors = n_reten1, rotate = rot)
+  reten_loadings <- reten_efa$loadings[] %>%
+    data.frame() %>%
+    rownames_to_column("mc") %>%
+    gather(factor, loading, -mc) %>%
+    group_by(mc) %>%
+    top_n(1, abs(loading)) %>%
+    ungroup()
+  n_reten2 <- reten_loadings %>%
+    count(factor) %>%
+    nrow()
+    
+  return(n_reten2)
+
+}
+
+# make function to plot heatmap of factor loadings
+heatmap_fun <- function(df, n_factors, rot){
+  
+  efa <- fa(df, nfactors = n_factors, rotate = rot)
+  loadings <- efa$loadings[] %>%
+    fa.sort() %>%
+    data.frame() %>%
+    rownames_to_column("mc") %>%
+    rownames_to_column("order") %>%
+    mutate(order = as.numeric(order)) %>%
+    gather(factor, loading, -c(mc, order))
+  
+  plot <- ggplot(loadings,
+                 aes(x = factor, y = reorder(mc, desc(order)), fill = loading, 
+                     label = format(round(loading, 2), nsmall = 2))) +
+    geom_tile(color = "black") +
+    geom_text(size = 3) +
+    scale_x_discrete(position = "top") +
+    scale_fill_distiller(limits = c(-1.02, 1.02), palette = "RdYlBu",
+                         guide = guide_colorbar(barheight = 15)) +
+    theme_minimal()
+  
+  return(plot)
+  
+}
+```
+
+```{r data, include = F, warning = FALSE}
+# US 7-9yo, 2 characters
+d_us79_2char <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2017-07-24_anonymized.csv") %>% clean_kid_us_fun(n_trials = 40, age_lower = 7, age_upper = 9)
+
+# US 7-9yo, 9 characters
+d_us79_9char <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-08-08_anonymized.csv") %>% clean_kid_us_fun(n_trials = 20, age_lower = 7, age_upper = 9)
+
+# US 4-6yo, 9 characters
+d_us46_9char <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-21_anonymized.csv") %>% clean_kid_us_fun(n_trials = 20, age_lower = 4, age_upper = 6)
+```
+
+# 7-9yo US Children, 2 characters
+
+## Maximal structure, oblimin rotation
+
+```{r, fig.width = 7, fig.asp = 0.5}
+heatmap_fun(d_us79_2char, max_fact_fun(ncol(d_us79_2char)), "oblimin") +
+  labs(title = "Factor loadings, maximal solution: 7-9yo US Children",
+       subtitle = "2 characters, 40 capacities, oblimin rotation",
+       x = "", y = "", fill = "")
+```
+
+## Reduced structure, oblimin rotation
+
+```{r, fig.width = 3, fig.asp = 1.5}
+heatmap_fun(d_us79_2char, reten_fact_fun(d_us79_2char, "oblimin"), "oblimin") +
+  labs(title = "Factor loadings, after retention: 7-9yo US Children",
+       subtitle = "2 characters, 40 capacities, oblimin rotation",
+       x = "", y = "", fill = "")
+```
+
+## Alternative factor retention methods
+
+```{r}
+fa.parallel(d_us79_2char)
+```
+
+```{r}
+VSS(d_us79_2char)
+```
+
+```{r, fig.width = 3, fig.asp = 1, include = F}
+heatmap_fun(d_us79_2char, 5, "oblimin") +
+  labs(title = "Factor loadings, BIC retention: 7-9yo US Children",
+       subtitle = "2 characters, 40 capacities, oblimin rotation",
+       x = "", y = "", fill = "")
+```
+
+## Clustering within reduced factor space
+
+```{r, fig.width = 4, fig.asp = 0.67}
+# par(mar = c(1, 1, 1, 6))
+clust <- fa(d_us79_2char, 
+            reten_fact_fun(d_us79_2char, "oblimin"), "oblimin")$loadings[] %>%
+  data.frame() %>%
+  dist() %>%
+  hclust()
+
+clust %>%
+  as.dendrogram() %>%
+  set("labels_col", value = c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c",
+                              "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", 
+                              "#cab2d6", "#6a3d9a", "#ffff99", "#b15928"), 
+      k = 6) %>%
+  set("branches_lwd", 0.5) %>%
+  # set("leaves_pch", 16) %>%
+  # plot(horiz = T)
+  as.ggdend() %>%
+  ggplot(horiz = F) +
+  geom_hline(yintercept = 2, lty = 2, color = "black") +
+  coord_cartesian(ylim = c(-0.7, max(clust$height))) +
+  labs(title = "Hierarchical clustering within reduced factor space: 7-9yo US Children",
+       subtitle = "2 characters, 40 capacities, oblimin rotation")
+
+rm(clust)
+```
+
+
+# 7-9yo US Children, 9 characters
+
+## Maximal structure, oblimin rotation
+
+```{r, fig.width = 4, fig.asp = 0.67}
+heatmap_fun(d_us79_9char, max_fact_fun(ncol(d_us79_9char)), "oblimin") +
+  labs(title = "Factor loadings, maximal solution: 7-9yo US Children",
+       subtitle = "9 characters, 20 capacities, oblimin rotation",
+       x = "", y = "", fill = "")
+```
+
+## Reduced structure, oblimin rotation
+
+```{r, fig.width = 3, fig.asp = 1}
+heatmap_fun(d_us79_9char, reten_fact_fun(d_us79_9char, "oblimin"), "oblimin") +
+  labs(title = "Factor loadings, after retention: 7-9yo US Children",
+       subtitle = "9 characters, 20 capacities, oblimin rotation",
+       x = "", y = "", fill = "")
+```
+
+
+## Alternative factor retention methods
+
+```{r}
+fa.parallel(d_us79_9char)
+```
+
+```{r}
+VSS(d_us79_9char)
+```
+
+
+## Clustering within reduced factor space
+
+```{r, fig.width = 4, fig.asp = 0.67}
+# par(mar = c(1, 1, 1, 6))
+clust <- fa(d_us79_9char, 
+            reten_fact_fun(d_us79_9char, "oblimin"), "oblimin")$loadings[] %>%
+  data.frame() %>%
+  dist() %>%
+  hclust()
+
+clust %>%
+  as.dendrogram() %>%
+  set("labels_col", value = c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c",
+                              "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", 
+                              "#cab2d6", "#6a3d9a", "#ffff99", "#b15928"), 
+      k = 4) %>%
+  set("branches_lwd", 0.5) %>%
+  # set("leaves_pch", 16) %>%
+  # plot(horiz = T)
+  as.ggdend() %>%
+  ggplot(horiz = F) +
+  geom_hline(yintercept = 2, lty = 2, color = "black") +
+  coord_cartesian(ylim = c(-0.7, max(clust$height))) +
+  labs(title = "Hierarchical clustering within reduced factor space: 7-9yo US Children",
+       subtitle = "9 characters, 20 capacities, oblimin rotation")
+
+rm(clust)
+```
+
+# 4-6yo US Children
+
+## Maximal structure, oblimin rotation
+
+```{r, fig.width = 4, fig.asp = 0.67}
+heatmap_fun(d_us46_9char, max_fact_fun(ncol(d_us46_9char)), "oblimin") +
+  labs(title = "Factor loadings, maximal solution: 4-6yo US Children",
+       subtitle = "9 characters, 20 capacities, oblimin rotation",
+       x = "", y = "", fill = "")
+```
+
+## Reduced structure, oblimin rotation
+
+```{r, fig.width = 3, fig.asp = 1}
+heatmap_fun(d_us46_9char, reten_fact_fun(d_us46_9char, "oblimin"), "oblimin") +
+  labs(title = "Factor loadings, after retention: 4-6yo US Children",
+       subtitle = "9 characters, 20 capacities, oblimin rotation",
+       x = "", y = "", fill = "")
+```
+
+
+## Alternative factor retention methods
+
+```{r}
+fa.parallel(d_us46_9char)
+```
+
+```{r}
+VSS(d_us46_9char)
+```
+
+## Clustering within reduced factor space
+
+```{r, fig.width = 4, fig.asp = 0.67}
+# par(mar = c(1, 1, 1, 6))
+clust <- fa(d_us46_9char, 
+            reten_fact_fun(d_us46_9char, "oblimin"), "oblimin")$loadings[] %>%
+  data.frame() %>%
+  dist() %>%
+  hclust()
+
+clust %>%
+  as.dendrogram() %>%
+  set("labels_col", 
+      # value = colorRampPalette(solarized_pal()(8))(20),
+      value = c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c",
+                "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00",
+                "#cab2d6", "#6a3d9a", "#ffff99", "#b15928"),
+      k = 6) %>%
+  set("branches_lwd", 0.5) %>%
+  # set("leaves_pch", 16) %>%
+  # plot(horiz = T)
+  as.ggdend() %>%
+  ggplot(horiz = F) +
+  geom_hline(yintercept = 2, lty = 2, color = "black") +
+  coord_cartesian(ylim = c(-0.7, max(clust$height))) +
+  labs(title = "Hierarchical clustering within reduced factor space: 4-6yo US Children",
+       subtitle = "9 characters, 20 capacities, oblimin rotation")
+
+rm(clust)
+```
+
