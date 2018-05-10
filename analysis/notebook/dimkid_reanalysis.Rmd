@@ -151,6 +151,13 @@ heatmap_fun <- function(df, n_factors, rot){
 ```
 
 ```{r data, include = F, warning = FALSE}
+# US adults, 2 characters
+d_usad_2char <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv") %>% 
+  mutate(dateOfBirth = NA, dateOfTest = NA) %>%
+  clean_kid_us_fun(n_trials = 40, age_lower = 18, age_upper = 100)
+
+# US adults, 9 character (NEED TO RUN)
+
 # US 7-9yo, 2 characters
 d_us79_2char <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2017-07-24_anonymized.csv") %>% clean_kid_us_fun(n_trials = 40, age_lower = 7, age_upper = 9)
 
@@ -160,6 +167,73 @@ d_us79_9char <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects
 # US 4-6yo, 9 characters
 d_us46_9char <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-21_anonymized.csv") %>% clean_kid_us_fun(n_trials = 20, age_lower = 4, age_upper = 6)
 ```
+
+#  US Adults, 2 characters
+
+## Maximal structure, oblimin rotation
+
+```{r, fig.width = 7, fig.asp = 0.5}
+heatmap_fun(d_usad_2char, max_fact_fun(ncol(d_usad_2char)), "oblimin") +
+  labs(title = "Factor loadings, maximal solution:  US Adults",
+       subtitle = "2 characters, 40 capacities, oblimin rotation",
+       x = "", y = "", fill = "")
+```
+
+## Reduced structure, oblimin rotation
+
+```{r, fig.width = 3, fig.asp = 1.5}
+heatmap_fun(d_usad_2char, reten_fact_fun(d_usad_2char, "oblimin"), "oblimin") +
+  labs(title = "Factor loadings, after retention:  US Adults",
+       subtitle = "2 characters, 40 capacities, oblimin rotation",
+       x = "", y = "", fill = "")
+```
+
+## Alternative factor retention methods
+
+```{r}
+fa.parallel(d_usad_2char)
+```
+
+```{r, warnings = F}
+VSS(d_usad_2char, n = max_fact_fun(ncol(d_usad_2char)), rotate = "oblimin", plot = F)
+```
+
+```{r, fig.width = 3, fig.asp = 1, include = F}
+heatmap_fun(d_usad_2char, 4, "oblimin") +
+  labs(title = "Factor loadings, parallel analysis:  US Adults",
+       subtitle = "2 characters, 40 capacities, oblimin rotation",
+       x = "", y = "", fill = "")
+```
+
+## Clustering within reduced factor space
+
+```{r, fig.width = 4, fig.asp = 0.67}
+# par(mar = c(1, 1, 1, 6))
+clust <- fa(d_usad_2char, 
+            reten_fact_fun(d_usad_2char, "oblimin"), "oblimin")$loadings[] %>%
+  data.frame() %>%
+  dist() %>%
+  hclust()
+
+clust %>%
+  as.dendrogram() %>%
+  set("labels_col", value = c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c",
+                              "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", 
+                              "#cab2d6", "#6a3d9a", "#ffff99", "#b15928"), 
+      k = 6) %>%
+  set("branches_lwd", 0.5) %>%
+  # set("leaves_pch", 16) %>%
+  # plot(horiz = T)
+  as.ggdend() %>%
+  ggplot(horiz = F) +
+  geom_hline(yintercept = 2, lty = 2, color = "black") +
+  coord_cartesian(ylim = c(-0.7, max(clust$height))) +
+  labs(title = "Hierarchical clustering within reduced factor space:  US Adults",
+       subtitle = "2 characters, 40 capacities, oblimin rotation")
+
+rm(clust)
+```
+
 
 # 7-9yo US Children, 2 characters
 
@@ -187,8 +261,8 @@ heatmap_fun(d_us79_2char, reten_fact_fun(d_us79_2char, "oblimin"), "oblimin") +
 fa.parallel(d_us79_2char)
 ```
 
-```{r}
-VSS(d_us79_2char)
+```{r, warnings = F}
+VSS(d_us79_2char, n = max_fact_fun(ncol(d_us79_2char)), rotate = "oblimin", plot = F)
 ```
 
 ```{r, fig.width = 3, fig.asp = 1, include = F}
