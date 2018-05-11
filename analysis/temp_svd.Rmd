@@ -1,6 +1,9 @@
 ---
 title: "Exploration with SVD"
-output: html_notebook
+output:
+  html_notebook:
+    toc: true
+    toc_float: true
 ---
 
 ```{r, include = F}
@@ -20,6 +23,21 @@ d_79_mean <- d_old %>%
   remove_rownames() %>%
   data.frame() %>%
   column_to_rownames("capacity")
+
+# orient like Jay
+d_79_mean_t <- d_old %>%
+  group_by(character, capacity) %>%
+  summarise(mean = mean(responseNum)) %>%
+  ungroup() %>%
+  group_by(capacity) %>%
+  mutate(char_mean = mean(mean),
+         mean_cent = mean - char_mean) %>%
+  ungroup() %>%
+  select(character, capacity, mean_cent) %>%
+  spread(capacity, mean_cent) %>%
+  remove_rownames() %>%
+  data.frame() %>%
+  column_to_rownames("character")
 
 # FOR ADULTS (PNAS STUDY 4)
 # ... oriented like Saxe et al.
@@ -57,13 +75,16 @@ d_79_mean <- d_old %>%
 #   column_to_rownames("condition")
 
 # set base
-d_base_mean <- d_79_mean
+# d_base_mean <- d_79_mean
+d_base_mean <- d_79_mean_t
 # d_base_mean <- d_adult_mean
 
 # check zero-centering
-max(abs(colMeans(d_base_mean)))
-max(abs(rowMeans(d_base_mean)))
+paste0("maximum column mean: ", max(abs(colMeans(d_base_mean))))
+paste0("maximum row mean: ", round(max(abs(rowMeans(d_base_mean))), 3))
+```
 
+```{r}
 # set scale limits
 scale_lim <- c(min(d_base_mean) + 0.25, max(d_base_mean) + 0.25)
 
@@ -222,7 +243,7 @@ ggplot(data.frame(u_old) %>%
        y = "property")
 ```
 
-```{r, fig.width = 6, fig.asp = 2.5}
+```{r, fig.width = 3, fig.asp = 1}
 # alternative visualization of feature vectors (u)
 data.frame(u_old) %>%
   mutate(X1 = X1 * s_old[1],
@@ -244,6 +265,7 @@ data.frame(u_old) %>%
                                         "mode_5", "mode_6")),
          property = factor(property, labels = property_names)) %>%
   full_join(efa_factors %>% select(property, factor)) %>%
+  filter(mode %in% c("mode_1", "mode_2", "mode_3")) %>%
   ggplot(aes(x = mode, y = value, label = property, color = factor)) +
   geom_hline(yintercept = 0, lty = 2) +
   geom_point() +
@@ -251,6 +273,7 @@ data.frame(u_old) %>%
   # geom_text(size = 2, position = position_nudge(x = 0.06), hjust = 0) +
   scale_color_brewer(palette = "Set1") +
   theme_minimal() +
+  theme(legend.position = "top") +
   labs(title = "U * S: Feature vectors multiplied by singular value (by mode)",
        x = "mode",
        y = "U-vector value * singular value")
@@ -288,7 +311,7 @@ ggplot(data.frame(v_old) %>%
        y = "item")
 ```
 
-```{r, fig.width = 6, fig.asp = 1}
+```{r, fig.width = 3, fig.asp = 1}
 # alternative visualization of feature vectors (u)
 data.frame(v_old) %>%
   mutate(X1 = X1 * s_old[1],
@@ -310,6 +333,7 @@ data.frame(v_old) %>%
                                         "mode_5", "mode_6")),
          item = factor(item, labels = item_names)) %>%
   # full_join(efa_factors %>% select(item, factor)) %>%
+  filter(mode %in% c("mode_1", "mode_2", "mode_3")) %>%
   ggplot(aes(x = mode, y = value, label = item)) + # , color = factor)) +
   geom_hline(yintercept = 0, lty = 2) +
   geom_point() +
