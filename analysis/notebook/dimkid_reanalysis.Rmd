@@ -173,16 +173,39 @@ d_usad_2char <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects
   mutate(dateOfBirth = NA, dateOfTest = NA) %>%
   clean_kid_us_fun(n_trials = 40, age_lower = 18, age_upper = 100)
 
+d_usad_2char_demo <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/adults/us_run-01_2016-06-05_anonymized.csv") %>%
+  distinct(subid, charName)
+
 # US adults, 9 character (NEED TO RUN)
 
 # US 7-9yo, 2 characters
 d_us79_2char <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2017-07-24_anonymized.csv") %>% clean_kid_us_fun(n_trials = 40, age_lower = 7, age_upper = 9)
 
+d_us79_2char_demo <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-01_2017-07-24_anonymized.csv") %>%
+  distinct(subid, character, age) %>%
+  filter((age >= 7 & age < 10) | is.na(age))
+
 # US 7-9yo, 9 characters
 d_us79_9char <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-08-08_anonymized.csv") %>% clean_kid_us_fun(n_trials = 20, age_lower = 7, age_upper = 9)
 
+d_us79_9char_demo <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-02_2017-08-08_anonymized.csv") %>%
+  distinct(subid, character, dateOfBirth, dateOfTest) %>%
+  mutate(dob = parse_datetime(dateOfBirth, "%m/%d/%y"),
+         dot = parse_datetime(gsub("2017", "17", dateOfTest), "%m/%d/%y"),
+         age = interval(start = dob, end = dot) /
+           duration(num = 1, units = "years")) %>%
+  filter((age >= 7 & age < 10) | is.na(age))
+
 # US 4-6yo, 9 characters
 d_us46_9char <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-21_anonymized.csv") %>% clean_kid_us_fun(n_trials = 20, age_lower = 4, age_upper = 6)
+
+d_us46_9char_demo <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-03_2017-08-21_anonymized.csv") %>%
+  distinct(subid, character, dateOfBirth, dateOfTest) %>%
+  mutate(dob = parse_datetime(dateOfBirth, "%m/%d/%y"),
+         dot = parse_datetime(gsub("2017", "17", dateOfTest), "%m/%d/%y"),
+         age = interval(start = dob, end = dot) /
+           duration(num = 1, units = "years")) %>%
+  filter((age >= 4 & age < 7) | is.na(age))
 ```
 
 #  US Adults, 2 characters
@@ -301,9 +324,12 @@ clust <- fa(d_us79_2char,
 
 clust %>%
   as.dendrogram() %>%
-  set("labels_col", value = c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c",
-                              "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", 
-                              "#cab2d6", "#6a3d9a", "#ffff99", "#b15928"), 
+  # set("labels_col", value = c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c",
+  #                             "#fb9a99", "#e31a1c", "#fdbf6f", "#ff7f00", 
+  #                             "#cab2d6", "#6a3d9a", "#ffff99", "#b15928"), 
+  #     k = 6) %>%
+  set("labels_col", value = c("#fb9a99", "#e31a1c", "#a6cee3", "#1f78b4", 
+                              "#b2df8a", "#33a02c"), 
       k = 6) %>%
   set("branches_lwd", 0.5) %>%
   # set("leaves_pch", 16) %>%
@@ -467,5 +493,60 @@ clust %>%
        subtitle = "9 characters, 20 capacities, oblimin rotation")
 
 rm(clust)
+```
+
+# Changes in mental capacity attributions
+
+```{r, fig.width = 5, fig.asp = 0.4}
+efa_old <- fa(d_us79_9char, nfactors = 3, rotate = "oblimin")
+efa_old$loadings[] %>% 
+  fa.sort() %>% 
+  data.frame() %>% 
+  rownames_to_column("capacity") %>% 
+  gather(factor, loading, -capacity) %>%
+  group_by(factor) %>% 
+  top_n(4, abs(loading)) %>%
+  arrange(factor, desc(abs(loading))) %>%
+  ungroup()
+
+projected_young <- predict.psych(efa_old, d_us46_9char, d_us79_9char) %>%
+  data.frame() %>%
+  rownames_to_column("subid") %>%
+  mutate(age_group = "4-6y") %>%
+  full_join(d_us46_9char_demo %>% distinct(subid, character, age))
+
+scores_old <- efa_old$scores %>%
+  data.frame() %>%
+  rownames_to_column("subid") %>%
+  mutate(age_group = "7-9y") %>%
+  full_join(d_us79_9char_demo %>% distinct(subid, character, age))
+
+scores_all <- projected_young %>%
+  full_join(scores_old) %>%
+  filter(!is.na(character), !character %in% c("", " ")) %>%
+  gather(factor, score, starts_with("MR")) %>%
+  mutate(factor = factor(factor,
+                         levels = c("MR1", "MR3", "MR2"),
+                         labels = c("BODY", "HEART", "MIND")),
+         character = factor(character,
+                            levels = c("computer", "robot", "doll", 
+                                       "teddy_bear", "beetle", "bird", 
+                                       "mouse", "goat", "elephant")))
+
+scores_all %>% distinct(age_group, character, subid) %>% count(character) %>% summarise(min = min(n), max = max(n))
+
+ggplot(scores_all,
+       aes(x = age, y = score,
+           group = character, color = character, fill = character)) +
+  facet_grid(~ factor) +
+  geom_vline(xintercept = 7, lty = 3) +
+  geom_point() +
+  geom_smooth(method = "lm", alpha = 0.1) +
+  scale_color_brewer(palette = "Paired", direction = 1) +
+  scale_fill_brewer(palette = "Paired", direction = 1) +
+  theme_minimal() +
+  labs(x = "Age (y)",
+       y = "Factor score (in older children's 3-factor space)",
+       color = "Character", fill = "Character")
 ```
 
