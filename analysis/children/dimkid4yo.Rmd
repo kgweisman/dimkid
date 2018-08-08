@@ -1,0 +1,312 @@
+---
+title: "Dimkid4yo"
+output: 
+  html_notebook:
+    toc: true
+    toc_float: true
+---
+
+```{r}
+library(tidyverse)
+library(psych)
+library(readxl)
+library(lme4)
+```
+
+```{r}
+source("./scripts/max_factors_efa.R")
+source("./scripts/reten_fun.R")
+source("./scripts/plot_fun.R")
+```
+
+```{r}
+d <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/dimkid/data/children/run-05_2018-08-07_anonymized.csv")[-1]
+```
+
+```{r}
+question_key <- read_excel("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/design/dimkid4yo (spring 2018)/dimkid4yo versions SAVE (4yo version spring 2018).xlsx") %>%
+  select(`Question:`, `Clarification (opt.):`, starts_with("v")) %>%
+  rename(question_text = `Question:`,
+         question_clar = `Clarification (opt.):`) %>%
+  gather(version, question, starts_with("v")) %>%
+  mutate(version = as.numeric(gsub("v", "", version)),
+         capacity = gsub("Can ___s ", "", question_text),
+         capacity = gsub("\\?", "", capacity))
+```
+
+```{r}
+d1 <- d %>%
+  left_join(question_key) %>%
+  select(run:question, question_text:capacity, response:general_comments) %>%
+  filter(!is.na(character), !is.na(capacity))
+```
+
+```{r}
+d_efa <- d1 %>%
+  select(subid_char, capacity, response_num) %>%
+  spread(capacity, response_num) %>%
+  column_to_rownames("subid_char")
+```
+
+
+# EFA: All
+
+## How many factors to retain?
+
+```{r}
+fa.parallel(d_efa)
+```
+
+```{r}
+VSS(d_efa, rotate = "oblimin")
+```
+
+```{r}
+reten_fun(d_efa, "oblimin")
+```
+
+## 5 factors
+
+```{r}
+efa5 <- fa(d_efa, nfactors = 5, rotate = "oblimin") %>% fa.sort()
+```
+
+```{r}
+heatmap_fun(efa5)
+```
+
+```{r}
+scoresplot_fun(efa5, target = "all")
+```
+
+```{r, fig.width = 3, fig.asp = 1}
+itemsplot_fun(efa5, target = "all")
+```
+
+
+## 4 factors
+
+```{r}
+efa4 <- fa(d_efa, nfactors = 4, rotate = "oblimin") %>% fa.sort()
+```
+
+```{r}
+heatmap_fun(efa4)
+```
+
+```{r}
+scoresplot_fun(efa4, target = "all")
+```
+
+```{r, fig.width = 3, fig.asp = 1}
+itemsplot_fun(efa4, target = "all")
+```
+
+
+## 3 factors
+
+```{r}
+efa3 <- fa(d_efa, nfactors = 3, rotate = "oblimin") %>% fa.sort()
+```
+
+```{r}
+heatmap_fun(efa3)
+```
+
+```{r}
+scoresplot_fun(efa3, target = "all")
+```
+
+```{r, fig.width = 3, fig.asp = 1}
+itemsplot_fun(efa3, target = "all")
+```
+
+
+## 2 factors
+
+```{r}
+efa2 <- fa(d_efa, nfactors = 2, rotate = "oblimin") %>% fa.sort()
+```
+
+```{r}
+heatmap_fun(efa2)
+```
+
+```{r}
+scoresplot_fun(efa2, target = "all")
+```
+
+```{r, fig.width = 3, fig.asp = 1}
+itemsplot_fun(efa2, target = "all")
+```
+
+
+
+# EFA: By game #
+
+```{r}
+d_efa %>%
+  rownames_to_column("subid_char") %>%
+  mutate(character = gsub("^.*_", "", subid_char),
+         subid = gsub("_.*$", "", subid_char)) %>%
+  left_join(d1 %>% distinct(subid, character, game)) %>%
+  count(game, character) %>%
+  group_by(game) %>%
+  mutate(prop = n/sum(n))
+```
+
+
+```{r}
+game1 <- d_efa %>%
+  rownames_to_column("subid_char") %>%
+  mutate(character = gsub("^.*_", "", subid_char),
+         subid = gsub("_.*$", "", subid_char)) %>%
+  left_join(d1 %>% distinct(subid, character, game)) %>%
+  filter(game == 1) %>%
+  select(-c(character, subid, game)) %>%
+  column_to_rownames("subid_char")
+
+fa.parallel(game1)
+efa_game1 <- fa(game1, nfactors = 3, rotate = "oblimin") %>% fa.sort()
+heatmap_fun(efa_game1)
+```
+
+```{r}
+game2 <- d_efa %>%
+  rownames_to_column("subid_char") %>%
+  mutate(character = gsub("^.*_", "", subid_char),
+         subid = gsub("_.*$", "", subid_char)) %>%
+  left_join(d1 %>% distinct(subid, character, game)) %>%
+  filter(game == 2) %>%
+  select(-c(character, subid, game)) %>%
+  column_to_rownames("subid_char")
+
+fa.parallel(game2)
+efa_game2 <- fa(game2, nfactors = 4, rotate = "oblimin") %>% fa.sort()
+heatmap_fun(efa_game2)
+```
+
+
+# Regressions
+
+```{r}
+d_diff <- d1 %>%
+  mutate(factor = case_when(
+    capacity %in% c("feel happy", "feel sorry", "get lonely",
+                    "get sad", "hate someone", "love someone") ~ "HEART",
+    capacity %in% c("feel hungry", "feel sick", "feel tired",
+                    "get scared", "get thirsty", "smell things") ~ "BODY",
+    capacity %in% c("figure things out", "hear", "know stuff",
+                    "remember things", "see", "think") ~ "MIND",
+    TRUE ~ "NA")) %>%
+  group_by(subid, age_years, character, factor) %>%
+  summarise(total = sum(response_num)) %>%
+  ungroup() %>%
+  spread(factor, total) %>%
+  mutate(BminH = BODY - HEART,
+         BminM = BODY - MIND,
+         MminH = MIND - HEART) %>%
+  select(subid, age_years, character, BminH, BminM, MminH) %>%
+  gather(comparison, diff, c(BminH, BminM, MminH)) %>%
+  mutate(comparison = factor(comparison),
+         diff2 = diff * 2,
+         age_years_cent = scale(age_years, scale = T),
+         character = factor(character, levels = c("beetle", "robot")))
+
+contrasts(d_diff$character) <- cbind(robot_GM = c(-1, 1))
+```
+
+```{r}
+ggplot(d_diff, aes(x = diff, fill = character)) +
+  facet_grid(character ~ comparison) +
+  geom_histogram(binwidth = 1) +
+  geom_vline(xintercept = 0, lty = 2, color = "black") +
+  theme_bw()
+```
+
+```{r, fig.width = 3, fig.asp = 0.5}
+ggplot(d_diff, aes(x = age_years, y = diff, color = character)) +
+                 # color = character, fill = character)) +
+                 # color = comparison, fill = comparison)) +
+  facet_grid(~ comparison) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkgray") +
+  geom_point(alpha = 0.5) +
+  geom_smooth(aes(group = comparison), color = "black",
+              method = "lm", alpha = 0.25) +
+  theme_bw()
+```
+
+```{r, fig.width = 3, fig.asp = 0.5}
+ggplot(d_diff, aes(x = age_years, y = abs(diff), color = character)) +
+  # color = character, fill = character)) +
+  # color = comparison, fill = comparison)) +
+  facet_grid(~ comparison) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkgray") +
+  geom_point(alpha = 0.5) +
+  geom_smooth(aes(group = comparison), color = "black",
+              method = "lm", alpha = 0.25) +
+  theme_bw()
+```
+
+```{r}
+r_d_diffBminH <- lme4::glmer(abs(diff2) ~ age_years_cent +
+                             (1 | subid) + (age_years_cent | character),
+                           d_diff %>% filter(comparison == "BminH"),
+                           family = "poisson",
+                           control = glmerControl(optimizer = "bobyqa"))
+summary(r_d_diffBminH)
+```
+
+```{r}
+r_d_diffBminM <- lme4::glmer(abs(diff2) ~ age_years_cent +
+                             (1 | subid) + (age_years_cent | character),
+                           d_diff %>% filter(comparison == "BminM"),
+                           family = "poisson",
+                           control = glmerControl(optimizer = "bobyqa"))
+summary(r_d_diffBminM)
+```
+
+```{r}
+r_d_diffMminH <- lme4::glmer(abs(diff2) ~ age_years_cent +
+                             (1 | subid) + (age_years_cent | character),
+                           d_diff %>% filter(comparison == "MminH"),
+                           family = "poisson",
+                           control = glmerControl(optimizer = "bobyqa"))
+summary(r_d_diffMminH)
+```
+
+
+
+# Demographics
+
+```{r}
+d %>% distinct(subid) %>% count() %>% data.frame()
+```
+
+```{r}
+d %>% distinct(subid, gender) %>% count(gender) %>% data.frame()
+```
+
+```{r}
+d %>% distinct(subid, age_years) %>% 
+  summarise(mean = mean(age_years, na.rm = T),
+            sd = sd(age_years, na.rm = T),
+            median = median(age_years, na.rm = T)) %>% data.frame()
+```
+
+```{r}
+d %>% distinct(subid, age_years) %>% 
+  ggplot(aes(x = age_years)) +
+  geom_histogram(binwidth = 2/12) +
+  geom_vline(xintercept = median(d$age_years), lty = 2, color = "blue") +
+  theme_bw()
+```
+
+```{r}
+d %>% distinct(subid, ethnicity_collapse) %>% count(ethnicity_collapse) %>% data.frame()
+```
+
+```{r}
+d %>% distinct(subid, experimenter) %>% count(experimenter) %>% data.frame()
+```
+
