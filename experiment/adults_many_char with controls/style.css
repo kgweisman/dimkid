@@ -1,0 +1,223 @@
+/*general style*/
+
+/*disable text selection*/
+body {
+  -webkit-user-select: none;
+     -moz-user-select: -moz-none;
+      -ms-user-select: none;
+          user-select: none;
+
+    background-color: #c4fcf0;
+	padding: 30px;
+}
+
+/*general style for slides*/
+.slide {
+	/*pad the inside of the slide*/
+	padding: 30px;
+	padding-top: 40px;
+	padding-bottom: 40px;
+
+    /*make slide border*/
+    border: 5px solid;
+    width: 1000px;
+    height: 580px;
+
+    /*center slide within the window*/
+	margin: auto auto;
+
+	/*vertical align stuff within the slide*/
+	vertical-align: middle;
+
+	/*style text*/
+    text-align: center;
+	font-family: 'Asap', sans-serif;
+	font-size: 18px;
+    background-color: rgb(255,255,255);
+}
+
+.slide#front, .slide#demographics {
+	height: auto;
+}
+
+.slide#preview {
+	width: 750px;
+	height: 300px;
+}
+
+.container {
+	position: relative;
+	top: 50%;
+	transform: translateY(-50%);
+	width: auto;
+}
+
+table#intro-table {
+	padding-left: 70px;
+	padding-right: 70px;
+}
+
+/*text*/
+h1 {
+	font-size: 110%;
+	font-weight: bold;
+	margin: 20px;
+}
+
+a {
+	font-style: normal;
+	color: black;
+	text-decoration: none;	
+}
+
+a:link {
+	font-style: normal;
+	color: black;
+	text-decoration: none;
+}
+
+a:visited {
+	font-style: normal;
+	color: black;
+	text-decoration: none;
+}
+
+a:hover {
+	font-style: normal;
+	color: #666699;
+	text-decoration: none;
+}
+
+a:active {
+	font-style: normal;
+	color: #666699;
+	text-decoration: none;
+}
+
+#text-block {
+	width: 80%;
+}
+
+.fun-text {
+	margin-bottom: 0.8em;
+}
+
+#legal, #demographicsForm {
+	width: 90%;
+	margin: 40px auto auto auto;
+	font-size: 12px!important;
+	text-align: left;
+}
+
+.control-group {
+	margin-top: 20px;
+}
+
+/*label {
+	font-weight: normal;
+	font-size: 100%;
+}
+*/
+#introduction p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+	font-size: 90%;
+}
+
+#question {
+	font-weight: bold;
+}
+
+/*tables*/
+table {
+	width: 100%;
+	margin-top: 15px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+table#intro-table {
+	width: 90%;
+}
+
+table#question-table {
+	margin-top: 10px!important;
+
+}
+
+table#button-table {
+	margin-top: 30px;
+}
+
+/*progress bar*/
+.progress {
+	height: 10px;
+	width: 98%;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 0!important;
+	padding-bottom: 0!important;
+	vertical-align: top!important;
+	margin-bottom: 0!important;
+}
+
+.progress-bar {
+	/*transition: none;*/
+	/*background-color: #c4fcf0;*/
+}
+
+/*buttons*/
+.btn-default {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+    width: 80px;
+}
+
+.btn-default#wide {
+	width: 120px;
+}
+
+.button {
+	margin: 30px;
+/*	position: absolute;
+	right: 4%;
+	bottom: 5%;*/
+}
+
+.button#bail {
+	width: 58px;
+}
+
+/*images*/
+img {
+	display: block;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	margin-left: auto;
+	margin-right: auto;
+	border: none;
+}
+
+img#charImage {
+	border: solid black 3px;
+	margin-bottom: 20px;
+}
+
+img#questionMark {
+/*	position: relative;
+	top: 50%;
+	transform: translateY(-50%);*/
+	position: absolute;
+	right: 15px;
+	/*top: 115px;*/
+	bottom: 35px;
+	width: 60px;
+	height: auto!important;
+	margin-right: 10px!important;
+	vertical-align: middle;
+}
+
+img#smiley {
+	width: 300px;
+}
