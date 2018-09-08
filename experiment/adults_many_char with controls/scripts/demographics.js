@@ -12,6 +12,7 @@ function demographics() {
 		experiment.allData.country = $('input#country', '#demographicsForm').val();
 
 		// // text areas
+		experiment.allData.summarize = $('.slide#demographics textarea#summarize').val();
 		experiment.allData.comments = $('.slide#demographics textarea#comments').val();
 
 		// multiple choice radios
