@@ -6,7 +6,10 @@ function makeExperiment() {
 
 	experiment = {
 		// array for making each new trial
-		trials: capList,
+		trials: capList.slice(0,20),
+
+		// array for making control trials
+		controlTrials: capList.slice(-2),
 
 		// where to store all the data
 		allData: {
@@ -52,12 +55,12 @@ function makeExperiment() {
 
 		// set up each new trial
 		next: function() {
-			if (this.trials.length === 0) {
+			if (this.trials.length === 0 && this.controlTrials.length === 0) {
 				experiment.end();
 			} else { 
 				// create place to store data for this trial
 				var data = {
-					trialNum: (capListLength + 1) - this.trials.length,
+					trialNum: (capListLength + 1) - (this.trials.length + this.controlTrials.length),
 					bgColor: "",
 					capacity: "",
 					capWording: "",
@@ -68,7 +71,14 @@ function makeExperiment() {
 				};
 
 				// assign capacity
-				var chosenCap = randomElementNR(this.trials);
+				if (this.trials.length === 0) {
+					var chosenCap = randomElementNR(this.controlTrials);
+					$("span#can").text("");
+				} else {
+					var chosenCap = randomElementNR(this.trials);
+					$("span#can").text("can");
+				}
+
 				data.capacity = chosenCap.capName;
 				data.capWording = chosenCap.wording;
 
