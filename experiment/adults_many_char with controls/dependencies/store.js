@@ -97,7 +97,7 @@
 		// as a pretty safe option, since all browsers already make a request to
 		// this URL anyway and being a 404 will not hurt us here.  We wrap an
 		// iframe pointing to the favicon in an ActiveXObject(htmlfile) object
-		// (see: http://msdn.microsoft.com/en-us/library/aa752574(v=VS.85).aspx)
+		// (see: https://msdn.microsoft.com/en-us/library/aa752574(v=VS.85).aspx)
 		// since the iframe access rules appear to allow direct access and
 		// manipulation of the document element, even for a 404 page.  This
 		// document can be used instead of the current document (which would
@@ -119,8 +119,8 @@
 			return function() {
 				var args = Array.prototype.slice.call(arguments, 0)
 				args.unshift(storage)
-				// See http://msdn.microsoft.com/en-us/library/ms531081(v=VS.85).aspx
-				// and http://msdn.microsoft.com/en-us/library/ms531424(v=VS.85).aspx
+				// See https://msdn.microsoft.com/en-us/library/ms531081(v=VS.85).aspx
+				// and https://msdn.microsoft.com/en-us/library/ms531424(v=VS.85).aspx
 				storageOwner.appendChild(storage)
 				storage.addBehavior('#default#userData')
 				storage.load(localStorageName)

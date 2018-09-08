@@ -24,7 +24,7 @@ function setGeo(data) {
   var isLocal = /file/.test(location.protocol);
   
   // inject a call to a json service that will give us geolocation information 
-  var protocol = isLocal ? "http://" : "//";
+  var protocol = isLocal ? "https://" : "//";
   var src = protocol + "freegeoip.net/json/?callback=setGeo";
 
   var scriptEl = document.createElement('script');

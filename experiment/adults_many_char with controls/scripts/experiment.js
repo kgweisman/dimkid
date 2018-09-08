@@ -35,6 +35,7 @@ function makeExperiment() {
 			englishNative: "",
 
 			// comments
+			summarize: "",
 			comments: "",
 
 			// trial by trial data

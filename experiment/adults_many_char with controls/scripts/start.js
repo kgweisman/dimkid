@@ -23,7 +23,7 @@ function startStudy() {
 			experiment.allData.character = randomElementNR(charList);
 			
 			// set up introduction and stage slides
-			$("span#pronounChar").text(experiment.allData.character.pronoun+" "+experiment.allData.character.charName);
+			$("span#pronounChar").text(experiment.allData.character.pronoun+" "+experiment.allData.character.singular);
 			$("span#pluralChar").text(experiment.allData.character.plural);
 			$("img#charImage").attr("src", experiment.allData.character.imageSource);
 			
