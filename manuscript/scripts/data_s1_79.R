@@ -48,3 +48,15 @@ d1_79_wide <- d1_79 %>%
   select(subid_char, capacity, response_num) %>%
   spread(capacity, response_num) %>%
   column_to_rownames("subid_char")
+
+# impute missing values using the mean by character and capacity
+d1_79_wide_i <- d1_79_wide %>% 
+  rownames_to_column("subid_char") %>%
+  mutate(subid = gsub("_.*$", "", subid_char),
+         character = gsub("^.*_", "", subid_char)) %>%
+  group_by(character) %>%
+  mutate_at(vars(-c(subid, character, subid_char)),
+            funs(replace(., which(is.na(.)), mean(., na.rm = T)))) %>%
+  ungroup() %>%
+  select(-subid, -character) %>%
+  column_to_rownames("subid_char")

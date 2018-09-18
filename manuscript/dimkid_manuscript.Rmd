@@ -1,14 +1,12 @@
 ---
-title: "Children's developing representations of mental life: Changes in conceptual structure between 4-9 years of age"
-subtitle: "Draft updated 2018-09-17"
+title: 'Children''s developing representations of mental life: Changes in conceptual
+  structure between 4-9 years of age'
 author: "Kara Weisman, Carol S. Dweck, & Ellen M. Markman"
+subtitle: Draft updated 2018-09-17
 output:
-  word_document:
-    reference_docx: word-styles-reference.docx
-  # html_notebook:
-  #   toc: true
-  #   toc_float: true
-
+  html_notebook:
+    toc: yes
+    toc_float: yes
 ---
 
 ```{r global_options, include = F}
@@ -20,7 +18,8 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 library(tidyverse)
 library(psych)
 library(langcog) # source: https://github.com/langcog/langcog-package
-library(lme4)
+# library(lme4)
+library(brms)
 library(stringi)
 library(cowplot)
 
@@ -48,6 +47,18 @@ demo_fun <- function(df, var){
     mutate(prop = n/sum(n)) %>%
     arrange(desc(n))
   return(new_df)
+}
+
+# function for getting write-up of brms model results
+write_b_95CI_fun <- function(model, param, round_n = 2){
+  fixef <- fixef(model) %>% round(round_n) %>% format(nsmall = round_n)
+  b <- fixef[param, "Estimate"]
+  lower <- fixef[param, "Q2.5"]
+  upper <- fixef[param, "Q97.5"]
+  text <- paste0("_b_ = ", b, 
+                 ", 95% credible interval: [", lower, ", ", upper, "]")
+  text <- gsub("\\[ ", "\\[", text)
+  return(text)
 }
 ```
 
@@ -104,7 +115,7 @@ Here we focus our interpretations on varimax-rotated solutions, which constrain 
 
 ## Secondary analysis: Regression analyses of factor scores
 
-Having inferred a conceptual structure for a given group of participants via EFA, we then sought to examine attributions of mental capacities to the particular target entities included in each study within this conceptual structure: To what extent did participants attribute each of the fundamental components of mental life revealed by EFA to a given target entity, and how did this attributions vary with age (either within an age group or between age groups)? To explore this question, we examined “factor scores”—summaries of each participant's attributions of each of factors revealed by EFA. We used the correlation-preserving “ten Berge” method (as implemented in the "psych" package; Revelle, 2018), omitting participants with any missing data. This yielded one factor score for each of the factors revealed by EFA for each participant.
+Having inferred a conceptual structure for a given group of participants via EFA, we then sought to examine attributions of mental capacities to the particular target entities included in each study within this conceptual structure: To what extent did participants attribute each of the fundamental components of mental life revealed by EFA to a given target entity, and how did this attributions vary with age (either within an age group or between age groups)? To explore this question, we examined “factor scores”—summaries of each participant's attributions of each of factors revealed by EFA. We used the correlation-preserving “ten Berge” method (as implemented in the "psych" package; Revelle, 2018), imputing missing values using the mean (by target character, capacity, and age group). This yielded one factor score for each of the factors revealed by EFA for each participant.
 
 We analyzed these factor scores via mixed effects Bayesian regression analyses using the “brms” package for R (Bürkner, 2017). In all of these analyses, categorical variables were effect-coded, continuous variables were centered at the mean, and we included the maximal random effect structures given the design for the relevant study. Further details varied by study, depending on the number of target entities included in that study, the number of factors revealed by EFA for the relevant group(s) of participants, and the goals of the analysis (e.g., comparing two age groups vs. examining continuous effects of age within one or more groups of participants).
 
@@ -157,7 +168,7 @@ Adults completed the study by clicking through a website at their own pace, with
 
 ### Data processing
 
-We dropped trials with response times that were faster than a preset criterion of 250ms (_n_=3 child trials, _n_=97 adult trials) and retained participants regardless of skipped trials (_n_=55 child trials, _n_=1 adult trial). Overall, only 1% of adult trials and 1% of child trials were missing data.  
+We dropped trials with response times that were faster than a preset criterion of 250ms (_n_=3 child trials, _n_=97 adult trials) and retained participants regardless of skipped trials (_n_=55 child trials, _n_=1 adult trial). Overall, only 1% of adult trials and 1% of child trials were missing data; in these cases, we imputed missing values using the median by target character, capacity, and age group.
 
 ## Results
 
@@ -165,11 +176,11 @@ We dropped trials with response times that were faster than a preset criterion o
 
 ```{r}
 # implement 3 factor retention protocols
-nfact_par_d1_ad <- fa.parallel(d1_ad_wide, cor = chosen_cor, 
+nfact_par_d1_ad <- fa.parallel(d1_ad_wide_i, cor = chosen_cor, 
                                fm = chosen_fm)$nfact
-nfact_bic_d1_ad <- vss(d1_ad_wide, cor = chosen_cor, rotate = chosen_rot, 
+nfact_bic_d1_ad <- vss(d1_ad_wide_i, cor = chosen_cor, rotate = chosen_rot, 
                        fm = chosen_fm)$vss.stats$BIC %>% which.min()
-nfact_wdm_d1_ad <- reten_fun(d1_ad_wide, rot_type = chosen_rot)
+nfact_wdm_d1_ad <- reten_fun(d1_ad_wide_i, rot_type = chosen_rot)
 
 cat("Parallel analysis: ", nfact_par_d1_ad,
     "\nMinimizing BIC: ", nfact_bic_d1_ad,
@@ -179,10 +190,10 @@ cat("Parallel analysis: ", nfact_par_d1_ad,
 Two or our three methods for determining how many factors to retain (minimizing BIC and Weisman et al.'s preset factor retention criteria) suggested retaining three factors. (Parallel analysis suggested retaining `r nfact_par_d1_ad` factors; see SOM.)
 
 ```{r}
-efa_3_d1_ad <- fa_fun(d1_ad_wide, 3)
+efa_3_d1_ad <- fa_fun(d1_ad_wide_i, 3)
 efa_3_plot_d1_ad <- heatmap_fun(efa_3_d1_ad, 
                                 factor_names = c("HEART", "BODY", "MIND")) +
-  labs(title = paste0("Adults (n=", nrow(d1_ad_wide), ")")) +
+  labs(title = paste0("Adults (n=", nrow(d1_ad_wide_i), ")")) +
   guides(fill = "none")
 ```
 
@@ -201,11 +212,11 @@ In sum, as Weisman et al.'s original studies, a three-factor structure emerged f
 Again, our three methods for determining how many factors to retain all suggested retaining three factors.
 
 ```{r}
-efa_3_d1_79 <- fa_fun(d1_79_wide, 3)
+efa_3_d1_79 <- fa_fun(d1_79_wide_i, 3)
 
 efa_3_plot_d1_79 <- heatmap_fun(efa_3_d1_79, 
                                 factor_names = c("HEART", "BODY", "MIND")) +
-  labs(title = paste0("Children 7-9y (n=", nrow(d1_79_wide), ")"))
+  labs(title = paste0("Children 7-9y (n=", nrow(d1_79_wide_i), ")"))
 ```
 
 ```{r}
@@ -230,59 +241,56 @@ ggdraw(fig01_with_caption)
 
 ### Application of the concept: Children's vs. adults' attributions of mental life
 
-To formally compare responses from children and adults, we considered the full, combined dataset and examined factor scores by age group. 
+XX SET UP
 
 ```{r}
-d1_all_wide <- d1_ad_wide %>%
+d1_all_wide_i <- d1_ad_wide_i %>%
   rownames_to_column("subid_char") %>%
-  full_join(d1_79_wide %>%
+  full_join(d1_79_wide_i %>%
               rownames_to_column("subid_char")) %>%
   column_to_rownames("subid_char")
 ```
 
 ```{r}
-# implement 3 factor retention protocols
-nfact_par_d1_all <- fa.parallel(d1_all_wide, 
-                                cor = chosen_cor, fm = chosen_fm)$nfact
-nfact_bic_d1_all <- vss(d1_all_wide, cor = chosen_cor, rotate = chosen_rot,
-                        fm = chosen_fm)$vss.stats$BIC %>% which.min()
-nfact_wdm_d1_all <- reten_fun(d1_all_wide, rot_type = chosen_rot)
-
-cat("Parallel analysis: ", nfact_par_d1_ad,
-    "\nMinimizing BIC: ", nfact_bic_d1_ad,
-    "\nWeisman et al.: ", nfact_wdm_d1_ad)
+efa_3_d1_79_project_scores <- predict(object = efa_3_d1_ad,
+                                      data = d1_79_wide_i,
+                                      old.data = d1_ad_wide_i) %>%
+  data.frame() %>%
+  rownames_to_column("subid_char") %>%
+  mutate(subid = gsub("_.*$", "", subid_char),
+         character = gsub("^.*_", "", subid_char)) %>%
+  gather(factor, score, -c(subid, character, subid_char)) %>%
+  mutate(factor_name = recode_factor(factor,
+                                     "F2" = "BODY",
+                                     "F1" = "HEART",
+                                     "F3" = "MIND")) %>%
+  arrange(subid_char)
 ```
 
-Two or our three methods for determining how many factors to retain (minimizing BIC and Weisman et al.'s preset factor retention criteria) suggested retaining three factors. (Parallel analysis suggested retaining `r nfact_par_d1_ad` factors; see SOM.)
+To formally compare children's and adults' applications of this concept, we examined differences in adults' and children's evaluations of the two "edge cases" used as target characters in this study: To what extent did participants attribute _BODY_, _HEART_, or _MIND_ to these characters, and how did these attributions vary by age?
+
+We projected children's responses into the factor space defined by adults (standardized in terms of adults' responses), and examined factor scores by age group using correlation-preserving factor scores (ten Berge, Krijnen, Wansbeek, & Shapiro, 1999). This yielded three scores for each participant, corresponding, in principle, to holistic judgments of the social-emotional, physiological, and perceptual-cognitive abilities of the target character the participant evaluated. (Note that each of these three scores takes into account factor loadings for all 40 mental capacities, as shown in Figure 1.) 
+
+This allowed us to examine the effects of age group (adult, child), character (beetle, robot), and factor (_BODY_, _HEART_, _MIND_) on these scores via mixed effects Bayesian regression. See Table XX for the results of a maximal model and Figure 2 for scores by age group, age (for children), factor, and character. 
 
 ```{r}
-efa_3_d1_all <- fa_fun(d1_all_wide, 3)
-efa_3_plot_d1_all <- heatmap_fun(efa_3_d1_all,
-                                 factor_names = c("HEART", "BODY", "MIND")) +
-  labs(title = "Adults and children, combined")
-```
-
-EFA using the combined dataset revealed three factors that met our retention criteria. Unsurprisingly, these three factors were very similar to those revealed for adults and children analyzed independently: They corresponded to social-emotional abilities (_HEART_), physiological sensations (_BODY_), and perceptual-cognitive abilities (_MIND_; see SOM). 
-
-The purpose of this combined EFA was to examine differences in adults' and children's evaluations of beetles and robots within this three-part structure. To do so, we derived factor scores (via the ten Berge method) using the rotated three-factor solution (using medians by capacity to impute missing values). This yielded three scores for each participant, corresponding, in principle, to holistic judgments of the social-emotional, physiological, and perceptual-cognitive abilities of the target character the participant evaluated. (Note that each of these three scores takes into account factor loadings for all 40 mental capacities, as listed in SOM, Table S1.) 
-This allowed us to examine the effects of age group (adult, child), character (beetle, robot), and factor (_BODY_, _HEART_, _MIND_) on these scores via mixed effects linear regression. See Table XX for the results of a maximal model and Figure 2 for scores by age group, age (for children), factor, and character. 
-
-```{r}
-efa_3_scores_d1_all <- efa_3_d1_all$scores %>%
+efa_3_scores_d1_all <- efa_3_d1_ad$scores %>%
   data.frame() %>%
   rownames_to_column("subid_char") %>%
   gather(factor, score, -subid_char) %>%
   mutate(subid = gsub("_beetle", "", subid_char),
          subid = gsub("_robot", "", subid),
-         character = gsub("^.*_", "", subid_char)) %>%
-  left_join(full_join(d1_ad %>% distinct(subid, age_group),
-                      d1_79 %>% distinct(subid, age_group, age))) %>%
-  mutate(factor_name = recode_factor(factor,
+         character = gsub("^.*_", "", subid_char),
+         age_group = "adults",
+         factor_name = recode_factor(factor,
                                      "F2" = "BODY",
                                      "F1" = "HEART",
                                      "F3" = "MIND")) %>%
   ungroup() %>%
-  distinct()
+  distinct() %>%
+  full_join(efa_3_d1_79_project_scores %>% 
+              left_join(d1_79 %>% distinct(subid, age_group, age))) %>%
+  mutate_at(vars(starts_with("factor"), character, age_group), funs(factor))
 
 efa_3_scores_boot_d1_all <- efa_3_scores_d1_all %>%
   group_by(age_group, factor, factor_name, character) %>%
@@ -291,8 +299,7 @@ efa_3_scores_boot_d1_all <- efa_3_scores_d1_all %>%
 ```
 
 ```{r}
-fig02_plot <- ggplot(efa_3_scores_d1_all %>%
-                       filter(!is.na(age)),
+fig02_plot <- ggplot(efa_3_scores_d1_all %>% filter(!is.na(age)),
                      aes(x = age, y = score,
                          fill = character, color = character, shape = character)) +
   facet_wrap(~ factor_name, scales = "free") +
@@ -300,31 +307,45 @@ fig02_plot <- ggplot(efa_3_scores_d1_all %>%
   geom_point(alpha = 0.2) +
   geom_smooth(method = "lm", alpha = 0.25, show.legend = F) +
   geom_point(data = efa_3_scores_d1_all %>% filter(age_group == "adults"),
-             aes(x = 11), show.legend = F,
-             position = position_jitter(width = 0.5), alpha = 0.2) +
+             aes(x = 11), alpha = 0.2, show.legend = F,
+             position = position_jitterdodge(dodge.width = 0.5, 
+                                             jitter.width = 0.25)) +
   geom_pointrange(data = efa_3_scores_boot_d1_all %>% filter(age_group == "adults"),
                   aes(x = 11, y = mean, ymin = ci_lower, ymax = ci_upper),
-                  position = position_dodge(width = 1), show.legend = F) +
-                  # color = "black", size = 1, fatten = 1.25) +
+                  position = position_dodge(width = 0.5), show.legend = F,
+                  color = "black", fatten = 1.25) +
   scale_x_continuous(breaks = c(7:11), 
                      labels = c("7y", "8y", "9y", "10y", "adults")) +
   scale_y_continuous(breaks = seq(-10, 10, 1)) +
-  scale_shape_manual(values = c(16, 15)) +
+  scale_shape_manual(values = c(21, 22)) +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   guides(color = guide_legend(override.aes = list(alpha = 1, size = 3)))
 ```
 
 ```{r, include = T, include = T, fig.width = 6, fig.asp = 0.5}
-fig02_with_caption <- add_sub(fig02_plot, str_wrap("Figure 2: Factor scores for adults and 7- to 9-year-old children in Study 1, in which each participant assessed 40 mental capacities for one of two target entities: a beetle (red circles) or a robot (turquoise squares). Each participant recieved a factor score for each factor (BODY, HEART, and MIND), which we treated a summary of that participants' mental capacity attributions in that domain; a score of 0 corresponds to the mean for that factor (collapsing across ages). Lines correspond to linear regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores. Note that the range of the y-axis differs across panels.", 134), x = 0, hjust = 0)
+fig02_with_caption <- add_sub(fig02_plot, str_wrap("Figure 2: Factor scores for adults and 7- to 9-year-old children in Study 1, in which each participant assessed 40 mental capacities for one of two target entities: a beetle (red circles) or a robot (turquoise squares). Each participant recieved a factor score for each factor (BODY, HEART, and MIND, as defined by an exploratory factor analysis of adults' responses). We treated these scores as summaries of that participants' mental capacity attributions in these domains; a score of 0 corresponds to the mean for that factor among adults. Lines correspond to linear regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores. Note that the range of the y-axis differs across panels.", 135), x = 0, hjust = 0)
 ggdraw(fig02_with_caption)
 ```
 
-**BOOKMARK**
+```{r}
+contrasts(efa_3_scores_d1_all$character) <- cbind("R_GM" = c(-1, 1))
+contrasts(efa_3_scores_d1_all$age_group) <- cbind("CH79_GM" = c(-1, 1))
+contrasts(efa_3_scores_d1_all$factor_name) <- cbind("H_GM" = c(-1, 1, 0),
+                                                    "M_GM" = c(-1, 0, 1))
 
-Collapsing across age groups and factors, factor scores suggest that participants generally attributed fewer mental capacities to the robot than the beetle (b=XX). However, this appears to be entirely due to the huge discrepancy between characters in the physiological domain; the difference between characters was reduced to nothing in the social-emotional domain (b=XX), and reversed in the perceptual-cognitive domain (b=XX). Collapsing across entities (beetle, robot), children tended to attribute more mental capacities adults (b=XX), but this was driven primarily by the social-emotional domain (b=XX), and was reversed in the perceptual-cognitive domain (b=XX). 
+efa_3_scores_r_d1_all <- brm(score ~ factor_name * age_group * character
+                             + (1|subid),
+                             data = efa_3_scores_d1_all,
+                             seed = 12345,
+                             cores = 4)
 
-Scores in the physiological and perceptual-cognitive domains were very similar for children and adults: Both children and adults marked a clear difference between the robot and the beetle in the physiological domain (Figure XX, center), in line with the animate–inanimate distinction; and both age groups credited the robot with slightly greater perceptual-cognitive skills than the beetle (right). In contrast, in the social-emotional domain (Figure XX, left) both the beetle and the robot received rather low scores among adults, but very high scores among children. See Figure XX for raw counts of no, kinda, and yes responses for all items, grouped by character, age group, and dominant factor. 
+summary(efa_3_scores_r_d1_all)
+```
+
+Collapsing across age groups and factors, factor scores suggest that participants generally attributed fewer mental capacities to the robot than the beetle (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "characterR_GM")`). However, this appears to be entirely due to the huge discrepancy between characters in the _BODY_ domain; the difference between characters was reduced to nothing in the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameH_GM:age_groupCH79_GM")`), and reversed in the perceptual-cognitive domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameM_GM:age_groupCH79_GM")`). Collapsing across target characters, children tended to attribute more mental capacities adults (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "age_groupCH79_GM")`), but this was driven primarily by the social-emotional domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameH_GM:age_groupCH79_GM")`), and was reversed in the perceptual-cognitive domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameM_GM:age_groupCH79_GM")`). 
+
+Scores in the physiological and perceptual-cognitive domains were very similar for children and adults: Both children and adults marked a clear difference between the robot and the beetle in the physiological domain (Figure 2, left), in line with the animate–inanimate distinction; and both age groups credited the robot with slightly greater perceptual-cognitive skills than the beetle (right). In contrast, in the social-emotional domain (center) both the beetle and the robot received rather low scores among adults, but very high scores among children. See Figure XX for raw counts of no, kinda, and yes responses for all items, grouped by character, age group, and dominant factor. 
 
 In sum, we observed only minor differences between children and adults in their attributions of physiological and perceptual-cognitive abilities to beetles and robots—but a major difference in the social-emotional domain: Relative to adults, children tended to credit both beetles and robots with much greater social-emotional abilities. 
 
