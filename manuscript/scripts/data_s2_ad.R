@@ -1,6 +1,6 @@
 # STUDY 2: ADULTS
 # read in & tidy data
-d2_ad <- read.csv("../data/adults/9charwithcontrols_adults_anonymized.csv", row.names = "X") %>%
+d2_ad <- read.csv("./anonymized_data/study2_adults_anonymized.csv", row.names = "X") %>%
   mutate(study = "Study 2: Adults",
          age_group = "adults") %>%
   mutate_at(vars(ethnicity, religion),

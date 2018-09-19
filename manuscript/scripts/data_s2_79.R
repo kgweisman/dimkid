@@ -1,6 +1,6 @@
 # STUDY 1: CHILDREN
 # read in & tidy data
-d2_79 <- read.csv("./data/study2_children79_anonymized.csv") %>%
+d2_79 <- read.csv("./anonymized_data/study2_children79_anonymized.csv") %>%
   mutate(age = as.numeric(as.character(age))) %>%
   filter(((age >= 7 & age < 10) | is.na(age)),
          # character %in% c("beetle", "robot"),
