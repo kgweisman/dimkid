@@ -1,6 +1,6 @@
 # STUDY 2: ADULTS
 # read in & tidy data
-d2_ad <- read.csv("./anonymized_data/study2_adults_anonymized.csv", row.names = "X") %>%
+d2_ad <- read.csv("./anonymized_data/study2_adults_anonymized.csv") %>%
   mutate(study = "Study 2: Adults",
          age_group = "adults") %>%
   mutate_at(vars(ethnicity, religion),
@@ -19,10 +19,8 @@ d2_ad <- read.csv("./anonymized_data/study2_adults_anonymized.csv", row.names = 
   select(-summary, -comments) %>%
   rename(character = char) %>%
   mutate(capacity = case_when(
-           grepl("--", capacity) ~ gsub(" --.*$", "...", capacity),
-           grepl("close by or far away", capacity) ~ "sense...far away",
-           grepl("understand how somebody else is feeling", capacity) ~
-             "understand how someone...feeling",
+           grepl("sick", capacity) ~ "feel sick...",
+           grepl("far away", capacity) ~ "sense...close by or far away",
            TRUE ~ capacity)) %>%
   filter(!grepl("metal", capacity), !grepl("on and off", capacity)) %>%
   distinct()
@@ -37,7 +35,7 @@ d2_ad_wide <- d2_ad %>%
          `please choose yes` == 1,
          `please click kinda` == 0.5,
          `please select no` == 0) %>%
-  select(-summary_coded) %>%
+  select(-summary_coded, -starts_with("please")) %>%
   column_to_rownames("subid_char")
 
 # clean data (part 2)

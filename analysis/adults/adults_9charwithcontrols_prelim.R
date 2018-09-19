@@ -40,4 +40,4 @@ d0 <- d_raw[-1,] %>%
 
 d <- d0
 
-write.csv(d, "../data/adults/9charwithcontrols_adults_anonymized.csv")
+write.csv(d, "./anonymized_data/study2_adults_anonymized.csv")

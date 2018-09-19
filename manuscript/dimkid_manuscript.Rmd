@@ -194,7 +194,7 @@ cat("Parallel analysis: ", nfact_par_d1_ad,
     "\nWeisman et al.: ", nfact_wdm_d1_ad)
 ```
 
-Two or our three methods for determining how many factors to retain (minimizing BIC and Weisman et al.'s preset factor retention criteria) suggested retaining three factors. (Parallel analysis suggested retaining `r nfact_par_d1_ad` factors; see SOM.)
+Two or our three methods for determining how many factors to retain (minimizing BIC and Weisman et al.'s factor retention criteria) suggested retaining three factors. (Parallel analysis suggested retaining four factors; see SOM.)
 
 ```{r}
 efa_3_d1_ad <- fa_fun(d1_ad_wide_i, 3)
@@ -215,7 +215,20 @@ In sum, as Weisman et al.'s original studies, a three-factor structure emerged f
 
 ### Conceptual structure: Children (7-9y)
 
-Again, our three methods for determining how many factors to retain all suggested retaining three factors.
+```{r}
+# implement 3 factor retention protocols
+nfact_par_d1_79 <- fa.parallel(d1_79_wide_i, cor = chosen_cor, 
+                               fm = chosen_fm)$nfact
+nfact_bic_d1_79 <- vss(d1_79_wide_i, cor = chosen_cor, rotate = chosen_rot, 
+                       fm = chosen_fm)$vss.stats$BIC %>% which.min()
+nfact_wdm_d1_79 <- reten_fun(d1_79_wide_i, rot_type = chosen_rot)
+
+cat("Parallel analysis: ", nfact_par_d1_79,
+    "\nMinimizing BIC: ", nfact_bic_d1_79,
+    "\nWeisman et al.: ", nfact_wdm_d1_79)
+```
+
+Our three methods for determining how many factors to retain all suggested retaining three factors.
 
 ```{r}
 efa_3_d1_79 <- fa_fun(d1_79_wide_i, 3)
@@ -248,7 +261,7 @@ ggdraw(fig01_with_caption)
 
 ### Attributions of mental life: children vs. adults
 
-The factor analyses of correlations among mental capacity attributions just described shed light on one aspect of children's concepts of mental life: its onotlogical structure. The design of our study also allows us to look at a second aspect of conceptual development in this domain: children's application of this concept, i.e., which mental capacities they tend to attribute or not to attribute to the different target characters. How might children's attributions of capacities related to _BODY_, _HEART_, and _MIND_ vary across middle childhood (7-9y), and how do they compare to the mental capacity attributions of adults?
+The factor analyses of correlations among mental capacity attributions just described shed light on one aspect of children's concepts of mental life: its ontological structure. The design of our study also allows us to look at a second aspect of conceptual development in this domain: children's application of this concept, i.e., which mental capacities they tend to attribute or not to attribute to the different target characters. How might children's attributions of capacities related to _BODY_, _HEART_, and _MIND_ vary across middle childhood (7-9y), and how do they compare to the mental capacity attributions of adults?
 
 We approached this question from several angles.
 
@@ -541,7 +554,7 @@ On the other hand, analyses of children's attributions within this shared concep
 
 The goals of Study 2 were twofold. 
 
-First, we aimed to extend our findings with 7- to 9-year-old children in Study 1, by expanding the list of the target characters to include not only the two "edge cases" from Study 1 (a beetle and a robot), but a also a wider range of animate beings (a bird, a goat, and an elephant) and inanimate objects (a computer, a teddy bear, and a doll). In Weisman et al.'s original studies, this approach yielded a highly similar conceptual structure to the "edge case" approach (Weisman et al., 2017; Study 4). We reasoned that if this three-part conceptual structure is stable and robust by the age of 7- to 9-year-olds, it should manifest among 7- to 9-year-old children under the same range of conditions that elicit this structure from adults.
+First, we aimed to extend our findings with 7- to 9-year-old children in Study 1, by expanding the list of the target characters to include not only the two "edge cases" from Study 1 (a beetle and a robot), but a also a wider range of animate beings (a bird, a goat, and an elephant) and inanimate objects (a computer, a teddy bear, and a doll). In Weisman et al.'s original studies, this approach yielded a highly similar conceptual structure to the "edge case" approach (Weisman et al., 2017; Study 4). We reasoned that if this three-part conceptual structure is stable and robust by the age of 7-9 years, it should manifest among 7- to 9-year-old children under the same range of conditions that elicit this structure from adults.
 
 Second, we aimed to assess the earlier development of this conceptual structure in a group of younger children. We targeted 4- to 6-year-old children for our younger age group because this has been identified as a period of dramatic development in several relevant domains. Many studies have documented shifts in children's abilities to take others' perspectives, represent false beliefs, and integrate representations of intentions and outcomes in evaluating moral responsibility (for reveiws, see Flavell, 1999; Wellman, 2015). The preschool years have also been the focus of a rich tradition of work on lay biology and the animate-inanimate distinction extending back nearly a century (e.g., Carey, 1985; R. Gelman, Spelke, & Meck, 1983; Medin, Waxman, Woodring, & Washinawatok, 2010; Piaget, 1929; for a review, see S. Gelman & Opfer, 2002). All of these accounts make the case that becoming a sophisticated reasoner—and particularly a sophisticated social reasoner—requires substantial refinement of one's representations of others' experiences, beliefs, desires, and needs. Might these refinements include shifts in children's intuitions about the fundamental components of mental life? 
 
@@ -579,9 +592,6 @@ The group that we will refer to as "older children" (_n_=`r nrow(d2_79_wide)`) r
 
 An additional 7 children participated but were excluded for being outside the target age ranges. Children received a small thank-you gift (e.g., a sticker) for their participation. 
 
-
-**BOOKMARK**
-
 ### Materials and procedure
 
 Participants were assigned to evaluate one of the following target entities: an elephant, a goat, a mouse, a bird, a beetle, a teddy bear, a doll, a robot, or a computer (n=XX-XX per character, per age group). This allowed us to address the following question: When target entities are perceived to vary in their mental capacity profiles, which capacities "go together"?
@@ -598,11 +608,152 @@ After asking the 20 quesitons about mental capacities, for a subset of participa
 
 We planned to drop trials with response times that were faster than a preset criterion of 250ms, but there were none among children, and we failed to record response times among adults. As in Study 1, we retained participants regardless of skipped trials (n=0 trials among older children and adults, 30 trials among younger children). Overall, none of adults or older children's trials, and only 1.21% of younger children's trials, were missing data.
 
-Among adults, XX 3 catch questions plus open-ended summary **BOOKMARK**
-
 ## Results
 
-XX
+### Conceptual structure: Adults
+
+```{r}
+# implement 3 factor retention protocols
+nfact_par_d2_ad <- fa.parallel(d2_ad_wide_i, cor = chosen_cor, 
+                               fm = chosen_fm)$nfact
+nfact_bic_d2_ad <- vss(d2_ad_wide_i, cor = chosen_cor, rotate = chosen_rot, 
+                       fm = chosen_fm)$vss.stats$BIC %>% which.min()
+nfact_wdm_d2_ad <- reten_fun(d2_ad_wide_i, rot_type = chosen_rot)
+
+cat("Parallel analysis: ", nfact_par_d2_ad,
+    "\nMinimizing BIC: ", nfact_bic_d2_ad,
+    "\nWeisman et al.: ", nfact_wdm_d2_ad)
+```
+
+As in Study 1, two or our three methods for determining how many factors to retain (in this case, parallel analysis and Weisman et al.'s factor retention criteria) suggested retaining three factors. (Minimizing BIC suggested retaining four factors; see SOM.)
+
+```{r}
+efa_3_d2_ad <- fa_fun(d2_ad_wide_i, 3)
+efa_3_plot_d2_ad <- heatmap_fun(efa_3_d2_ad, 
+                                factor_names = c("BODY", "HEART", "MIND")) +
+  labs(title = paste0("Adults (n=", nrow(d2_ad_wide_i), ")")) +
+  guides(fill = "none")
+```
+
+As expected, the conceptual structure revealed by this analysis among adults was characterized by a three-way distinction between _BODY_ (first factor, `r round(efa_3_d2_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution), _HEART_ (first factor, `r round(efa_3_d2_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of shared variance), and _MIND_ (first factor, `r round(efa_3_d2_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of shared variance). (See Figure 4, Panel D.)
+
+This suggests that our modified child-friendly paradigm was valid: Using a shorter list of items and a wider range of target characters elicited the same intuitive ontology of mental life, among US adults, that was revealed in Study 1 and in Weisman et al.'s previous work. 
+
+### Conceptual structure: Older children (7-9y)
+
+```{r}
+# implement 3 factor retention protocols
+nfact_par_d2_79 <- fa.parallel(d2_79_wide_i, cor = chosen_cor, 
+                               fm = chosen_fm)$nfact
+nfact_bic_d2_79 <- vss(d2_79_wide_i, cor = chosen_cor, rotate = chosen_rot, 
+                       fm = chosen_fm)$vss.stats$BIC %>% which.min()
+nfact_wdm_d2_79 <- reten_fun(d2_79_wide_i, rot_type = chosen_rot)
+
+cat("Parallel analysis: ", nfact_par_d2_79,
+    "\nMinimizing BIC: ", nfact_bic_d2_79,
+    "\nWeisman et al.: ", nfact_wdm_d2_79)
+```
+
+Our three methods for determining how many factors to retain all suggested retaining three factors.
+
+```{r}
+efa_3_d2_79 <- fa_fun(d2_79_wide_i, 3)
+
+efa_3_plot_d2_79 <- heatmap_fun(efa_3_d2_79, 
+                                factor_names = c("BODY", "HEART", "MIND")) +
+  labs(title = paste0("Older children (7-9y, n=", nrow(d2_79_wide_i), ")")) +
+  guides(fill = "none")
+```
+
+```{r}
+cong_efa_3_d2_ad_79 <- fa.congruence(efa_3_d2_79$loadings,
+                                     efa_3_d2_ad$loadings)
+```
+
+As in Study 1, the conceptual structure revealed by this analysis among 7- to 9-year-old children was very similar to that of adults, again characterized by a three-way distinction between _BODY_, _HEART_, and _MIND_.
+
+After rotation, the first factor corresponded primarily to physiological sensations. An analysis of factor congruence confirmed that this factor was most similar to adults' _BODY_ factor (cosine similarity with _BODY_: `r cong_efa_3_d2_ad_79["F1", "F1"]`; with _HEART_: `r cong_efa_3_d2_ad_79["F1", "F2"]`; with _MIND_: `r cong_efa_3_d2_ad_79["F1", "F3"]`). It was the dominant factor for such items as `r top_n_domCap(efa_3_d2_79, 4, "F1", "pos")`, and accounted for `r round(efa_3_d2_79$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+
+The second factor corresponded primarily to social-emotional abilities. An analysis of factor congruence confirmed that this factor was most similar to adults' _HEART_ factor (cosine similarity with _HEART_: `r cong_efa_3_d2_ad_79["F2", "F2"]`; with _BODY_: `r cong_efa_3_d2_ad_79["F2", "F1"]`; with _MIND_: `r cong_efa_3_d2_ad_79["F2", "F3"]`). It was the dominant factor for such items as `r top_n_domCap(efa_3_d2_79, 4, "F2", "pos")`, and accounted for `r round(efa_3_d2_79$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+
+The third factor corresponded primarily to perceptual-cognitive abilities. An analysis of factor congruence confirmed that this factor was most similar to adults' _MIND_ factor (cosine similarity with _MIND_: `r cong_efa_3_d2_ad_79["F3", "F3"]`; with _HEART_: `r cong_efa_3_d2_ad_79["F3", "F2"]`; with _BODY_: `r cong_efa_3_d2_ad_79["F3", "F1"]`). It was the dominant factor for such items as `r top_n_domCap(efa_3_d2_79, 4, "F3", "pos")`, and accounted for `r round(efa_3_d2_79$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution. (See Figure 4, Panel C, for all factor loadings.)
+
+We consider this to be a close conceptual replication of our Study 1 findings, suggesting that by the age of 7-9 years, this three-part conceptual structure is stable and robust to a range of experimental conditions.
+
+### Conceptual structure: Younger children (4-6y)
+
+```{r}
+# implement 3 factor retention protocols
+nfact_par_d2_46 <- fa.parallel(d2_46_wide_i, cor = chosen_cor, 
+                               fm = chosen_fm)$nfact
+nfact_bic_d2_46 <- vss(d2_46_wide_i, cor = chosen_cor, rotate = chosen_rot, 
+                       fm = chosen_fm)$vss.stats$BIC %>% which.min()
+nfact_wdm_d2_46 <- reten_fun(d2_46_wide_i, rot_type = chosen_rot)
+
+cat("Parallel analysis: ", nfact_par_d2_46,
+    "\nMinimizing BIC: ", nfact_bic_d2_46,
+    "\nWeisman et al.: ", nfact_wdm_d2_46)
+```
+
+Our three methods for determining how many factors to retain each suggested retaining different numbers of factors: Weisman et al.'s factor retention criteria suggested retaining three factors, parallel analysis suggested retaining two factors, and minimizing BIC suggested a null, one-factor solution. Here we present both the two- and three-factor solutions. (See SOM for factor loadings on the one "factor" in the null, one-factor solution.)
+
+#### Three-factor solution
+
+```{r}
+efa_3_d2_46 <- fa_fun(d2_46_wide_i, 3)
+
+efa_3_plot_d2_46 <- heatmap_fun(efa_3_d2_46,
+                                factor_names = c("BODY*", "MIND", "HEART*")) +
+  labs(title = paste0("Youner children (4-6y, n=", nrow(d2_79_wide_i), "): 3-factor solution")) +
+  guides(fill = "none")
+```
+
+```{r}
+cong_efa_3_d2_ad_46 <- fa.congruence(efa_3_d2_46$loadings,
+                                     efa_3_d2_ad$loadings)
+```
+
+In the rotated three-factor solution suggested by Weisman et al.'s retention criteria, the first factor corresponded primarily to physiological sensations, as well as some positive emotions. An analysis of factor congruence indicated that this factor was most similar to adults' _BODY_ factor (cosine similarity with _BODY_: `r cong_efa_3_d2_ad_46["F1", "F1"]`), but was also quite similar to adults' _HEART_ factor (cosine similarity with _HEART_: `r cong_efa_3_d2_ad_46["F1", "F2"]`; with _MIND_: `r cong_efa_3_d2_ad_46["F1", "F3"]`). It was the dominant factor for such items as `r top_n_domCap(efa_3_d2_46, 4, "F1", "pos")`, and accounted for `r round(efa_3_d2_46$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+
+The second factor corresponded primarily to perceptual-cognitive abilities, as well as one complex negative emotion (_feel guilty_). An analysis of factor congruence confirmed that this factor was most similar to adults' _MIND_ factor (cosine similarity with _MIND_: `r cong_efa_3_d2_ad_46["F2", "F3"]`; with _HEART_: `r cong_efa_3_d2_ad_46["F2", "F2"]`; with _BODY_: `r cong_efa_3_d2_ad_46["F2", "F1"]`). It was the dominant factor for such items as `r top_n_domCap(efa_3_d2_46, 4, "F2", "pos")`, and accounted for `r round(efa_3_d2_46$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+
+The third factor corresponded primarily to social-emotional abilities, with particularly strong loadings for positive emotions. An analysis of factor congruence indicated that this factor was most similar to adults' _HEART_ factor (cosine similarity with _HEART_: `r cong_efa_3_d2_ad_46["F3", "F2"]`), but also quite similar to adults' _BODY_ factor (cosine similarity with _BODY_: `r cong_efa_3_d2_ad_46["F3", "F1"]`; with _MIND_: `r cong_efa_3_d2_ad_46["F3", "F3"]`). It was the dominant factor for such items as `r top_n_domCap(efa_3_d2_46, 4, "F3", "pos")`, and accounted for `r round(efa_3_d2_46$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution. (See Figure 4, Panel B, for all factor loadings.)
+
+#### Two-factor solution
+
+```{r}
+efa_2_d2_46 <- fa_fun(d2_46_wide_i, 2)
+
+efa_2_plot_d2_46 <- heatmap_fun(efa_2_d2_46,
+                                factor_names = c("BODY-HEART", "MIND")) +
+  labs(title = paste0("Youner children (4-6y, n=", nrow(d2_79_wide_i), "): 2-factor solution"))
+```
+
+```{r}
+cong_efa_2_d2_ad_46 <- fa.congruence(efa_2_d2_46$loadings,
+                                     efa_3_d2_ad$loadings)
+```
+
+In the rotated two-factor solution suggested by parallel analysis, the first factor encompassed both physiological sensations and emotions. An analysis of factor congruence indicated that this factor was most similar to adults' _BODY_ factor (cosine similarity with _BODY_: `r cong_efa_2_d2_ad_46["F1", "F1"]`), but was also quite similar to adults' _HEART_ factor (cosine similarity with _HEART_: `r cong_efa_2_d2_ad_46["F1", "F2"]`; with _MIND_: `r cong_efa_2_d2_ad_46["F1", "F3"]`). It was the dominant factor for such items as `r top_n_domCap(efa_2_d2_46, 4, "F1", "pos")`, and accounted for `r round(efa_2_d2_46$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated two-factor solution. 
+
+The second factor corresponded primarily to perceptual-cognitive abilities. An analysis of factor congruence confirmed that this factor was most similar to adults' _MIND_ factor (cosine similarity with _MIND_: `r cong_efa_2_d2_ad_46["F2", "F3"]`; with _HEART_: `r cong_efa_2_d2_ad_46["F2", "F1"]`; with _BODY_: `r cong_efa_2_d2_ad_46["F2", "F1"]`). It was the dominant factor for such items as `r top_n_domCap(efa_2_d2_46, 4, "F2", "pos")`, and accounted for `r round(efa_2_d2_46$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. (See Figure 4, Panel A, for all factor loadings.)
+
+
+**BOOKMARK**
+
+
+
+```{r, include = T, fig.width = 6, fig.asp = 1}
+fig04_plots <- plot_grid(efa_2_plot_d2_46, efa_3_plot_d2_46, 
+                         efa_3_plot_d2_79, efa_3_plot_d2_ad,
+                         labels = c("A", "B", "C", "D"))
+fig04_with_caption <- add_sub(fig04_plots, str_wrap("Figure 4: Exploratory factor analysis results for 4- to 6-year-old children (A-B), 7- to 9-year-old children (B) and adults (C) in Study 2, in which each participant assessed 20 mental capacities for one of nine target entities: a computer, a robot, a beetle, a bird, a mouse, a goat, or an elephant. For younger children, we include both the two-factor solution suggested by parallel analysis (A) and the three-factor solution suggested by Weisman et al.'s (2017) factor retention criteria (B).", 143), x = 0, hjust = 0)
+ggdraw(fig04_with_caption)
+```
+
+
+**BOOKMARK**
+
 
 ## Discussion
 

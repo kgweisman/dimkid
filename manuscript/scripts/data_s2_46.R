@@ -4,7 +4,8 @@ d2_46 <- read.csv("./anonymized_data/study2_children46_anonymized.csv") %>%
   mutate(age = as.numeric(as.character(age))) %>%
   filter(((age >= 4 & age < 7) | is.na(age)),
          # character %in% c("beetle", "robot"),
-         !grepl("metal", capWording), !grepl("on and off", capWording)) %>%
+         !grepl("metal", capWording), 
+         !grepl("turned on", capWording)) %>%
   select(subid, age, gender, ethnicity, 
          character, capWording, response, rt, sessionDuration) %>%
   rename(duration = sessionDuration) %>%
@@ -13,9 +14,9 @@ d2_46 <- read.csv("./anonymized_data/study2_children46_anonymized.csv") %>%
     tolower(response) == "no" ~ 0,
     tolower(response) %in% c("kinda", "kida") ~ 0.5,
     tolower(response) == "yes" ~ 1)) %>%
-  mutate(capWording = as.character(capWording),
+  mutate(capWording = as.character(trimws(capWording)),
          capacity = case_when(
-           grepl("\\--", capWording) ~ gsub(" \\--.*$", "...", capWording),
+           # grepl("\\--", capWording) ~ gsub(" \\--.*$", "...", capWording),
            grepl("close by or far away", capWording) ~ "sense...far away",
            grepl("understand how somebody else is feeling", capWording) ~
            "understand how someone...feeling",
