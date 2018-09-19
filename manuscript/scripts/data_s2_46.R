@@ -1,11 +1,11 @@
 # STUDY 1: CHILDREN
 # read in & tidy data
-d1_79 <- read.csv("./data/study1_children79_anonymized.csv") %>%
+d2_46 <- read.csv("./data/study2_children46_anonymized.csv") %>%
   mutate(age = as.numeric(as.character(age))) %>%
-  filter(age >= 7, age < 10,
-         character %in% c("beetle", "robot"),
+  filter(((age >= 4 & age < 7) | is.na(age)),
+         # character %in% c("beetle", "robot"),
          !grepl("metal", capWording), !grepl("on and off", capWording)) %>%
-  select(subid, age, gender, ethnicity, bilingual, languages,
+  select(subid, age, gender, ethnicity, 
          character, capWording, response, rt, sessionDuration) %>%
   rename(duration = sessionDuration) %>%
   mutate(age_group = "children79") %>%
@@ -27,31 +27,35 @@ d1_79 <- read.csv("./data/study1_children79_anonymized.csv") %>%
            grepl("personality", capWording) ~ "have a personality...",
            grepl("beliefs", capWording) ~ "have beliefs...",
            TRUE ~ capWording)) %>%
-  mutate(ethnicity = as.character(ethnicity),
+  mutate(ethnicity = tolower(as.character(ethnicity)),
+         ethnicity = gsub("sn", "", ethnicity),
+         ethnicity = trimws(ethnicity),
          ethnicity = case_when(
-           grepl("\\;", ethnicity) | 
-             grepl("mix", ethnicity) | 
+           grepl(" ", ethnicity) |
              (grepl("\\/", ethnicity) & !grepl("hisp", ethnicity)) ~ "multi",
-           ethnicity == "white, caucasian, or european american" ~ "white",
-           ethnicity %in% c("east asian", "other (asian)", 
-                            "other: east asian american", 
-                            "other: south korean") ~ "east asian",
+           ethnicity %in% c("a", "chinese", "east asian") ~ "east asian",
+           ethnicity %in% c("af", "ethiopian american") ~ "black",
+           ethnicity %in% c("c", "cj") ~ "white",
+           ethnicity == "h" ~ "hispanic latino",
+           ethnicity == "i" ~ "south or southeast asian",
+           ethnicity == "me" ~ "middle eastern",
+           ethnicity == "na" ~ "native american",
            TRUE ~ ethnicity)) %>%
   distinct()
 
 # clean data
-d1_79 <- d1_79 %>%
+d2_46 <- d2_46 %>%
   filter(rt >= 250 | is.na(rt))
 
 # make wideform
-d1_79_wide <- d1_79 %>% 
+d2_46_wide <- d2_46 %>% 
   mutate(subid_char = paste(subid, character, sep = "_")) %>%
   select(subid_char, capacity, response_num) %>%
   spread(capacity, response_num) %>%
   column_to_rownames("subid_char")
 
 # impute missing values using the mean by character and capacity
-d1_79_wide_i <- d1_79_wide %>% 
+d2_46_wide_i <- d2_46_wide %>% 
   rownames_to_column("subid_char") %>%
   mutate(subid = gsub("_.*$", "", subid_char),
          character = gsub("^.*_", "", subid_char)) %>%
@@ -61,3 +65,4 @@ d1_79_wide_i <- d1_79_wide %>%
   ungroup() %>%
   select(-subid, -character) %>%
   column_to_rownames("subid_char")
+

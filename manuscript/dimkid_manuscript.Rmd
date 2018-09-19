@@ -37,9 +37,12 @@ source("./scripts/efa_fun.R")
 # data scripts
 source("./scripts/data_s1_ad.R")
 source("./scripts/data_s1_79.R")
+source("./scripts/data_s2_ad.R")
+source("./scripts/data_s2_79.R")
+source("./scripts/data_s2_46.R")
 
 # function for quickly getting counts and proportions for categorical demo variables
-demo_fun <- function(df, var){
+demo_fun <- function(df, var, n_round = NA){
   new_df <- df %>%
     distinct_("subid", var) %>%
     mutate_at(.vars = var,
@@ -47,6 +50,9 @@ demo_fun <- function(df, var){
     count_(var) %>%
     mutate(prop = n/sum(n)) %>%
     arrange(desc(n))
+  if(!is.na(n_round)){
+    new_df <- new_df %>% mutate(prop = round(prop, n_round))
+  }
   return(new_df)
 }
 
@@ -135,9 +141,9 @@ In Weisman et al.'s (2017) original studies, participants evaluated a target cha
 
 ```{r}
 # demographics
-d1_ad_gender <- demo_fun(d1_ad, "gender")
-d1_ad_ethnicity <- demo_fun(d1_ad, "ethnicity_cat")
-d1_ad_english <- demo_fun(d1_ad, "englishNative")
+d1_ad_gender <- demo_fun(d1_ad, "gender", 2)
+d1_ad_ethnicity <- demo_fun(d1_ad, "ethnicity_cat", 2)
+d1_ad_english <- demo_fun(d1_ad, "englishNative", 2)
 ```
 
 Adults (_n_=`r nrow(d1_ad_wide)`) participated via Amazon Mechanical Turk (MTurk) in July 2016. Adult participants had gained approval for at least 95% of their previous work on MTurk; had MTurk accounts based in the US; and indicated that they were at least 18 years old. Adults were paid \$0.30 for approximately 2-3 minutes of their time (median duration: `r summary(d1_ad$duration)["Median"] %>% round(2)` min). 
@@ -146,14 +152,14 @@ According to self report, the adult sample ranged in age from `r summary(d1_ad$a
 
 ```{r}
 # demographics
-d1_79_gender <- demo_fun(d1_79, "gender")
-d1_79_ethnicity <- demo_fun(d1_79, "ethnicity")
-d1_79_bilingual <- demo_fun(d1_79, "bilingual")
+d1_79_gender <- demo_fun(d1_79, "gender", 2)
+d1_79_ethnicity <- demo_fun(d1_79, "ethnicity", 2)
+d1_79_bilingual <- demo_fun(d1_79, "bilingual", 2)
 ```
 
 Children (_n_=`r nrow(d1_79_wide)`) participated at one of several San Francisco Bay Area museums or at their younger sibling's preschool between July-December 2016. The study took most children under 10 minutes to complete (median duration: `r summary(d1_79$duration)["Median"] %>% round(2)` min). An additional 12 children participated but were excluded for being outside the target age range (_n_=7), being of unknown age (_n_=4), or being shown a target character other than a beetle or a robot (_n_=1). Children received a small thank-you gift (e.g., a sticker) for their participation. 
 
-Children ranged in age from `r summary(d1_79$age)["Min."] %>% round(2)`-`r summary(d1_79$age)["Max."] %>% round(2)` years (median: `r summary(d1_79$age)["Median"] %>% round(2)`y). According to parental report, the child sample included slightly more girls (`r d1_79_gender$prop[d1_79_gender$gender=="f"] * 100`%) than boys (`r d1_79_gender$prop[d1_79_gender$gender=="m"] * 100`%; `r d1_79_gender$prop[d1_79_gender$gender=="MISSING"] * 100`% of children's gender was non-binary or unknown). Parents predominantly identified their children as White (`r d1_79_ethnicity$prop[d1_79_ethnicity$ethnicity=="white"] * 100`%), multiracial (`r d1_79_ethnicity$prop[d1_79_ethnicity$ethnicity=="multi"] * 100`%), East Asian (`r d1_79_ethnicity$prop[d1_79_ethnicity$ethnicity=="east asian"] * 100`%), or South Asian (`r d1_79_ethnicity$prop[d1_79_ethnicity$ethnicity=="south or southeast asian"] * 100`%; $\leq$ `r data.frame(d1_79_ethnicity %>% filter(!ethnicity %in% c("white", "multi", "east asian", "south or southeast asian", "MISSING")))$prop %>% max() * 100`% of chidlren were identified as any other race/ethnicity, and `r d1_79_ethnicity$prop[d1_79_ethnicity$ethnicity=="MISSING"] * 100`% of children's race/ethnicity was unknown). Roughly half of parents (`r d1_79_bilingual$prop[d1_79_bilingual$bilingual=="yes"] * 100`%) reported that their child was bilingual (though, anecdotally, parents' interpretations of "bilingual" ranged from taking classes at school to speaking a langauge at home).
+Children ranged in age from `r summary(d1_79$age)["Min."] %>% round(2)`-`r summary(d1_79$age)["Max."] %>% round(2)` years (median: `r summary(d1_79$age)["Median"] %>% round(2)`y). According to parental report, the child sample included slightly more girls (`r d1_79_gender$prop[d1_79_gender$gender=="f"] * 100`%) than boys (`r d1_79_gender$prop[d1_79_gender$gender=="m"] * 100`%; `r d1_79_gender$prop[d1_79_gender$gender=="MISSING"] * 100`% of children's gender was non-binary or unknown). Parents predominantly identified their children as White (`r d1_79_ethnicity$prop[d1_79_ethnicity$ethnicity=="white"] * 100`%), multiracial (`r d1_79_ethnicity$prop[d1_79_ethnicity$ethnicity=="multi"] * 100`%), East Asian (`r d1_79_ethnicity$prop[d1_79_ethnicity$ethnicity=="east asian"] * 100`%), or South Asian (`r d1_79_ethnicity$prop[d1_79_ethnicity$ethnicity=="south or southeast asian"] * 100`%; $\leq$ `r data.frame(d1_79_ethnicity %>% filter(!ethnicity %in% c("white", "multi", "east asian", "south or southeast asian", "MISSING")))$prop %>% max() * 100`% of children were identified as any other race/ethnicity, and `r d1_79_ethnicity$prop[d1_79_ethnicity$ethnicity=="MISSING"] * 100`% of children's race/ethnicity was unknown). Roughly half of parents (`r d1_79_bilingual$prop[d1_79_bilingual$bilingual=="yes"] * 100`%) reported that their child was bilingual (though, anecdotally, parents' interpretations of "bilingual" ranged from taking classes at school to speaking a langauge at home).
 
 ### Materials and procedure
 
@@ -378,7 +384,7 @@ ggdraw(fig02_with_caption)
 
 A visual inspection of Figure 2 clarifies these findings. Attributions in the _BODY_ and _MIND_ domains were rather similar for children and adults: Both children and adults marked a clear difference between the robot and the beetle in the physiological sensations of the _BODY_ (left), in line with the animate–inanimate distinction; and both age groups credited the robot with slightly greater perceptual-cognitive skills (_MIND_) than the beetle (right). In contrast, in the _HEART_ domain (center) both the beetle and the robot received rather low scores among adults, but very high scores among children.
 
-The raw data further supporst these observations. (See Figure 3 for raw counts of _no_, _kinda_, and _yes_ responses for all items, grouped by factor, character, and age group.) For example, consider hunger (the first capacity under _BODY_): Across age groups, nearly every participant said that a beetle could get hungry, while few participants (with the exception of some children) said that a robot could. Likewise, for mathematical computations (the last capacity under _MIND_), virtually no participants said that a beetle was capable of doing math, while the vast majority of both adults and children said that a robot was. But for social-emotional abilities, like feeling proud, feeling joy, and feeling sad (the first three capacities under _HEART_), far more children than adults endorsed these capacities for beetles and robots.
+The raw data further supporst these observations. (See Figure 3 for raw counts of _no_, _kinda_, and _yes_ responses for all items, grouped by factor, character, and age group.) For example, consider hunger (the first capacity under _BODY_): Across age groups, nearly every participant said that a beetle could get hungry, while few participants (with the exception of some children) said that a robot could. Likewise, for mathematical computations (the last capacity under _MIND_), virtually no participants said that a beetle was capable of doing math, while the vast majority of both adults and children said that a robot was. But for social-emotional abilities, like feeling proud, feeling joy, and feeling sad (the first three capacities under _HEART_), far more children than adults endorsed these capacities for beetles and robots. (See SOM for an analysis, parallel to the regression analyses here, of the proportion of the top-loading mental capacities for each factor that were endorsed by participants of different ages.)
 
 ```{r}
 d1_all <- d1_ad %>%
@@ -420,9 +426,64 @@ fig03_with_caption <- add_sub(fig03_plot, str_wrap("Figure 3: Raw counts of resp
 ggdraw(fig03_with_caption)
 ```
 
+```{r}
+binomial_smooth <- function(...) {
+  geom_smooth(method = "glm", method.args = list(family = "binomial"), ...)
+}
+
+d1_all_endorse <- d1_all %>%
+  group_by(factor, subid) %>%
+  top_n(-6, order) %>%
+  ungroup() %>%
+  mutate(endorse = ifelse(response_num > 0, 1, 0)) %>%
+  group_by(age_group, subid, character, factor) %>%
+  summarise(prop_endorse = mean(endorse, na.rm = T),
+            n = length(endorse)) %>%
+  ungroup()
+
+d1_all_endorse_boot <- d1_all_endorse %>%
+  group_by(age_group, character, factor) %>%
+  multi_boot_standard(col = "prop_endorse") %>%
+  ungroup()
+
+figSUPP_plot <- d1_all_endorse %>%
+  filter(age_group == "children") %>%
+  left_join(d1_79 %>% distinct(subid, age)) %>%
+  filter(!is.na(age)) %>%
+  ggplot(aes(x = age, y = prop_endorse, 
+             fill = character, color = character, shape = character)) +
+  facet_wrap(~ factor) +
+  geom_jitter(alpha = 0.4, width = 0, height = 0.03) +
+  binomial_smooth(aes(weight = n), show.legend = F) +
+  # geom_smooth(method = "glm",
+  #             method.args = list(family = "binomial")) +
+  geom_point(data = d1_all_endorse %>% filter(age_group == "adults"),
+             aes(x = 11), alpha = 0.4, show.legend = F,
+             position = position_jitterdodge(dodge.width = 0.5,
+                                             jitter.height = 0.03,
+                                             jitter.width = 0.25)) +
+  geom_pointrange(data = d1_all_endorse_boot %>% filter(age_group == "adults"),
+                  aes(x = 11, y = mean, ymin = ci_lower, ymax = ci_upper),
+                  position = position_dodge(width = 0.5), show.legend = F,
+                  color = "black", fatten = 5) +
+  scale_x_continuous(breaks = c(7:11), 
+                     labels = c("7y", "8y", "9y", "10y", "adults")) +
+  scale_y_continuous(breaks = seq(0, 1, 1/6), labels = 0:6) +
+  scale_shape_manual(values = c(21, 22)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 3))) +
+  labs(y = "number of items endorsed (out of 6)")
+```
+
+```{r, include = F, include = T, fig.width = 6, fig.asp = 0.7}
+figSUPP_with_caption <- add_sub(figSUPP_plot, str_wrap("Figure 4: Proportion of mental capacity items endorsed in each domain (BODY, HEART, and MIND) by adults and 7- to 9-year-old children in Study 1, in which each participant assessed 40 mental capacities for one of two target entities: a beetle (red circles) or a robot (turquoise squares). We defined each domain by the 6 items that loaded the most positively on the corresponding factor in an exploratory factor analysis of adults' responses, and we considered responses of either 'yes' or 'kinda' (but not 'no') to be endorsements. Lines correspond to logistic regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores.", 132), x = 0, hjust = 0)
+ggdraw(figSUPP_with_caption)
+```
+
 Of course, our sample of "children" included participants as young as 7 years and up to nearly 10 years of age. How did attributions vary across this age range? A visual inspection of Figure 2 suggests that, across all three domains (_BODY_, _HEART_, and _MIND_), children's mental capacity attributions to beetles and robots appeared to become more adult-like with age—but while the oldest children were indistinguishable from adults in the _BODY_ and _MIND_ domains, even the oldest children appear to have attributed more social-emotional abilities to these entities than most adults did.
 
-A separate regression on chidlren's factor scores alone confirmed that, while collapsing across factors and target characters children's overall mental capacity attributions did not vary with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "age")`), relative to the grand mean attributions of _HEART_ decreased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameH_GM:age")`) and attributions of _MIND_ increased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameM_GM:age")`). (See Table 2 for the full results of this model.)
+A separate regression on children's factor scores alone confirmed that, while collapsing across factors and target characters children's overall mental capacity attributions did not vary with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "age")`), relative to the grand mean attributions of _HEART_ decreased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameH_GM:age")`) and attributions of _MIND_ increased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameM_GM:age")`). (See Table 2 for the full results of this model.)
 
 ```{r}
 efa_3_scores_r_d1_79 <- brm(score ~ factor_name * age * character
@@ -466,67 +527,6 @@ fixef(efa_3_scores_r_d1_79) %>%
   kable_styling()
 ```
 
-**BOOKMARK**
-
-Finally, XX.
-
-```{r}
-binomial_smooth <- function(...) {
-  geom_smooth(method = "glm", method.args = list(family = "binomial"), ...)
-}
-
-d1_all_endorse <- d1_all %>%
-  group_by(factor, subid) %>%
-  top_n(-6, order) %>%
-  ungroup() %>%
-  mutate(endorse = ifelse(response_num > 0, 1, 0)) %>%
-  group_by(age_group, subid, character, factor) %>%
-  summarise(prop_endorse = mean(endorse, na.rm = T),
-            n = length(endorse)) %>%
-  ungroup()
-
-d1_all_endorse_boot <- d1_all_endorse %>%
-  group_by(age_group, character, factor) %>%
-  multi_boot_standard(col = "prop_endorse") %>%
-  ungroup()
-
-fig04_plot <- d1_all_endorse %>%
-  filter(age_group == "children") %>%
-  left_join(d1_79 %>% distinct(subid, age)) %>%
-  filter(!is.na(age)) %>%
-  ggplot(aes(x = age, y = prop_endorse, 
-             fill = character, color = character, shape = character)) +
-  facet_wrap(~ factor) +
-  geom_jitter(alpha = 0.4, width = 0, height = 0.05) +
-  binomial_smooth(aes(weight = n), show.legend = F) +
-  # geom_smooth(method = "glm",
-  #             method.args = list(family = "binomial")) +
-  geom_point(data = d1_all_endorse %>% filter(age_group == "adults"),
-             aes(x = 11), alpha = 0.4, show.legend = F,
-             position = position_jitterdodge(dodge.width = 0.5,
-                                             jitter.height = 0.05,
-                                             jitter.width = 0.25)) +
-  geom_pointrange(data = d1_all_endorse_boot %>% filter(age_group == "adults"),
-                  aes(x = 11, y = mean, ymin = ci_lower, ymax = ci_upper),
-                  position = position_dodge(width = 0.5), show.legend = F,
-                  color = "black", fatten = 1.25) +
-  scale_x_continuous(breaks = c(7:11), 
-                     labels = c("7y", "8y", "9y", "10y", "adults")) +
-  scale_y_continuous(breaks = seq(0, 1, 0.25)) +
-  scale_shape_manual(values = c(21, 22)) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
-  guides(color = guide_legend(override.aes = list(alpha = 1, size = 3))) +
-  labs(y = "proportion of items endorsed ('yes' or 'kinda')")
-```
-
-```{r, include = T, include = T, fig.width = 6, fig.asp = 0.7}
-fig04_with_caption <- add_sub(fig04_plot, str_wrap("Figure 4: Proportion of mental capacity items endorsed in each domain (BODY, HEART, and MIND) by adults and 7- to 9-year-old children in Study 1, in which each participant assessed 40 mental capacities for one of two target entities: a beetle (red circles) or a robot (turquoise squares). We defined each domain by the 6 items that loaded the most positively on the corresponding factor in an exploratory factor analysis of adults' responses, and we considered responses of either 'yes' or 'kinda' (but not 'no') to be endorsements. Lines correspond to logistic regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores.", 132), x = 0, hjust = 0)
-ggdraw(fig04_with_caption)
-```
-
-**BOOKMARK**
-
 Taken together, these analyses converge to suggest only minor differences between children and adults in their attributions of _BODY_ and _MIND_ to beetles and robots—but a major difference in _HEART_: Relative to adults, children tended to credit both beetles and robots with much greater social-emotional abilities. 
 
 ## Discussion
@@ -541,31 +541,46 @@ On the other hand, analyses of children's attributions within this shared concep
 
 The goals of Study 2 were twofold. 
 
-First, we aimed to extend our findings with 7- to 9-year-old children in Study 1, by expanding the list of the target characters to include not only the two "edge cases" from Study 1 (a beetle and a robot), but a also a wider range of animate beings (a bird, a goat, and an elephant) and inanimate objects (a computer, a teddy bear, and a doll). 
+First, we aimed to extend our findings with 7- to 9-year-old children in Study 1, by expanding the list of the target characters to include not only the two "edge cases" from Study 1 (a beetle and a robot), but a also a wider range of animate beings (a bird, a goat, and an elephant) and inanimate objects (a computer, a teddy bear, and a doll). In Weisman et al.'s original studies, this approach yielded a highly similar conceptual structure to the "edge case" approach (Weisman et al., 2017; Study 4). We reasoned that if this three-part conceptual structure is stable and robust by the age of 7- to 9-year-olds, it should manifest among 7- to 9-year-old children under the same range of conditions that elicit this structure from adults.
 
-In Weisman et al.'s original studies, this approach yielded a highly similar conceptual structure to the "edge case" approach (Weisman et al., 2017; Study 4). We reasoned that if this three-part conceptual structure is stable and robust by the age of 7- to 9-year-olds, it should manifest among 7- to 9-year-old children under the same range of conditions that elicit this structure from adults.
+Second, we aimed to assess the earlier development of this conceptual structure in a group of younger children. We targeted 4- to 6-year-old children for our younger age group because this has been identified as a period of dramatic development in several relevant domains. Many studies have documented shifts in children's abilities to take others' perspectives, represent false beliefs, and integrate representations of intentions and outcomes in evaluating moral responsibility (for reveiws, see Flavell, 1999; Wellman, 2015). The preschool years have also been the focus of a rich tradition of work on lay biology and the animate-inanimate distinction extending back nearly a century (e.g., Carey, 1985; R. Gelman, Spelke, & Meck, 1983; Medin, Waxman, Woodring, & Washinawatok, 2010; Piaget, 1929; for a review, see S. Gelman & Opfer, 2002). All of these accounts make the case that becoming a sophisticated reasoner—and particularly a sophisticated social reasoner—requires substantial refinement of one's representations of others' experiences, beliefs, desires, and needs. Might these refinements include shifts in children's intuitions about the fundamental components of mental life? 
 
-Second, we aimed to assess the earlier development of this conceptual structure in a group of younger children. We targeted 4- to 6-year-old children for our younger age group because this has been identified as a period of dramatic cognitive and social development in many domains. Many studies have documented shifts in children's abilities to take others' perspectives, represent false beliefs, and integrate representations of intentions and outcomes in evaluating moral responsibility (for reveiws, see Flavell, 1999; Wellman, 2015). The preschool years have also been the focus of a rich tradition of work on lay biology and the animate-inanimate distinction extending back nearly a century (e.g., Carey, 1985; R. Gelman, Spelke, & Meck, 1983; Medin, Waxman, Woodring, & Washinawatok, 2010; Piaget, 1929; for a review, see S. Gelman & Opfer, 2002). All of these accounts make the case that becoming a sophisticated reasoner—and particularly a sophisticated social reasoner—requires substantial refinement of one's representations of others' experiences, beliefs, desires, and needs. Might these refinements include shifts in children's intuitions about the fundamental components of mental life? 
+Pilot testing suggested that working with younger children would require making a briefer experimental paradigm with fewer than the 40 questions included in Study 1; limiting the list to 20 questions seemed to allow children as young as 4 years of age to complete the study easily and without getting bored or frustrated, while still including enough items to enable us to proceed with our exploratory "dimensionality reduction" approach to uncovering conceptual structure. 
 
-Pilot testing suggested that this would require making a briefer experimental paradigm with fewer than the 40 questions included in Study 1; limiting the list to 20 questions seemed to allow children as young as 4 years of age to complete the study easily and without getting bored or frustrated, while still including enough items to enable us to proceed with our exploratory "dimensionality reduction" approach to uncovering conceptual structure. To validate this modified paradigm, we also included a sample of adults.
+To validate this modified paradigm, we also included a sample of adults.
 
 ## Method
 
 ### Participants
 
-XX people participated in this study.
+`r nrow(d2_ad_wide) + nrow(d2_79_wide)` people participated in this study.
 
-Adults (n=XX) participated via MTurk in September 2018. Adult participants had gained approval for at least 95% of their previous work on MTurk; had MTurk accounts based in the US; and indicated that they were at least 18 years old. Adults were paid $0.45 for approximately XX minutes of their time (median duration: XX min). An additional XX adults participated but were excluded for failing to pass one or more attention checks (e.g., "Please select no"; n=XX) or for failing to respond sensibly to an open-ended question about what they had been asked to do in the study (e.g., copying and pasting text from the question, writing "good study," or describing a different study, e.g., "I wrote an essay about nature"; n=XX). Among the final sample of XX adults, XX% identified as women and XX% as men. Adults predominantly identified as White (XX%; XX% as Black, XX% as Asian; XX% as XX), and reported being between XX and XX years of age (median age: XX years). XX OTHER DEMOGRAPHICS: Native language, education, religion as a child, religion now, job.
+```{r}
+# demographics
+d2_ad_gender <- demo_fun(d2_ad, "gender", 2)
+d2_ad_ethnicity <- demo_fun(d2_ad, "ethnicity_cat", 2)
+```
 
-Data collection with children occurred between January-June 2017. Our planned sample size was 120 older and 120 younger children, but we also retained a handful of extra participants who completed the study on the final day of data collection for each group. 
+Adults (_n_=`r nrow(d2_ad_wide)`) participated via Amazon Mechanical Turk (MTurk) in September 2018. Adult participants had gained approval for at least 95% of their previous work on MTurk; had MTurk accounts based in the US; and indicated that they were at least 18 years old. Adults were paid \$0.45 for approximately 2-4 minutes of their time (median duration: `r summary(d2_ad$duration)["Median"] %>% round(2)` min). An additional 22 adults participated but were excluded for failing to respond sensibly to an open-ended question about what they had been asked to do in the study (e.g., copying and pasting text from the question, writing "good study," or describing a different study, e.g., "I wrote an essay about nature"; _n_=11) or for failing to pass one or more attention checks (e.g., "Please select no"; _n_=11). According to self report, the final adult sample ranged in age from `r summary(d2_ad$age)["Min."]`-`r summary(d2_ad$age)["Max."]` years (median: `r summary(d2_ad$age)["Median"]`y) and included slightly more men (`r round(d2_ad_gender$prop[d2_ad_gender$gender=="m"], 2) * 100`%) than women (`r round(d2_ad_gender$prop[d2_ad_gender$gender=="f"], 2) * 100`%). Adults predominantly identified as White (`r d2_ad_ethnicity$prop[d2_ad_ethnicity$ethnicity_cat=="white"] * 100`%; `r d2_ad_ethnicity$prop[d2_ad_ethnicity$ethnicity_cat=="multi"] * 100`% identified as more than one race/ethnicity, and $\leq$ `r data.frame(d2_ad_ethnicity %>% filter(!ethnicity_cat %in% c("white", "multi")))$prop %>% max() * 100`% as any other race/ethnicity).
 
-The group that we will refer to as "older children" (n=123) ranged in age from 7.09-9.99y (median: 8.57y), and participated at museums in the San Francisco Bay Area; the median study duration for this group was 2.70min. According to parental report, XX children (XX%) were girls and XX (XX%) were boys; for XX children (XX) gender was either non-binary or unknown. Parents predominantly identified their children as White (XX%) or Asian (XX%; XX% as Black, XX% as Asian; XX% as XX). XX OTHER DEMOGRAPHICS: Language.
+```{r}
+# demographics
+d2_79_gender <- demo_fun(d2_79, "gender", 2)
+d2_79_ethnicity <- demo_fun(d2_79, "ethnicity", 2)
+d2_46_gender <- demo_fun(d2_46, "gender", 2)
+d2_46_ethnicity <- demo_fun(d2_46, "ethnicity", 2)
+```
 
-"Younger children" (n=124) ranged in age from 4.00-6.99y (median: 5.03y), and participated either at their preschool (68%) or at a museum (32%); the median study duration for this group was 3.58min. According to school records, XX children (XX%) were girls and XX (XX%) were boys; for XX children (XX) gender was either non-binary or unknown. Parents predominantly identified their children as White (XX%) or Asian (XX%; XX% as Black, XX% as Asian; XX% as XX). XX OTHER DEMOGRAPHICS.
+Data collection with children occurred between January-June 2017. For our factor analyses we grouped children into two age groups, because EFA is a group-level analysis of the consensual conceptual structure and is not designed to model continuous participant-level variables like exact age. Our goal with these analyses was to examine discrete "snapshots" of this conceptual structure at two points in this continuous developmental trajectory. Our planned sample size was 120 older and 120 younger children, but we also retained a handful of extra participants who completed the study on the final day of data collection for each group.
 
-An additional 7 children participated but were excluded for being outside the target age ranges. 
+The group that we will refer to as "older children" (_n_=`r nrow(d2_79_wide)`) ranged in age from `r summary(d2_79$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d2_79$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d2_79$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y), and participated at one of several San Francisco Bay Area museums or at their younger sibling's preschool between July-December 2016. The study took most children under 10 minutes to complete (median duration: `r summary(d2_79$duration)["Median"] %>% round(2) %>% format(nsmall = 2)` min). According to parental report, the sample of older children included slightly more boys (`r d2_79_gender$prop[d2_79_gender$gender=="f"] * 100`%) than girls (`r d2_79_gender$prop[d2_79_gender$gender=="m"] * 100`%; `r d2_79_gender$prop[d2_79_gender$gender=="MISSING"] * 100`% of children's gender was non-binary or unknown). Parents predominantly identified their children as White (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="white"] * 100`%), South Asian (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="south or southeast asian"] * 100`%, multiracial (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="multi"] * 100`%), or East Asian (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="east asian"] * 100`%); $\leq$ `r data.frame(d2_79_ethnicity %>% filter(!ethnicity %in% c("white", "multi", "east asian", "south or southeast asian", "MISSING")))$prop %>% max() * 100`% of children were identified as any other race/ethnicity, and `r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="MISSING"] * 100`% of children's race/ethnicity was unknown). 
 
-We grouped children into two age groups because our primary planned analysis (EFA) is a group-level analysis of the consensual conceptual structure, and is not designed to model continuous participant-level variables like exact age. Our goal in this study was to examine discrete "snapshots" of this conceptual structure at two points in this continuous developmental trajectory.
+"Younger children" (_n_=`r nrow(d2_46_wide)`) ranged in age from `r summary(d2_46$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d2_46$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d2_46$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y), and participated either at their preschool or at a museum; the median study duration for this group was `r summary(d2_46$duration)["Median"] %>% round(2) %>% format(nsmall = 2)` min. According to parental report and school records, the sample of younger children included roughly the same numbers of girls (`r d2_46_gender$prop[d2_46_gender$gender=="m"] * 100`%) and boys (`r d2_46_gender$prop[d2_46_gender$gender=="f"] * 100`%). Children were predominantly identified as multiracial (`r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="multi"] * 100`%) or White (`r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="white"] * 100`%; $\leq$ `r data.frame(d2_46_ethnicity %>% filter(!ethnicity %in% c("white", "multi", "MISSING")))$prop %>% max() * 100`% of children were identified as any other race/ethnicity, and `r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="MISSING"] * 100`% of children's race/ethnicity was unknown).
+
+An additional 7 children participated but were excluded for being outside the target age ranges. Children received a small thank-you gift (e.g., a sticker) for their participation. 
+
+
+**BOOKMARK**
 
 ### Materials and procedure
 
@@ -575,11 +590,15 @@ Participants were assigned to target characters randomly, with two exceptions: T
 
 Instructions were identical to Study 1. Participants rated the target character on 20 mental capacities, presented in a random order for each participant. On each trial, participants responded _no_, _kinda_, or _yes_ to the question "Do you think a [beetle] can…?" As in Study 1, adults completed the study by clicking through a website at their own pace, with one trial presented on each page and no ability to go backwards, and children completed the study on an experimenter's laptop computer. Following Study 1, for older children the experimenter read the instructions and the first several trials out loud, requesting verbal responses from the child and selected his or her response for her; after several trials, the experimenter gave the child the option to continue independently if they desired. All younger children heard all questions read aloud by the experimenter and responded verbally. 
 
-The 20 mental capacities were a subset of the 40 items used in Study 1, chosen to include physiological sensations, emotional experiences, perceptual abilities, cognitive skills, capacities related to autonomy or agency, and social abilities; and to include some of the strongest-loading items for each of the three factors uncovered in Study 1 (see Figure XX). As in Study 1, each mental capacity was associated with a short, preset definition. Children were encouraged at the beginning of the study to ask questions if they did not know what a word meant, in which case they were given these definitions. (Adults did not have access to these definitions.)
+The 20 mental capacities were a subset of the 40 items used in Study 1, chosen to include physiological sensations, emotional experiences, perceptual abilities, cognitive skills, capacities related to autonomy or agency, and social abilities; and to include some of the strongest-loading items for each of the three factors uncovered among adults in Study 1 (see Figure 1). As in Study 1, each mental capacity was associated with a short, preset definition. Both older and younger children were encouraged at the beginning of the study to ask questions if they did not know what a word meant, in which case they were given these definitions. (Adults did not have access to these definitions.)
+
+After asking the 20 quesitons about mental capacities, for a subset of participants we also asked two additional questions: "Is a [target] made out of metal?" and "Can a [target] be turned on and off?" See SOM for an analysis of responses to these questions.
 
 ### Data processing
 
-We planned to drop trials with response times that were faster than a preset criterion of 250ms, but there were none. As in Study 1, we retained participants regardless of skipped trials (n=0 trials among older children, 30 trials among younger children). Overall, none of adults or older children's trials, and only 1.21% of younger children's trials, were missing data.
+We planned to drop trials with response times that were faster than a preset criterion of 250ms, but there were none among children, and we failed to record response times among adults. As in Study 1, we retained participants regardless of skipped trials (n=0 trials among older children and adults, 30 trials among younger children). Overall, none of adults or older children's trials, and only 1.21% of younger children's trials, were missing data.
+
+Among adults, XX 3 catch questions plus open-ended summary **BOOKMARK**
 
 ## Results
 
