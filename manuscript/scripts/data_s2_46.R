@@ -9,7 +9,7 @@ d2_46 <- read.csv("./anonymized_data/study2_children46_anonymized.csv") %>%
   select(subid, age, gender, ethnicity, 
          character, capWording, response, rt, sessionDuration) %>%
   rename(duration = sessionDuration) %>%
-  mutate(age_group = "children79") %>%
+  mutate(age_group = "children46") %>%
   mutate(response_num = case_when(
     tolower(response) == "no" ~ 0,
     tolower(response) %in% c("kinda", "kida") ~ 0.5,

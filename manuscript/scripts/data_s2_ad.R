@@ -20,7 +20,7 @@ d2_ad <- read.csv("./anonymized_data/study2_adults_anonymized.csv") %>%
   rename(character = char) %>%
   mutate(capacity = case_when(
            grepl("sick", capacity) ~ "feel sick...",
-           grepl("far away", capacity) ~ "sense...close by or far away",
+           grepl("far away", capacity) ~ "sense...far away",
            TRUE ~ capacity)) %>%
   filter(!grepl("metal", capacity), !grepl("on and off", capacity)) %>%
   distinct()
