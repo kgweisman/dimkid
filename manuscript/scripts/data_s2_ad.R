@@ -40,7 +40,8 @@ d2_ad_wide <- d2_ad %>%
 
 # clean data (part 2)
 d2_ad <- d2_ad %>%
-  filter(subid_char %in% rownames(d2_ad_wide))
+  filter(subid_char %in% rownames(d2_ad_wide),
+         !grepl("please", capacity))
 
 # impute missing values using the mean by character and capacity
 d2_ad_wide_i <- d2_ad_wide %>% 
