@@ -809,9 +809,9 @@ efa_3_d2_46_project_scores <- predict(object = efa_3_d2_ad,
 
 First, we projected all of children's responses into the factor space defined by adults (standardized in terms of adults' responses), and examined factor scores by age group (again, using the method articulated by ten Berge et al., 1999). As in Study 1, this yielded three scores for each participant, corresponding, in principle, to holistic judgments of the social-emotional, physiological, and perceptual-cognitive abilities of the target character the participant evaluated. (Note that each of these three scores takes into account adult factor loadings for all 20 mental capacities, as shown in Figure 4, Panel D.) 
 
-This allowed us to examine the effects of age group (younger children, older children, adults), character (computer, robot, doll, teddy bear, beetle, bird, mouse, goat, elephant), and factor (_BODY_, _HEART_, _MIND_) on these scores via mixed effects Bayesian regression. As in Study 1, age group and factor were treated as categorical variables and effect-coded. To explore attributions to different target characters, we included eight orthogonal contrasts: (1) animates (elephant, goat, mouse, bird, beetle) vs. inanimates (teddy bear, doll, robot, teddy bear); (2) mammals (elephant, goat, mouse) vs. other animals (bird, beetle); (3) elephant vs. other mammals (goat, mouse); (4) goat vs. mouse; (5) bird vs. beetle; (6) technologies (robot, computer) vs. toys (teddy bear, doll); (7) robot vs. computer; and (8) teddy bear vs. doll. Here we will focus on what we consider the two most interesting contrasts here: animates/inanimates (contrast #1) and, within inanimates, technologies/toys (contrast #6).
+This allowed us to examine the effects of age group (younger children, older children, adults), character (computer, robot, doll, teddy bear, beetle, bird, mouse, goat, elephant), and factor (_BODY_, _HEART_, _MIND_) on these scores via mixed effects Bayesian regression. As in Study 1, age group and factor were treated as categorical variables and effect-coded. To explore attributions to different target characters, we included eight orthogonal contrasts: (1) animates (elephant, goat, mouse, bird, beetle) vs. inanimates (teddy bear, doll, robot, teddy bear); (2) mammals (elephant, goat, mouse) vs. other animals (bird, beetle); (3) elephant vs. other mammals (goat, mouse); (4) goat vs. mouse; (5) bird vs. beetle; (6) technologies (robot, computer) vs. toys (teddy bear, doll); (7) robot vs. computer; and (8) teddy bear vs. doll. Here we will focus on what we consider to be the two contrasts of the greatest theoretical interest: animates/inanimates (contrast #1) and, within inanimates, technologies/toys (contrast #6). (See SOM for a deeper investigation of the other six contrasts.)
 
-See Table 3 for the results of a maximal model; Figure 5 for scores by age group, factor, and character; and Figure 6 for scores by age (among children). 
+The results of a maximal model can be found in Table 3; Figure 5 for scores by age group, factor, and character; and Figure 6 for scores by age (among children). 
 
 ```{r}
 efa_3_scores_d2_all <- efa_3_d2_ad$scores %>%
@@ -918,7 +918,7 @@ fixef(efa_3_scores_r_d2_all) %>%
     "age_groupCH46_GM:characteranim_inan" = "characters (animates/inanimates) × age group (4-6y vs. GM)",
     "age_groupCH46_GM:charactermamm_nonm" = "characters (mammals/other animals) × age group (4-6y vs. GM)",
     "age_groupCH46_GM:characterelep_gomo" = "characters (elephant/other mammals) × age group (4-6y vs. GM)",
-    "age_groupCH46_GM:charactergoat_mous" = "characters (goat/mous) × age group (4-6y vs. GM)",
+    "age_groupCH46_GM:charactergoat_mous" = "characters (goat/mouse) × age group (4-6y vs. GM)",
     "age_groupCH46_GM:characterbird_beet" = "characters (bird/beetle) × age group (4-6y vs. GM)",
     "age_groupCH46_GM:charactertech_toys" = "characters (technologies/toys) × age group (4-6y vs. GM)",
     "age_groupCH46_GM:characterrobo_comp" = "characters (robot/computer) × age group (4-6y vs. GM)",
@@ -926,7 +926,7 @@ fixef(efa_3_scores_r_d2_all) %>%
     "age_groupCH79_GM:characteranim_inan" = "characters (animates/inanimates) × age group (7-9y vs. GM)",
     "age_groupCH79_GM:charactermamm_nonm" = "characters (mammals/other animals) × age group (7-9y vs. GM)",
     "age_groupCH79_GM:characterelep_gomo" = "characters (elephant/other mammals) × age group (7-9y vs. GM)",
-    "age_groupCH79_GM:charactergoat_mous" = "characters (goat/mous) × age group (7-9y vs. GM)",
+    "age_groupCH79_GM:charactergoat_mous" = "characters (goat/mouse) × age group (7-9y vs. GM)",
     "age_groupCH79_GM:characterbird_beet" = "characters (bird/beetle) × age group (7-9y vs. GM)",
     "age_groupCH79_GM:charactertech_toys" = "characters (technologies/toys) × age group (7-9y vs. GM)",
     "age_groupCH79_GM:characterrobo_comp" = "characters (robot/computer) × age group (7-9y vs. GM)",
@@ -979,7 +979,20 @@ fixef(efa_3_scores_r_d2_all) %>%
   kable_styling()
 ```
 
-Collapsing across age groups and factors, factor scores suggest that participants generally attributed fewer mental capacities to the robot than the beetle (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "characterR_GM")`). However, this appears to be entirely due to the huge discrepancy between characters in the _BODY_ domain; the difference between characters was reduced to nothing in the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameH_GM:characterR_GM")`), and reversed in the perceptual-cognitive domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameM_GM:characterR_GM")`). Collapsing across target characters, children tended to attribute more mental capacities adults (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "age_groupCH79_GM")`), but this was driven primarily by the social-emotional domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameH_GM:age_groupCH79_GM")`), and was reversed in the perceptual-cognitive domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameM_GM:age_groupCH79_GM")`).
+First, we consider the contrast between the five animate target characters (beetle, bird, mouse, goat, and elephant) and the four inanimate target characters (computer, robot, doll, and teddy bear). **BRIEF MENTION OF RELEVANT LITERATURE**
+
+As we would expect, collapsing across age groups and factors, factor scores suggest that participants generally attributed more mental capacities to animates than to inanimates (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "characteranim_inan")`). Relative to the grand mean, however, the difference between animates and inanimates was diminished in both the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM:characteranim_inan")`) and the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:characteranim_inan")`)—suggesting that this overall difference between animates and inanimates was driven primarily by attributions of the physiological sensations characteristic of _BODY_ to biological animals (and not to inanimate objects). 
+
+In terms of developmental trends, the overall difference between animates and inanimates was somewhat attenuated among 4- to 6-year-old children (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH46_GM:characteranim_inan")`)— but relatively less so in the HEART domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM:age_groupCH46_GM:characteranim_inan")`). Meanwhile, among 7- to 9-year-old children, the difference between animates and inanimates was attenuated in the MIND domain only (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameN_GM:age_groupCH79_GM:characteranim_inan")`). Taken together, these findings suggest that, as a group, 4- to 6-year-old children perceived the difference between animates and inanimates to be a matter of both _BODY_ and _HEART_ (although they perceived this difference to be somewhat smaller than older children and adults). Meanwhile, as a group, 7- to 9-year-old children perceived the difference between animates and inaniamtes to be primarily a matter of the _BODY_, but the animate-inanimate distinction did not appear to govern their attributions of _MIND_. Neither of these patterns was entirely adult-like: Among adults, the distinction between animates and inanimates appeared to govern attributions of _BODY_ and _MIND_ to an equal degree, and _HEART_ to a lesser extent. **REWRITE FOR CLARITY, ADD OBSERVATIONS FROM PLOT**
+
+Next, we consider an important distinction within the group of inanimate target characters: the contrast between the two technologies (computer and robot) and the two anthropomorphic toys (doll and teddy bear). **BRIEF MENTION OF RELEVANT LITERATURE**
+
+Collapsing across age groups and factors, participants generally attributed more mental capacities to technologies than to toys (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "charactertech_toys")`); as we might expect, this difference was exaggerated in the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:charactertech_toys")`).
+
+In terms of developmental trends, the overall difference between technologies and toys did not differ across age groups (4-6y vs. the grand mean: `r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH46_GM:charactertech_toys")`; 7-9y vs. the grand mean: `r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH79_GM:charactertech_toys")`)—but this several higher order effects (see Table 3). In particular, 4- to 6-year-old children were unique in their perceptions of the difference between technologies and toys in the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:age_groupCH46_GM:charactertech_toys")`): While older children and adults distinguished strongly between technolgoies and toys in their attributions of _MIND_, younger children generally attributed fewer of the perceptual-cognitive abilities of the _MIND_ to either kind of inanimate being. **CAN'T INTERPRET THE OTHER TWO SIGNIF 3-WAY INTERACTIONS**
+
+**Taken together, these findings suggest that, as a group, 4- to 6-year-old children perceived the difference between animates and inanimates to be a matter of both _BODY_ and _HEART_ (although they perceived this difference to be somewhat smaller than older children and adults). Meanwhile, as a group, 7- to 9-year-old children perceived the difference between animates and inaniamtes to be primarily a matter of the _BODY_, but the animate-inanimate distinction did not appear to govern their attributions of _MIND_. Neither of these patterns was entirely adult-like: Among adults, the distinction between animates and inanimates appeared to govern attributions of _BODY_ and _MIND_ to an equal degree, and _HEART_ to a lesser extent.**
+
 
 ```{r}
 fig05_plot <- ggplot(efa_3_scores_boot_d2_all %>%
@@ -1019,7 +1032,6 @@ fig05_with_caption <- add_sub(fig05_plot, str_wrap("Figure 5: Factor scores for 
 ggdraw(fig05_with_caption)
 ```
 
-
 ```{r}
 fig06_plot <- ggplot(efa_3_scores_d2_all %>% 
                        filter(!is.na(age)),
@@ -1050,12 +1062,6 @@ fig06_plot <- ggplot(efa_3_scores_d2_all %>%
 fig06_with_caption <- add_sub(fig06_plot, str_wrap("Figure 6: Factor scores for 4- to 9-year-old children and adults in Study 2, in which each participant assessed 20 mental capacities for one of nine target characters. Each participant recieved a factor score for each factor (BODY, HEART, and MIND, as defined by an exploratory factor analysis of adults' responses). We treated these scores as summaries of that participants' mental capacity attributions in these domains; a score of 0 corresponds to the mean for that factor among adults. Lines correspond to linear regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores. Note that the range of the y-axis differs across panels.", 135), x = 0, hjust = 0)
 ggdraw(fig06_with_caption)
 ```
-
-As we would expect, collapsing across age groups and factors, factor scores suggest that participants generally attributed more mental capacities to animates than to inanimates (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "characteranim_inan")`). Relative to the grand mean, however, the difference between animates and inanimates was diminished in both the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM:characteranim_inan")`) and the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:characteranim_inan")`)—suggesting that this overall difference between animates and inanimates was driven primarily by attributions of the physiological sensations characteristic of _BODY_ to biological animals (and not to inanimate objects). The overall animates-inanimates difference was somewhat attenuated among 4- to 6-year-old children (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH46_GM:characteranim_inan")`), but not among 7- to 9-year-old children (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH79_GM:characteranim_inan")`). ** Add three-way interactions!** 
-
-Within inanimates, collapsing across age groups and factors, participants generally attributed more mental capacities to technologies than to toys (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "charactertech_toys")`), and, as we might expect, this difference was exaggerated in the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:charactertech_toys")`). This overall technologies-toys differences did not differ across age groups (4-6y vs. the grand mean: `r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH46_GM:charactertech_toys")`; 7-9y vs. the grand mean: `r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH79_GM:charactertech_toys")`). ** Add three-way interactions!** 
-
-(See Table 3 for other comparisons between characters, and interactions between these comparisons, factor, and age group.)
 
 **BOOKMARK**
 
@@ -1143,7 +1149,8 @@ fig07_fun <- function(whichfac){
     scale_y_continuous(breaks = c(0, 0.5, 1)) +
     theme_bw() +
     theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
-    labs(y = "proportion of participants", x = "mental capacity (by factor)")
+    labs(title = whichfac,
+         y = "proportion of participants", x = "mental capacity (by factor)")
   
   if(whichfac != "MIND"){
     fig <- fig + guides(fill = "none", alpha = "none")
@@ -1151,6 +1158,10 @@ fig07_fun <- function(whichfac){
   
   if(whichfac != "HEART"){
     fig <- fig + labs(x = "")
+  }
+  
+  if(whichfac != "BODY"){
+    fig <- fig + labs(y = "")
   }
   
   return(fig)
@@ -1161,7 +1172,9 @@ fig07_HEART_plot <- fig07_fun("HEART")
 fig07_MIND_plot <- fig07_fun("MIND")
 
 fig07_plots <- plot_grid(fig07_BODY_plot, fig07_HEART_plot, fig07_MIND_plot,
-                         ncol = 3, labels = c("A", "B", "C"),
+                         ncol = 3, labels = c("A", 
+                                              "B", 
+                                              "C"),
                          rel_widths = c(1, 1, 1.2))
 ```
 
