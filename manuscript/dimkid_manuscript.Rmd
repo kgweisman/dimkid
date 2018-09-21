@@ -128,7 +128,7 @@ Here we focus our interpretations on varimax-rotated solutions, which constrain 
 
 Having inferred a conceptual structure for a given group of participants via EFA, we then sought to examine attributions of mental capacities to the particular target characters included in each study within this conceptual structure: To what extent did participants attribute each of the fundamental components of mental life revealed by EFA to a given target character, and how did this attributions vary with age (either within an age group or between age groups)? To explore this question, we examined "factor scores"—summaries of each participant's attributions of each of factors revealed by EFA. We used the correlation-preserving "ten Berge" method (as implemented in the "psych" package; Revelle, 2018), imputing missing values using the mean (by target character, capacity, and age group). This yielded one factor score for each of the factors revealed by EFA for each participant.
 
-We analyzed these factor scores via mixed effects Bayesian regression analyses using the "brms" package for R (Bürkner, 2017). In all of these analyses, categorical variables were effect-coded, continuous variables were centered at the mean, and we included the maximal random effect structures given the design for the relevant study. Further details varied by study, depending on the number of target characters included in that study, the number of factors revealed by EFA for the relevant group(s) of participants, and the goals of the analysis (e.g., comparing two age groups vs. examining continuous effects of age within one or more groups of participants).
+We analyzed these factor scores via mixed effects Bayesian regression analyses using the "brms" package for R (Bürkner, 2017). In all of these analyses, we included the maximal random effect structures given the design for the relevant study. Further details varied by study, depending on the number of target characters included in that study, the number of factors revealed by EFA for the relevant group(s) of participants, and the goals of the analysis (e.g., comparing two age groups vs. examining continuous effects of age within one or more groups of participants).
 
 # Study 1
 
@@ -324,50 +324,52 @@ efa_3_scores_boot_d1_all <- efa_3_scores_d1_all %>%
 
 ```{r}
 contrasts(efa_3_scores_d1_all$character) <- cbind("R_GM" = c(-1, 1))
-contrasts(efa_3_scores_d1_all$age_group) <- cbind("CH79_GM" = c(-1, 1))
+contrasts(efa_3_scores_d1_all$age_group) <- cbind("CH79_AD" = c(0, 1))
 contrasts(efa_3_scores_d1_all$factor_name) <- cbind("H_GM" = c(-1, 1, 0),
                                                     "M_GM" = c(-1, 0, 1))
 
-efa_3_scores_r_d1_all <- brm(score ~ factor_name * age_group * character
-                             + (1|subid),
-                             data = efa_3_scores_d1_all,
-                             seed = 12345,
-                             cores = 4,
-                             control = list(adapt_delta = 0.99))
-
-summary(efa_3_scores_r_d1_all)
+# efa_3_scores_r_d1_all <- brm(score ~ factor_name * age_group * character
+#                              + (1|subid),
+#                              data = efa_3_scores_d1_all,
+#                              seed = 12345,
+#                              cores = 4,
+#                              control = list(adapt_delta = 0.99))
+# 
+# summary(efa_3_scores_r_d1_all)
 ```
 
 ```{r, include = T, results = "asis"}
-fixef(efa_3_scores_r_d1_all) %>% 
-  data.frame() %>%
-  rownames_to_column("Parameter") %>%
-  mutate(Parameter = recode_factor(Parameter,
-    "Intercept" = "(Intercept)",
-    "characterR_GM" = "character (robot vs. grand mean)",
-    "factor_nameH_GM" = "HEART (vs. grand mean)",
-    "factor_nameM_GM" = "MIND (vs. grand mean)",
-    "age_groupCH79_GM" = "age group (children vs. grand mean)",
-    "factor_nameH_GM:characterR_GM" = "character × HEART",
-    "factor_nameM_GM:characterR_GM" = "character × MIND",
-    "age_groupCH79_GM:characterR_GM" = "character × age group",
-    "factor_nameH_GM:age_groupCH79_GM" = "HEART × age group",
-    "factor_nameM_GM:age_groupCH79_GM" = "MIND × age group",
-    "factor_nameH_GM:age_groupCH79_GM:characterR_GM" = "character × HEART × age group",
-    "factor_nameM_GM:age_groupCH79_GM:characterR_GM" = "character × MIND × age group")) %>%
-  arrange(Parameter) %>%
-  mutate(X = ifelse(Q2.5 * Q97.5 > 0, "*", "")) %>%
-  mutate_at(vars(-Parameter, -X), 
-            funs(format(round(., 2), nsmall = 2))) %>%
-  rename(b = Estimate, Error = Est.Error, " " = X) %>%
-  unite(`95% CI`, Q2.5, Q97.5, sep = ", ") %>%
-  mutate(`95% CI` = paste0("[", `95% CI`, "]")) %>%
-  knitr::kable(format = "html", align = c("l", rep("r", 3)),
-               caption = "Table 1: Fixed effects from a mixed-effects Bayesian regression model predicting factor scores in Study 1 by character (beetle, robot), factor (BODY, HEART, MIND), and age group (adults, children). The model used the formula 'factor score ~ factor * age group * character + (1 | subject)' and was implemented in the 'brms' package for R (Bürkner, 2017). All variables were effect-coded. Asterisks mark parameters whose 95% credible interval does not include 0.") %>%
-  kable_styling()
+# fixef(efa_3_scores_r_d1_all) %>% 
+#   data.frame() %>%
+#   rownames_to_column("Parameter") %>%
+#   mutate(Parameter = recode_factor(Parameter,
+#     "Intercept" = "(Intercept)",
+#     "characterR_GM" = "character (robot vs. grand mean)",
+#     "factor_nameH_GM" = "HEART (vs. grand mean)",
+#     "factor_nameM_GM" = "MIND (vs. grand mean)",
+#     "age_groupCH79_AD" = "age group (children vs. adults)",
+#     "factor_nameH_GM:characterR_GM" = "character × HEART",
+#     "factor_nameM_GM:characterR_GM" = "character × MIND",
+#     "age_groupCH79_AD:characterR_GM" = "character × age group",
+#     "factor_nameH_GM:age_groupCH79_AD" = "HEART × age group",
+#     "factor_nameM_GM:age_groupCH79_AD" = "MIND × age group",
+#     "factor_nameH_GM:age_groupCH79_AD:characterR_GM" = "character × HEART × age group",
+#     "factor_nameM_GM:age_groupCH79_AD:characterR_GM" = "character × MIND × age group")) %>%
+#   arrange(Parameter) %>%
+#   mutate(X = ifelse(Q2.5 * Q97.5 > 0, "*", "")) %>%
+#   mutate_at(vars(-Parameter, -X), 
+#             funs(format(round(., 2), nsmall = 2))) %>%
+#   rename(b = Estimate, Error = Est.Error, " " = X) %>%
+#   unite(`95% CI`, Q2.5, Q97.5, sep = ", ") %>%
+#   mutate(`95% CI` = paste0("[", `95% CI`, "]")) %>%
+#   knitr::kable(format = "html", align = c("l", rep("r", 3)),
+#                caption = "Table 1: Fixed effects from a mixed-effects Bayesian regression model predicting factor scores in Study 1 by character (beetle, robot), factor (BODY, HEART, MIND), and age group (adults, children). The model used the formula 'factor score ~ factor * age group * character + (1 | subject)' and was implemented in the 'brms' package for R (Bürkner, 2017). Factor and character were effect-coded; age group was dummy-coded with adults as the baseline. Asterisks mark parameters whose 95% credible interval does not include 0.") %>%
+#   kable_styling()
 ```
 
-Collapsing across age groups and factors, factor scores suggest that participants generally attributed fewer mental capacities to the robot than the beetle (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "characterR_GM")`). However, this appears to be entirely due to the huge discrepancy between characters in the _BODY_ domain; the difference between characters was reduced to nothing in the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameH_GM:characterR_GM")`), and reversed in the perceptual-cognitive domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameM_GM:characterR_GM")`). Collapsing across target characters, children tended to attribute more mental capacities adults (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "age_groupCH79_GM")`), but this was driven primarily by the social-emotional domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameH_GM:age_groupCH79_GM")`), and was reversed in the perceptual-cognitive domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameM_GM:age_groupCH79_GM")`). 
+Collapsing across factors, factor scores suggest that adults generally attributed fewer mental capacities to the robot than the beetle (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "characterR_GM")`). However, this appears to be entirely due to the huge discrepancy between characters in the _BODY_ domain; the difference between characters was reduced to nothing in the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameH_GM:characterR_GM")`), and reversed in the perceptual-cognitive domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameM_GM:characterR_GM")`). 
+
+Meanwhile, children children tended to attribute more mental capacities, collapsing across characters, than did adults (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "age_groupCH79_AD")`) - but this was driven primarily by the social-emotional domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameH_GM:age_groupCH79_AD")`), and was reversed in the perceptual-cognitive domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameM_GM:age_groupCH79_AD")`). 
 
 ```{r}
 fig02_plot <- ggplot(efa_3_scores_d1_all %>% filter(!is.na(age)),
@@ -505,45 +507,45 @@ Of course, our sample of "children" included participants as young as 7 years an
 A separate regression on children's factor scores alone confirmed that, while collapsing across factors and target characters children's overall mental capacity attributions did not vary with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "age")`), relative to the grand mean attributions of _HEART_ decreased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameH_GM:age")`) and attributions of _MIND_ increased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameM_GM:age")`). (See Table 2 for the full results of this model.)
 
 ```{r}
-efa_3_scores_r_d1_79 <- brm(score ~ factor_name * age * character
-                            + (1|subid),
-                            data = efa_3_scores_d1_all %>% 
-                              filter(age_group == "children79", !is.na(age)) %>%
-                              mutate(age = scale(age, scale = F)),
-                            seed = 12345,
-                            cores = 4,
-                            control = list(adapt_delta = 0.99))
-
-summary(efa_3_scores_r_d1_79)
+# efa_3_scores_r_d1_79 <- brm(score ~ factor_name * age * character
+#                             + (1|subid),
+#                             data = efa_3_scores_d1_all %>% 
+#                               filter(age_group == "children79", !is.na(age)) %>%
+#                               mutate(age = scale(age, scale = F)),
+#                             seed = 12345,
+#                             cores = 4,
+#                             control = list(adapt_delta = 0.99))
+# 
+# summary(efa_3_scores_r_d1_79)
 ```
 
 ```{r, include = T, results = "asis"}
-fixef(efa_3_scores_r_d1_79) %>% 
-  data.frame() %>%
-  rownames_to_column("Parameter") %>%
-  mutate(Parameter = recode_factor(Parameter,
-    "Intercept" = "(Intercept)",
-    "characterR_GM" = "character (robot vs. grand mean)",
-    "factor_nameH_GM" = "HEART (vs. grand mean)",
-    "factor_nameM_GM" = "MIND (vs. grand mean)",
-    "age" = "age (mean-centered)",
-    "factor_nameH_GM:characterR_GM" = "character × HEART",
-    "factor_nameM_GM:characterR_GM" = "character × MIND",
-    "age:characterR_GM" = "character × age",
-    "factor_nameH_GM:age" = "HEART × age",
-    "factor_nameM_GM:age" = "MIND × age",
-    "factor_nameH_GM:age:characterR_GM" = "character × HEART × age",
-    "factor_nameM_GM:age:characterR_GM" = "character × MIND × age")) %>%
-  arrange(Parameter) %>%
-  mutate(X = ifelse(Q2.5 * Q97.5 > 0, "*", "")) %>%
-  mutate_at(vars(-Parameter, -X), 
-            funs(format(round(., 2), nsmall = 2))) %>%
-  rename(b = Estimate, Error = Est.Error, " " = X) %>%
-  unite(`95% CI`, Q2.5, Q97.5, sep = ", ") %>%
-  mutate(`95% CI` = paste0("[", `95% CI`, "]")) %>%
-  knitr::kable(format = "html", align = c("l", rep("r", 3)),
-               caption = "Table 2: Fixed effects from a mixed-effects Bayesian regression model predicting factor scores in Study 1 by character (beetle, robot), factor (BODY, HEART, MIND), and exact age group (for children only). The model used the formula 'factor score ~ factor * age * character + (1 | subject)' and was implemented in the 'brms' package for R (Bürkner, 2017). All categorical variables were effect-coded, and age was mean-centered. Asterisks mark parameters whose 95% credible interval does not include 0.") %>%
-  kable_styling()
+# fixef(efa_3_scores_r_d1_79) %>% 
+#   data.frame() %>%
+#   rownames_to_column("Parameter") %>%
+#   mutate(Parameter = recode_factor(Parameter,
+#     "Intercept" = "(Intercept)",
+#     "characterR_GM" = "character (robot vs. grand mean)",
+#     "factor_nameH_GM" = "HEART (vs. grand mean)",
+#     "factor_nameM_GM" = "MIND (vs. grand mean)",
+#     "age" = "age (mean-centered)",
+#     "factor_nameH_GM:characterR_GM" = "character × HEART",
+#     "factor_nameM_GM:characterR_GM" = "character × MIND",
+#     "age:characterR_GM" = "character × age",
+#     "factor_nameH_GM:age" = "HEART × age",
+#     "factor_nameM_GM:age" = "MIND × age",
+#     "factor_nameH_GM:age:characterR_GM" = "character × HEART × age",
+#     "factor_nameM_GM:age:characterR_GM" = "character × MIND × age")) %>%
+#   arrange(Parameter) %>%
+#   mutate(X = ifelse(Q2.5 * Q97.5 > 0, "*", "")) %>%
+#   mutate_at(vars(-Parameter, -X), 
+#             funs(format(round(., 2), nsmall = 2))) %>%
+#   rename(b = Estimate, Error = Est.Error, " " = X) %>%
+#   unite(`95% CI`, Q2.5, Q97.5, sep = ", ") %>%
+#   mutate(`95% CI` = paste0("[", `95% CI`, "]")) %>%
+#   knitr::kable(format = "html", align = c("l", rep("r", 3)),
+#                caption = "Table 2: Fixed effects from a mixed-effects Bayesian regression model predicting factor scores in Study 1 by character (beetle, robot), factor (BODY, HEART, MIND), and exact age group (for children only). The model used the formula 'factor score ~ factor * age * character + (1 | subject)' and was implemented in the 'brms' package for R (Bürkner, 2017). Factor and character were effect-coded, and age was mean-centered. Asterisks mark parameters whose 95% credible interval does not include 0.") %>%
+#   kable_styling()
 ```
 
 Taken together, these analyses converge to suggest only minor differences between children and adults in their attributions of _BODY_ and _MIND_ to beetles and robots—but a major difference in _HEART_: Relative to adults, children tended to credit both beetles and robots with much greater social-emotional abilities. 
@@ -809,9 +811,9 @@ efa_3_d2_46_project_scores <- predict(object = efa_3_d2_ad,
 
 First, we projected all of children's responses into the factor space defined by adults (standardized in terms of adults' responses), and examined factor scores by age group (again, using the method articulated by ten Berge et al., 1999). As in Study 1, this yielded three scores for each participant, corresponding, in principle, to holistic judgments of the social-emotional, physiological, and perceptual-cognitive abilities of the target character the participant evaluated. (Note that each of these three scores takes into account adult factor loadings for all 20 mental capacities, as shown in Figure 4, Panel D.) 
 
-This allowed us to examine the effects of age group (younger children, older children, adults), character (computer, robot, doll, teddy bear, beetle, bird, mouse, goat, elephant), and factor (_BODY_, _HEART_, _MIND_) on these scores via mixed effects Bayesian regression. As in Study 1, age group and factor were treated as categorical variables and effect-coded. To explore attributions to different target characters, we included eight orthogonal contrasts: (1) animates (elephant, goat, mouse, bird, beetle) vs. inanimates (teddy bear, doll, robot, teddy bear); (2) mammals (elephant, goat, mouse) vs. other animals (bird, beetle); (3) elephant vs. other mammals (goat, mouse); (4) goat vs. mouse; (5) bird vs. beetle; (6) technologies (robot, computer) vs. toys (teddy bear, doll); (7) robot vs. computer; and (8) teddy bear vs. doll. Here we will focus on what we consider to be the two contrasts of the greatest theoretical interest: animates/inanimates (contrast #1) and, within inanimates, technologies/toys (contrast #6). (See SOM for a deeper investigation of the other six contrasts.)
+This allowed us to examine the effects of age group (younger children, older children, adults), character (computer, robot, doll, teddy bear, beetle, bird, mouse, goat, elephant), and factor (_BODY_, _HEART_, _MIND_) on these scores via mixed effects Bayesian regression. As in Study 1, factor was treated as categorical variable and effect-coded, and age group was dummy-coded with adults as the baseline, to assess whether children in each age group were "adult-like" in their assessments. To explore attributions to different target characters, we included eight orthogonal contrasts: (1) animates (elephant, goat, mouse, bird, beetle) vs. inanimates (teddy bear, doll, robot, teddy bear); (2) mammals (elephant, goat, mouse) vs. other animals (bird, beetle); (3) elephant vs. other mammals (goat, mouse); (4) goat vs. mouse; (5) bird vs. beetle; (6) technologies (robot, computer) vs. toys (teddy bear, doll); (7) robot vs. computer; and (8) teddy bear vs. doll. Here we will focus on what we consider to be the contrast of the greatest theoretical interest: animates/inanimates (contrast #1).
 
-The results of a maximal model can be found in Table 3; Figure 5 for scores by age group, factor, and character; and Figure 6 for scores by age (among children). 
+A subset of the results of a maximal model can be found in Table 3 (see SOM for the full set of results). See Figure 5 for scores by age group, factor, and character; and Figure 6 for scores by age (among children). 
 
 ```{r}
 efa_3_scores_d2_all <- efa_3_d2_ad$scores %>%
@@ -866,8 +868,8 @@ contrasts(efa_3_scores_d2_all$character) <- cbind(
   "tech_toys" = c(1, 1, -1, -1, 0, 0, 0, 0, 0),
   "robo_comp" = c(-1, 1, 0, 0, 0, 0, 0, 0, 0),
   "tedd_doll" = c(0, 0, -1, 1, 0, 0, 0, 0, 0))
-contrasts(efa_3_scores_d2_all$age_group) <- cbind("CH46_GM" = c(1, 0, -1),
-                                                  "CH79_GM" = c(0, 1, -1))
+contrasts(efa_3_scores_d2_all$age_group) <- cbind("CH46_AD" = c(1, 0, 0),
+                                                  "CH79_AD" = c(0, 1, 0))
 contrasts(efa_3_scores_d2_all$factor_name) <- cbind("H_GM" = c(-1, 1, 0),
                                                     "M_GM" = c(-1, 0, 1))
 
@@ -877,119 +879,201 @@ contrasts(efa_3_scores_d2_all$factor_name) <- cbind("H_GM" = c(-1, 1, 0),
 #                              seed = 12345,
 #                              cores = 4,
 #                              control = list(adapt_delta = 0.99))
-
-summary(efa_3_scores_r_d2_all)
+# 
+# summary(efa_3_scores_r_d2_all)
 ```
 
-```{r, include = T, results = "asis"}
-fixef(efa_3_scores_r_d2_all) %>% 
+```{r, results = "asis"}
+# full model
+# fixef(efa_3_scores_r_d2_all) %>% 
+#   data.frame() %>%
+#   rownames_to_column("Parameter") %>%
+#   mutate(Parameter = recode_factor(Parameter,
+#     "Intercept" = "(Intercept)",
+#     "characteranim_inan" = "characters: animates vs. inanimates",
+#     "charactermamm_nonm" = "characters: mammals vs. other animals",
+#     "characterelep_gomo" = "characters: elephant vs. other mammals",
+#     "charactergoat_mous" = "characters: goat vs. mouse",
+#     "characterbird_beet" = "characters: bird vs. beetle",
+#     "charactertech_toys" = "characters: technologies vs. toys",
+#     "characterrobo_comp" = "characters: robot vs. computer",
+#     "charactertedd_doll" = "characters: teddy bear vs. doll",
+#     "factor_nameH_GM" = "HEART (vs. grand mean)",
+#     "factor_nameM_GM" = "MIND (vs. grand mean)",
+#     "age_groupCH46_AD" = "age group (4-6y vs. adults)",
+#     "age_groupCH79_AD" = "age group (7-9y vs. adults)",
+#     "factor_nameH_GM:characteranim_inan" = "characters (animates/inanimates) × HEART",
+#     "factor_nameH_GM:charactermamm_nonm" = "characters (mammals/other animals) × HEART",
+#     "factor_nameH_GM:characterelep_gomo" = "characters (elephant/other mammals) × HEART",
+#     "factor_nameH_GM:charactergoat_mous" = "characters (goat/mouse) × HEART",
+#     "factor_nameH_GM:characterbird_beet" = "characters (bird/beetle) × HEART",
+#     "factor_nameH_GM:charactertech_toys" = "characters (technologies/toys) × HEART",
+#     "factor_nameH_GM:characterrobo_comp" = "characters (robot/computer) × HEART",
+#     "factor_nameH_GM:charactertedd_doll" = "characters (teddy bear/doll) × HEART",
+#     "factor_nameM_GM:characteranim_inan" = "characters (animates/inanimates) × MIND",
+#     "factor_nameM_GM:charactermamm_nonm" = "characters (mammals/other animals) × MIND",
+#     "factor_nameM_GM:characterelep_gomo" = "characters (elephant/other mammals) × MIND",
+#     "factor_nameM_GM:charactergoat_mous" = "characters (goat/mouse) × MIND",
+#     "factor_nameM_GM:characterbird_beet" = "characters (bird/beetle) × MIND",
+#     "factor_nameM_GM:charactertech_toys" = "characters (technologies/toys) × MIND",
+#     "factor_nameM_GM:characterrobo_comp" = "characters (robot/computer) × MIND",
+#     "factor_nameM_GM:charactertedd_doll" = "characters (teddy bear/doll) × MIND",
+#     "age_groupCH46_AD:characteranim_inan" = "characters (animates/inanimates) × age group (4-6y/adults)",
+#     "age_groupCH46_AD:charactermamm_nonm" = "characters (mammals/other animals) × age group (4-6y/adults)",
+#     "age_groupCH46_AD:characterelep_gomo" = "characters (elephant/other mammals) × age group (4-6y/adults)",
+#     "age_groupCH46_AD:charactergoat_mous" = "characters (goat/mouse) × age group (4-6y/adults)",
+#     "age_groupCH46_AD:characterbird_beet" = "characters (bird/beetle) × age group (4-6y/adults)",
+#     "age_groupCH46_AD:charactertech_toys" = "characters (technologies/toys) × age group (4-6y/adults)",
+#     "age_groupCH46_AD:characterrobo_comp" = "characters (robot/computer) × age group (4-6y/adults)",
+#     "age_groupCH46_AD:charactertedd_doll" = "characters (teddy bear/doll) × age group (4-6y/adults)",
+#     "age_groupCH79_AD:characteranim_inan" = "characters (animates/inanimates) × age group (7-9y/adults)",
+#     "age_groupCH79_AD:charactermamm_nonm" = "characters (mammals/other animals) × age group (7-9y/adults)",
+#     "age_groupCH79_AD:characterelep_gomo" = "characters (elephant/other mammals) × age group (7-9y/adults)",
+#     "age_groupCH79_AD:charactergoat_mous" = "characters (goat/mouse) × age group (7-9y/adults)",
+#     "age_groupCH79_AD:characterbird_beet" = "characters (bird/beetle) × age group (7-9y/adults)",
+#     "age_groupCH79_AD:charactertech_toys" = "characters (technologies/toys) × age group (7-9y/adults)",
+#     "age_groupCH79_AD:characterrobo_comp" = "characters (robot/computer) × age group (7-9y/adults)",
+#     "age_groupCH79_AD:charactertedd_doll" = "characters (teddy bear/doll) × age group (7-9y/adults)",
+#     "factor_nameH_GM:age_groupCH46_AD" = "HEART × age group (4-6y/adults)",
+#     "factor_nameM_GM:age_groupCH46_AD" = "MIND × age group (4-6y/adults)",
+#     "factor_nameH_GM:age_groupCH79_AD" = "HEART × age group (7-9y/adults)",
+#     "factor_nameM_GM:age_groupCH79_AD" = "MIND × age group (7-9y/adults)",
+#     "factor_nameH_GM:age_groupCH46_AD:characteranim_inan" = "characters (animates/inanimates) × HEART × age group (4-6y/adults)",
+#     "factor_nameH_GM:age_groupCH46_AD:charactermamm_nonm" = "characters (mammals/other animals) × HEART × age group (4-6y/adults)",
+#     "factor_nameH_GM:age_groupCH46_AD:characterelep_gomo" = "characters (elephant/other mammals) × HEART × age group (4-6y/adults)",
+#     "factor_nameH_GM:age_groupCH46_AD:charactergoat_mous" = "characters (goat/mouse) × HEART × age group (4-6y/adults)",
+#     "factor_nameH_GM:age_groupCH46_AD:characterbird_beet" = "characters (bird/beetle) × HEART × age group (4-6y/adults)",
+#     "factor_nameH_GM:age_groupCH46_AD:charactertech_toys" = "characters (technologies/toys) × HEART × age group (4-6y/adults)",
+#     "factor_nameH_GM:age_groupCH46_AD:characterrobo_comp" = "characters (robot/computer) × HEART × age group (4-6y/adults)",
+#     "factor_nameH_GM:age_groupCH46_AD:charactertedd_doll" = "characters (teddy bear/doll) × HEART × age group (4-6y/adults)",
+#     "factor_nameM_GM:age_groupCH46_AD:characteranim_inan" = "characters (animates/inanimates) × MIND × age group (4-6y/adults)",
+#     "factor_nameM_GM:age_groupCH46_AD:charactermamm_nonm" = "characters (mammals/other animals) × MIND × age group (4-6y/adults)",
+#     "factor_nameM_GM:age_groupCH46_AD:characterelep_gomo" = "characters (elephant/other mammals) × MIND × age group (4-6y/adults)",
+#     "factor_nameM_GM:age_groupCH46_AD:charactergoat_mous" = "characters (goat/mouse) × MIND × age group (4-6y/adults)",
+#     "factor_nameM_GM:age_groupCH46_AD:characterbird_beet" = "characters (bird/beetle) × MIND × age group (4-6y/adults)",
+#     "factor_nameM_GM:age_groupCH46_AD:charactertech_toys" = "characters (technologies/toys) × MIND × age group (4-6y/adults)",
+#     "factor_nameM_GM:age_groupCH46_AD:characterrobo_comp" = "characters (robot/computer) × MIND × age group (4-6y/adults)",
+#     "factor_nameM_GM:age_groupCH46_AD:charactertedd_doll" = "characters (teddy bear/doll) × MIND × age group (4-6y/adults)",
+#     "factor_nameH_GM:age_groupCH79_AD:characteranim_inan" = "characters (animates/inanimates) × HEART × age group (7-9y/adults)",
+#     "factor_nameH_GM:age_groupCH79_AD:charactermamm_nonm" = "characters (mammals/other animals) × HEART × age group (7-9y/adults)",
+#     "factor_nameH_GM:age_groupCH79_AD:characterelep_gomo" = "characters (elephant/other mammals) × HEART × age group (7-9y/adults)",
+#     "factor_nameH_GM:age_groupCH79_AD:charactergoat_mous" = "characters (goat/mouse) × HEART × age group (7-9y/adults)",
+#     "factor_nameH_GM:age_groupCH79_AD:characterbird_beet" = "characters (bird/beetle) × HEART × age group (7-9y/adults)",
+#     "factor_nameH_GM:age_groupCH79_AD:charactertech_toys" = "characters (technologies/toys) × HEART × age group (7-9y/adults)",
+#     "factor_nameH_GM:age_groupCH79_AD:characterrobo_comp" = "characters (robot/computer) × HEART × age group (7-9y/adults)",
+#     "factor_nameH_GM:age_groupCH79_AD:charactertedd_doll" = "characters (teddy bear/doll) × HEART × age group (7-9y/adults)",
+#     "factor_nameM_GM:age_groupCH79_AD:characteranim_inan" = "characters (animates/inanimates) × MIND × age group (7-9y/adults)",
+#     "factor_nameM_GM:age_groupCH79_AD:charactermamm_nonm" = "characters (mammals/other animals) × MIND × age group (7-9y/adults)",
+#     "factor_nameM_GM:age_groupCH79_AD:characterelep_gomo" = "characters (elephant/other mammals) × MIND × age group (7-9y/adults)",
+#     "factor_nameM_GM:age_groupCH79_AD:charactergoat_mous" = "characters (goat/mouse) × MIND × age group (7-9y/adults)",
+#     "factor_nameM_GM:age_groupCH79_AD:characterbird_beet" = "characters (bird/beetle) × MIND × age group (7-9y/adults)",
+#     "factor_nameM_GM:age_groupCH79_AD:charactertech_toys" = "characters (technologies/toys) × MIND × age group (7-9y/adults)",
+#     "factor_nameM_GM:age_groupCH79_AD:characterrobo_comp" = "characters (robot/computer) × MIND × age group (7-9y/adults)",
+#     "factor_nameM_GM:age_groupCH79_AD:charactertedd_doll" = "characters (teddy bear/doll) × MIND × age group (7-9y/adults)")) %>%
+#   arrange(Parameter) %>%
+#   mutate(X = ifelse(Q2.5 * Q97.5 > 0, "*", "")) %>%
+#   mutate_at(vars(-Parameter, -X), 
+#             funs(format(round(., 2), nsmall = 2))) %>%
+#   rename(b = Estimate, Error = Est.Error, " " = X) %>%
+#   unite(`95% CI`, Q2.5, Q97.5, sep = ", ") %>%
+#   mutate(`95% CI` = paste0("[", `95% CI`, "]")) %>%
+#   knitr::kable(format = "html", align = c("l", rep("r", 3)),
+#                caption = "Table 3: Fixed effects from a mixed-effects Bayesian regression model predicting factor scores in Study 2 by character, factor (BODY, HEART, MIND), and age group. The model used the formula 'factor score ~ factor * age group * character + (1 | subject)' and was implemented in the 'brms' package for R (Bürkner, 2017). Factor was effect-coded; age-group was dummy-coded with adults as the baseline; and character was coded with eight orthogonal contrasts (see main text). Asterisks mark parameters whose 95% credible interval does not include 0.") %>%
+#   kable_styling()
+```
+
+```{r, results = "asis", include = T}
+# # full model
+# fixef(efa_3_scores_r_d2_all) %>% 
+#   data.frame() %>%
+#   rownames_to_column("Parameter") %>%
+#   filter(Parameter != "Intercept",
+#          !grepl("charactermamm_nonm", Parameter),
+#          !grepl("characterelep_gomo", Parameter),
+#          !grepl("charactergoat_mous", Parameter),
+#          !grepl("characterbird_beet", Parameter),
+#          !grepl("charactertech_toys", Parameter),
+#          !grepl("characterrobo_comp", Parameter),
+#          !grepl("charactertedd_doll", Parameter)) %>%
+#   mutate(Parameter = recode_factor(
+#     Parameter,
+#     # ADULTS
+#     "factor_nameH_GM" = "HEART (vs. grand mean)",
+#     "factor_nameM_GM" = "MIND (vs. grand mean)",
+#     "characteranim_inan" = "characters: animates vs. inanimates",
+#     "factor_nameH_GM:characteranim_inan" = "characters (animates/inanimates) × HEART",
+#     "factor_nameM_GM:characteranim_inan" = "characters (animates/inanimates) × MIND",
+#     # OLDER CHILDREN
+#     "age_groupCH79_AD" = "age group (7-9y vs. adults)",
+#     "factor_nameH_GM:age_groupCH79_AD" = "HEART × age group (7-9y/adults)",
+#     "factor_nameM_GM:age_groupCH79_AD" = "MIND × age group (7-9y/adults)",
+#     "age_groupCH79_AD:characteranim_inan" = "characters (animates/inanimates) × age group (7-9y/adults)",
+#     "factor_nameH_GM:age_groupCH79_AD:characteranim_inan" = "characters (animates/inanimates) × HEART × age group (7-9y/adults)",
+#     "factor_nameM_GM:age_groupCH79_AD:characteranim_inan" = "characters (animates/inanimates) × MIND × age group (7-9y/adults)",
+#     # YOUNGER CHILDREN
+#     "age_groupCH46_AD" = "age group (4-6y vs. adults)",
+#     "factor_nameH_GM:age_groupCH46_AD" = "HEART × age group (4-6y/adults)",
+#     "factor_nameM_GM:age_groupCH46_AD" = "MIND × age group (4-6y/adults)",
+#     "age_groupCH46_AD:characteranim_inan" = "characters (animates/inanimates) × age group (4-6y/adults)",
+#     "factor_nameH_GM:age_groupCH46_AD:characteranim_inan" = "characters (animates/inanimates) × HEART × age group (4-6y/adults)",
+#     "factor_nameM_GM:age_groupCH46_AD:characteranim_inan" = "characters (animates/inanimates) × MIND × age group (4-6y/adults)")) %>%
+#   arrange(Parameter) %>%
+#   mutate(X = ifelse(Q2.5 * Q97.5 > 0, "*", "")) %>%
+#   mutate_at(vars(-Parameter, -X), 
+#             funs(format(round(., 2), nsmall = 2))) %>%
+#   rename(b = Estimate, Error = Est.Error, " " = X) %>%
+#   unite(`95% CI`, Q2.5, Q97.5, sep = ", ") %>%
+#   mutate(`95% CI` = paste0("[", `95% CI`, "]")) %>%
+#   knitr::kable(format = "html", align = c("l", rep("r", 3)),
+#                caption = "Table 3: A subset of the fixed effects from a mixed-effects Bayesian regression model predicting factor scores in Study 2 by character, factor (BODY, HEART, MIND), and age group. The model used the formula 'factor score ~ factor * age group * character + (1 | subject)' and was implemented in the 'brms' package for R (Bürkner, 2017). Factor was effect-coded; age-group was dummy-coded with adults as the baseline; and character was coded with eight orthogonal contrasts (see main text). Here we have included only a subset of parameter of strong theoretical interest; see SOM for the full model. Asterisks mark parameters whose 95% credible interval does not include 0.") %>%
+#   kable_styling() %>%
+#   group_rows("Adults", 1, 5) %>%
+#   group_rows("Older children vs. adults", 6, 11) %>%
+#   group_rows("Younger children vs. adults", 12, 17)
+```
+
+By definition, collapsing characters adults' factor scores did not differ across factors (HEART vs. grand mean: `r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM")`; MIND vs. grand mean: `r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM")`). As we would expect, adults attributed more mental capacities (collapsing across factors) to animates than inanimates (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "characteranim_inan")`)—a difference that was diminished in the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM:characteranim_inan")`), but not substantially diminished in the_MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:characteranim_inan")`).
+
+As a group, older children (7-9y) generally attributed more mental capacities than adults, collapsing across factors and characters (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH79_AD")`)—however, as in Study 1, this difference was driven primarily by relative over-attribution of abilities in the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM:age_groupCH79_AD")`), and was, if anything, reversed in the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:age_groupCH79_AD")`). Collapsing across factors, older children made less of a distinction between animate an inanimate target characters, relative to adults (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "characteranim_inan:age_groupCH79_AD")`). These effects were qualified by a three-way interaction between age group, character type, and the comparison between the _MIND_ domain and the grand mean (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:age_groupCH79_AD:characteranim_inan")`). We offer two ways of interpreting this three-way interaction: On the one hand, older children's relative under-attribution of abilities in the _MIND_ domain was especially dramatic for animate target characters: 7- to 9-year-old children's _MIND_ scores were comparable to those of adults for inanimate characters, but lower for animate characters. Put another way, older children's relative under-differentiation of animate and inanimate characters was particularly pronounced in the _MIND_ domain. Both of these interpretations seem to be consistent with the visualization presented in Figures XX and XX.
+
+What about younger children? As a group, 4- to 6-year-old children's mental capacity attributions did not differ from adults, collapsing collapsing across factors and characters (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH46_AD")`)—but this masks several important developmental differences. Much like older children, younger children's scores were characterized by a relative over-attribution of abilities in the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM:age_groupCH46_AD")`) and a relative under-attribution of abilities in the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:age_groupCH46_AD")`), and (again like older children) younger children made less of a distinction between animate an inanimate target characters, relative to adults (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "characteranim_inan:age_groupCH46_AD")`). In all of these cases, visual inspection of Figure XX suggests that these divergences from adults' pattern of responding were exaggerated for younger relative to older children. Two three-way interactions suggested that both of these effects were especially dramatic for animate target characters (in the _HEART_ domain: `r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM:age_groupCH46_AD:characteranim_inan")`; in the _MIND_ domain: `r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:age_groupCH46_AD:characteranim_inan")`): For animate characters, younger children's _HEART_ scores were especially high (relative to adults'), and their _MIND_ scores were especially low (relative to adults'). (See Figure XX.)
+
+```{r, results = "asis"}
+d2_anim <- efa_3_scores_d2_all %>%
+  mutate(anim_inan = case_when(
+    character %in% c("beetle", "bird", "mouse", "goat", "elephant") ~ "animate",
+    character %in% c("computer", "robot", "doll", "teddy bear") ~ "inanimate")) %>%
+  mutate(anim_inan = factor(anim_inan, levels = c("inanimate", "animate")))
+
+contrasts(d2_anim$age_group) <- cbind("CH46_AD" = c(1, 0, 0),
+                                      "CH79_AD" = c(0, 1, 0))
+contrasts(d2_anim$factor_name) <- cbind("H_GM" = c(-1, 1, 0),
+                                        "M_GM" = c(-1, 0, 1))
+contrasts(d2_anim$anim_inan) <- cbind("anim_GM" = c(-1, 1))
+
+d2_anim_r <- brm(score ~ factor_name * anim_inan * age_group + 
+              (1 | subid) +
+              (1 + factor_name + age_group | character),
+            data = d2_anim,
+            control = list(adapt_delta = 0.99))
+
+fixef(d2_anim_r) %>%
   data.frame() %>%
   rownames_to_column("Parameter") %>%
-  mutate(Parameter = recode_factor(Parameter,
-    "Intercept" = "(Intercept)",
-    "characteranim_inan" = "characters: animates vs. inanimates",
-    "charactermamm_nonm" = "characters: mammals vs. other animals",
-    "characterelep_gomo" = "characters: elephant vs. other mammals",
-    "charactergoat_mous" = "characters: goat vs. mouse",
-    "characterbird_beet" = "characters: bird vs. beetle",
-    "charactertech_toys" = "characters: technologies vs. toys",
-    "characterrobo_comp" = "characters: robot vs. computer",
-    "charactertedd_doll" = "characters: teddy bear vs. doll",
-    "factor_nameH_GM" = "HEART (vs. grand mean)",
-    "factor_nameM_GM" = "MIND (vs. grand mean)",
-    "age_groupCH46_GM" = "age group (4-6y vs. grand mean)",
-    "age_groupCH79_GM" = "age group (7-9y vs. grand mean)",
-    "factor_nameH_GM:characteranim_inan" = "characters (animates/inanimates) × HEART",
-    "factor_nameH_GM:charactermamm_nonm" = "characters (mammals/other animals) × HEART",
-    "factor_nameH_GM:characterelep_gomo" = "characters (elephant/other mammals) × HEART",
-    "factor_nameH_GM:charactergoat_mous" = "characters (goat/mouse) × HEART",
-    "factor_nameH_GM:characterbird_beet" = "characters (bird/beetle) × HEART",
-    "factor_nameH_GM:charactertech_toys" = "characters (technologies/toys) × HEART",
-    "factor_nameH_GM:characterrobo_comp" = "characters (robot/computer) × HEART",
-    "factor_nameH_GM:charactertedd_doll" = "characters (teddy bear/doll) × HEART",
-    "factor_nameM_GM:characteranim_inan" = "characters (animates/inanimates) × MIND",
-    "factor_nameM_GM:charactermamm_nonm" = "characters (mammals/other animals) × MIND",
-    "factor_nameM_GM:characterelep_gomo" = "characters (elephant/other mammals) × MIND",
-    "factor_nameM_GM:charactergoat_mous" = "characters (goat/mouse) × MIND",
-    "factor_nameM_GM:characterbird_beet" = "characters (bird/beetle) × MIND",
-    "factor_nameM_GM:charactertech_toys" = "characters (technologies/toys) × MIND",
-    "factor_nameM_GM:characterrobo_comp" = "characters (robot/computer) × MIND",
-    "factor_nameM_GM:charactertedd_doll" = "characters (teddy bear/doll) × MIND",
-    "age_groupCH46_GM:characteranim_inan" = "characters (animates/inanimates) × age group (4-6y vs. GM)",
-    "age_groupCH46_GM:charactermamm_nonm" = "characters (mammals/other animals) × age group (4-6y vs. GM)",
-    "age_groupCH46_GM:characterelep_gomo" = "characters (elephant/other mammals) × age group (4-6y vs. GM)",
-    "age_groupCH46_GM:charactergoat_mous" = "characters (goat/mouse) × age group (4-6y vs. GM)",
-    "age_groupCH46_GM:characterbird_beet" = "characters (bird/beetle) × age group (4-6y vs. GM)",
-    "age_groupCH46_GM:charactertech_toys" = "characters (technologies/toys) × age group (4-6y vs. GM)",
-    "age_groupCH46_GM:characterrobo_comp" = "characters (robot/computer) × age group (4-6y vs. GM)",
-    "age_groupCH46_GM:charactertedd_doll" = "characters (teddy bear/doll) × age group (4-6y vs. GM)",
-    "age_groupCH79_GM:characteranim_inan" = "characters (animates/inanimates) × age group (7-9y vs. GM)",
-    "age_groupCH79_GM:charactermamm_nonm" = "characters (mammals/other animals) × age group (7-9y vs. GM)",
-    "age_groupCH79_GM:characterelep_gomo" = "characters (elephant/other mammals) × age group (7-9y vs. GM)",
-    "age_groupCH79_GM:charactergoat_mous" = "characters (goat/mouse) × age group (7-9y vs. GM)",
-    "age_groupCH79_GM:characterbird_beet" = "characters (bird/beetle) × age group (7-9y vs. GM)",
-    "age_groupCH79_GM:charactertech_toys" = "characters (technologies/toys) × age group (7-9y vs. GM)",
-    "age_groupCH79_GM:characterrobo_comp" = "characters (robot/computer) × age group (7-9y vs. GM)",
-    "age_groupCH79_GM:charactertedd_doll" = "characters (teddy bear/doll) × age group (7-9y vs. GM)",
-    "factor_nameH_GM:age_groupCH46_GM" = "HEART × age group (4-6y vs. GM)",
-    "factor_nameM_GM:age_groupCH46_GM" = "MIND × age group (4-6y vs. GM)",
-    "factor_nameH_GM:age_groupCH79_GM" = "HEART × age group (7-9y vs. GM)",
-    "factor_nameM_GM:age_groupCH79_GM" = "MIND × age group (7-9y vs. GM)",
-    "factor_nameH_GM:age_groupCH46_GM:characteranim_inan" = "characters (animates/inanimates) × HEART × age group (4-6y vs. GM)",
-    "factor_nameH_GM:age_groupCH46_GM:charactermamm_nonm" = "characters (mammals/other animals) × HEART × age group (4-6y vs. GM)",
-    "factor_nameH_GM:age_groupCH46_GM:characterelep_gomo" = "characters (elephant/other mammals) × HEART × age group (4-6y vs. GM)",
-    "factor_nameH_GM:age_groupCH46_GM:charactergoat_mous" = "characters (goat/mouse) × HEART × age group (4-6y vs. GM)",
-    "factor_nameH_GM:age_groupCH46_GM:characterbird_beet" = "characters (bird/beetle) × HEART × age group (4-6y vs. GM)",
-    "factor_nameH_GM:age_groupCH46_GM:charactertech_toys" = "characters (technologies/toys) × HEART × age group (4-6y vs. GM)",
-    "factor_nameH_GM:age_groupCH46_GM:characterrobo_comp" = "characters (robot/computer) × HEART × age group (4-6y vs. GM)",
-    "factor_nameH_GM:age_groupCH46_GM:charactertedd_doll" = "characters (teddy bear/doll) × HEART × age group (4-6y vs. GM)",
-    "factor_nameM_GM:age_groupCH46_GM:characteranim_inan" = "characters (animates/inanimates) × MIND × age group (4-6y vs. GM)",
-    "factor_nameM_GM:age_groupCH46_GM:charactermamm_nonm" = "characters (mammals/other animals) × MIND × age group (4-6y vs. GM)",
-    "factor_nameM_GM:age_groupCH46_GM:characterelep_gomo" = "characters (elephant/other mammals) × MIND × age group (4-6y vs. GM)",
-    "factor_nameM_GM:age_groupCH46_GM:charactergoat_mous" = "characters (goat/mouse) × MIND × age group (4-6y vs. GM)",
-    "factor_nameM_GM:age_groupCH46_GM:characterbird_beet" = "characters (bird/beetle) × MIND × age group (4-6y vs. GM)",
-    "factor_nameM_GM:age_groupCH46_GM:charactertech_toys" = "characters (technologies/toys) × MIND × age group (4-6y vs. GM)",
-    "factor_nameM_GM:age_groupCH46_GM:characterrobo_comp" = "characters (robot/computer) × MIND × age group (4-6y vs. GM)",
-    "factor_nameM_GM:age_groupCH46_GM:charactertedd_doll" = "characters (teddy bear/doll) × MIND × age group (4-6y vs. GM)",
-    "factor_nameH_GM:age_groupCH79_GM:characteranim_inan" = "characters (animates/inanimates) × HEART × age group (7-9y vs. GM)",
-    "factor_nameH_GM:age_groupCH79_GM:charactermamm_nonm" = "characters (mammals/other animals) × HEART × age group (7-9y vs. GM)",
-    "factor_nameH_GM:age_groupCH79_GM:characterelep_gomo" = "characters (elephant/other mammals) × HEART × age group (7-9y vs. GM)",
-    "factor_nameH_GM:age_groupCH79_GM:charactergoat_mous" = "characters (goat/mouse) × HEART × age group (7-9y vs. GM)",
-    "factor_nameH_GM:age_groupCH79_GM:characterbird_beet" = "characters (bird/beetle) × HEART × age group (7-9y vs. GM)",
-    "factor_nameH_GM:age_groupCH79_GM:charactertech_toys" = "characters (technologies/toys) × HEART × age group (7-9y vs. GM)",
-    "factor_nameH_GM:age_groupCH79_GM:characterrobo_comp" = "characters (robot/computer) × HEART × age group (7-9y vs. GM)",
-    "factor_nameH_GM:age_groupCH79_GM:charactertedd_doll" = "characters (teddy bear/doll) × HEART × age group (7-9y vs. GM)",
-    "factor_nameM_GM:age_groupCH79_GM:characteranim_inan" = "characters (animates/inanimates) × MIND × age group (7-9y vs. GM)",
-    "factor_nameM_GM:age_groupCH79_GM:charactermamm_nonm" = "characters (mammals/other animals) × MIND × age group (7-9y vs. GM)",
-    "factor_nameM_GM:age_groupCH79_GM:characterelep_gomo" = "characters (elephant/other mammals) × MIND × age group (7-9y vs. GM)",
-    "factor_nameM_GM:age_groupCH79_GM:charactergoat_mous" = "characters (goat/mouse) × MIND × age group (7-9y vs. GM)",
-    "factor_nameM_GM:age_groupCH79_GM:characterbird_beet" = "characters (bird/beetle) × MIND × age group (7-9y vs. GM)",
-    "factor_nameM_GM:age_groupCH79_GM:charactertech_toys" = "characters (technologies/toys) × MIND × age group (7-9y vs. GM)",
-    "factor_nameM_GM:age_groupCH79_GM:characterrobo_comp" = "characters (robot/computer) × MIND × age group (7-9y vs. GM)",
-    "factor_nameM_GM:age_groupCH79_GM:charactertedd_doll" = "characters (teddy bear/doll) × MIND × age group (7-9y vs. GM)")) %>%
-  arrange(Parameter) %>%
   mutate(X = ifelse(Q2.5 * Q97.5 > 0, "*", "")) %>%
   mutate_at(vars(-Parameter, -X), 
             funs(format(round(., 2), nsmall = 2))) %>%
   rename(b = Estimate, Error = Est.Error, " " = X) %>%
   unite(`95% CI`, Q2.5, Q97.5, sep = ", ") %>%
   mutate(`95% CI` = paste0("[", `95% CI`, "]")) %>%
-  knitr::kable(format = "html", align = c("l", rep("r", 3)),
-               caption = "Table 3: Fixed effects from a mixed-effects Bayesian regression model predicting factor scores in Study 2 by character, factor (BODY, HEART, MIND), and age group. The model used the formula 'factor score ~ factor * age group * character + (1 | subject)' and was implemented in the 'brms' package for R (Bürkner, 2017). Factor and age group were effect-coded; character was coded with orthogonal contrasts (see main text). Asterisks mark parameters whose 95% credible interval does not include 0.") %>%
+  kable() %>% 
   kable_styling()
 ```
 
-First, we consider the contrast between the five animate target characters (beetle, bird, mouse, goat, and elephant) and the four inanimate target characters (computer, robot, doll, and teddy bear). **BRIEF MENTION OF RELEVANT LITERATURE**
+The complexities of the design of Study 2 necessitated a much more complex model than we have presented here, and we encourage readers to examine other parameters of interest as presented in the SOM. We also note that all but two of the effects described above also hold true in a simpler model, in which we examine only a distinction between animate vs. inanimate characters (and include specific target characters as a random effect) rather than including 8 orthogonal contrasts on character; this model is also presented in the SOM. (The only effects that does not hold true in this simpler model are (1) the overall difference between older children and adults, which was of little theoretical interest in light of the two- and three-way interactions with factor and character type; and (2) the three-way interaction involving _MIND_ and younger children, whose 95% CI was defined by an upper limit of `r round(fixef(d2_anim_r)["factor_nameM_GM:anim_inananim_GM:age_groupCH46_AD","Q97.5"], 4)`. There were no additional parameters whose 95% credible intervals did not include 0.)
 
-As we would expect, collapsing across age groups and factors, factor scores suggest that participants generally attributed more mental capacities to animates than to inanimates (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "characteranim_inan")`). Relative to the grand mean, however, the difference between animates and inanimates was diminished in both the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM:characteranim_inan")`) and the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:characteranim_inan")`)—suggesting that this overall difference between animates and inanimates was driven primarily by attributions of the physiological sensations characteristic of _BODY_ to biological animals (and not to inanimate objects). 
+Taken together, XX.
 
-In terms of developmental trends, the overall difference between animates and inanimates was somewhat attenuated among 4- to 6-year-old children (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH46_GM:characteranim_inan")`)— but relatively less so in the HEART domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM:age_groupCH46_GM:characteranim_inan")`). Meanwhile, among 7- to 9-year-old children, the difference between animates and inanimates was attenuated in the MIND domain only (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:age_groupCH79_GM:characteranim_inan")`). Taken together, these findings suggest that, as a group, 4- to 6-year-old children perceived the difference between animates and inanimates to be a matter of both _BODY_ and _HEART_ (although they perceived this difference to be somewhat smaller than older children and adults). Meanwhile, as a group, 7- to 9-year-old children perceived the difference between animates and inaniamtes to be primarily a matter of the _BODY_, but the animate-inanimate distinction did not appear to govern their attributions of _MIND_. Neither of these patterns was entirely adult-like: Among adults, the distinction between animates and inanimates appeared to govern attributions of _BODY_ and _MIND_ to an equal degree, and _HEART_ to a lesser extent. **REWRITE FOR CLARITY, ADD OBSERVATIONS FROM PLOT**
-
-Next, we consider an important distinction within the group of inanimate target characters: the contrast between the two technologies (computer and robot) and the two anthropomorphic toys (doll and teddy bear). **BRIEF MENTION OF RELEVANT LITERATURE**
-
-Collapsing across age groups and factors, participants generally attributed more mental capacities to technologies than to toys (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "charactertech_toys")`); as we might expect, this difference was exaggerated in the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:charactertech_toys")`).
-
-In terms of developmental trends, the overall difference between technologies and toys did not differ across age groups (4-6y vs. the grand mean: `r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH46_GM:charactertech_toys")`; 7-9y vs. the grand mean: `r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH79_GM:charactertech_toys")`)—but this several higher order effects (see Table 3). In particular, 4- to 6-year-old children were unique in their perceptions of the difference between technologies and toys in the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:age_groupCH46_GM:charactertech_toys")`): While older children and adults distinguished strongly between technolgoies and toys in their attributions of _MIND_, younger children generally attributed fewer of the perceptual-cognitive abilities of the _MIND_ to either kind of inanimate being. **CAN'T INTERPRET THE OTHER TWO SIGNIF 3-WAY INTERACTIONS**
 
 **Taken together, these findings suggest that, as a group, 4- to 6-year-old children perceived the difference between animates and inanimates to be a matter of both _BODY_ and _HEART_ (although they perceived this difference to be somewhat smaller than older children and adults). Meanwhile, as a group, 7- to 9-year-old children perceived the difference between animates and inaniamtes to be primarily a matter of the _BODY_, but the animate-inanimate distinction did not appear to govern their attributions of _MIND_. Neither of these patterns was entirely adult-like: Among adults, the distinction between animates and inanimates appeared to govern attributions of _BODY_ and _MIND_ to an equal degree, and _HEART_ to a lesser extent.**
 
