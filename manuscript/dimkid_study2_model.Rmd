@@ -1,0 +1,347 @@
+---
+title: "Study 2: Visualizing the model"
+output: 
+  html_notebook:
+    toc: true
+    toc_float: true
+---
+
+This is a notebook delving into the regression model for Study 2. Here we explore each of the 8 orthogonal contrasts on target character separately. For each contrast, the targets in red were coded as positive numbers for that contrast (i.e., expected to have received more positive factor scores), and the targets in blue were coded as negative numbers (i.e., expected to have received more negative factor scores).
+
+```{r global_options, include = F}
+knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67, 
+                      include = F, echo = F)
+```
+
+```{r}
+# RUN DIMKID_MANUSCRIPT.RMD FIRST!
+```
+
+```{r}
+efa_3_scores_char_contr_d2_all <- efa_3_scores_d2_all %>%
+  mutate(anim_inan = case_when(
+    character %in% c("computer", "robot", 
+                     "doll", "teddy bear") ~ "inanimates",
+    character %in% c("beetle", "bird", 
+                     "mouse", "goat", "elephant") ~ "animates")) %>%
+  mutate(anim_inan = factor(anim_inan,
+                            levels = c("inanimates", "animates"))) %>%
+  mutate(mamm_nonm = case_when(
+    character %in% c("mouse", "goat", "elephant") ~ "mammals",
+    character %in% c("beetle", "bird") ~ "other animals")) %>%
+  mutate(mamm_nonm = factor(mamm_nonm,
+                            levels = c("other animals", "mammals"))) %>%
+  mutate(elep_gomo = case_when(
+      character == "elephant" ~ "elephant",
+      character %in% c("mouse", "goat") ~ "other mammals")) %>%
+  mutate(elep_gomo = factor(elep_gomo,
+                            levels = c("other mammals", "elephant"))) %>%
+  mutate(goat_mous = case_when(
+    character %in% c("goat", "mouse") ~ character)) %>%
+  mutate(goat_mous = factor(goat_mous,
+                            levels = c("mouse", "goat"))) %>%
+  mutate(bird_beet = case_when(
+    character %in% c("bird", "beetle") ~ character)) %>%
+  mutate(bird_beet = factor(bird_beet,
+                            levels = c("beetle", "bird"))) %>%
+  mutate(tech_toys = case_when(
+      character %in% c("computer", "robot") ~ "technologies",
+      character %in% c("doll", "teddy bear") ~ "toys")) %>%
+  mutate(tech_toys = factor(tech_toys,
+                            levels = c("toys", "technologies"))) %>%
+  mutate(robo_comp = case_when(
+    character %in% c("computer", "robot") ~ character)) %>%
+  mutate(robo_comp = factor(robo_comp,
+                            levels = c("computer", "robot"))) %>%
+  mutate(tedd_doll = case_when(
+    character %in% c("doll", "teddy bear") ~ character)) %>%
+  mutate(tedd_doll = factor(tedd_doll,
+                            levels = c("doll", "teddy bear")))
+```
+
+# Contrast #1: Animates vs. inanimates
+
+```{r, fig.width = 3, fig.asp = 0.8, include = T}
+d2_all_anim_inan <- efa_3_scores_char_contr_d2_all %>%
+  group_by(age_group, factor_name, anim_inan) %>%
+  multi_boot_standard(col = "score") %>%
+  ungroup() %>%
+  filter(!is.na(anim_inan)) %>%
+  ggplot(aes(x = anim_inan, y = mean, color = anim_inan)) + 
+  facet_grid(rows = vars(factor_name), cols = vars(age_group), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper)) +
+  scale_color_manual(values = c("blue", "red"), na.value = "gray") +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        axis.title.x = element_blank()) +
+  labs(title = "Contrast #1: Animates vs. inanimates", 
+       y = "factor score", color = "contrast")
+d2_all_anim_inan
+```
+
+```{r, fig.width = 4, fig.asp = 0.7, include = T}
+efa_3_scores_boot_d2_all %>%
+  left_join(efa_3_scores_char_contr_d2_all %>% distinct(character, anim_inan)) %>%
+  ggplot(aes(x = character, y = mean, color = anim_inan)) + 
+  facet_grid(rows = vars(age_group), cols = vars(factor_name), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper), fatten = 1.5) +
+  scale_color_manual(values = c("blue", "red"), na.value = "gray") +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(title = "Contrast #1: Animates vs. inanimates", 
+       y = "factor score", color = "contrast")
+```
+
+
+# Contrast #2: Mammals vs. other animals
+
+```{r, fig.width = 3, fig.asp = 0.8, include = T}
+d2_all_mamm_nonm <- efa_3_scores_char_contr_d2_all %>%
+  group_by(age_group, factor_name, mamm_nonm) %>%
+  multi_boot_standard(col = "score") %>%
+  ungroup() %>%
+  filter(!is.na(mamm_nonm)) %>%
+  ggplot(aes(x = mamm_nonm, y = mean, color = mamm_nonm)) + 
+  facet_grid(rows = vars(factor_name), cols = vars(age_group), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper)) +
+  scale_color_manual(values = c("blue", "red"), na.value = "gray") +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        axis.title.x = element_blank()) +
+  labs(title = "Contrast #2: Mammals vs. other animals", 
+       y = "factor score", color = "contrast")
+d2_all_mamm_nonm
+```
+
+```{r, fig.width = 4, fig.asp = 0.7, include = T}
+efa_3_scores_boot_d2_all %>%
+  left_join(efa_3_scores_char_contr_d2_all %>% distinct(character, mamm_nonm)) %>%
+  ggplot(aes(x = character, y = mean, color = mamm_nonm)) + 
+  facet_grid(rows = vars(age_group), cols = vars(factor_name), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper), fatten = 1.5) +
+  scale_color_manual(values = c("blue", "red"), na.value = "gray") +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(title = "Contrast #2: Mammals vs. other animals", 
+       y = "factor score", color = "contrast")
+```
+
+# Contrast #3: Elephant vs. other mammals
+
+```{r, fig.width = 3, fig.asp = 0.8, include = T}
+d2_all_elep_gomo <- efa_3_scores_char_contr_d2_all %>%
+  group_by(age_group, factor_name, elep_gomo) %>%
+  multi_boot_standard(col = "score") %>%
+  ungroup() %>%
+  filter(!is.na(elep_gomo)) %>%
+  ggplot(aes(x = elep_gomo, y = mean, color = elep_gomo)) + 
+  facet_grid(rows = vars(factor_name), cols = vars(age_group), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper)) +
+  scale_color_manual(values = c("blue", "red"), na.value = "gray") +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        axis.title.x = element_blank()) +
+  labs(title = "Contrast #3: Elephant vs. other mammals", 
+       y = "factor score", color = "contrast")
+d2_all_elep_gomo
+```
+
+```{r, fig.width = 4, fig.asp = 0.7, include = T}
+efa_3_scores_boot_d2_all %>%
+  left_join(efa_3_scores_char_contr_d2_all %>% distinct(character, elep_gomo)) %>%
+  ggplot(aes(x = character, y = mean, color = elep_gomo)) + 
+  facet_grid(rows = vars(age_group), cols = vars(factor_name), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper), fatten = 1.5) +
+  scale_color_manual(values = c("blue", "red"), na.value = "gray") +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(title = "Contrast #3: Elephant vs. other mammals", 
+       y = "factor score", color = "contrast")
+```
+
+
+# Contrast #4: Goat vs. mouse
+
+```{r, fig.width = 3, fig.asp = 0.8, include = T}
+d2_all_goat_mous <- efa_3_scores_char_contr_d2_all %>%
+  group_by(age_group, factor_name, goat_mous) %>%
+  multi_boot_standard(col = "score") %>%
+  ungroup() %>%
+  filter(!is.na(goat_mous)) %>%
+  ggplot(aes(x = goat_mous, y = mean, color = goat_mous)) + 
+  facet_grid(rows = vars(factor_name), cols = vars(age_group), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper)) +
+  scale_color_manual(values = c("blue", "red"), na.value = "gray") +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        axis.title.x = element_blank()) +
+  labs(title = "Contrast #4: Goat vs. mouse", 
+       y = "factor score", color = "contrast")
+d2_all_goat_mous
+```
+
+```{r, fig.width = 4, fig.asp = 0.7, include = T}
+efa_3_scores_boot_d2_all %>%
+  left_join(efa_3_scores_char_contr_d2_all %>% distinct(character, goat_mous)) %>%
+  ggplot(aes(x = character, y = mean, color = goat_mous)) + 
+  facet_grid(rows = vars(age_group), cols = vars(factor_name), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper), fatten = 1.5) +
+  scale_color_manual(values = c("blue", "red"), na.value = "gray") +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(title = "Contrast #4: Goat vs. mouse", 
+       y = "factor score", color = "contrast")
+```
+
+
+# Contrast #5: Bird vs. beetle
+
+```{r, fig.width = 3, fig.asp = 0.8, include = T}
+d2_all_bird_beet <- efa_3_scores_char_contr_d2_all %>%
+  group_by(age_group, factor_name, bird_beet) %>%
+  multi_boot_standard(col = "score") %>%
+  ungroup() %>%
+  filter(!is.na(bird_beet)) %>%
+  ggplot(aes(x = bird_beet, y = mean, color = bird_beet)) + 
+  facet_grid(rows = vars(factor_name), cols = vars(age_group), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper)) +
+  scale_color_manual(values = c("blue", "red"), na.value = "gray") +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        axis.title.x = element_blank()) +
+  labs(title = "Contrast #5: Bird vs. beetle", 
+       y = "factor score", color = "contrast")
+d2_all_bird_beet
+```
+
+```{r, fig.width = 4, fig.asp = 0.7, include = T}
+efa_3_scores_boot_d2_all %>%
+  left_join(efa_3_scores_char_contr_d2_all %>% distinct(character, bird_beet)) %>%
+  ggplot(aes(x = character, y = mean, color = bird_beet)) + 
+  facet_grid(rows = vars(age_group), cols = vars(factor_name), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper), fatten = 1.5) +
+  scale_color_manual(values = c("blue", "red"), na.value = "gray") +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(title = "Contrast #5: Bird vs. beetle", 
+       y = "factor score", color = "contrast")
+```
+
+
+# Contrast #6: Technologies vs. toys
+
+```{r, fig.width = 3, fig.asp = 0.8, include = T}
+d2_all_tech_toys <- efa_3_scores_char_contr_d2_all %>%
+  group_by(age_group, factor_name, tech_toys) %>%
+  multi_boot_standard(col = "score") %>%
+  ungroup() %>%
+  filter(!is.na(tech_toys)) %>%
+  ggplot(aes(x = tech_toys, y = mean, color = tech_toys)) + 
+  facet_grid(rows = vars(factor_name), cols = vars(age_group), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper)) +
+  scale_color_manual(values = c("blue", "red"), na.value = "gray") +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        axis.title.x = element_blank()) +
+  labs(title = "Contrast #6: Technologies vs. toys", 
+       y = "factor score", color = "contrast")
+d2_all_tech_toys
+```
+
+```{r, fig.width = 4, fig.asp = 0.7, include = T}
+efa_3_scores_boot_d2_all %>%
+  left_join(efa_3_scores_char_contr_d2_all %>% distinct(character, tech_toys)) %>%
+  ggplot(aes(x = character, y = mean, color = tech_toys)) + 
+  facet_grid(rows = vars(age_group), cols = vars(factor_name), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper), fatten = 1.5) +
+  scale_color_manual(values = c("blue", "red"), na.value = "gray") +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(title = "Contrast #6: Technologies vs. toys", 
+       y = "factor score", color = "contrast")
+```
+
+
+# Contrast #7: Robot vs. computer
+
+```{r, fig.width = 3, fig.asp = 0.8, include = T}
+d2_all_robo_comp <- efa_3_scores_char_contr_d2_all %>%
+  group_by(age_group, factor_name, robo_comp) %>%
+  multi_boot_standard(col = "score") %>%
+  ungroup() %>%
+  filter(!is.na(robo_comp)) %>%
+  ggplot(aes(x = robo_comp, y = mean, color = robo_comp)) + 
+  facet_grid(rows = vars(factor_name), cols = vars(age_group), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper)) +
+  scale_color_manual(values = c("blue", "red"), na.value = "gray") +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        axis.title.x = element_blank()) +
+  labs(title = "Contrast #7: Robot vs. computer", 
+       y = "factor score", color = "contrast")
+d2_all_robo_comp
+```
+
+```{r, fig.width = 4, fig.asp = 0.7, include = T}
+efa_3_scores_boot_d2_all %>%
+  left_join(efa_3_scores_char_contr_d2_all %>% distinct(character, robo_comp)) %>%
+  ggplot(aes(x = character, y = mean, color = robo_comp)) + 
+  facet_grid(rows = vars(age_group), cols = vars(factor_name), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper), fatten = 1.5) +
+  scale_color_manual(values = c("blue", "red"), na.value = "gray") +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(title = "Contrast #7: Robot vs. computer", 
+       y = "factor score", color = "contrast")
+```
+
+
+# Contrast #8: Teddy bear vs. doll
+
+```{r, fig.width = 3, fig.asp = 0.8, include = T}
+d2_all_tedd_doll <- efa_3_scores_char_contr_d2_all %>%
+  group_by(age_group, factor_name, tedd_doll) %>%
+  multi_boot_standard(col = "score") %>%
+  ungroup() %>%
+  filter(!is.na(tedd_doll)) %>%
+  ggplot(aes(x = tedd_doll, y = mean, color = tedd_doll)) + 
+  facet_grid(rows = vars(factor_name), cols = vars(age_group), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper)) +
+  scale_color_manual(values = c("blue", "red"), na.value = "gray") +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        axis.title.x = element_blank()) +
+  labs(title = "Contrast #8: Teddy bear vs. doll", 
+       y = "factor score", color = "contrast")
+d2_all_tedd_doll
+```
+
+```{r, fig.width = 4, fig.asp = 0.7, include = T}
+efa_3_scores_boot_d2_all %>%
+  left_join(efa_3_scores_char_contr_d2_all %>% distinct(character, tedd_doll)) %>%
+  ggplot(aes(x = character, y = mean, color = tedd_doll)) + 
+  facet_grid(rows = vars(age_group), cols = vars(factor_name), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper), fatten = 1.5) +
+  scale_color_manual(values = c("blue", "red"), na.value = "gray") +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(title = "Contrast #8: Teddy bear vs. doll", 
+       y = "factor score", color = "contrast")
+```
+
