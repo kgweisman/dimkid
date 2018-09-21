@@ -1156,6 +1156,43 @@ ggdraw(fig05_with_caption)
 ```
 
 ```{r}
+fig06a_plot <- ggplot(d2_anim %>% 
+                       filter(!is.na(age)) %>%
+                        mutate(facet_lab = "animates vs. inanimates"),
+                     aes(x = age, y = score,
+                         fill = anim_inan, color = anim_inan, group = anim_inan)) +
+  facet_grid(rows = vars(factor_name), cols = vars(facet_lab), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_point(alpha = 0.2) +
+  geom_smooth(method = "lm", alpha = 0.10, show.legend = F) +
+  geom_point(data = d2_anim %>% filter(age_group == "adults"),
+             aes(x = 11), alpha = 0.2, show.legend = F,
+             position = position_jitterdodge(dodge.width = 0.5, 
+                                             jitter.width = 0.25)) +
+  geom_pointrange(data = d2_anim %>% 
+                    filter(age_group == "adults") %>%
+                    group_by(age_group, factor_name, anim_inan) %>%
+                    multi_boot_standard(col = "score") %>% 
+                    ungroup(),
+                  aes(x = 11, y = mean, ymin = ci_lower, ymax = ci_upper),
+                  position = position_jitterdodge(dodge.width = 0.5, 
+                                             jitter.width = 0.25), 
+                  show.legend = F, fatten = 1.5, shape = 21, color = "black") +
+  scale_x_continuous(breaks = c(4:11), 
+                     labels = c(paste0(4:10, "y"), "adults")) +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  scale_color_manual(values = c("slategrey", "firebrick1"), na.value = "gray") +
+  scale_fill_manual(values = c("slategrey", "firebrick1"), na.value = "gray") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 3))) +
+  labs(x = "age", y = "factor score", 
+       color = "animacy status", fill = "animacy status")
+```
+
+**BOOKMARK: need to integrate with the plot below and then describe things in text, maybe run a parallel regression on children's data alone**
+
+```{r}
 fig06_plot <- ggplot(efa_3_scores_d2_all %>% 
                        filter(!is.na(age)),
                      aes(x = age, y = score,
