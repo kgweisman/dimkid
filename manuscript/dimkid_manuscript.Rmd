@@ -813,7 +813,7 @@ First, we projected all of children's responses into the factor space defined by
 
 This allowed us to examine the effects of age group (younger children, older children, adults), character (computer, robot, doll, teddy bear, beetle, bird, mouse, goat, elephant), and factor (_BODY_, _HEART_, _MIND_) on these scores via mixed effects Bayesian regression. As in Study 1, factor was treated as categorical variable and effect-coded, and age group was dummy-coded with adults as the baseline, to assess whether children in each age group were "adult-like" in their assessments. To explore attributions to different target characters, we included eight orthogonal contrasts: (1) animates (elephant, goat, mouse, bird, beetle) vs. inanimates (teddy bear, doll, robot, teddy bear); (2) mammals (elephant, goat, mouse) vs. other animals (bird, beetle); (3) elephant vs. other mammals (goat, mouse); (4) goat vs. mouse; (5) bird vs. beetle; (6) technologies (robot, computer) vs. toys (teddy bear, doll); (7) robot vs. computer; and (8) teddy bear vs. doll. Here we will focus on what we consider to be the contrast of the greatest theoretical interest: animates/inanimates (contrast #1).
 
-A subset of the results of a maximal model can be found in Table 3 (see SOM for the full set of results). See Figure 5 for scores by age group, factor, and character; and Figure 6 for scores by age (among children). 
+A subset of the results of a maximal model can be found in Table 3 (see SOM for the full set of results). See Figure 5 for scores by age group, factor, and character (with a particular focus on animate vs. inaniamte characters - Panel A); and Figure 6 for scores by age (among children). 
 
 ```{r}
 efa_3_scores_d2_all <- efa_3_d2_ad$scores %>%
@@ -1034,9 +1034,9 @@ contrasts(efa_3_scores_d2_all$factor_name) <- cbind("H_GM" = c(-1, 1, 0),
 
 By definition, collapsing characters adults' factor scores did not differ across factors (HEART vs. grand mean: `r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM")`; MIND vs. grand mean: `r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM")`). As we would expect, adults attributed more mental capacities (collapsing across factors) to animates than inanimates (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "characteranim_inan")`)—a difference that was diminished in the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM:characteranim_inan")`), but not substantially diminished in the_MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:characteranim_inan")`).
 
-As a group, older children (7-9y) generally attributed more mental capacities than adults, collapsing across factors and characters (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH79_AD")`)—however, as in Study 1, this difference was driven primarily by relative over-attribution of abilities in the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM:age_groupCH79_AD")`), and was, if anything, reversed in the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:age_groupCH79_AD")`). Collapsing across factors, older children made less of a distinction between animate an inanimate target characters, relative to adults (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "characteranim_inan:age_groupCH79_AD")`). These effects were qualified by a three-way interaction between age group, character type, and the comparison between the _MIND_ domain and the grand mean (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:age_groupCH79_AD:characteranim_inan")`). We offer two ways of interpreting this three-way interaction: On the one hand, older children's relative under-attribution of abilities in the _MIND_ domain was especially dramatic for animate target characters: 7- to 9-year-old children's _MIND_ scores were comparable to those of adults for inanimate characters, but lower for animate characters. Put another way, older children's relative under-differentiation of animate and inanimate characters was particularly pronounced in the _MIND_ domain. Both of these interpretations seem to be consistent with the visualization presented in Figures XX and XX.
+As a group, older children (7-9y) generally attributed more mental capacities than adults, collapsing across factors and characters (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH79_AD")`)—however, as in Study 1, this difference was driven primarily by relative over-attribution of abilities in the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM:age_groupCH79_AD")`), and was substantially diminished (if anything, reversed) in the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:age_groupCH79_AD")`). Collapsing across factors, older children made less of a distinction between animate an inanimate target characters, relative to adults (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "characteranim_inan:age_groupCH79_AD")`). This relative under-differentiation of animate and inanimate characters was particularly pronounced in the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:age_groupCH79_AD:characteranim_inan")`).
 
-What about younger children? As a group, 4- to 6-year-old children's mental capacity attributions did not differ from adults, collapsing collapsing across factors and characters (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH46_AD")`)—but this masks several important developmental differences. Much like older children, younger children's scores were characterized by a relative over-attribution of abilities in the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM:age_groupCH46_AD")`) and a relative under-attribution of abilities in the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:age_groupCH46_AD")`), and (again like older children) younger children made less of a distinction between animate an inanimate target characters, relative to adults (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "characteranim_inan:age_groupCH46_AD")`). In all of these cases, visual inspection of Figure XX suggests that these divergences from adults' pattern of responding were exaggerated for younger relative to older children. Two three-way interactions suggested that both of these effects were especially dramatic for animate target characters (in the _HEART_ domain: `r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM:age_groupCH46_AD:characteranim_inan")`; in the _MIND_ domain: `r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:age_groupCH46_AD:characteranim_inan")`): For animate characters, younger children's _HEART_ scores were especially high (relative to adults'), and their _MIND_ scores were especially low (relative to adults'). (See Figure XX.)
+How did younger children compare to adults? As a group, 4- to 6-year-old children's mental capacity attributions did not differ from adults, collapsing collapsing across factors and characters (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH46_AD")`)—but this masks important developmental differences, which generally parallel the differences between older children and adults just described. Much like older children, younger children's scores were characterized by a relative over-attribution of abilities in the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM:age_groupCH46_AD")`) and a relative under-attribution of abilities in the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:age_groupCH46_AD")`), and they differentiated less between animate an inanimate target characters than did adults (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "characteranim_inan:age_groupCH46_AD")`). This relative under-differentiation of animate and inanimate characters was particularly pronounced in the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:age_groupCH46_AD:characteranim_inan")`), and less prounced in the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM:age_groupCH46_AD:characteranim_inan")`).
 
 ```{r, results = "asis"}
 d2_anim <- efa_3_scores_d2_all %>%
@@ -1070,31 +1070,63 @@ fixef(d2_anim_r) %>%
   kable_styling()
 ```
 
-The complexities of the design of Study 2 necessitated a much more complex model than we have presented here, and we encourage readers to examine other parameters of interest as presented in the SOM. We also note that all but two of the effects described above also hold true in a simpler model, in which we examine only a distinction between animate vs. inanimate characters (and include specific target characters as a random effect) rather than including 8 orthogonal contrasts on character; this model is also presented in the SOM. (The only effects that does not hold true in this simpler model are (1) the overall difference between older children and adults, which was of little theoretical interest in light of the two- and three-way interactions with factor and character type; and (2) the three-way interaction involving _MIND_ and younger children, whose 95% CI was defined by an upper limit of `r round(fixef(d2_anim_r)["factor_nameM_GM:anim_inananim_GM:age_groupCH46_AD","Q97.5"], 4)`. There were no additional parameters whose 95% credible intervals did not include 0.)
+The complexities of the design of Study 2 necessitated a much more complex model than we have presented here, and we encourage readers to examine other parameters of interest as presented in the SOM. We also note that all but two of the effects described above also hold true in a simpler model, in which we examine only a distinction between animate vs. inanimate characters (and include specific target characters as a random effect) rather than including 8 orthogonal contrasts on character; this model is also presented in the SOM. (The only effects that do not hold true in this simpler model are (1) the overall difference between older children and adults, which was of little theoretical interest in light of the two- and three-way interactions with factor and character type; and (2) the three-way interaction involving _MIND_ and younger children, whose 95% CI was defined by an upper limit of `r round(fixef(d2_anim_r)["factor_nameM_GM:anim_inananim_GM:age_groupCH46_AD","Q97.5"], 4)`. There were no additional parameters whose 95% credible intervals did not include 0.)
 
-Taken together, XX.
+A visual inspection of Figure 5 further clarifies these findings. 
 
+In the BODY domain, an clear animate-inanimate distinction was clearly present among 4- to 6-year-old children, though slightly attenuated (see Figure 5, Panel A, top row); a closer look at factor scores for individual characters suggests that younger children diverged from adults primarily in their attributions to the "edge cases" that were the focus of Study 1: the robot (to which they over-attributed the physiological sensations related to the _BODY_), and the beetle (to which they under-attributed such _BODY_ capacities; see Figure 5, Panel B, top row). 
 
-**Taken together, these findings suggest that, as a group, 4- to 6-year-old children perceived the difference between animates and inanimates to be a matter of both _BODY_ and _HEART_ (although they perceived this difference to be somewhat smaller than older children and adults). Meanwhile, as a group, 7- to 9-year-old children perceived the difference between animates and inaniamtes to be primarily a matter of the _BODY_, but the animate-inanimate distinction did not appear to govern their attributions of _MIND_. Neither of these patterns was entirely adult-like: Among adults, the distinction between animates and inanimates appeared to govern attributions of _BODY_ and _MIND_ to an equal degree, and _HEART_ to a lesser extent.**
+In the HEART domain, the distinction between animate and inanimate target characters was subtler across all age groups, and the degree of distinction did not vary dramatically with age (see Figure 5, Panel A, middle row). Instead, children generally over-attributed _HEART_ to _both_ animates and inanimates; these over-attributions declined between 4-6y and 7-9y of age, but did not reach adult-like levels even among older children. This is consistent with Study 1, in which 7- to 9-year-old children over-attributed _HEART_ to both the beetle and the robot, relative to adults. In this study, older children again attributed more _HEART_ capacities to the beetle and the robot, but also to the mouse (to which adults attributed particularly few _HEART_ capacities—perhaps because of mice's status as vermin in this cultural context) the the goat (see Figure 5, Panel B, middle row).
 
+Finally, in the MIND domain, neither group of children made a robust distinction between animates and inamates—but adults clearly did (see Figure 5, Panel A, bottom row). Instead, children generally under-attributed _MIND_ to _both_ animates and inanimates. These under-attributions became less dramatic between 4-6y and 7-9y of age, and by 7-9y children's _MIND_ attributions to inanimates were adult-like. But even at 7-9y, children did not attributed as many _MIND_ capacities to animates as did adults; between 7-9y and adulthood, _MIND_ attributions increased for all of the animate characters, and particularly dramatically for the bird, the mouse, and the elephant (see Figure 5, Panel B, bottom row).
 
 ```{r}
-fig05_plot <- ggplot(efa_3_scores_boot_d2_all %>%
-                       left_join(d2_all_char %>%
-                                   mutate(character = gsub("_", " ", 
+fig05a_plot <- d2_anim %>%
+  group_by(age_group, factor_name, anim_inan) %>%
+  multi_boot_standard(col = "score") %>%
+  ungroup() %>%
+  filter(!is.na(anim_inan)) %>%
+  mutate(age_group = recode_factor(age_group,
+                                   "children46" = "4-6y",
+                                   "children79" = "7-9y",
+                                   "adults" = "adults"),
+         anim_inan = recode_factor(anim_inan,
+                                   "inanimate" = "inanimates",
+                                   "animate" = "animates"),
+         facet_lab = "animates vs. inanimates") %>%
+  ggplot(aes(x = age_group, group = anim_inan,
+             y = mean, color = anim_inan)) + 
+  facet_grid(rows = vars(factor_name), cols = vars(facet_lab), scales = "free") +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_line(position = position_dodge(width = 0.5)) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper),
+                  position = position_dodge(width = 0.5)) +
+  scale_color_manual(values = c("slategrey", "firebrick1"), na.value = "gray") +
+  scale_y_continuous(breaks = seq(-10, 10, 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "right",
+        legend.direction = "vertical") +
+  labs(# title = "Animates vs. inanimates", 
+       x = "age group", y = "factor score", color = "animacy status")
+```
+
+```{r}
+fig05b_plot <- ggplot(efa_3_scores_boot_d2_all %>%
+                        left_join(d2_all_char %>%
+                                    mutate(character = gsub("_", " ",
                                                             character))) %>%
-                       mutate(age_group = recode_factor(age_group,
-                                                        "children46" = "4-6y",
-                                                        "children79" = "7-9y",
-                                                        "adults" = "adults"),
-                              character = factor(character,
-                                                 levels = c("computer", "robot",
-                                                            "doll", "teddy bear",
-                                                            "beetle", "bird",
-                                                            "mouse", "goat",
-                                                            "elephant"))),
-                     aes(x = age_group, y = mean, color = character)) +
-  facet_grid(factor_name ~ character, scales = "free") +
+                        mutate(age_group = recode_factor(age_group,
+                                                         "children46" = "4-6y",
+                                                         "children79" = "7-9y",
+                                                         "adults" = "adults"),
+                               character = factor(character,
+                                                  levels = c("computer", "robot",
+                                                             "doll", "teddy bear",
+                                                             "beetle", "bird",
+                                                             "mouse", "goat",
+                                                             "elephant"))),
+                      aes(x = age_group, y = mean, color = character)) +
+  facet_grid(rows = vars(factor_name), cols = vars(character), scales = "free") +
   geom_hline(yintercept = 0, lty = 2) +
   geom_line(aes(group = character)) +
   geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper)) +
@@ -1108,11 +1140,18 @@ fig05_plot <- ggplot(efa_3_scores_boot_d2_all %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   guides(color = "none") +
   # guides(color = guide_legend(override.aes = list(alpha = 1, size = 3))) +
-  labs(x = "age group", y = "factor score")
+  labs(# title = "Individual characters", 
+       x = "age group", y = "factor score")
 ```
 
-```{r, include = T, include = T, fig.width = 6, fig.asp = 0.5}
-fig05_with_caption <- add_sub(fig05_plot, str_wrap("Figure 5: Factor scores for younger children (4-6y), older children (7-9y), and adults in Study 2, in which each participant assessed 20 mental capacities for one of nine target characters. Each participant recieved a factor score for each factor (BODY, HEART, and MIND, as defined by an exploratory factor analysis of adults' responses). We treated these scores as summaries of that participants' mental capacity attributions in these domains; a score of 0 corresponds to the mean for that factor among adults. Error bars are bootstrapped 95% confidence intervals. Note that the range of the y-axis differs across rows.", 135), x = 0, hjust = 0)
+```{r}
+fig05_plots <- plot_grid(fig05a_plot, fig05b_plot,
+                         nrow = 1, rel_widths = c(0.25, 1),
+                         labels = c("A", "B"))
+```
+
+```{r, include = T, fig.width = 9, fig.asp = 0.4}
+fig05_with_caption <- add_sub(fig05_plots, str_wrap("Figure 5: Factor scores for younger children (4-6y), older children (7-9y), and adults in Study 2, in which each participant assessed 20 mental capacities for one of nine target characters. Each participant recieved a factor score for each factor (BODY, HEART, and MIND, as defined by an exploratory factor analysis of adults' responses). We treated these scores as summaries of that participants' mental capacity attributions in these domains; a score of 0 corresponds to the mean for that factor among adults. We present two ways of looking at these data: (A) collapsing characters into animates (beetle, bird, mouse, goat, elephant) vs. inanimates (computer, robot, doll, teddy bear); and (B) examining each character individually. Error bars are bootstrapped 95% confidence intervals. Note that the range of the y-axis differs across rows.", 210), x = 0, hjust = 0)
 ggdraw(fig05_with_caption)
 ```
 
