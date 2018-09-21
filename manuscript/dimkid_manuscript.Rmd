@@ -560,13 +560,11 @@ On the other hand, analyses of children's attributions within this shared concep
 
 The goals of Study 2 were twofold. 
 
-First, we aimed to extend our findings with 7- to 9-year-old children in Study 1, by expanding the list of the target characters to include not only the two "edge cases" from Study 1 (a beetle and a robot), but a also a wider range of animate beings (a bird, a goat, and an elephant) and inanimate objects (a computer, a teddy bear, and a doll). In Weisman et al.'s original studies, this approach yielded a highly similar conceptual structure to the "edge case" approach (Weisman et al., 2017; Study 4). We reasoned that if this three-part conceptual structure is stable and robust by the age of 7-9 years, it should manifest among 7- to 9-year-old children under the same range of conditions that elicit this structure from adults.
+First, we aimed to extend our findings with 7- to 9-year-old children in Study 1, by expanding the list of the target characters to include not only the two "edge cases" from Study 1 (a beetle and a robot), but a also a wider range of animate beings (a bird, a goat, and an elephant) and inanimate objects (a computer, a teddy bear, and a doll). In Weisman et al.'s original studies, this approach yielded a highly similar conceptual structure to the "edge case" approach (Weisman et al., 2017; Study 4). We reasoned that if this three-part conceptual structure is stable and robust by the age of 7-9 years, it should manifest among 7- to 9-year-old children under the same range of conditions that it does aong adults.
 
-Second, we aimed to assess the earlier development of this conceptual structure in a group of younger children. We targeted 4- to 6-year-old children for our younger age group because this has been identified as a period of dramatic development in several relevant domains. Many studies have documented shifts in children's abilities to take others' perspectives, represent false beliefs, and integrate representations of intentions and outcomes in evaluating moral responsibility (for reveiws, see Flavell, 1999; Wellman, 2015). The preschool years have also been the focus of a rich tradition of work on lay biology and the animate-inanimate distinction extending back nearly a century (e.g., Carey, 1985; R. Gelman, Spelke, & Meck, 1983; Medin, Waxman, Woodring, & Washinawatok, 2010; Piaget, 1929; for a review, see S. Gelman & Opfer, 2002). All of these accounts make the case that becoming a sophisticated reasoner—and particularly a sophisticated social reasoner—requires substantial refinement of one's representations of others' experiences, beliefs, desires, and needs. Might these refinements include shifts in children's intuitions about the fundamental components of mental life? 
+Second, we aimed to assess the earlier development of this conceptual structure in a group of younger children. We targeted 4- to 6-year-old children for our younger age group because this has been identified as a period of dramatic development in several relevant domains. Many studies have documented shifts in children's abilities to take others' perspectives, represent false beliefs, and integrate representations of intentions and outcomes in evaluating moral responsibility (for reveiws, see Flavell, 1999; Wellman, 2015). The preschool years have also been the focus of a rich tradition of work on lay biology and the animate-inanimate distinction extending back nearly a century (e.g., Carey, 1985; R. Gelman, Spelke, & Meck, 1983; Medin, Waxman, Woodring, & Washinawatok, 2010; Piaget, 1929; for a review, see S. Gelman & Opfer, 2002). All of these accounts make the case that becoming a sophisticated reasoner—and particularly a sophisticated social reasoner—requires substantial refinement of one's representations of others' experiences, beliefs, desires, and needs. Might these refinements include changes to the structure of children's concepts of mental life? 
 
-Pilot testing suggested that working with younger children would require making a briefer experimental paradigm with fewer than the 40 questions included in Study 1; limiting the list to 20 questions seemed to allow children as young as 4 years of age to complete the study easily and without getting bored or frustrated, while still including enough items to enable us to proceed with our exploratory "dimensionality reduction" approach to uncovering conceptual structure. 
-
-To validate this modified paradigm, we also included a sample of adults.
+Pilot testing suggested that working with younger children would require making a briefer experimental paradigm with fewer than the 40 questions included in Study 1; limiting the list to 20 questions seemed to allow children as young as 4 years of age to complete the study easily and without getting bored or frustrated, while still including enough items to enable us to proceed with our exploratory "dimensionality reduction" approach to uncovering conceptual structure. Below we present this method, validate it among a sample of adults, and use it to explore the development of conceptual structure between 4-9 years of age.
 
 ## Method
 
@@ -590,13 +588,13 @@ d2_46_gender <- demo_fun(d2_46, "gender", 2)
 d2_46_ethnicity <- demo_fun(d2_46, "ethnicity", 2)
 ```
 
-Data collection with children occurred between January-June 2017. For our factor analyses we grouped children into two age groups, because EFA is a group-level analysis of the consensual conceptual structure and is not designed to model continuous participant-level variables like exact age. Our goal with these analyses was to examine discrete "snapshots" of this conceptual structure at two points in this continuous developmental trajectory. Our planned sample size was 120 older and 120 younger children, but we also retained a handful of extra participants who completed the study on the final day of data collection for each group.
+For our factor analyses we grouped children into two age groups, because EFA is a group-level analysis of the consensual conceptual structure and is not designed to model continuous participant-level variables like exact age. Our goal with these analyses was to examine discrete "snapshots" of this conceptual structure at two points in this continuous developmental trajectory. Our planned sample size was 120 older and 120 younger children, but we also retained a handful of extra participants who completed the study on the final day of data collection for each group.
 
-The group that we will refer to as "older children" (_n_=`r nrow(d2_79_wide)`) ranged in age from `r summary(d2_79$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d2_79$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d2_79$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y), and participated at one of several San Francisco Bay Area museums or at their younger sibling's preschool between July-December 2016. The study took most children under 10 minutes to complete (median duration: `r summary(d2_79$duration)["Median"] %>% round(2) %>% format(nsmall = 2)` min). According to parental report, the sample of older children included slightly more boys (`r d2_79_gender$prop[d2_79_gender$gender=="f"] * 100`%) than girls (`r d2_79_gender$prop[d2_79_gender$gender=="m"] * 100`%; `r d2_79_gender$prop[d2_79_gender$gender=="MISSING"] * 100`% of children's gender was non-binary or unknown). Parents predominantly identified their children as White (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="white"] * 100`%), South Asian (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="south or southeast asian"] * 100`%, multiracial (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="multi"] * 100`%), or East Asian (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="east asian"] * 100`%); $\leq$ `r data.frame(d2_79_ethnicity %>% filter(!ethnicity %in% c("white", "multi", "east asian", "south or southeast asian", "MISSING")))$prop %>% max() * 100`% of children were identified as any other race/ethnicity, and `r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="MISSING"] * 100`% of children's race/ethnicity was unknown). 
+The group that we will refer to as "older children" (_n_=`r nrow(d2_79_wide)`) ranged in age from `r summary(d2_79$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d2_79$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d2_79$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y), and participated at one of several San Francisco Bay Area museums or at their younger sibling's preschool between July-December 2016. The study took most older children under `r quantile(d2_79$duration, .75, na.rm = T) %>% as.numeric() %>% ceiling()` minutes to complete (median duration: `r summary(d2_79$duration)["Median"] %>% round(2) %>% format(nsmall = 2)` min). According to parental report, the sample of older children included slightly more girls (`r d2_79_gender$prop[d2_79_gender$gender=="f"] * 100`%) than boys (`r d2_79_gender$prop[d2_79_gender$gender=="m"] * 100`%; `r d2_79_gender$prop[d2_79_gender$gender=="MISSING"] * 100`% of children's gender was non-binary or unknown). Parents predominantly identified their children as White (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="white"] * 100`%), South Asian (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="south or southeast asian"] * 100`%), multiracial (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="multi"] * 100`%), or East Asian (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="east asian"] * 100`%); $\leq$ `r data.frame(d2_79_ethnicity %>% filter(!ethnicity %in% c("white", "multi", "east asian", "south or southeast asian", "MISSING")))$prop %>% max() * 100`% of children were identified as any other race/ethnicity, and `r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="MISSING"] * 100`% of children's race/ethnicity was unknown). 
 
-"Younger children" (_n_=`r nrow(d2_46_wide)`) ranged in age from `r summary(d2_46$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d2_46$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d2_46$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y), and participated either at their preschool or at a museum; the median study duration for this group was `r summary(d2_46$duration)["Median"] %>% round(2) %>% format(nsmall = 2)` min. According to parental report and school records, the sample of younger children included roughly the same numbers of girls (`r d2_46_gender$prop[d2_46_gender$gender=="m"] * 100`%) and boys (`r d2_46_gender$prop[d2_46_gender$gender=="f"] * 100`%). Children were predominantly identified as multiracial (`r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="multi"] * 100`%) or White (`r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="white"] * 100`%; $\leq$ `r data.frame(d2_46_ethnicity %>% filter(!ethnicity %in% c("white", "multi", "MISSING")))$prop %>% max() * 100`% of children were identified as any other race/ethnicity, and `r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="MISSING"] * 100`% of children's race/ethnicity was unknown).
+"Younger children" (_n_=`r nrow(d2_46_wide)`) ranged in age from `r summary(d2_46$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d2_46$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d2_46$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y), and participated either at a university-affiliated preschool or at a Bay Area museum between January-June 2017. The study took most younger children under `r quantile(d2_46$duration, .75, na.rm = T) %>% as.numeric() %>% ceiling()` minutes to complete (median duration: `r summary(d2_46$duration)["Median"] %>% round(2) %>% format(nsmall = 2)` min). According to parental report and school records, the sample of younger children included roughly the same numbers of girls (`r d2_46_gender$prop[d2_46_gender$gender=="m"] * 100`%) and boys (`r d2_46_gender$prop[d2_46_gender$gender=="f"] * 100`%). Children were predominantly identified as multiracial (`r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="multi"] * 100`%) or White (`r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="white"] * 100`%; $\leq$ `r data.frame(d2_46_ethnicity %>% filter(!ethnicity %in% c("white", "multi", "MISSING")))$prop %>% max() * 100`% of children were identified as any other race/ethnicity, and `r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="MISSING"] * 100`% of children's race/ethnicity was unknown).
 
-An additional 7 children participated but were excluded for being outside the target age ranges. Children received a small thank-you gift (e.g., a sticker) for their participation. 
+An additional 7 children participated but were excluded for being outside the target age ranges. At museums (but not at the preschool), children received a small thank-you gift (e.g., a sticker) for their participation. 
 
 ### Materials and procedure
 
@@ -610,11 +608,13 @@ d2_all_char <- d2_ad_char %>% mutate(age_group = "adults") %>%
 ```
 
 
-Participants were assigned to evaluate one of the following target characters: an elephant, a goat, a mouse, a bird, a beetle, a teddy bear, a doll, a robot, or a computer (_n_ = `r min(d2_ad_char$n)` - `r max(d2_ad_char$n)` adults, `r min(d2_79_char$n)` - `r max(d2_79_char$n)` older children, and `r min(d2_46_char$n)` - `r max(d2_46_char$n)` younger children per character; see Figures 5 & 6 for exact counts). This allowed us to address the following question: When target characters are perceived to vary in their mental capacity profiles, which capacities "go together"?
+Participants were assigned to evaluate one of the following target characters: an elephant, a goat, a mouse, a bird, a beetle, a teddy bear, a doll, a robot, or a computer (_n_ per characater: `r min(d2_ad_char$n)`-`r max(d2_ad_char$n)` adults, `r min(d2_79_char$n)`-`r max(d2_79_char$n)` older children, and `r min(d2_46_char$n)`-`r max(d2_46_char$n)` younger children; see Figures 5 and 6 for exact counts). This allowed us to address the following question: When target characters are perceived to vary in their mental capacity profiles, which capacities "go together"?
+
+**BOOKMARK**
 
 Participants were assigned to target characters randomly, with two exceptions: The doll and teddy bear conditions were run last for older children (but included in the initial randomization scheme for adults and younger children); and toward the end of data collection children were assigned to conditions that had the fewest participants. As in Study 1, a vivid, high-resolution photo of the target character in a naturalistic context was visible for the duration of the study. 
 
-Instructions were identical to Study 1. Participants rated the target character on 20 mental capacities, presented in a random order for each participant. On each trial, participants responded _no_, _kinda_, or _yes_ to the question "Do you think a [beetle] can…?" As in Study 1, adults completed the study by clicking through a website at their own pace, with one trial presented on each page and no ability to go backwards, and children completed the study on an experimenter's laptop computer. Following Study 1, for older children the experimenter read the instructions and the first several trials out loud, requesting verbal responses from the child and selected his or her response for her; after several trials, the experimenter gave the child the option to continue independently if they desired. All younger children heard all questions read aloud by the experimenter and responded verbally. 
+Instructions were identical to Study 1. Participants rated the target character on 20 mental capacities, presented in a random order for each participant. On each trial, participants responded _no_, _kinda_, or _yes_ to the question "Do you think a [target] can…?" As in Study 1, adults completed the study by clicking through a website at their own pace, with one trial presented on each page and no ability to go backwards, and children completed the study on an experimenter's laptop computer. For older children the experimenter read the instructions and the first several trials out loud, requesting verbal responses from the child and selected his or her response for her; after several trials, the experimenter gave the child the option to continue independently if they desired. For younger children, the experimenter read all questions out loud and children responded verbally. 
 
 The 20 mental capacities were a subset of the 40 items used in Study 1, chosen to include physiological sensations, emotional experiences, perceptual abilities, cognitive skills, capacities related to autonomy or agency, and social abilities; and to include some of the strongest-loading items for each of the three factors uncovered among adults in Study 1 (see Figure 1). As in Study 1, each mental capacity was associated with a short, preset definition. Both older and younger children were encouraged at the beginning of the study to ask questions if they did not know what a word meant, in which case they were given these definitions. (Adults did not have access to these definitions.)
 
@@ -1088,7 +1088,9 @@ d2_all <- d2_ad %>%
                                        "beetle", "bird", "mouse",
                                        "goat", "elephant")),
          age_group_n = paste0(age_group, "\n(n = ", n, ")"))
+```
 
+```{r}
 # fig07_plot <- d2_all %>%
 #   ggplot(aes(x = reorder(capacity, desc(order)), 
 #              fill = character, alpha = response)) +
@@ -1100,39 +1102,43 @@ d2_all <- d2_ad %>%
 #   theme_bw() +
 #   theme(axis.title.y = element_blank(),
 #         axis.text.x = element_text(angle = 90, hjust = 1, vjust = 1)) +
-#   labs(y = "proportion of responses") +
+#   labs(y = "proportion of participants") +
 #   coord_flip()
 
-fig07_plot <- d2_all %>%
-  ggplot(aes(x = reorder(capacity, desc(order)),
-             fill = character, alpha = response)) +
-  facet_grid(rows = vars(character), cols = vars(factor, age_group),
-             scales = "free") +
-  geom_bar(position = "fill") +
-  geom_label(data = d2_all %>%
-               left_join(
-                 d2_all_char %>%
-                   mutate(character = gsub("_", " ", character),
-                          character = factor(character,
-                                             levels = c("computer", "robot",
-                                                        "doll", "teddy bear",
-                                                        "beetle", "bird",
-                                                        "mouse", "goat",
-                                                        "elephant")))) %>%
-               distinct(character, factor, age_group, n),
-             aes(x = NA, y = NA, alpha = NA, fill = NA,
-                 label = paste0("(n=", n, ")")),
-             x = 1, y = 1, alpha = 0.8, hjust = 0, vjust = 1,
-             color = "black", fill = "white", size = 3) +
-  scale_fill_brewer(palette = "Paired") +
-  scale_y_continuous(breaks = c(0, 0.5, 1)) +
-  theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
-  labs(x = "mental capacity", y = "proportion of responses")
+# fig07_plot <- d2_all %>%
+#   ggplot(aes(x = reorder(capacity, desc(order)),
+#              fill = character, alpha = response)) +
+#   facet_grid(rows = vars(character), cols = vars(factor, age_group),
+#              scales = "free") +
+#   geom_bar(position = "fill") +
+#   geom_label(data = d2_all %>%
+#                left_join(
+#                  d2_all_char %>%
+#                    mutate(character = gsub("_", " ", character),
+#                           character = factor(character,
+#                                              levels = c("computer", "robot",
+#                                                         "doll", "teddy bear",
+#                                                         "beetle", "bird",
+#                                                         "mouse", "goat",
+#                                                         "elephant")))) %>%
+#                distinct(character, factor, age_group, n),
+#              aes(x = NA, y = NA, alpha = NA, fill = NA,
+#                  label = paste0("(n=", n, ")")),
+#              x = 1, y = 1, alpha = 0.8, hjust = 0, vjust = 1,
+#              color = "black", fill = "white", size = 3) +
+#   scale_fill_brewer(palette = "Paired") +
+#   scale_y_continuous(breaks = c(0, 0.5, 1)) +
+#   theme_bw() +
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+#   labs(x = "mental capacity", y = "proportion of participants")
+
 
 # fig07_BODY_plot <- d2_all %>%
 #   filter(factor == "BODY") %>%
-#   ggplot(aes(x = reorder(capacity, desc(order)),
+#   mutate(capacity_pad = str_pad(capacity, 
+#                                 max(nchar(d2_all$capacity)) + 3, 
+#                                 "left")) %>%
+#   ggplot(aes(x = reorder(capacity_pad, desc(order)),
 #              fill = character, alpha = response)) +
 #   facet_grid(rows = vars(character), cols = vars(age_group),
 #              scales = "free", space = "free") +
@@ -1141,12 +1147,15 @@ fig07_plot <- d2_all %>%
 #   scale_y_continuous(breaks = c(0, 0.5, 1)) +
 #   theme_bw() +
 #   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
-#   labs(y = "proportion of responses", x = "mental capacity") +
+#   labs(y = "proportion of participants", x = "mental capacity") +
 #   guides(fill = "none", alpha = "none")
 # 
 # fig07_HEART_plot <- d2_all %>%
 #   filter(factor == "HEART") %>%
-#   ggplot(aes(x = reorder(capacity, desc(order)),
+#   mutate(capacity_pad = str_pad(capacity, 
+#                                 max(nchar(d2_all$capacity)) + 3, 
+#                                 "left")) %>%
+#   ggplot(aes(x = reorder(capacity_pad, desc(order)),
 #              fill = character, alpha = response)) +
 #   facet_grid(rows = vars(character), cols = vars(age_group),
 #              scales = "free", space = "free") +
@@ -1155,12 +1164,15 @@ fig07_plot <- d2_all %>%
 #   scale_y_continuous(breaks = c(0, 0.5, 1)) +
 #   theme_bw() +
 #   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
-#   labs(y = "proportion of responses", x = "mental capacity") +
+#   labs(y = "proportion of participants", x = "mental capacity") +
 #   guides(fill = "none", alpha = "none")
 # 
 # fig07_MIND_plot <- d2_all %>%
 #   filter(factor == "MIND") %>%
-#   ggplot(aes(x = reorder(capacity, desc(order)),
+#   mutate(capacity_pad = str_pad(capacity, 
+#                                 max(nchar(d2_all$capacity)) + 0, 
+#                                 "left")) %>%
+#   ggplot(aes(x = reorder(capacity_pad, desc(order)),
 #              fill = character, alpha = response)) +
 #   facet_grid(rows = vars(character), cols = vars(age_group),
 #              scales = "free", space = "free") +
@@ -1169,16 +1181,73 @@ fig07_plot <- d2_all %>%
 #   scale_y_continuous(breaks = c(0, 0.5, 1)) +
 #   theme_bw() +
 #   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
-#   labs(y = "proportion of responses", x = "mental capacity")
-# 
-# fig07_plots <- plot_grid(fig07_BODY_plot, fig07_HEART_plot, fig07_MIND_plot,
-#                          ncol = 3, labels = c("A", "B", "C"),
-#                          rel_widths = c(1, 1, 1.3),
-#                          rel_heights = c(1, 1.5, 2))
+#   labs(y = "proportion of participants", x = "")
+
+fig07_fun <- function(whichfac){
+  space <- case_when(whichfac == "BODY" ~ 8,
+                     whichfac == "HEART" ~ 3,
+                     whichfac == "MIND" ~ 0)
+  
+  fig <- d2_all %>%
+    left_join(d2_all_char %>%
+                mutate(character = gsub("_", " ", as.character(character))) %>%
+                distinct(character, age_group, n)) %>%
+    filter(factor == whichfac) %>%
+    mutate(capacity_pad = str_pad(capacity,
+                                  max(nchar(d2_all$capacity)) + space,
+                                  "left"),
+           character = factor(character,
+                              levels = c("computer", "robot", "doll",
+                                         "teddy bear", "beetle", "bird",
+                                         "mouse", "goat", "elephant"))) %>%
+    ggplot(aes(x = reorder(capacity_pad, desc(order)),
+               fill = character, alpha = response)) +
+    facet_grid(rows = vars(character), cols = vars(age_group),
+               scales = "free", space = "free") +
+    geom_bar(position = "fill") +
+    geom_label(data = d2_all %>%
+                 left_join(
+                   d2_all_char %>%
+                     mutate(character = gsub("_", " ", character),
+                            character = factor(character,
+                                               levels = c("computer", "robot",
+                                                          "doll", "teddy bear",
+                                                          "beetle", "bird",
+                                                          "mouse", "goat",
+                                                          "elephant")))) %>%
+                 distinct(character, factor, age_group, n),
+               aes(x = NA, y = NA, alpha = NA, fill = NA,
+                   label = paste0("(n=", n, ")")),
+               x = 0.75, y = 1, alpha = 0.8, hjust = 0, vjust = 1,
+               color = "black", fill = "white", size = 3) +
+    scale_fill_brewer(palette = "Paired") +
+    scale_y_continuous(breaks = c(0, 0.5, 1)) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+    labs(y = "proportion of participants", x = "mental capacity (by factor)")
+  
+  if(whichfac != "MIND"){
+    fig <- fig + guides(fill = "none", alpha = "none")
+  }
+  
+  if(whichfac != "HEART"){
+    fig <- fig + labs(x = "")
+  }
+  
+  return(fig)
+}
+
+fig07_BODY_plot <- fig07_fun("BODY")
+fig07_HEART_plot <- fig07_fun("HEART")
+fig07_MIND_plot <- fig07_fun("MIND")
+
+fig07_plots <- plot_grid(fig07_BODY_plot, fig07_HEART_plot, fig07_MIND_plot,
+                         ncol = 3, labels = c("A", "B", "C"),
+                         rel_widths = c(1, 1, 1.2))
 ```
 
-```{r, include = T, include = T, fig.width = 6, fig.asp = 1}
-fig07_with_caption <- add_sub(fig07_plot, str_wrap("Figure 7: Proportion of Study 2 participants who responded 'yes' (dark), 'kinda' (medium), or 'no' (light) to  each mental capacity item, grouped by the factor on which they loading most positively (BODY, HEART, MIND) according to an exploratory factor analysis of adults' responses. Each participant assessed 20 mental capacities for one of nine target characters (6-18 per character, per age group). Responses are shown separately by age group (4-6y, 7-9y, adults).", 130), x = 0, hjust = 0)
+```{r, include = T, include = T, fig.width = 8, fig.asp = 1}
+fig07_with_caption <- add_sub(fig07_plots, str_wrap("Figure 7: Proportion of Study 2 participants who responded 'yes' (dark), 'kinda' (medium), or 'no' (light) to  each mental capacity item, grouped by the factor on which they loading most positively (BODY, HEART, MIND) according to an exploratory factor analysis of adults' responses. Each participant assessed 20 mental capacities for one of nine target characters (6-18 per character, per age group). Responses are shown separately by age group (4-6y, 7-9y, adults).", 180), x = 0, hjust = 0)
 ggdraw(fig07_with_caption)
 ```
 
