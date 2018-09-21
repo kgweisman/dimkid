@@ -607,14 +607,11 @@ d2_all_char <- d2_ad_char %>% mutate(age_group = "adults") %>%
   full_join(d2_46_char %>% mutate(age_group = "children46"))
 ```
 
-
 Participants were assigned to evaluate one of the following target characters: an elephant, a goat, a mouse, a bird, a beetle, a teddy bear, a doll, a robot, or a computer (_n_ per characater: `r min(d2_ad_char$n)`-`r max(d2_ad_char$n)` adults, `r min(d2_79_char$n)`-`r max(d2_79_char$n)` older children, and `r min(d2_46_char$n)`-`r max(d2_46_char$n)` younger children; see Figures 5 and 6 for exact counts). This allowed us to address the following question: When target characters are perceived to vary in their mental capacity profiles, which capacities "go together"?
-
-**BOOKMARK**
 
 Participants were assigned to target characters randomly, with two exceptions: The doll and teddy bear conditions were run last for older children (but included in the initial randomization scheme for adults and younger children); and toward the end of data collection children were assigned to conditions that had the fewest participants. As in Study 1, a vivid, high-resolution photo of the target character in a naturalistic context was visible for the duration of the study. 
 
-Instructions were identical to Study 1. Participants rated the target character on 20 mental capacities, presented in a random order for each participant. On each trial, participants responded _no_, _kinda_, or _yes_ to the question "Do you think a [target] can…?" As in Study 1, adults completed the study by clicking through a website at their own pace, with one trial presented on each page and no ability to go backwards, and children completed the study on an experimenter's laptop computer. For older children the experimenter read the instructions and the first several trials out loud, requesting verbal responses from the child and selected his or her response for her; after several trials, the experimenter gave the child the option to continue independently if they desired. For younger children, the experimenter read all questions out loud and children responded verbally. 
+Instructions and procedure were identical to Study 1, with two exceptions: (1) Participants rated the target character on 20 (rather than 40) mental capacities; and (2) For younger children, the experimenter read all questions out loud and children responded verbally. 
 
 The 20 mental capacities were a subset of the 40 items used in Study 1, chosen to include physiological sensations, emotional experiences, perceptual abilities, cognitive skills, capacities related to autonomy or agency, and social abilities; and to include some of the strongest-loading items for each of the three factors uncovered among adults in Study 1 (see Figure 1). As in Study 1, each mental capacity was associated with a short, preset definition. Both older and younger children were encouraged at the beginning of the study to ask questions if they did not know what a word meant, in which case they were given these definitions. (Adults did not have access to these definitions.)
 
@@ -651,9 +648,7 @@ efa_3_plot_d2_ad <- heatmap_fun(efa_3_d2_ad,
   guides(fill = "none")
 ```
 
-As expected, the conceptual structure revealed by this analysis among adults was characterized by a three-way distinction between _BODY_ (first factor, `r round(efa_3_d2_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution), _HEART_ (first factor, `r round(efa_3_d2_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of shared variance), and _MIND_ (first factor, `r round(efa_3_d2_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of shared variance). (See Figure 4, Panel D.)
-
-This suggests that our modified child-friendly paradigm was valid: Using a shorter list of items and a wider range of target characters elicited the same intuitive ontology of mental life, among US adults, that was revealed in Study 1 and in Weisman et al.'s previous work. 
+As expected, the conceptual structure revealed by this analysis among adults was characterized by a three-way distinction between _BODY_ (first factor, `r round(efa_3_d2_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution), _HEART_ (first factor, `r round(efa_3_d2_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of shared variance), and _MIND_ (first factor, `r round(efa_3_d2_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of shared variance). (See Figure 4, Panel D.) This suggests that our modified child-friendly paradigm was valid: Using a shorter list of items and a wider range of target characters elicited the same intuitive ontology of mental life, among US adults, that was revealed in Study 1 and in Weisman et al.'s (2017) previous work. 
 
 ### Conceptual structure: Older children (7-9y)
 
@@ -764,9 +759,9 @@ ggdraw(fig04_with_caption)
 
 ### Attributions of mental life
 
-In Study 1, we saw that even "older" children (7-9y) who seemed to have an adult-like conceptual structure differed from adults in their application of this concept, attributing far more of the social-emotional abilities related to the _HEART_ to both beetles and robots as compared to adults. How do children's mental capacity attributions compare to adults for the larger set of target characters included in Study 2—and what does this aspect of conceptual developmental look like earlier in development (4-6y)?
+In Study 1, we saw that even children as old as 7-9y—whose conceptual structure seemed to be quite similar to that of adults'—nonetheless differed from adults in their _application_ of this concept, attributing far more of the social-emotional abilities related to the _HEART_ to both beetles and robots. How do children's mental capacity attributions compare to adults for the larger set of target characters included in Study 2—and what does this aspect of conceptual developmental look like earlier in development (4-6y)?
 
-Following our analysis in Study 1, we approached these questions from several angles.
+Following Study 1, we approached these questions from several angles.
 
 ```{r}
 d2_all_wide_i <- d2_ad_wide_i %>%
@@ -812,9 +807,11 @@ efa_3_d2_46_project_scores <- predict(object = efa_3_d2_ad,
   arrange(subid_char)
 ```
 
-First, we projected children's responses into the factor space defined by adults (standardized in terms of adults' responses), and examined factor scores by age group (again, using the correlation-preserving method articulated by ten Berge, Krijnen, Wansbeek, & Shapiro, 1999, as implemented in the "psych" package for R, Revelle, 2018). As in Study 1, this yielded three scores for each participant, corresponding, in principle, to holistic judgments of the social-emotional, physiological, and perceptual-cognitive abilities of the target character the participant evaluated. (Note that each of these three scores takes into account adult factor loadings for all 20 mental capacities, as shown in Figure 4, Panel D.) 
+First, we projected all of children's responses into the factor space defined by adults (standardized in terms of adults' responses), and examined factor scores by age group (again, using the method articulated by ten Berge et al., 1999). As in Study 1, this yielded three scores for each participant, corresponding, in principle, to holistic judgments of the social-emotional, physiological, and perceptual-cognitive abilities of the target character the participant evaluated. (Note that each of these three scores takes into account adult factor loadings for all 20 mental capacities, as shown in Figure 4, Panel D.) 
 
-This allowed us to examine the effects of age group (adults, older children, younger children), character (computer, robot, doll, teddy bear, beetle, bird, mouse, goat, elephant), and factor (_BODY_, _HEART_, _MIND_) on these scores via mixed effects Bayesian regression. See Table 3 for the results of a maximal model; Figure 5 for scores by age group, factor, and character; and Figure 6 for scores by age (among children). 
+This allowed us to examine the effects of age group (younger children, older children, adults), character (computer, robot, doll, teddy bear, beetle, bird, mouse, goat, elephant), and factor (_BODY_, _HEART_, _MIND_) on these scores via mixed effects Bayesian regression. As in Study 1, age group and factor were treated as categorical variables and effect-coded. To explore attributions to different target characters, we included eight orthogonal contrasts: (1) animates (elephant, goat, mouse, bird, beetle) vs. inanimates (teddy bear, doll, robot, teddy bear); (2) mammals (elephant, goat, mouse) vs. other animals (bird, beetle); (3) elephant vs. other mammals (goat, mouse); (4) goat vs. mouse; (5) bird vs. beetle; (6) technologies (robot, computer) vs. toys (teddy bear, doll); (7) robot vs. computer; and (8) teddy bear vs. doll. Here we will focus on what we consider the two most interesting contrasts here: animates/inanimates (contrast #1) and, within inanimates, technologies/toys (contrast #6).
+
+See Table 3 for the results of a maximal model; Figure 5 for scores by age group, factor, and character; and Figure 6 for scores by age (among children). 
 
 ```{r}
 efa_3_scores_d2_all <- efa_3_d2_ad$scores %>%
@@ -874,12 +871,12 @@ contrasts(efa_3_scores_d2_all$age_group) <- cbind("CH46_GM" = c(1, 0, -1),
 contrasts(efa_3_scores_d2_all$factor_name) <- cbind("H_GM" = c(-1, 1, 0),
                                                     "M_GM" = c(-1, 0, 1))
 
-efa_3_scores_r_d2_all <- brm(score ~ factor_name * age_group * character
-                             + (1|subid),
-                             data = efa_3_scores_d2_all,
-                             seed = 12345,
-                             cores = 4,
-                             control = list(adapt_delta = 0.99))
+# efa_3_scores_r_d2_all <- brm(score ~ factor_name * age_group * character
+#                              + (1|subid),
+#                              data = efa_3_scores_d2_all,
+#                              seed = 12345,
+#                              cores = 4,
+#                              control = list(adapt_delta = 0.99))
 
 summary(efa_3_scores_r_d2_all)
 ```
@@ -890,7 +887,7 @@ fixef(efa_3_scores_r_d2_all) %>%
   rownames_to_column("Parameter") %>%
   mutate(Parameter = recode_factor(Parameter,
     "Intercept" = "(Intercept)",
-    "characteranim_inan" = "characters: animate vs. inanimate",
+    "characteranim_inan" = "characters: animates vs. inanimates",
     "charactermamm_nonm" = "characters: mammals vs. other animals",
     "characterelep_gomo" = "characters: elephant vs. other mammals",
     "charactergoat_mous" = "characters: goat vs. mouse",
@@ -978,7 +975,7 @@ fixef(efa_3_scores_r_d2_all) %>%
   unite(`95% CI`, Q2.5, Q97.5, sep = ", ") %>%
   mutate(`95% CI` = paste0("[", `95% CI`, "]")) %>%
   knitr::kable(format = "html", align = c("l", rep("r", 3)),
-               caption = "Table 2: Fixed effects from a mixed-effects Bayesian regression model predicting factor scores in Study 2 by character, factor (BODY, HEART, MIND), and age group. The model used the formula 'factor score ~ factor * age group * character + (1 | subject)' and was implemented in the 'brms' package for R (Bürkner, 2017). Factor and age group were effect-coded; character was coded with orthogonal contrasts (see main text). Asterisks mark parameters whose 95% credible interval does not include 0.") %>%
+               caption = "Table 3: Fixed effects from a mixed-effects Bayesian regression model predicting factor scores in Study 2 by character, factor (BODY, HEART, MIND), and age group. The model used the formula 'factor score ~ factor * age group * character + (1 | subject)' and was implemented in the 'brms' package for R (Bürkner, 2017). Factor and age group were effect-coded; character was coded with orthogonal contrasts (see main text). Asterisks mark parameters whose 95% credible interval does not include 0.") %>%
   kable_styling()
 ```
 
@@ -1048,6 +1045,8 @@ fig06_plot <- ggplot(efa_3_scores_d2_all %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
   guides(color = guide_legend(override.aes = list(alpha = 1, size = 3)))
 ```
+
+** BOOKMARK **
 
 ```{r, include = T, include = T, fig.width = 6, fig.asp = 0.5}
 fig06_with_caption <- add_sub(fig06_plot, str_wrap("Figure 6: Factor scores for 4- to 9-year-old children and adults in Study 2, in which each participant assessed 20 mental capacities for one of nine target characters. Each participant recieved a factor score for each factor (BODY, HEART, and MIND, as defined by an exploratory factor analysis of adults' responses). We treated these scores as summaries of that participants' mental capacity attributions in these domains; a score of 0 corresponds to the mean for that factor among adults. Lines correspond to linear regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores. Note that the range of the y-axis differs across panels.", 135), x = 0, hjust = 0)
