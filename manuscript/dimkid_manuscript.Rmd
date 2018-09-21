@@ -1046,12 +1046,24 @@ fig06_plot <- ggplot(efa_3_scores_d2_all %>%
   guides(color = guide_legend(override.aes = list(alpha = 1, size = 3)))
 ```
 
-** BOOKMARK **
-
 ```{r, include = T, include = T, fig.width = 6, fig.asp = 0.5}
 fig06_with_caption <- add_sub(fig06_plot, str_wrap("Figure 6: Factor scores for 4- to 9-year-old children and adults in Study 2, in which each participant assessed 20 mental capacities for one of nine target characters. Each participant recieved a factor score for each factor (BODY, HEART, and MIND, as defined by an exploratory factor analysis of adults' responses). We treated these scores as summaries of that participants' mental capacity attributions in these domains; a score of 0 corresponds to the mean for that factor among adults. Lines correspond to linear regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores. Note that the range of the y-axis differs across panels.", 135), x = 0, hjust = 0)
 ggdraw(fig06_with_caption)
 ```
+
+As we would expect, collapsing across age groups and factors, factor scores suggest that participants generally attributed more mental capacities to animates than to inanimates (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "characteranim_inan")`). Relative to the grand mean, however, the difference between animates and inanimates was diminished in both the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameH_GM:characteranim_inan")`) and the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:characteranim_inan")`)—suggesting that this overall difference between animates and inanimates was driven primarily by attributions of the physiological sensations characteristic of _BODY_ to biological animals (and not to inanimate objects). The overall animates-inanimates difference was somewhat attenuated among 4- to 6-year-old children (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH46_GM:characteranim_inan")`), but not among 7- to 9-year-old children (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH79_GM:characteranim_inan")`). ** Add three-way interactions!** 
+
+Within inanimates, collapsing across age groups and factors, participants generally attributed more mental capacities to technologies than to toys (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "charactertech_toys")`), and, as we might expect, this difference was exaggerated in the _MIND_ domain (`r write_b_95CI_fun(efa_3_scores_r_d2_all, "factor_nameM_GM:charactertech_toys")`). This overall technologies-toys differences did not differ across age groups (4-6y vs. the grand mean: `r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH46_GM:charactertech_toys")`; 7-9y vs. the grand mean: `r write_b_95CI_fun(efa_3_scores_r_d2_all, "age_groupCH79_GM:charactertech_toys")`). ** Add three-way interactions!** 
+
+(See Table 3 for other comparisons between characters, and interactions between these comparisons, factor, and age group.)
+
+**BOOKMARK**
+
+**A visual inspection of Figure 2 clarifies these findings. Attributions in the _BODY_ and _MIND_ domains were rather similar for children and adults: Both children and adults marked a clear difference between the robot and the beetle in the physiological sensations of the _BODY_ (left), in line with the animate–inanimate distinction; and both age groups credited the robot with slightly greater perceptual-cognitive skills (_MIND_) than the beetle (right). In contrast, in the _HEART_ domain (center) both the beetle and the robot received rather low scores among adults, but very high scores among children.**
+
+**The raw data further supporst these observations; see Figure 3 for raw counts of _no_, _kinda_, and _yes_ responses for all items, grouped by factor, character, and age group. For example, consider hunger (the first capacity under _BODY_): Across age groups, nearly every participant said that a beetle could get hungry, while few participants (with the exception of some children) said that a robot could. Likewise, for mathematical computations (the last capacity under _MIND_), virtually no participants said that a beetle was capable of doing math, while the vast majority of both adults and children said that a robot was. But for social-emotional abilities, like feeling proud, feeling joy, and feeling sad (the first three capacities under _HEART_), far more children than adults endorsed these capacities for beetles and robots. (See SOM for an analysis, parallel to the regression analyses here, of the proportion of the top-loading mental capacities for each factor that were endorsed by participants of different ages.)**
+
+
 
 ```{r}
 d2_all <- d2_ad %>%
