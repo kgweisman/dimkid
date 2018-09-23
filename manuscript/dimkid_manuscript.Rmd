@@ -402,7 +402,7 @@ fig02_plot <- ggplot(efa_3_scores_d1_all %>% filter(!is.na(age)),
   guides(color = guide_legend(override.aes = list(alpha = 1, size = 3)))
 ```
 
-```{r, include = T, include = T, fig.width = 6, fig.asp = 0.5}
+```{r, include = T, fig.width = 6, fig.asp = 0.5}
 fig02_with_caption <- add_sub(fig02_plot, str_wrap("Figure 2: Factor scores for adults and 7- to 9-year-old children in Study 1, in which each participant assessed 40 mental capacities for one of two target characters: a beetle (pink circles) or a robot (blue squares). Each participant recieved a factor score for each factor (BODY, HEART, and MIND, as defined by an exploratory factor analysis of adults' responses). We treated these scores as summaries of that participants' mental capacity attributions in these domains; a score of 0 corresponds to the mean for that factor among adults. Lines correspond to linear regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores. Note that the range of the y-axis differs across panels.", 135), x = 0, hjust = 0)
 ggdraw(fig02_with_caption)
 ```
@@ -434,22 +434,47 @@ d1_all <- d1_ad %>%
          age_group = recode_factor(age_group,
                                    "children79" = "children", 
                                    "adults" = "adults"))
-
-fig03_plot <- d1_all %>%
-  ggplot(aes(x = reorder(capacity, desc(order)), 
-             fill = character, alpha = response)) +
-  facet_grid(rows = vars(factor), cols = vars(character, age_group), 
-             scales = "free", space = "free") +
-  geom_bar(position = "stack") +
-  scale_color_manual(values = c("#fb9a99", "#1f78b4")) +
-  scale_fill_manual(values = c("#fb9a99", "#1f78b4")) +
-  theme_bw() +
-  theme(axis.title.y = element_blank()) +
-  coord_flip()
 ```
 
-```{r, include = T, include = T, fig.width = 6, fig.asp = 0.7}
-fig03_with_caption <- add_sub(fig03_plot, str_wrap("Figure 3: Raw counts of responses of 'yes' (dark), 'kinda' (medium), or 'no' (light) for all mental capacity items, grouped by the factor on which they loading most positively (BODY, HEART, MIND) according to an exploratory factor analysis of adults' responses (Study 1). Each participant assessed 40 mental capacities for one of two target characters: a beetle (pink) or a robot (blue). 7- to 9-year-old children's responses and adults' responses are shown separately.", 112), x = 0, hjust = 0)
+```{r}
+fig03_fun <- function(whichfac){
+  fig <- d1_all %>%
+    filter(factor == whichfac) %>%
+    mutate(age_group = recode_factor(age_group,
+                                     "children" = "7-9y",
+                                     "adults" = "adults")) %>%
+    ggplot(aes(x = reorder(capacity, order),
+               fill = character, alpha = response)) +
+    facet_grid(cols = vars(character), rows = vars(age_group),
+               scales = "free", space = "free") +
+    geom_bar(position = "stack") +
+    scale_color_manual(values = c("#fb9a99", "#1f78b4")) +
+    scale_fill_manual(values = c("#fb9a99", "#1f78b4")) +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+          legend.position = "bottom") +
+    labs(title = whichfac,
+         x = "mental capacity (by factor)",
+         y = "proportion of participants")
+  
+  if(whichfac != "MIND"){
+    fig <- fig + guides(fill = "none", alpha = "none") + labs(x = "")
+  }
+  
+  return(fig)
+}
+
+fig03_BODY_plot <- fig03_fun("BODY")
+fig03_HEART_plot <- fig03_fun("HEART")
+fig03_MIND_plot <- fig03_fun("MIND")
+
+fig03_plots <- plot_grid(fig03_BODY_plot, fig03_HEART_plot, fig03_MIND_plot,
+                         nrow = 3, rel_heights = c(1, 1.11, 1.19),
+                         labels = "AUTO")
+```
+
+```{r, include = T, fig.width = 4, fig.asp = 3}
+fig03_with_caption <- add_sub(fig03_plots, str_wrap("Figure 3: Raw counts of responses of 'yes' (dark), 'kinda' (medium), or 'no' (light) for all mental capacity items, grouped by the factor on which they loading most positively (BODY, HEART, MIND) according to an exploratory factor analysis of adults' responses (Study 1). Each participant assessed 40 mental capacities for one of two target characters: a beetle (pink) or a robot (blue). 7- to 9-year-old children's responses and adults' responses are shown separately.", 92), x = 0, hjust = 0)
 ggdraw(fig03_with_caption)
 ```
 
@@ -1275,7 +1300,7 @@ fig06_plots <- plot_grid(fig06a_plot, fig06b_plot,
                          labels = "AUTO")
 ```
 
-```{r, include = T, include = T, fig.width = 6, fig.asp = 1}
+```{r, include = T, fig.width = 6, fig.asp = 1}
 fig06_with_caption <- add_sub(fig06_plots, str_wrap("Figure 6: Factor scores for 4- to 9-year-old children and adults in Study 2, in which each participant assessed 20 mental capacities for one of nine target characters. Each participant recieved a factor score for each factor (BODY, HEART, and MIND, as defined by an exploratory factor analysis of adults' responses). We treated these scores as summaries of that participants' mental capacity attributions in these domains; a score of 0 corresponds to the mean for that factor among adults. Lines correspond to linear regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores. Note that the range of the y-axis differs across panels.", 138), x = 0, hjust = 0)
 ggdraw(fig06_with_caption)
 ```
@@ -1438,7 +1463,7 @@ fig07_plots <- plot_grid(fig07a_plots, fig07b_plots,
                          nrow = 1, rel_widths = c(0.25, 1))
 ```
 
-```{r, include = T, include = T, fig.width = 8, fig.asp = 1}
+```{r, include = T, fig.width = 8, fig.asp = 1}
 fig07_with_caption <- add_sub(fig07_plots, str_wrap("Figure 7: Proportion of Study 2 participants who responded 'yes' (dark), 'kinda' (medium), or 'no' (light) to  each mental capacity item, grouped by the factor on which they loading most positively (BODY, HEART, MIND) according to an exploratory factor analysis of adults' responses. Each participant assessed 20 mental capacities for one of nine target characters (6-18 per character, per age group). We present two ways of looking at these data: collapsing characters into animates (beetle, bird, mouse, goat, elephant) vs. inanimates (computer, robot, doll, teddy bear; Panels A-C); and examining each character individually (Panel D-F). Responses are shown separately by age group (4-6y, 7-9y, adults).", 180), x = 0, hjust = 0)
 ggdraw(fig07_with_caption)
 ```
