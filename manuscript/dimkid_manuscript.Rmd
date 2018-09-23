@@ -1214,8 +1214,8 @@ fig06a_plot <- ggplot(d2_anim %>%
                     multi_boot_standard(col = "score") %>% 
                     ungroup(),
                   aes(x = 11, y = mean, ymin = ci_lower, ymax = ci_upper),
-                  position = position_jitterdodge(dodge.width = 0.5, 
-                                             jitter.width = 0.25), 
+                  position = position_jitterdodge(dodge.width = 0.5,
+                                                  jitter.width = 0.25), 
                   show.legend = F, fatten = 1.5, shape = 21, color = "black") +
   scale_x_continuous(breaks = c(4:11), 
                      labels = c(paste0(4:10, "y"), "adults")) +
@@ -1441,14 +1441,64 @@ ggdraw(fig07_with_caption)
 
 ```{r}
 d2_all_endorse <- d2_all %>%
+  left_join(d2_anim %>% distinct(character, anim_inan)) %>%
   group_by(factor, subid) %>%
   top_n(-6, order) %>%
   ungroup() %>%
-  mutate(endorse = ifelse(response_num > 0, 1, 0)) %>%
-  group_by(age_group, subid, character, factor) %>%
+  mutate(endorse = ifelse(response_num > 0, 1, 0),
+         anim_inan = recode_factor(anim_inan,
+                                   "inanimate" = "inanimates",
+                                   "animate" = "animates")) %>%
+  group_by(age_group, subid, anim_inan, character, factor) %>%
   summarise(prop_endorse = mean(endorse, na.rm = T),
             n = length(endorse)) %>%
   ungroup()
+```
+
+```{r}
+d2_all_endorse_anim_boot <- d2_all_endorse %>%
+  group_by(age_group, anim_inan, factor) %>%
+  multi_boot_standard(col = "prop_endorse") %>%
+  ungroup()
+```
+
+```{r}
+figSUPP2a_plot <- d2_all_endorse %>%
+  filter(age_group != "adults") %>%
+  left_join(full_join(d2_79 %>% distinct(subid, age),
+                      d2_46 %>% distinct(subid, age))) %>%
+  filter(!is.na(age)) %>%
+  mutate(facet_lab = "animates vs. inanimates") %>%
+  ggplot(aes(x = age, y = prop_endorse, 
+             fill = anim_inan, color = anim_inan)) +
+  facet_grid(cols = vars(facet_lab), rows = vars(factor)) +
+  geom_jitter(alpha = 0.4, width = 0, height = 0.03) +
+  binomial_smooth(aes(weight = n), alpha = 0.10, show.legend = F) +
+  # geom_smooth(method = "glm",
+  #             method.args = list(family = "binomial")) +
+  geom_point(data = d2_all_endorse %>% filter(age_group == "adults"),
+             aes(x = 11), alpha = 0.2, show.legend = F,
+                  position = position_jitterdodge(dodge.width = 0.5,
+                                                  jitter.width = 0.25)) +
+  geom_pointrange(data = d2_all_endorse_anim_boot %>% 
+                    filter(age_group == "adults"),
+                  aes(x = 11, y = mean, ymin = ci_lower, ymax = ci_upper),
+                  position = position_jitterdodge(dodge.width = 0.5,
+                                                  jitter.width = 0.25), 
+                  show.legend = F, color = "black", fatten = 1.5, shape = 21) +
+  scale_x_continuous(breaks = c(4:11), 
+                     labels = c(paste0(4:10, "y"), "adults")) +
+  scale_y_continuous(breaks = seq(0, 1, 1/6), labels = 0:6) +
+  scale_color_manual(values = c("slategrey", "firebrick1"), na.value = "gray") +
+  scale_fill_manual(values = c("slategrey", "firebrick1"), na.value = "gray") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom") +
+  guides(color = guide_legend(override.aes = list(alpha = 1),
+                              nrow = 2, byrow = T, reverse = T),
+         fill = guide_legend(nrow = 2, byrow = T, reverse = T)) +
+  labs(y = "number of capacities endorsed", 
+       color = "animacy", fill = "animacy")
 ```
 
 ```{r}
@@ -1456,41 +1506,51 @@ d2_all_endorse_boot <- d2_all_endorse %>%
   group_by(age_group, character, factor) %>%
   multi_boot_standard(col = "prop_endorse") %>%
   ungroup()
+```
 
-figSUPP2_plot <- d2_all_endorse %>%
+```{r}
+figSUPP2b_plot <- d2_all_endorse %>%
   filter(age_group != "adults") %>%
   left_join(full_join(d2_79 %>% distinct(subid, age),
                       d2_46 %>% distinct(subid, age))) %>%
   filter(!is.na(age)) %>%
+  mutate(facet_lab = "individual characaters") %>%
   ggplot(aes(x = age, y = prop_endorse, 
              fill = character, color = character)) +
-  facet_wrap(~ factor) +
+  facet_grid(cols = vars(facet_lab), rows = vars(factor)) +
   geom_jitter(alpha = 0.4, width = 0, height = 0.03) +
   binomial_smooth(aes(weight = n), alpha = 0.10, show.legend = F) +
   # geom_smooth(method = "glm",
   #             method.args = list(family = "binomial")) +
   geom_point(data = d2_all_endorse %>% filter(age_group == "adults"),
              aes(x = 12), alpha = 0.2, show.legend = F,
-             position = position_jitterdodge(dodge.width = 2,
-                                             jitter.width = 0,
-                                             jitter.height = 0.03)) +
+             position = position_dodge(width = 2)) +
   geom_pointrange(data = d2_all_endorse_boot %>% filter(age_group == "adults"),
                   aes(x = 12, y = mean, ymin = ci_lower, ymax = ci_upper),
                   position = position_dodge(width = 2), show.legend = F,
-                  color = "black", fatten = 5, shape = 21) +
+                  color = "black", fatten = 1.5, shape = 21) +
   scale_x_continuous(breaks = c(4:10, 12), 
                      labels = c(paste0(4:10, "y"), "adults")) +
   scale_y_continuous(breaks = seq(0, 1, 1/6), labels = 0:6) +
   scale_color_brewer(palette = "Paired") +
   scale_fill_brewer(palette = "Paired") +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
-  guides(color = guide_legend(override.aes = list(alpha = 1, size = 3))) +
-  labs(y = "number of items endorsed (out of 6)")
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom") +
+  guides(color = guide_legend(override.aes = list(alpha = 1),
+                              nrow = 2, byrow = T, reverse = T),
+         fill = guide_legend(nrow = 2, byrow = T, reverse = T)) +
+  labs(y = "")
 ```
 
-```{r, include = F, include = T, fig.width = 7, fig.asp = 0.4}
-figSUPP2_with_caption <- add_sub(figSUPP2_plot, str_wrap("Figure SUPP2: Number of mental capacity items (out of 6) endorsed in each domain (BODY, HEART, and MIND) by 4- to 9-year-old children and adults in Study 2, in which each participant assessed 20 mental capacities for one of nine target characters. We defined each domain by the 6 items that loaded the most positively on the corresponding factor in an exploratory factor analysis of adults' responses, and we considered responses of either 'yes' or 'kinda' (but not 'no') to be endorsements. Lines correspond to logistic regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores.", 153), x = 0, hjust = 0)
+```{r}
+figSUPP2_plots <- plot_grid(figSUPP2a_plot, figSUPP2b_plot,
+                            nrow = 1, rel_widths = c(0.85, 1),
+                            labels = "AUTO")
+```
+
+```{r, include = F, fig.width = 6, fig.asp = 1}
+figSUPP2_with_caption <- add_sub(figSUPP2_plots, str_wrap("Figure SUPP2: Number of mental capacity items (out of 6) endorsed in each domain (BODY, HEART, and MIND) by 4- to 9-year-old children and adults in Study 2, in which each participant assessed 20 mental capacities for one of nine target characters. We defined each domain by the 6 items that loaded the most positively on the corresponding factor in an exploratory factor analysis of adults' responses, and we considered responses of either 'yes' or 'kinda' (but not 'no') to be endorsements. Lines correspond to logistic regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores.", 153), x = 0, hjust = 0)
 ggdraw(figSUPP2_with_caption)
 ```
 
