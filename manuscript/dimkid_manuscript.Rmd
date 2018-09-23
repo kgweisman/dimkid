@@ -2,7 +2,7 @@
 title: 'Children''s developing representations of mental life: Changes in conceptual
   structure between 4-9 years of age'
 author: "Kara Weisman, Carol S. Dweck, & Ellen M. Markman"
-subtitle: Draft updated 2018-09-17
+subtitle: Draft updated 2018-09-23
 output:
   html_notebook:
     toc: yes
