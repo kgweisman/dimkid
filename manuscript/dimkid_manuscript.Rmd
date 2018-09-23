@@ -1144,10 +1144,9 @@ fig05a_plot <- d2_anim %>%
   scale_color_manual(values = c("slategrey", "firebrick1"), na.value = "gray") +
   scale_y_continuous(breaks = seq(-10, 10, 1)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
-        legend.position = "right",
-        legend.direction = "vertical") +
-  labs(# title = "Animates vs. inanimates", 
-       x = "age group", y = "factor score", color = "animacy status")
+        legend.position = "bottom") +
+  guides(color = guide_legend(nrow = 2, reverse = T)) +
+  labs(x = "age group", y = "factor score", color = "animacy")
 ```
 
 ```{r}
@@ -1177,20 +1176,20 @@ fig05b_plot <- ggplot(efa_3_scores_boot_d2_all %>%
   scale_y_continuous(breaks = seq(-10, 10, 1)) +
   scale_color_brewer(palette = "Paired") +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
-  guides(color = "none") +
-  # guides(color = guide_legend(override.aes = list(alpha = 1, size = 3))) +
-  labs(# title = "Individual characters", 
-       x = "age group", y = "factor score")
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom") +
+  guides(color = guide_legend(override.aes = list(alpha = 1),
+                              nrow = 2, byrow = T, reverse = T)) +
+  labs(x = "age group", y = "", color = "character")
 ```
 
 ```{r}
 fig05_plots <- plot_grid(fig05a_plot, fig05b_plot,
-                         nrow = 1, rel_widths = c(0.25, 1),
+                         nrow = 1, rel_widths = c(0.15, 1),
                          labels = c("A", "B"))
 ```
 
-```{r, include = T, fig.width = 9, fig.asp = 0.4}
+```{r, include = T, fig.width = 9, fig.asp = 0.5}
 fig05_with_caption <- add_sub(fig05_plots, str_wrap("Figure 5: Factor scores for younger children (4-6y), older children (7-9y), and adults in Study 2, in which each participant assessed 20 mental capacities for one of nine target characters. Each participant recieved a factor score for each factor (BODY, HEART, and MIND, as defined by an exploratory factor analysis of adults' responses). We treated these scores as summaries of that participants' mental capacity attributions in these domains; a score of 0 corresponds to the mean for that factor among adults. We present two ways of looking at these data: (A) collapsing characters into animates (beetle, bird, mouse, goat, elephant) vs. inanimates (computer, robot, doll, teddy bear); and (B) examining each character individually. Error bars are bootstrapped 95% confidence intervals. Note that the range of the y-axis differs across rows.", 210), x = 0, hjust = 0)
 ggdraw(fig05_with_caption)
 ```
@@ -1224,20 +1223,24 @@ fig06a_plot <- ggplot(d2_anim %>%
   scale_color_manual(values = c("slategrey", "firebrick1"), na.value = "gray") +
   scale_fill_manual(values = c("slategrey", "firebrick1"), na.value = "gray") +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
-  guides(color = guide_legend(override.aes = list(alpha = 1, size = 3))) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom") +
+  guides(color = guide_legend(override.aes = list(alpha = 1),
+                              nrow = 2, reverse = T),
+         fill = guide_legend(nrow = 2, reverse = T)) +
   labs(x = "age", y = "factor score", 
-       color = "animacy status", fill = "animacy status")
+       color = "animacy", fill = "animacy")
 ```
 
 **BOOKMARK: need to integrate with the plot below and then describe things in text, maybe run a parallel regression on children's data alone**
 
 ```{r}
-fig06_plot <- ggplot(efa_3_scores_d2_all %>% 
-                       filter(!is.na(age)),
-                     aes(x = age, y = score,
-                         fill = character, color = character)) +
-  facet_wrap(~ factor_name, scales = "free") +
+fig06b_plot <- ggplot(efa_3_scores_d2_all %>%
+                        filter(!is.na(age)) %>%
+                        mutate(facet_lab = "individual characters"),
+                      aes(x = age, y = score,
+                          fill = character, color = character)) +
+  facet_grid(cols = vars(facet_lab), rows = vars(factor_name), scales = "free") +
   geom_hline(yintercept = 0, lty = 2) +
   geom_point(alpha = 0.2) +
   geom_smooth(method = "lm", alpha = 0.10, show.legend = F) +
@@ -1254,12 +1257,22 @@ fig06_plot <- ggplot(efa_3_scores_d2_all %>%
   scale_color_brewer(palette = "Paired") +
   scale_fill_brewer(palette = "Paired") +
   theme_bw() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
-  guides(color = guide_legend(override.aes = list(alpha = 1, size = 3)))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom") +
+  guides(color = guide_legend(override.aes = list(alpha = 1),
+                              nrow = 2, byrow = T, reverse = T),
+         fill = guide_legend(nrow = 2, byrow = T, reverse = T)) +
+  labs(y = "")
 ```
 
-```{r, include = T, include = T, fig.width = 6, fig.asp = 0.5}
-fig06_with_caption <- add_sub(fig06_plot, str_wrap("Figure 6: Factor scores for 4- to 9-year-old children and adults in Study 2, in which each participant assessed 20 mental capacities for one of nine target characters. Each participant recieved a factor score for each factor (BODY, HEART, and MIND, as defined by an exploratory factor analysis of adults' responses). We treated these scores as summaries of that participants' mental capacity attributions in these domains; a score of 0 corresponds to the mean for that factor among adults. Lines correspond to linear regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores. Note that the range of the y-axis differs across panels.", 135), x = 0, hjust = 0)
+```{r}
+fig06_plots <- plot_grid(fig06a_plot, fig06b_plot,
+                         nrow = 1, rel_widths = c(0.85, 1),
+                         labels = "AUTO")
+```
+
+```{r, include = T, include = T, fig.width = 6, fig.asp = 1}
+fig06_with_caption <- add_sub(fig06_plots, str_wrap("Figure 6: Factor scores for 4- to 9-year-old children and adults in Study 2, in which each participant assessed 20 mental capacities for one of nine target characters. Each participant recieved a factor score for each factor (BODY, HEART, and MIND, as defined by an exploratory factor analysis of adults' responses). We treated these scores as summaries of that participants' mental capacity attributions in these domains; a score of 0 corresponds to the mean for that factor among adults. Lines correspond to linear regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores. Note that the range of the y-axis differs across panels.", 138), x = 0, hjust = 0)
 ggdraw(fig06_with_caption)
 ```
 
