@@ -575,7 +575,7 @@ fixef(efa_3_scores_r_d1_79) %>%
   unite(`95% CI`, Q2.5, Q97.5, sep = ", ") %>%
   mutate(`95% CI` = paste0("[", `95% CI`, "]")) %>%
   knitr::kable(format = "html", align = c("l", rep("r", 3)),
-               caption = "Table 2: Fixed effects from a mixed-effects Bayesian regression model predicting factor scores in Study 1 by character (beetle, robot), factor (BODY, HEART, MIND), and exact age group (for children only). The model used the formula 'factor score ~ factor * age * character + (1 | subject)' and was implemented in the 'brms' package for R (Bürkner, 2017). Factor and character were effect-coded, and age was mean-centered. Asterisks mark parameters whose 95% credible interval does not include 0.") %>%
+               caption = "Table 2: Fixed effects from a mixed-effects Bayesian regression model of children's responses, predicting factor scores in Study 1 by character (beetle, robot), factor (BODY, HEART, MIND), and exact age. The model used the formula 'factor score ~ factor * age * character + (1 | subject)' and was implemented in the 'brms' package for R (Bürkner, 2017). Factor and character were effect-coded, and age was mean-centered. Asterisks mark parameters whose 95% credible interval does not include 0.") %>%
   kable_styling() %>%
   group_rows("Collapsing across age", 1, 6) %>%
   group_rows("Age effects", 7, 12)
@@ -1089,6 +1089,7 @@ contrasts(d2_anim$anim_inan) <- cbind("anim_GM" = c(-1, 1))
 # saveRDS(d2_anim_r, file = "./brms_models/d2_anim_r.rds")
 
 d2_anim_r <- readRDS("./brms_models/d2_anim_r.rds")
+# summarY(d2_anim_r)
 ```
 
 ```{r, results = "asis", include = T}
@@ -1261,8 +1262,6 @@ fig06a_plot <- ggplot(d2_anim %>%
        color = "animacy", fill = "animacy")
 ```
 
-**BOOKMARK: need to integrate with the plot below and then describe things in text, maybe run a parallel regression on children's data alone**
-
 ```{r}
 fig06b_plot <- ggplot(efa_3_scores_d2_all %>%
                         filter(!is.na(age)) %>%
@@ -1305,11 +1304,58 @@ fig06_with_caption <- add_sub(fig06_plots, str_wrap("Figure 6: Factor scores for
 ggdraw(fig06_with_caption)
 ```
 
-**BOOKMARK**
+```{r}
+# d2_79_anim_r <- brm(score ~ factor_name * anim_inan * age +
+#                       (1 | subid) +
+#                       (1 + factor_name | character),
+#                     data = d2_anim %>%
+#                       filter(age_group == "children79", !is.na(age)) %>%
+#                       mutate(age = scale(age, scale = F)),
+#                     control = list(adapt_delta = 0.99),
+#                     cores = 4)
+# saveRDS(d2_79_anim_r, file = "./brms_models/d2_79_anim_r.rds")
 
-**A visual inspection of Figure 2 clarifies these findings. Attributions in the _BODY_ and _MIND_ domains were rather similar for children and adults: Both children and adults marked a clear difference between the robot and the beetle in the physiological sensations of the _BODY_ (left), in line with the animate–inanimate distinction; and both age groups credited the robot with slightly greater perceptual-cognitive skills (_MIND_) than the beetle (right). In contrast, in the _HEART_ domain (center) both the beetle and the robot received rather low scores among adults, but very high scores among children.**
+d2_79_anim_r <- readRDS("./brms_models/d2_79_anim_r.rds")
+# summary(d2_anim_r)
+```
 
-**The raw data further supporst these observations; see Figure 3 for raw counts of _no_, _kinda_, and _yes_ responses for all items, grouped by factor, character, and age group. For example, consider hunger (the first capacity under _BODY_): Across age groups, nearly every participant said that a beetle could get hungry, while few participants (with the exception of some children) said that a robot could. Likewise, for mathematical computations (the last capacity under _MIND_), virtually no participants said that a beetle was capable of doing math, while the vast majority of both adults and children said that a robot was. But for social-emotional abilities, like feeling proud, feeling joy, and feeling sad (the first three capacities under _HEART_), far more children than adults endorsed these capacities for beetles and robots. (See SOM for an analysis, parallel to the regression analyses here, of the proportion of the top-loading mental capacities for each factor that were endorsed by participants of different ages.)**
+```{r, results = "asis", include = T}
+fixef(d2_79_anim_r) %>%
+  data.frame() %>%
+  rownames_to_column("Parameter") %>%
+  mutate(Parameter = recode_factor(
+    Parameter,
+    # OVERALL
+    "Intercept" = "(Intercept)",
+    "factor_nameH_GM" = "HEART (vs. grand mean)",
+    "factor_nameM_GM" = "MIND (vs. grand mean)",
+    "anim_inananim_GM" = "characters: animates vs. inanimates",
+    "factor_nameH_GM:anim_inananim_GM" = "characters (animates/inanimates) × HEART",
+    "factor_nameM_GM:anim_inananim_GM" = "characters (animates/inanimates) × MIND",
+    # BY AGE
+    "age" = "age (centered at the mean)",
+    "factor_nameH_GM:age" = "HEART × age",
+    "factor_nameM_GM:age" = "MIND × age",
+    "anim_inananim_GM:age" = "characters (animates/inanimates) × age",
+    "factor_nameH_GM:anim_inananim_GM:age" = "characters (animates/inanimates) × HEART × age",
+    "factor_nameM_GM:anim_inananim_GM:age" = "characters (animates/inanimates) × MIND × age")) %>%
+  arrange(Parameter) %>%
+  mutate(X = ifelse(Q2.5 * Q97.5 > 0, "*", "")) %>%
+  mutate_at(vars(-Parameter, -X),
+            funs(format(round(., 2), nsmall = 2))) %>%
+  rename(b = Estimate, Error = Est.Error, " " = X) %>%
+  unite(`95% CI`, Q2.5, Q97.5, sep = ", ") %>%
+  mutate(`95% CI` = paste0("[", `95% CI`, "]")) %>%
+  knitr::kable(format = "html", align = c("l", rep("r", 3)),
+               caption = "Table 4: Fixed effects from a mixed-effects Bayesian regression model of children's responses, predicting factor scores in Study 2 by animacy status (animates, inanimates), factor (BODY, HEART, MIND), and exact age. The model used the formula 'factor score ~ factor * age * animacy + (1 | subject)' and was implemented in the 'brms' package for R (Bürkner, 2017). Factor and animacy were effect-coded, and age was mean-centered. Asterisks mark parameters whose 95% credible interval does not include 0.") %>%
+  kable_styling() %>%
+  group_rows("Collapsing across age", 1, 6) %>%
+  group_rows("Age effects", 7, 12)
+```
+
+A separate regression on children's factor scores alone confirmed that, while collapsing across factors and target characters children's overall mental capacity attributions did not vary with age (`r write_b_95CI_fun(d2_79_anim_r, "age")`), the distinction between animates and inanimates in terms of attributions of _HEART_ decreased with age (`r write_b_95CI_fun(d2_79_anim_r, "factor_nameH_GM:anim_inananim_GM:age")`). (See Table 4 for the full results of this model, and Figure 6 for a visualization of changes in children's factor scores across age.)
+
+The raw data further supporst these observations; see Figure 7 for raw counts of _no_, _kinda_, and _yes_ responses for all items, grouped by factor, animacy status (Panels A-C) or character (Panels D-F), and age group. For example, consider pain (the first capacity under _BODY_): Across age groups, most participants said that an elephant could feel pain, with the proportion of "yes" responses increasing across age groups; meanwhile, few participants said that a computer could feel pain, with the proportion of "yes" responses decreasing across age groups. More dramatic changes are evident in the _HEART_ and _MIND_ factors, with attributions of _HEART_ generally decreasing across age groups (especially to inanimate target characters - e.g., the computer, the robot), and attributions of _MIND_ generally increasing across age groups (especially to animate target characters - e.g., the mouse, the goat, the elephant). (See SOM for an analysis, parallel to the regression analyses here, of the proportion of the top-loading mental capacities for each factor that were endorsed by participants of different ages.)
 
 ```{r}
 d2_all <- d2_ad %>%
@@ -1356,7 +1402,7 @@ fig07a_fun <- function(whichfac){
     mutate(anim_inan = recode_factor(anim_inan,
                                      "inanimate" = "inanimates",
                                      "animate" = "animates")) %>%
-    ggplot(aes(x = reorder(capacity, desc(order)),
+    ggplot(aes(x = reorder(capacity, order),
                fill = anim_inan, alpha = response)) +
     facet_grid(cols = vars(anim_inan), rows = vars(age_group),
                scales = "free", space = "free") +
@@ -1411,7 +1457,7 @@ fig07b_fun <- function(whichfac){
                               levels = c("computer", "robot", "doll",
                                          "teddy bear", "beetle", "bird",
                                          "mouse", "goat", "elephant"))) %>%
-    ggplot(aes(x = reorder(capacity, desc(order)),
+    ggplot(aes(x = reorder(capacity, order),
                fill = character, alpha = response)) +
     facet_grid(cols = vars(character), rows = vars(age_group),
                scales = "free", space = "free") +
@@ -1583,11 +1629,9 @@ figSUPP2_with_caption <- add_sub(figSUPP2_plots, str_wrap("Figure SUPP2: Number 
 ggdraw(figSUPP2_with_caption)
 ```
 
+## Discussion
 
 **BOOKMARK**
-
-
-## Discussion
 
 XX
 
