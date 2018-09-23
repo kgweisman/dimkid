@@ -349,9 +349,9 @@ fixef(efa_3_scores_r_d1_all) %>%
     "characterR_GM" = "character (robot vs. grand mean)",
     "factor_nameH_GM" = "HEART (vs. grand mean)",
     "factor_nameM_GM" = "MIND (vs. grand mean)",
-    "age_groupCH79_AD" = "age group (children vs. adults)",
     "factor_nameH_GM:characterR_GM" = "character × HEART",
     "factor_nameM_GM:characterR_GM" = "character × MIND",
+    "age_groupCH79_AD" = "age group (children vs. adults)",
     "age_groupCH79_AD:characterR_GM" = "character × age group",
     "factor_nameH_GM:age_groupCH79_AD" = "HEART × age group",
     "factor_nameM_GM:age_groupCH79_AD" = "MIND × age group",
@@ -366,7 +366,9 @@ fixef(efa_3_scores_r_d1_all) %>%
   mutate(`95% CI` = paste0("[", `95% CI`, "]")) %>%
   knitr::kable(format = "html", align = c("l", rep("r", 3)),
                caption = "Table 1: Fixed effects from a mixed-effects Bayesian regression model predicting factor scores in Study 1 by character (beetle, robot), factor (BODY, HEART, MIND), and age group (adults, children). The model used the formula 'factor score ~ factor * age group * character + (1 | subject)' and was implemented in the 'brms' package for R (Bürkner, 2017). Factor and character were effect-coded; age group was dummy-coded with adults as the baseline. Asterisks mark parameters whose 95% credible interval does not include 0.") %>%
-  kable_styling()
+  kable_styling() %>%
+  group_rows("Adults", 1, 6) %>%
+  group_rows("Older children vs. adults", 7, 12)
 ```
 
 Collapsing across factors, factor scores suggest that adults generally attributed fewer mental capacities to the robot than the beetle (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "characterR_GM")`). However, this appears to be entirely due to the huge discrepancy between characters in the _BODY_ domain; the difference between characters was reduced to nothing in the _HEART_ domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameH_GM:characterR_GM")`), and reversed in the perceptual-cognitive domain (`r write_b_95CI_fun(efa_3_scores_r_d1_all, "factor_nameM_GM:characterR_GM")`). 
@@ -499,7 +501,7 @@ figSUPP1_plot <- d1_all_endorse %>%
   labs(y = "number of items endorsed (out of 6)")
 ```
 
-```{r, include = F, include = T, fig.width = 6, fig.asp = 0.7}
+```{r, include = F, fig.width = 6, fig.asp = 0.7}
 figSUPP1_with_caption <- add_sub(figSUPP1_plot, str_wrap("Figure SUPP1: Number of mental capacity items (out of 6) endorsed in each domain (BODY, HEART, and MIND) by 7- to 9-year-old children and adults in Study 1, in which each participant assessed 40 mental capacities for one of two target characters: a beetle (pink circles) or a robot (blue squares). We defined each domain by the 6 items that loaded the most positively on the corresponding factor in an exploratory factor analysis of adults' responses, and we considered responses of either 'yes' or 'kinda' (but not 'no') to be endorsements. Lines correspond to logistic regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores.", 130), x = 0, hjust = 0)
 ggdraw(figSUPP1_with_caption)
 ```
@@ -532,9 +534,9 @@ fixef(efa_3_scores_r_d1_79) %>%
     "characterR_GM" = "character (robot vs. grand mean)",
     "factor_nameH_GM" = "HEART (vs. grand mean)",
     "factor_nameM_GM" = "MIND (vs. grand mean)",
-    "age" = "age (mean-centered)",
     "factor_nameH_GM:characterR_GM" = "character × HEART",
     "factor_nameM_GM:characterR_GM" = "character × MIND",
+    "age" = "age (mean-centered)",
     "age:characterR_GM" = "character × age",
     "factor_nameH_GM:age" = "HEART × age",
     "factor_nameM_GM:age" = "MIND × age",
@@ -549,7 +551,9 @@ fixef(efa_3_scores_r_d1_79) %>%
   mutate(`95% CI` = paste0("[", `95% CI`, "]")) %>%
   knitr::kable(format = "html", align = c("l", rep("r", 3)),
                caption = "Table 2: Fixed effects from a mixed-effects Bayesian regression model predicting factor scores in Study 1 by character (beetle, robot), factor (BODY, HEART, MIND), and exact age group (for children only). The model used the formula 'factor score ~ factor * age * character + (1 | subject)' and was implemented in the 'brms' package for R (Bürkner, 2017). Factor and character were effect-coded, and age was mean-centered. Asterisks mark parameters whose 95% credible interval does not include 0.") %>%
-  kable_styling()
+  kable_styling() %>%
+  group_rows("Collapsing across age", 1, 6) %>%
+  group_rows("Age effects", 7, 12)
 ```
 
 Taken together, these analyses converge to suggest only minor differences between children and adults in their attributions of _BODY_ and _MIND_ to beetles and robots—but a major difference in _HEART_: Relative to adults, children tended to credit both beetles and robots with much greater social-emotional abilities. 
