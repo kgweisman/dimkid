@@ -1578,13 +1578,13 @@ d2_ch_age <- full_join(d2_46 %>% distinct(subid, age),
                        d2_79 %>% distinct(subid, age))
 ```
 
-To explore age-related differences continuously within the child samples, we conducted an additional regression analysis on children's factor scores alone, including interactions with exact age in years (centered at the mean: `r format(round(mean(d2_ch_age$age, na.rm = T), 2), nsmall = 2)`y) rather than age group. In line with the age group analysis described in the previous section, this confirmed that, relative to the grand mean, attributions of _HEART_ decreased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameH_GM:age")`) and attributions of _MIND_ increased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameM_GM:age")`). (See Table 2 for the full results of this model.)
+To explore age-related differences continuously within the child samples, we conducted an additional regression analysis on children's factor scores alone, including interactions with exact age in years (centered at the mean: `r format(round(mean(d2_ch_age$age, na.rm = T), 2), nsmall = 2)`y) rather than age group. (See Table 4 for the full results of this model, and Figure 8 for a visualization of changes in children's factor scores across the age range.)
 
-This analysis suggested that, relative to the grand mean, attributions of _HEART_ decreased across the age range (`r write_b_95CI_fun(d2_49_anim_r, "factor_nameH_GM:age")`), while attributions of _MIND_ increased across the age range (`r write_b_95CI_fun(d2_49_anim_r, "factor_nameM_GM:age")`). These findings are all in line with the age group analysis described in the previous section, suggesting that the observed group differences correspond to gradual developmental differences as children's responses become increasingly adult-like in many ways. 
+This analysis confirmed that, relative to the grand mean, attributions of _HEART_ decreased with age (`r write_b_95CI_fun(d2_49_anim_r, "factor_nameH_GM:age")`) and attributions of _MIND_ increased with age (`r write_b_95CI_fun(d2_49_anim_r, "factor_nameM_GM:age")`). These findings are both in line with the age group analysis described in the previous section, suggesting that the observed group differences correspond to gradual developmental differences as children's responses become increasingly adult-like. 
 
-We observed two counter-examples to the idea that children become increasingly adult-like in their mental capacity attributions over this age range, both having to do with the degree to which children of different ages distinguished between animate and inanimate targets. If children were becoming increasingly adult-like in their animate-inanimate distinctions, we would expect the overall distinction between animates and inanimates collapsing across factors to increase with age, driven primarily by increases in the _BODY_ and especially _MIND_ domains. Instead, collapsing across factors, the general distinction between animate and inanimate target characters did _not_ differ with age (`r write_b_95CI_fun(d2_49_anim_r, "anim_inananim_GM:age")`); _decreased_ in the _HEART_ domain, relative to the grand mean (`r write_b_95CI_fun(d2_49_anim_r, "factor_nameH_GM:anim_inananim_GM:age")`); and did not change substantially in the _MIND_ domain (`r write_b_95CI_fun(d2_49_anim_r, "factor_nameM_GM:anim_inananim_GM:age")`), as we might expect if older children were approaching "adult-like" responses in this aspect of their mental capacity attributions. We speculate on several possible explanations of these unexpected findings in the Study 2 Discussion section, below.
+If children were also becoming increasingly adult-like in their distinctions between animate and inanimate target characters, we would also expect the overall animate-inanimate distinction (collapsing across factors) to increase with age, driven primarily by increases in the _BODY_ and especially _MIND_ domains. Instead, collapsing across factors, the general distinction between animates and inanimates did _not_ differ with age (`r write_b_95CI_fun(d2_49_anim_r, "anim_inananim_GM:age")`); _decreased_ in the _HEART_ domain, relative to the grand mean (`r write_b_95CI_fun(d2_49_anim_r, "factor_nameH_GM:anim_inananim_GM:age")`); and did not change substantially in the _MIND_ domain (but, if anything, decreased: `r write_b_95CI_fun(d2_49_anim_r, "factor_nameM_GM:anim_inananim_GM:age")`), as we might expect if older children were approaching "adult-like" responses in this aspect of their mental capacity attributions. 
 
-See Table 4 for the full results of this model, and Figure 8 for a visualization of changes in children's factor scores across age.
+We speculate on several possible explanations of these unexpected findings in the Study 2 discussion section, below. For now, we note that participants who assessed the robot seemed to become particularly un-adult-like at older ages, and excluding these participants yields a more coherent picture of increasing adult-like-ness with increasing age (see Figure 8, Panel A, purple lines and points). This did not appear to be the case when excluding any of the other inanimate target characters (computer, teddy bear, doll).
 
 ```{r, results = "asis", include = T}
 fixef(d2_49_anim_r) %>%
@@ -1623,7 +1623,11 @@ fixef(d2_49_anim_r) %>%
 ```{r}
 fig08a_plot <- ggplot(d2_anim %>% 
                        filter(!is.na(age)) %>%
-                        mutate(facet_lab = "animates vs. inanimates"),
+                        mutate(facet_lab = "animates vs. inanimates") %>%
+                        full_join(data.frame(facet_lab = "animates vs. inanimates",
+                                             anim_inan = "dummy",
+                                             age = 7,
+                                             factor_name = "BODY")),
                      aes(x = age, y = score,
                          fill = anim_inan, color = anim_inan, group = anim_inan)) +
   facet_grid(rows = vars(factor_name), cols = vars(facet_lab), scales = "free") +
@@ -1640,20 +1644,53 @@ fig08a_plot <- ggplot(d2_anim %>%
                     multi_boot_standard(col = "score") %>% 
                     ungroup(),
                   aes(x = 11, y = mean, ymin = ci_lower, ymax = ci_upper),
-                  position = position_jitterdodge(dodge.width = 0.5,
-                                                  jitter.width = 0.25), 
+                  position = position_dodge(width = 0.5), 
                   show.legend = F, fatten = 1.5, shape = 21, color = "black") +
+  # EXCLUDE ROBOT
+  geom_smooth(data = function(x){x %>% 
+      filter(character != "robot", anim_inan == "inanimate") %>%
+      mutate(anim_inan = "inan_norobot")},
+      aes(color = anim_inan),
+      method = "lm", alpha = 0.10, show.legend = F, lty = 1, size = 0.4) +
+  geom_pointrange(data = efa_3_scores_d2_all %>% 
+                    filter(character != "robot") %>%
+                    filter(age_group == "adults") %>%
+                    left_join(d2_anim %>% 
+                                distinct(character, anim_inan)) %>%
+                    group_by(factor_name, anim_inan) %>%
+                    multi_boot_standard(col = "score") %>%
+                    ungroup() %>%
+                    filter(anim_inan == "inanimate") %>%
+                    mutate(anim_inan = "inan_norobot"),
+                  aes(color = anim_inan,
+                      x = 11 + (.25/2 + .25), 
+                      y = mean, ymin = ci_lower, ymax = ci_upper),
+                  position = position_dodge(width = 0.5), show.legend = F,
+                  fatten = 1.5, shape = 21) +
+  # resume
   scale_x_continuous(breaks = c(4:11), 
                      labels = c(paste0(4:10, "y"), "adults")) +
   scale_y_continuous(breaks = seq(-10, 10, 1)) +
-  scale_color_manual(values = c("slategrey", "firebrick1"), na.value = "gray") +
-  scale_fill_manual(values = c("slategrey", "firebrick1"), na.value = "gray") +
+  scale_color_manual(values = c("firebrick1", "white", 
+                                "darkorchid", "slategrey"), 
+                     breaks = c("animate", "inanimate", 
+                                "dummy", "inan_norobot"),
+                     labels = c("animates", "inanimates", 
+                                " ", "inanimates (no robot)"),
+                     na.value = "gray") +
+  scale_fill_manual(values = c("firebrick1", "white", 
+                                "darkorchid", "slategrey"),
+                    breaks = c("animate", "inanimate",
+                               "dummy", "inan_norobot"),
+                    labels = c("animates", "inanimates",
+                               " ", "inanimates (no robot)"),
+                    na.value = "gray") +
   theme_bw() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
         legend.position = "bottom") +
   guides(color = guide_legend(override.aes = list(alpha = 1),
-                              nrow = 2, reverse = T),
-         fill = guide_legend(nrow = 2, reverse = T)) +
+                              nrow = 2, byrow = F, reverse = F),
+         fill = guide_legend(nrow = 2, byrow = F, reverse = F)) +
   labs(x = "age", y = "factor score", 
        color = "animacy", fill = "animacy")
 ```
@@ -1671,7 +1708,8 @@ fig08b_plot <- ggplot(efa_3_scores_d2_all %>%
   geom_point(data = efa_3_scores_d2_all %>% filter(age_group == "adults"),
              aes(x = 12), alpha = 0.2, show.legend = F,
              position = position_dodge(width = 2)) +
-  geom_pointrange(data = efa_3_scores_boot_d2_all %>% filter(age_group == "adults"),
+  geom_pointrange(data = efa_3_scores_boot_d2_all %>% 
+                    filter(age_group == "adults"),
                   aes(x = 12, y = mean, ymin = ci_lower, ymax = ci_upper),
                   position = position_dodge(width = 2), show.legend = F,
                   fatten = 1.5, shape = 21, color = "black") +
@@ -1696,7 +1734,7 @@ fig08_plots <- plot_grid(fig08a_plot, fig08b_plot,
 ```
 
 ```{r, include = T, fig.width = 6, fig.asp = 1}
-fig08_with_caption <- add_sub(fig08_plots, str_wrap("Figure 8: Factor scores for adults and 4- to 9-year-old children in Study 1, replotted to illustrate age effects within the child samples. Lines correspond to linear regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores. Note that the range of the y-axis differs across panels.", 138), x = 0, hjust = 0)
+fig08_with_caption <- add_sub(fig08_plots, str_wrap("Figure 8: Factor scores for adults and 4- to 9-year-old children in Study 1, replotted to illustrate age effects within the child samples. We present two ways of looking at these data: collapsing characters into animates (beetle, bird, mouse, goat, elephant) vs. inanimates (computer, robot, doll, teddy bear; Panel A); and examining each character individually (Panel B). In Panel A, we additionally plot age-related changes in attributions to inanimates after excluding participants who assessed the robot in particular (purple liness and points). Lines correspond to linear regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores. Note that the range of the y-axis differs across panels.", 138), x = 0, hjust = 0)
 ggdraw(fig08_with_caption)
 ```
 
