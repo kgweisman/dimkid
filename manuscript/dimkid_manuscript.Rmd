@@ -535,7 +535,11 @@ ggdraw(figSUPP1_with_caption)
 
 Of course, our sample of "children" included participants as young as 7 years and up to nearly 10 years of age. How did attributions vary across this age range? 
 
-A separate regression on children's factor scores alone confirmed that, while collapsing across factors and target characters children's overall mental capacity attributions did not vary with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "age")`), relative to the grand mean attributions of _HEART_ decreased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameH_GM:age")`) and attributions of _MIND_ increased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameM_GM:age")`). (See Table 2 for the full results of this model.)
+```{r}
+d1_ch_age <- d1_79 %>% distinct(subid, age)
+```
+
+To explore age-related differences continuously within the child sample, we conducted an additional regression analysis on children's factor scores alone, including interactions with exact age in years (centered at the mean: `r format(round(mean(d1_ch_age$age, na.rm = T), 2), nsmall = 2)`y) rather than age group. In line with the age group analysis described in the previous section, this confirmed that, relative to the grand mean, attributions of _HEART_ decreased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameH_GM:age")`) and attributions of _MIND_ increased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameM_GM:age")`). (See Table 2 for the full results of this model.)
 
 ```{r}
 # efa_3_scores_r_d1_79 <- brm(score ~ factor_name * age * character
@@ -1550,27 +1554,40 @@ figSUPP2_with_caption <- add_sub(figSUPP2_plots, str_wrap("Figure SUPP2: Number 
 ggdraw(figSUPP2_with_caption)
 ```
 
-#### Age differences within the child sample
+#### Age differences within the child samples
 
-**BOOKMARK: NEED INTRO**
+As in Study 1, we were interested not only in differences across age groups, but also across the—even wider—age range within our child samples. In Study 2, this included children as young as 4 years up to nearly 10 years of age. This allowed us to look at age-related differences in mental capacity attributions across a wide period from early to middle childhood.
 
 ```{r}
-# d2_79_anim_r <- brm(score ~ factor_name * anim_inan * age +
+# d2_49_anim_r <- brm(score ~ factor_name * anim_inan * age +
 #                       (1 | subid) +
 #                       (1 + factor_name | character),
 #                     data = d2_anim %>%
-#                       filter(age_group == "children79", !is.na(age)) %>%
+#                       filter(age_group != "adults", !is.na(age)) %>%
 #                       mutate(age = scale(age, scale = F)),
 #                     control = list(adapt_delta = 0.99),
 #                     cores = 4)
-# saveRDS(d2_79_anim_r, file = "./brms_models/d2_79_anim_r.rds")
+# saveRDS(d2_49_anim_r, file = "./brms_models/d2_49_anim_r.rds")
 
-d2_79_anim_r <- readRDS("./brms_models/d2_79_anim_r.rds")
-# summary(d2_anim_r)
+d2_49_anim_r <- readRDS("./brms_models/d2_49_anim_r.rds")
+# summary(d2_49_anim_r)
 ```
 
+```{r}
+d2_ch_age <- full_join(d2_46 %>% distinct(subid, age),
+                       d2_79 %>% distinct(subid, age))
+```
+
+To explore age-related differences continuously within the child samples, we conducted an additional regression analysis on children's factor scores alone, including interactions with exact age in years (centered at the mean: `r format(round(mean(d2_ch_age$age, na.rm = T), 2), nsmall = 2)`y) rather than age group. In line with the age group analysis described in the previous section, this confirmed that, relative to the grand mean, attributions of _HEART_ decreased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameH_GM:age")`) and attributions of _MIND_ increased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameM_GM:age")`). (See Table 2 for the full results of this model.)
+
+This analysis suggested that, relative to the grand mean, attributions of _HEART_ decreased across the age range (`r write_b_95CI_fun(d2_49_anim_r, "factor_nameH_GM:age")`), while attributions of _MIND_ increased across the age range (`r write_b_95CI_fun(d2_49_anim_r, "factor_nameM_GM:age")`). These findings are all in line with the age group analysis described in the previous section, suggesting that the observed group differences correspond to gradual developmental differences as children's responses become increasingly adult-like in many ways. 
+
+We observed two counter-examples to the idea that children become increasingly adult-like in their mental capacity attributions over this age range, both having to do with the degree to which children of different ages distinguished between animate and inanimate targets. If children were becoming increasingly adult-like in their animate-inanimate distinctions, we would expect the overall distinction between animates and inanimates collapsing across factors to increase with age, driven primarily by increases in the _BODY_ and especially _MIND_ domains. Instead, collapsing across factors, the general distinction between animate and inanimate target characters did _not_ differ with age (`r write_b_95CI_fun(d2_49_anim_r, "anim_inananim_GM:age")`); _decreased_ in the _HEART_ domain, relative to the grand mean (`r write_b_95CI_fun(d2_49_anim_r, "factor_nameH_GM:anim_inananim_GM:age")`); and did not change substantially in the _MIND_ domain (`r write_b_95CI_fun(d2_49_anim_r, "factor_nameM_GM:anim_inananim_GM:age")`), as we might expect if older children were approaching "adult-like" responses in this aspect of their mental capacity attributions. We speculate on several possible explanations of these unexpected findings in the Study 2 Discussion section, below.
+
+See Table 4 for the full results of this model, and Figure 8 for a visualization of changes in children's factor scores across age.
+
 ```{r, results = "asis", include = T}
-fixef(d2_79_anim_r) %>%
+fixef(d2_49_anim_r) %>%
   data.frame() %>%
   rownames_to_column("Parameter") %>%
   mutate(Parameter = recode_factor(
@@ -1602,8 +1619,6 @@ fixef(d2_79_anim_r) %>%
   group_rows("Collapsing across age", 1, 6) %>%
   group_rows("Age effects", 7, 12)
 ```
-
-A separate regression on children's factor scores alone confirmed that, while collapsing across factors and target characters children's overall mental capacity attributions did not vary with age (`r write_b_95CI_fun(d2_79_anim_r, "age")`), the distinction between animates and inanimates in terms of attributions of _HEART_ decreased with age (`r write_b_95CI_fun(d2_79_anim_r, "factor_nameH_GM:anim_inananim_GM:age")`). (See Table 4 for the full results of this model, and Figure 8 for a visualization of changes in children's factor scores across age.)
 
 ```{r}
 fig08a_plot <- ggplot(d2_anim %>% 
@@ -1695,7 +1710,7 @@ Regarding our first goal, Study 2 suggests that the three-part conceptual struct
 
 Regarding our second goal, XX. [XX In coarser terms, XX BODY-HEART vs. MIND. This two-factor structure is also reminiscent of Gray et al.'s (2007) "experience-agency" framework; XX. But there are hints of a nascent three-factor structure, closer to BODY-HEART_MIND - not fully worked out, especially the distinction between BODY and HEART. Instead of BODY vs. HEART, negative vs. positive. The salience on negative vs. positive experiences among younger children is consistent with recent work on the development of emotion concepts, which suggests that emotion representations are dominanted by a single dimension of valence in early to middle childhood, before unfolding into a two-dimensional space characterized by valence and arousal over the course of later childhood and adolesence (Nook et al., 2017).]
 
-Regarding our third goal, XX.
+Regarding our third goal, XX. [XX fulfill the promised speculations: why does animate/inanimate distinction decrease with age in the HEART domain, and why doesn't it increase with age in the MIND domain?]
 
 # Study 3
 
