@@ -198,7 +198,13 @@ cat("Parallel analysis: ", nfact_par_d1_ad,
     "\nWeisman et al.: ", nfact_wdm_d1_ad)
 ```
 
-Two or our three methods for determining how many factors to retain (minimizing BIC and Weisman et al.'s factor retention criteria) suggested retaining three factors. (Parallel analysis suggested retaining four factors; see SOM.)
+```{r}
+efa_4_d1_ad <- fa_fun(d1_ad_wide_i, 4)
+
+```
+
+
+Two or our three methods for determining how many factors to retain (minimizing BIC and Weisman et al.'s factor retention criteria) suggested retaining three factors. (Parallel analysis suggested retaining four factors. Three of these factors were very similar to the three factors reported below, and the fourth factor was dominant for a handful of sensory and perceptual capacities, including top_n_domCap(efa_4_d1_ad, 4, "F4", "pos"); see SOM.)
 
 ```{r}
 efa_3_d1_ad <- fa_fun(d1_ad_wide_i, 3)
@@ -593,19 +599,19 @@ On the other hand, analyses of children's attributions within this shared concep
 
 # Study 2
 
-The goals of Study 2 were twofold. 
+The goals of Study 2 were threefold. 
 
-First, we aimed to extend our findings with 7- to 9-year-old children in Study 1, by expanding the list of the target characters to include not only the two "edge cases" from Study 1 (a beetle and a robot), but a also a wider range of animate beings (a bird, a goat, and an elephant) and inanimate objects (a computer, a teddy bear, and a doll). In Weisman et al.'s original studies, this approach yielded a highly similar conceptual structure to the "edge case" approach (Weisman et al., 2017; Study 4). We reasoned that if this three-part conceptual structure is stable and robust by the age of 7-9 years, it should manifest among 7- to 9-year-old children under the same range of conditions that it does aong adults.
+First, we aimed to extend our findings with 7- to 9-year-old children in Study 1, by expanding the list of the target characters to include not only the two "edge cases" from Study 1 (a beetle and a robot), but a also a wider range of animate beings (a bird, a goat, and an elephant) and inanimate objects (a computer, a teddy bear, and a doll). In contrast to Study 1, where we tracked which mental capacities "hang together" when participants reasoned about controversial "edge cases" in social reasoning, Study 2 allowed us to track which mental capacities "hang together" when target characters are perceived to vary in their mental capacity profiles. In Weisman et al.'s original studies, this approach yielded a highly similar conceptual structure to the "edge case" approach (Weisman et al., 2017; Study 4). We reasoned that if this three-part conceptual structure is stable and robust by the age of 7-9 years, it should manifest among 7- to 9-year-old children under the same range of conditions that it does among adults. 
 
-Second, we aimed to assess the earlier development of this conceptual structure in a group of younger children. We targeted 4- to 6-year-old children for our younger age group because this has been identified as a period of dramatic development in several relevant domains. Many studies have documented shifts in children's abilities to take others' perspectives, represent false beliefs, and integrate representations of intentions and outcomes in evaluating moral responsibility (for reveiws, see Flavell, 1999; Wellman, 2015). The preschool years have also been the focus of a rich tradition of work on lay biology and the animate-inanimate distinction extending back nearly a century (e.g., Carey, 1985; R. Gelman, Spelke, & Meck, 1983; Medin, Waxman, Woodring, & Washinawatok, 2010; Piaget, 1929; for a review, see S. Gelman & Opfer, 2002). All of these accounts make the case that becoming a sophisticated reasoner—and particularly a sophisticated social reasoner—requires substantial refinement of one's representations of others' experiences, beliefs, desires, and needs. Might these refinements include changes to the structure of children's concepts of mental life? 
+Our second goal was to assess the earlier development of conceptual structure in a group of younger children. We targeted 4- to 6-year-old children for our younger age group because this has been identified as a period of dramatic development in several relevant domains. Many studies have documented shifts in children's abilities to take others' perspectives, represent false beliefs, and integrate representations of intentions and outcomes in evaluating moral responsibility (for reveiws, see Flavell, 1999; Wellman, 2015). The preschool years have also been the focus of a rich tradition of work on lay biology and the animate-inanimate distinction extending back nearly a century (e.g., Carey, 1985; R. Gelman, Spelke, & Meck, 1983; Medin, Waxman, Woodring, & Washinawatok, 2010; Piaget, 1929; for a review, see S. Gelman & Opfer, 2002). All of these accounts make the case that becoming a sophisticated reasoner—and particularly a sophisticated social reasoner—requires substantial refinement of one's representations of others' experiences, beliefs, desires, and needs. Might these refinements include changes to the structure of children's concepts of mental life? 
 
-Pilot testing suggested that working with younger children would require making a briefer experimental paradigm with fewer than the 40 questions included in Study 1; limiting the list to 20 questions seemed to allow children as young as 4 years of age to complete the study easily and without getting bored or frustrated, while still including enough items to enable us to proceed with our exploratory "dimensionality reduction" approach to uncovering conceptual structure. Below we present this method, validate it among a sample of adults, and use it to explore the development of conceptual structure between 4-9 years of age.
+Our third goal was to examine age-related changes in which mental capacities tend to be attributed to which target characters. In summarizing the results of Study 1, we discussed mental capacity attributions as the "application" of concepts of mental life, in contrast to the conceptual "structure" revealed by exploratory factor analysis. By expanding the range of target characters included in the study, Study 2 provides an opportunity to explore changes in how children apply their developing concepts of mental life to a variety of animate beings and inanimate objects.
 
 ## Method
 
 ### Participants
 
-`r nrow(d2_ad_wide) + nrow(d2_79_wide)` people participated in this study.
+`r nrow(d2_ad_wide) + nrow(d2_79_wide)` people participated in this study, including a group of adults, a group of "older" children (7-9y), and a group of "younger" children (4-6y).
 
 ```{r}
 # demographics
@@ -613,7 +619,7 @@ d2_ad_gender <- demo_fun(d2_ad, "gender", 2)
 d2_ad_ethnicity <- demo_fun(d2_ad, "ethnicity_cat", 2)
 ```
 
-Adults (_n_=`r nrow(d2_ad_wide)`) participated via Amazon Mechanical Turk (MTurk) in September 2018. Adult participants had gained approval for at least 95% of their previous work on MTurk; had MTurk accounts based in the US; and indicated that they were at least 18 years old. Adults were paid \$0.45 for approximately 2-4 minutes of their time (median duration: `r summary(d2_ad$duration)["Median"] %>% round(2)` min). An additional 22 adults participated but were excluded for failing to respond sensibly to an open-ended question about what they had been asked to do in the study (e.g., copying and pasting text from the question, writing "good study," or describing a different study, e.g., "I wrote an essay about nature"; _n_=11) or for failing to pass one or more attention checks (e.g., "Please select no"; _n_=11). According to self report, the final adult sample ranged in age from `r summary(d2_ad$age)["Min."]`-`r summary(d2_ad$age)["Max."]` years (median: `r summary(d2_ad$age)["Median"]`y) and included slightly more men (`r round(d2_ad_gender$prop[d2_ad_gender$gender=="m"], 2) * 100`%) than women (`r round(d2_ad_gender$prop[d2_ad_gender$gender=="f"], 2) * 100`%). Adults predominantly identified as White (`r d2_ad_ethnicity$prop[d2_ad_ethnicity$ethnicity_cat=="white"] * 100`%; `r d2_ad_ethnicity$prop[d2_ad_ethnicity$ethnicity_cat=="multi"] * 100`% identified as more than one race/ethnicity, and $\leq$ `r data.frame(d2_ad_ethnicity %>% filter(!ethnicity_cat %in% c("white", "multi")))$prop %>% max() * 100`% as any other race/ethnicity).
+Adults (_n_=`r nrow(d2_ad_wide)`) participated via MTurk in September 2018. Adult participants had gained approval for at least 95% of their previous work on MTurk; had MTurk accounts based in the US; and indicated that they were at least 18 years old. Adults were paid \$0.45 for approximately 2-4 minutes of their time (median duration: `r summary(d2_ad$duration)["Median"] %>% round(2)` min). An additional 22 adults participated but were excluded for failing to respond sensibly to an open-ended question about what they had been asked to do in the study (e.g., copying and pasting text from the question, writing "good study," or describing a different study, e.g., "I wrote an essay about nature"; _n_=11) or for failing to pass one or more attention checks (e.g., "Please select no"; _n_=11). According to self report, the final adult sample ranged in age from `r summary(d2_ad$age)["Min."]`-`r summary(d2_ad$age)["Max."]` years (median: `r summary(d2_ad$age)["Median"]`y) and included slightly more men (`r round(d2_ad_gender$prop[d2_ad_gender$gender=="m"], 2) * 100`%) than women (`r round(d2_ad_gender$prop[d2_ad_gender$gender=="f"], 2) * 100`%). Adults predominantly identified as White (`r d2_ad_ethnicity$prop[d2_ad_ethnicity$ethnicity_cat=="white"] * 100`%; `r d2_ad_ethnicity$prop[d2_ad_ethnicity$ethnicity_cat=="multi"] * 100`% identified as more than one race/ethnicity, and $\leq$ `r data.frame(d2_ad_ethnicity %>% filter(!ethnicity_cat %in% c("white", "multi")))$prop %>% max() * 100`% as any other race/ethnicity).
 
 ```{r}
 # demographics
@@ -623,15 +629,17 @@ d2_46_gender <- demo_fun(d2_46, "gender", 2)
 d2_46_ethnicity <- demo_fun(d2_46, "ethnicity", 2)
 ```
 
-For our factor analyses we grouped children into two age groups, because EFA is a group-level analysis of the consensual conceptual structure and is not designed to model continuous participant-level variables like exact age. Our goal with these analyses was to examine discrete "snapshots" of this conceptual structure at two points in this continuous developmental trajectory. Our planned sample size was 120 older and 120 younger children, but we also retained a handful of extra participants who completed the study on the final day of data collection for each group.
+We recruited two groups of children: "older" children (7-9y) and "younger" children (4-6y). Our planned sample size was 120 per age group, but we also retained a handful of extra participants who completed the study on the final day of data collection for each group.
 
-The group that we will refer to as "older children" (_n_=`r nrow(d2_79_wide)`) ranged in age from `r summary(d2_79$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d2_79$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d2_79$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y), and participated at one of several San Francisco Bay Area museums or at their younger sibling's preschool between July-December 2016. The study took most older children under `r quantile(d2_79$duration, .75, na.rm = T) %>% as.numeric() %>% ceiling()` minutes to complete (median duration: `r summary(d2_79$duration)["Median"] %>% round(2) %>% format(nsmall = 2)` min). According to parental report, the sample of older children included slightly more girls (`r d2_79_gender$prop[d2_79_gender$gender=="f"] * 100`%) than boys (`r d2_79_gender$prop[d2_79_gender$gender=="m"] * 100`%; `r d2_79_gender$prop[d2_79_gender$gender=="MISSING"] * 100`% of children's gender was non-binary or unknown). Parents predominantly identified their children as White (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="white"] * 100`%), South Asian (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="south or southeast asian"] * 100`%), multiracial (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="multi"] * 100`%), or East Asian (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="east asian"] * 100`%); $\leq$ `r data.frame(d2_79_ethnicity %>% filter(!ethnicity %in% c("white", "multi", "east asian", "south or southeast asian", "MISSING")))$prop %>% max() * 100`% of children were identified as any other race/ethnicity, and `r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="MISSING"] * 100`% of children's race/ethnicity was unknown). 
+The group that we will refer to as "older children" (_n_=`r nrow(d2_79_wide)`) ranged in age from `r summary(d2_79$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d2_79$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d2_79$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y), and participated at one of several San Francisco Bay Area museums or at their younger sibling's preschool between July-December 2016. The study took most older children under `r quantile(d2_79$duration, .75, na.rm = T) %>% as.numeric() %>% ceiling()` minutes to complete (median duration: `r summary(d2_79$duration)["Median"] %>% round(2) %>% format(nsmall = 2)` min). According to parental report, the sample of older children included slightly more boys (`r d2_79_gender$prop[d2_79_gender$gender=="m"] * 100`%) than girls (`r d2_79_gender$prop[d2_79_gender$gender=="f"] * 100`%); `r d2_79_gender$prop[d2_79_gender$gender=="MISSING"] * 100`% of children's gender was non-binary or unknown). Parents predominantly identified their children as White (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="white"] * 100`%), South Asian (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="south or southeast asian"] * 100`%), multiracial (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="multi"] * 100`%), or East Asian (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="east asian"] * 100`%); $\leq$ `r data.frame(d2_79_ethnicity %>% filter(!ethnicity %in% c("white", "multi", "east asian", "south or southeast asian", "MISSING")))$prop %>% max() * 100`% of children were identified as any other race/ethnicity, and `r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="MISSING"] * 100`% of children's parents declined to provide information on their race/ethnicity). 
 
-"Younger children" (_n_=`r nrow(d2_46_wide)`) ranged in age from `r summary(d2_46$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d2_46$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d2_46$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y), and participated either at a university-affiliated preschool or at a Bay Area museum between January-June 2017. The study took most younger children under `r quantile(d2_46$duration, .75, na.rm = T) %>% as.numeric() %>% ceiling()` minutes to complete (median duration: `r summary(d2_46$duration)["Median"] %>% round(2) %>% format(nsmall = 2)` min). According to parental report and school records, the sample of younger children included roughly the same numbers of girls (`r d2_46_gender$prop[d2_46_gender$gender=="m"] * 100`%) and boys (`r d2_46_gender$prop[d2_46_gender$gender=="f"] * 100`%). Children were predominantly identified as multiracial (`r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="multi"] * 100`%) or White (`r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="white"] * 100`%; $\leq$ `r data.frame(d2_46_ethnicity %>% filter(!ethnicity %in% c("white", "multi", "MISSING")))$prop %>% max() * 100`% of children were identified as any other race/ethnicity, and `r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="MISSING"] * 100`% of children's race/ethnicity was unknown).
+"Younger children" (_n_=`r nrow(d2_46_wide)`) ranged in age from `r summary(d2_46$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d2_46$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d2_46$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y), and participated either at a university-affiliated preschool or at a Bay Area museum between January-June 2017. The study took most younger children under `r quantile(d2_46$duration, .75, na.rm = T) %>% as.numeric() %>% ceiling()` minutes to complete (median duration: `r summary(d2_46$duration)["Median"] %>% round(2) %>% format(nsmall = 2)` min). According to parental report and school records, the sample of younger children included roughly the same numbers of girls (`r d2_46_gender$prop[d2_46_gender$gender=="m"] * 100`%) and boys (`r d2_46_gender$prop[d2_46_gender$gender=="f"] * 100`%). Children were predominantly identified as multiracial (`r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="multi"] * 100`%) or White (`r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="white"] * 100`%; $\leq$ `r data.frame(d2_46_ethnicity %>% filter(!ethnicity %in% c("white", "multi", "MISSING")))$prop %>% max() * 100`% of children were identified as any other race/ethnicity, and `r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="MISSING"] * 100`% of children's parents declined to provide information on their race/ethnicity).
 
 An additional 7 children participated but were excluded for being outside the target age ranges. At museums (but not at the preschool), children received a small thank-you gift (e.g., a sticker) for their participation. 
 
 ### Materials and procedure
+
+Pilot testing suggested that working with younger children would require making a briefer experimental paradigm with fewer than the 40 questions included in Study 1; limiting the list to 20 questions seemed to allow children as young as 4 years of age to complete the study easily and without getting bored or frustrated, while still including enough items to enable us to proceed with our exploratory "dimensionality reduction" approach to uncovering conceptual structure.
 
 ```{r}
 d2_ad_char <- demo_fun(d2_ad, "character")
@@ -642,19 +650,21 @@ d2_all_char <- d2_ad_char %>% mutate(age_group = "adults") %>%
   full_join(d2_46_char %>% mutate(age_group = "children46"))
 ```
 
-Participants were assigned to evaluate one of the following target characters: an elephant, a goat, a mouse, a bird, a beetle, a teddy bear, a doll, a robot, or a computer (_n_ per characater: `r min(d2_ad_char$n)`-`r max(d2_ad_char$n)` adults, `r min(d2_79_char$n)`-`r max(d2_79_char$n)` older children, and `r min(d2_46_char$n)`-`r max(d2_46_char$n)` younger children; see Figures 5 and 6 for exact counts). This allowed us to address the following question: When target characters are perceived to vary in their mental capacity profiles, which capacities "go together"?
+Participants were assigned to evaluate one of the following target characters: an elephant, a goat, a mouse, a bird, a beetle, a teddy bear, a doll, a robot, or a computer (_n_ per characater: `r min(d2_ad_char$n)`-`r max(d2_ad_char$n)` adults, `r min(d2_79_char$n)`-`r max(d2_79_char$n)` older children, and `r min(d2_46_char$n)`-`r max(d2_46_char$n)` younger children; see Figure 5 for exact counts).
 
-Participants were assigned to target characters randomly, with two exceptions: The doll and teddy bear conditions were run last for older children (but included in the initial randomization scheme for adults and younger children); and toward the end of data collection children were assigned to conditions that had the fewest participants. As in Study 1, a vivid, high-resolution photo of the target character in a naturalistic context was visible for the duration of the study. 
+Participants were assigned to target characters randomly, with two exceptions: (1) The doll and teddy bear conditions were run last for older children (but included in the initial randomization scheme for adults and younger children); and (2) Toward the end of data collection with children, children were assigned to conditions that had the fewest participants. (This was not possible with adults, which is why the number of adults per condition was more variable than the number of children per condition.) As in Study 1, a vivid, high-resolution photo of the target character in a naturalistic context was visible for the duration of the study. 
 
 Instructions and procedure were identical to Study 1, with two exceptions: (1) Participants rated the target character on 20 (rather than 40) mental capacities; and (2) For younger children, the experimenter read all questions out loud and children responded verbally. 
 
 The 20 mental capacities were a subset of the 40 items used in Study 1, chosen to include physiological sensations, emotional experiences, perceptual abilities, cognitive skills, capacities related to autonomy or agency, and social abilities; and to include some of the strongest-loading items for each of the three factors uncovered among adults in Study 1 (see Figure 1). As in Study 1, each mental capacity was associated with a short, preset definition. Both older and younger children were encouraged at the beginning of the study to ask questions if they did not know what a word meant, in which case they were given these definitions. (Adults did not have access to these definitions.)
 
-After asking the 20 quesitons about mental capacities, for a subset of participants we also asked two additional questions: "Is a [target] made out of metal?" and "Can a [target] be turned on and off?" See SOM for an analysis of responses to these questions.
+After completing the 20 questions about mental capacities, for a subset of participants we also asked two additional questions: "Is a [target] made out of metal?" and "Can a [target] be turned on and off?" These questions were always asked last, and were not intended to be included in any of our primary analyses. See SOM for an analysis of responses to these questions.
 
 ### Data processing
 
-We planned to drop trials with response times that were faster than a preset criterion of 250ms, but there were none among children, and we failed to record response times among adults. As in Study 1, we retained participants regardless of skipped trials (n=0 trials among older children and adults, 30 trials among younger children). Overall, none of adults or older children's trials, and only 1.21% of younger children's trials, were missing data.
+We planned to drop trials with response times that were faster than a preset criterion of 250ms, but there were none among children, and we failed to record response times among adults. As in Study 1, we retained participants regardless of skipped trials. Overall, none of adults or older children's trials, and only `r round(sum(is.na(d2_46_wide))/sum(!is.na(d2_46_wide))*100, 2)`% of younger children's trials (_n_=`r sum(is.na(d2_46_wide))`) were missing data.
+
+For our exploratory factor analyses, we looked at each group of partipants (adults, older children, and younger children) separately, because EFA is a group-level analysis of the consensual conceptual structure and is not designed to model continuous participant-level variables like exact age. Our goal with these analyses was to examine discrete “snapshots” of this conceptual structure at two points in this continuous developmental trajectory.
 
 ## Results
 
@@ -673,7 +683,11 @@ cat("Parallel analysis: ", nfact_par_d2_ad,
     "\nWeisman et al.: ", nfact_wdm_d2_ad)
 ```
 
-As in Study 1, two or our three methods for determining how many factors to retain (in this case, parallel analysis and Weisman et al.'s factor retention criteria) suggested retaining three factors. (Minimizing BIC suggested retaining four factors; see SOM.)
+```{r}
+efa_4_d2_ad <- fa_fun(d2_ad_wide_i, 4)
+```
+
+As in Study 1, two or our three methods for determining how many factors to retain (in this case, parallel analysis and Weisman et al.'s factor retention criteria) suggested retaining three factors. (Minimizing BIC suggested retaining four factors, but the fourth factor was the dominant factor for only `r top_n_domCap(efa_4_d2_ad, 20, "F4", "pos") %>% length()` mental capacity: `r top_n_domCap(efa_4_d2_ad, 20, "F4", "pos")`; see SOM.)
 
 ```{r}
 efa_3_d2_ad <- fa_fun(d2_ad_wide_i, 3)
@@ -683,7 +697,9 @@ efa_3_plot_d2_ad <- heatmap_fun(efa_3_d2_ad,
   guides(fill = "none")
 ```
 
-As expected, the conceptual structure revealed by this analysis among adults was characterized by a three-way distinction between _BODY_ (first factor, `r round(efa_3_d2_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution), _HEART_ (first factor, `r round(efa_3_d2_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of shared variance), and _MIND_ (first factor, `r round(efa_3_d2_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of shared variance). (See Figure 4, Panel D.) This suggests that our modified child-friendly paradigm was valid: Using a shorter list of items and a wider range of target characters elicited the same intuitive ontology of mental life, among US adults, that was revealed in Study 1 and in Weisman et al.'s (2017) previous work. 
+As expected, the conceptual structure revealed by this analysis among adults was characterized by a three-way distinction between _BODY_ (first factor, `r round(efa_3_d2_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution), _HEART_ (first factor, `r round(efa_3_d2_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of shared variance), and _MIND_ (first factor, `r round(efa_3_d2_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of shared variance). See Figure 4, Panel D.
+
+This suggests that our modified child-friendly paradigm was valid: Using a shorter list of items and a wider range of target characters elicited the same intuitive ontology of mental life, among US adults, that was revealed in Study 1 and in Weisman et al.'s (2017) previous work. 
 
 ### Conceptual structure: Older children (7-9y)
 
@@ -700,8 +716,6 @@ cat("Parallel analysis: ", nfact_par_d2_79,
     "\nWeisman et al.: ", nfact_wdm_d2_79)
 ```
 
-Our three methods for determining how many factors to retain all suggested retaining three factors.
-
 ```{r}
 efa_3_d2_79 <- fa_fun(d2_79_wide_i, 3)
 
@@ -716,7 +730,7 @@ cong_efa_3_d2_ad_79 <- fa.congruence(efa_3_d2_79$loadings,
                                      efa_3_d2_ad$loadings)
 ```
 
-As in Study 1, the conceptual structure revealed by this analysis among 7- to 9-year-old children was very similar to that of adults, again characterized by a three-way distinction between _BODY_, _HEART_, and _MIND_.
+Our three methods for determining how many factors to retain all suggested retaining three factors. As in Study 1, the conceptual structure revealed by this analysis among 7- to 9-year-old children was very similar to that of adults, again characterized by a three-way distinction between _BODY_, _HEART_, and _MIND_.
 
 After rotation, the first factor corresponded primarily to physiological sensations. An analysis of factor congruence confirmed that this factor was most similar to adults' _BODY_ factor (cosine similarity with _BODY_: `r cong_efa_3_d2_ad_79["F1", "F1"]`; with _HEART_: `r cong_efa_3_d2_ad_79["F1", "F2"]`; with _MIND_: `r cong_efa_3_d2_ad_79["F1", "F3"]`). It was the dominant factor for such items as `r top_n_domCap(efa_3_d2_79, 4, "F1", "pos")`, and accounted for `r round(efa_3_d2_79$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
 
@@ -741,7 +755,11 @@ cat("Parallel analysis: ", nfact_par_d2_46,
     "\nWeisman et al.: ", nfact_wdm_d2_46)
 ```
 
-Our three methods for determining how many factors to retain each suggested retaining different numbers of factors: Weisman et al.'s factor retention criteria suggested retaining three factors, parallel analysis suggested retaining two factors, and minimizing BIC suggested a null, one-factor solution. Here we present both the two- and three-factor solutions. (See SOM for factor loadings on the one "factor" in the null, one-factor solution.)
+```{r}
+efa_1_d2_46 <- fa_fun(d2_46_wide_i, 1)
+```
+
+Our three methods for determining how many factors to retain each suggested retaining different numbers of factors: Weisman et al.'s factor retention criteria suggested retaining `r nfact_wdm_d2_46` factors, parallel analysis suggested retaining `r nfact_par_d2_46` factors, and minimizing BIC suggested a null, `r nfact_bic_d2_46`-factor solution. Here we present both the two- and three-factor solutions. (See SOM for factor loadings on the one "factor" in the null, one-factor solution, which yielded particularly strong loadings for social-emotional experiences and physiological sensations, such as `r top_n_domCap(efa_1_d2_46, 4, "F1")`.)
 
 #### Three-factor solution
 
@@ -765,6 +783,8 @@ The second factor corresponded primarily to perceptual-cognitive abilities, as w
 
 The third factor corresponded primarily to social-emotional abilities, with particularly strong loadings for positive emotions. An analysis of factor congruence indicated that this factor was most similar to adults' _HEART_ factor (cosine similarity with _HEART_: `r cong_efa_3_d2_ad_46["F3", "F2"]`), but also quite similar to adults' _BODY_ factor (cosine similarity with _BODY_: `r cong_efa_3_d2_ad_46["F3", "F1"]`; with _MIND_: `r cong_efa_3_d2_ad_46["F3", "F3"]`). It was the dominant factor for such items as `r top_n_domCap(efa_3_d2_46, 4, "F3", "pos")`, and accounted for `r round(efa_3_d2_46$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution. (See Figure 4, Panel B, for all factor loadings.)
 
+We would describe this conceptual structure as reminiscent of the _BODY_-_HEART_-_MIND_ structure found among older children and adults, but not as fully "adult-like." In particular, in this structure, the physiological sensations associated with the _BODY_ among older children and adults are not as clearly differentiated from the emotional experiences associated with the _HEART_. Indeed, it it not clear that _BODY_ vs. _HEART_ is the most salient distinction among the first and third factors in this solution: A cleaner description of these factors might be negatively-valenced experiences vs. positively-valenced experiences. 
+
 #### Two-factor solution
 
 ```{r}
@@ -782,7 +802,9 @@ cong_efa_2_d2_ad_46 <- fa.congruence(efa_2_d2_46$loadings,
 
 In the rotated two-factor solution suggested by parallel analysis, the first factor encompassed both physiological sensations and emotions. An analysis of factor congruence indicated that this factor was most similar to adults' _BODY_ factor (cosine similarity with _BODY_: `r cong_efa_2_d2_ad_46["F1", "F1"]`), but was also quite similar to adults' _HEART_ factor (cosine similarity with _HEART_: `r cong_efa_2_d2_ad_46["F1", "F2"]`; with _MIND_: `r cong_efa_2_d2_ad_46["F1", "F3"]`). It was the dominant factor for such items as `r top_n_domCap(efa_2_d2_46, 4, "F1", "pos")`, and accounted for `r round(efa_2_d2_46$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated two-factor solution. 
 
-The second factor corresponded primarily to perceptual-cognitive abilities. An analysis of factor congruence confirmed that this factor was most similar to adults' _MIND_ factor (cosine similarity with _MIND_: `r cong_efa_2_d2_ad_46["F2", "F3"]`; with _HEART_: `r cong_efa_2_d2_ad_46["F2", "F1"]`; with _BODY_: `r cong_efa_2_d2_ad_46["F2", "F1"]`). It was the dominant factor for such items as `r top_n_domCap(efa_2_d2_46, 4, "F2", "pos")`, and accounted for `r round(efa_2_d2_46$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. (See Figure 4, Panel A, for all factor loadings.)
+The second factor corresponded primarily to perceptual-cognitive abilities, as well as one complex negative emotion (_feel guilty_). An analysis of factor congruence confirmed that this factor was most similar to adults' _MIND_ factor (cosine similarity with _MIND_: `r cong_efa_2_d2_ad_46["F2", "F3"]`; with _HEART_: `r cong_efa_2_d2_ad_46["F2", "F1"]`; with _BODY_: `r cong_efa_2_d2_ad_46["F2", "F1"]`). It was the dominant factor for such items as `r top_n_domCap(efa_2_d2_46, 4, "F2", "pos")`, and accounted for `r round(efa_2_d2_46$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. (See Figure 4, Panel A, for all factor loadings.)
+
+In relation to the _BODY_-_HEART-_MIND_ structure found among older children and adults, we would describe this two-factor structure as being anchored by a contrast between the cognitive capacities of the _MIND_ vs. a set of warmer, more visercal experiences that constitute a more integrated representation of _BODY-HEART_.
 
 ```{r, include = T, fig.width = 6, fig.asp = 1}
 fig04_plots <- plot_grid(efa_2_plot_d2_46, efa_3_plot_d2_46, 
@@ -796,7 +818,7 @@ ggdraw(fig04_with_caption)
 
 In Study 1, we saw that even children as old as 7-9y—whose conceptual structure seemed to be quite similar to that of adults'—nonetheless differed from adults in their _application_ of this concept, attributing far more of the social-emotional abilities related to the _HEART_ to both beetles and robots. How do children's mental capacity attributions compare to adults for the larger set of target characters included in Study 2—and what does this aspect of conceptual developmental look like earlier in development (4-6y)?
 
-Following Study 1, we approached these questions from several angles.
+#### Differences across age groups
 
 ```{r}
 d2_all_wide_i <- d2_ad_wide_i %>%
@@ -842,11 +864,11 @@ efa_3_d2_46_project_scores <- predict(object = efa_3_d2_ad,
   arrange(subid_char)
 ```
 
-First, we projected all of children's responses into the factor space defined by adults (standardized in terms of adults' responses), and examined factor scores by age group (again, using the method articulated by ten Berge et al., 1999). As in Study 1, this yielded three scores for each participant, corresponding, in principle, to holistic judgments of the social-emotional, physiological, and perceptual-cognitive abilities of the target character the participant evaluated. (Note that each of these three scores takes into account adult factor loadings for all 20 mental capacities, as shown in Figure 4, Panel D.) 
+Following Study 1, we projected all of children's responses into the factor space defined by adults (standardized in terms of adults' responses), and examined factor scores by age group (again, using the method articulated by ten Berge et al., 1999). As in Study 1, this yielded three scores for each participant, corresponding, in principle, to holistic judgments of the social-emotional, physiological, and perceptual-cognitive abilities of the target character the participant evaluated. (Note that each of these three scores takes into account adult factor loadings for all 20 mental capacities, as shown in Figure 4, Panel D.) 
 
-This allowed us to examine the effects of age group (younger children, older children, adults), character (computer, robot, doll, teddy bear, beetle, bird, mouse, goat, elephant), and factor (_BODY_, _HEART_, _MIND_) on these scores via mixed effects Bayesian regression. As in Study 1, factor was treated as categorical variable and effect-coded, and age group was dummy-coded with adults as the baseline, to assess whether children in each age group were "adult-like" in their assessments. To explore attributions to different target characters, we included eight orthogonal contrasts: (1) animates (elephant, goat, mouse, bird, beetle) vs. inanimates (teddy bear, doll, robot, teddy bear); (2) mammals (elephant, goat, mouse) vs. other animals (bird, beetle); (3) elephant vs. other mammals (goat, mouse); (4) goat vs. mouse; (5) bird vs. beetle; (6) technologies (robot, computer) vs. toys (teddy bear, doll); (7) robot vs. computer; and (8) teddy bear vs. doll. Here we will focus on what we consider to be the contrast of the greatest theoretical interest: animates/inanimates (contrast #1).
+This allowed us to examine the effects of age group (younger children, older children, adults), factor (_BODY_, _HEART_, _MIND_), and target character on these scores via mixed effects Bayesian regression. As in Study 1, factor was effect-coded, and age group was dummy-coded with adults as the baseline, to assess whether children in each age group were "adult-like" in their assessments. To examine differences in mental capacity attributions to different target characters, we coded each character as either "animate" (elephant, goat, mouse, bird, beetle) or "inanimate" (computer, robot, doll, teddy bear), and included animacy status (effect-coded) as a fixed effect in our regression model. (We included intercepts and slopes for individual characters as random effets in our model, along with intercepts for individual participants.)
 
-A subset of the results of a maximal model can be found in Table 3 (see SOM for the full set of results). See Figure 5 for scores by age group, factor, and character (with a particular focus on animate vs. inaniamte characters - Panel A); and Figure 6 for scores by age (among children). 
+The results of a maximal model can be found in Table 3. See Figure 5 for scores by age group, factor, and character (with a particular focus on animate vs. inaniamte characters - Panel A); and Figure 6 for scores by age (among children). 
 
 ```{r}
 efa_3_scores_d2_all <- efa_3_d2_ad$scores %>%
@@ -1127,14 +1149,14 @@ fixef(d2_anim_r) %>%
   unite(`95% CI`, Q2.5, Q97.5, sep = ", ") %>%
   mutate(`95% CI` = paste0("[", `95% CI`, "]")) %>%
   knitr::kable(format = "html", align = c("l", rep("r", 3)),
-               caption = "Table 3: Fixed effects from a mixed-effects Bayesian regression model predicting factor scores in Study 2 by animacy status (animates, inanimates), factor (BODY, HEART, MIND), and age group (4-6y, 7-9y, adults). The model used the formula 'factor score ~ factor * age group * animacy + (1 | subject)' and was implemented in the 'brms' package for R (Bürkner, 2017). Animacy status and factor were effect-coded; age-group was dummy-coded with adults as the baseline. Asterisks mark parameters whose 95% credible interval does not include 0.") %>%
+               caption = "Table 3: Fixed effects from a mixed-effects Bayesian regression model predicting factor scores in Study 2 by animacy status (animates, inanimates), factor (BODY, HEART, MIND), and age group (4-6y, 7-9y, adults). The model used the formula 'factor score ~ factor * age group * animacy + (1 | subject) + (1 + factor + age group | character)' and was implemented in the 'brms' package for R (Bürkner, 2017). Animacy status and factor were effect-coded; age-group was dummy-coded with adults as the baseline. Asterisks mark parameters whose 95% credible interval does not include 0.") %>%
   kable_styling() %>%
   group_rows("Adults", 1, 6) %>%
   group_rows("Older children vs. adults", 7, 12) %>%
   group_rows("Younger children vs. adults", 13, 18)
 ```
 
-By definition, collapsing across adults' factor scores did not differ across factors (HEART vs. grand mean: `r write_b_95CI_fun(d2_anim_r, "factor_nameH_GM")`; MIND vs. grand mean: `r write_b_95CI_fun(d2_anim_r, "factor_nameM_GM")`). As we would expect, adults attributed more mental capacities (collapsing across factors) to animates than inanimates (`r write_b_95CI_fun(d2_anim_r, "anim_inananim_GM")`)—a difference that was diminished in the _HEART_ domain (`r write_b_95CI_fun(d2_anim_r, "factor_nameH_GM:anim_inananim_GM")`), but not substantially diminished in the_MIND_ domain (`r write_b_95CI_fun(d2_anim_r, "factor_nameM_GM:anim_inananim_GM")`).
+By definition, adults' factor scores did not differ across factors (HEART vs. grand mean: `r write_b_95CI_fun(d2_anim_r, "factor_nameH_GM")`; MIND vs. grand mean: `r write_b_95CI_fun(d2_anim_r, "factor_nameM_GM")`). As we would expect, adults attributed more mental capacities (collapsing across factors) to animates than inanimates (`r write_b_95CI_fun(d2_anim_r, "anim_inananim_GM")`)—a difference that was diminished in the _HEART_ domain (`r write_b_95CI_fun(d2_anim_r, "factor_nameH_GM:anim_inananim_GM")`), but not substantially diminished in the_MIND_ domain (`r write_b_95CI_fun(d2_anim_r, "factor_nameM_GM:anim_inananim_GM")`).
 
 As a group, 7- to 9-year-old children's mental capacity attributions did not differ from adults, collapsing collapsing across factors and characters (`r write_b_95CI_fun(d2_anim_r, "age_groupCH79_AD")`)—but this masks several important differences between older children and adults. As in Study 1, older children's scores were characterized by a relative over-attribution of abilities in the _HEART_ domain (`r write_b_95CI_fun(d2_anim_r, "factor_nameH_GM:age_groupCH79_AD")`), and a relative under-attribution of abilities in the _MIND_ domain (`r write_b_95CI_fun(d2_anim_r, "factor_nameM_GM:age_groupCH79_AD")`). Collapsing across factors, older children made less of a distinction between animate an inanimate target characters, relative to adults (`r write_b_95CI_fun(d2_anim_r, "anim_inananim_GM:age_groupCH79_AD")`). This relative under-differentiation of animate and inanimate characters was particularly pronounced in the _MIND_ domain (`r write_b_95CI_fun(d2_anim_r, "factor_nameM_GM:anim_inananim_GM:age_groupCH79_AD")`).
 
@@ -1143,12 +1165,6 @@ How did younger children compare to adults? As a group, 4- to 6-year-old childre
 The complexities of the design of Study 2 could lend themselves to more complex models than what we have presented here, and we encourage readers to examine a model including multiple comparisons between sets of characters (e.g., mammals vs. non-mammals; technologies vs. toys) presented in the SOM. (All of the effects described above also hold true in this more complex model.)
 
 A visual inspection of Figure 5 further clarifies these findings. 
-
-In the BODY domain, an clear animate-inanimate distinction was clearly present among 4- to 6-year-old children, though slightly attenuated (see Figure 5, Panel A, top row); a closer look at factor scores for individual characters suggests that younger children diverged from adults primarily in their attributions to the "edge cases" that were the focus of Study 1: the robot (to which they over-attributed the physiological sensations related to the _BODY_), and the beetle (to which they under-attributed such _BODY_ capacities; see Figure 5, Panel B, top row). 
-
-In the HEART domain, the distinction between animate and inanimate target characters was subtler across all age groups, and the degree of distinction did not vary dramatically with age (see Figure 5, Panel A, middle row). Instead, children generally over-attributed _HEART_ to _both_ animates and inanimates; these over-attributions declined between 4-6y and 7-9y of age, but did not reach adult-like levels even among older children. This is consistent with Study 1, in which 7- to 9-year-old children over-attributed _HEART_ to both the beetle and the robot, relative to adults. In this study, older children again attributed more _HEART_ capacities to the beetle and the robot, but also to the mouse (to which adults attributed particularly few _HEART_ capacities—perhaps because of mice's status as vermin in this cultural context) the the goat (see Figure 5, Panel B, middle row).
-
-Finally, in the MIND domain, neither group of children made a robust distinction between animates and inamates—but adults clearly did (see Figure 5, Panel A, bottom row). Instead, children generally under-attributed _MIND_ to _both_ animates and inanimates. These under-attributions became less dramatic between 4-6y and 7-9y of age, and by 7-9y children's _MIND_ attributions to inanimates were adult-like. But even at 7-9y, children did not attributed as many _MIND_ capacities to animates as did adults; between 7-9y and adulthood, _MIND_ attributions increased for all of the animate characters, and particularly dramatically for the bird, the mouse, and the elephant (see Figure 5, Panel B, bottom row).
 
 ```{r}
 fig05a_plot <- d2_anim %>%
@@ -1223,6 +1239,16 @@ fig05_plots <- plot_grid(fig05a_plot, fig05b_plot,
 fig05_with_caption <- add_sub(fig05_plots, str_wrap("Figure 5: Factor scores for younger children (4-6y), older children (7-9y), and adults in Study 2, in which each participant assessed 20 mental capacities for one of nine target characters. Each participant recieved a factor score for each factor (BODY, HEART, and MIND, as defined by an exploratory factor analysis of adults' responses). We treated these scores as summaries of that participants' mental capacity attributions in these domains; a score of 0 corresponds to the mean for that factor among adults. We present two ways of looking at these data: collapsing characters into animates (beetle, bird, mouse, goat, elephant) vs. inanimates (computer, robot, doll, teddy bear; Panel A); and examining each character individually (Panel B). Error bars are bootstrapped 95% confidence intervals. Note that the range of the y-axis differs across rows.", 210), x = 0, hjust = 0)
 ggdraw(fig05_with_caption)
 ```
+
+In the BODY domain, a distinction between animate and inanimate target characters was clearly present in all age groups, though slightly attenuated among 4- to 6-year-old children (see Figure 5, Panel A, top row). A closer look at factor scores for individual characters (Panel B, top row) suggests that younger children diverged from adults primarily in their attributions to the "edge cases" that were the focus of Study 1: the robot (to which they over-attributed the physiological sensations related to the _BODY_), and the beetle (to which they under-attributed such _BODY_ capacities). Older children's _BODY_ attributions were generally indistinguishable from adults' for almost all target characters. (The only possible exception is the bird—but, in our view, it appears that this was driven by _adults_ slightly _under_-attributing _BODY_ capacities to this character.)
+
+In the HEART domain, the distinction between animate and inanimate target characters was subtler across all age groups, and the degree of distinction did not vary dramatically with age (see Figure 5, Panel A, middle row). Instead, children generally over-attributed _HEART_ to _both_ animates and inanimates; these over-attributions declined between 4-6y and 7-9y of age, but did not reach adult-like levels even among older children. This is consistent with Study 1, in which 7- to 9-year-old children over-attributed _HEART_ to both the beetle and the robot, relative to adults. In this study, older children again attributed more _HEART_ capacities to the beetle and the robot, but also to the mouse and the goat (see Panel B, middle row). Relative to other animates, adults attributed particularly few _HEART_ capacities to the mouse and the goat—perhaps because of their respecive statuses as vermin and food animals in this cultural context.
+
+Finally, in the MIND domain, neither group of children made a robust distinction between animates and inamates—but adults clearly did (see Figure 5, Panel A, bottom row). Instead, children generally under-attributed _MIND_ to _both_ animates and inanimates. These under-attributions became less dramatic between 4-6y and 7-9y of age, and by 7-9y children's _MIND_ attributions to inanimates were adult-like. But even at 7-9y, children did not attributed as many _MIND_ capacities to animates as did adults; between 7-9y and adulthood, _MIND_ attributions increased for all of the animate characters, and particularly dramatically for the bird, the mouse, and the elephant (see Figure 5, Panel B, bottom row).
+
+#### Age differences over childhood
+
+**BOOKMARK: NEED INTRO**
 
 ```{r}
 fig06a_plot <- ggplot(d2_anim %>% 
@@ -1633,7 +1659,13 @@ ggdraw(figSUPP2_with_caption)
 
 **BOOKMARK**
 
-XX
+We had three goals in Study 2: (1) To test whether the adult-like conceptual structure revealed among 7- to 9-year-old children in Study 1 would hold under the range of conditions that elicit this structure among US adults in Weisman et al.'s (2017) previous work; (2) To explore conceptual structure at an earlier point in development; and (3) To explore age-related differences in the application of concepts of mental life to a wide range of animate beings and inanimate objects.
+
+Regarding our first goal, Study 2 suggests that the three-part conceptual structure—anchored by _BODY_, _HEART_, and _MIND_—is reliable and robust among 7- to 9-year-old US children. As in Weisman et al.'s (2017) original work with adults, the capacities that "hang together" in older children's reasoning when target characaters are perceived to vary in mental capacity profiles appear to be highly similiar to those that "hang together" when participants disagree about the mental lives of controversial "edge cases" in social reasoning (Study 1).
+
+Regarding our second goal, XX. [XX In coarser terms, XX BODY-HEART vs. MIND. This two-factor structure is also reminiscent of Gray et al.'s (2007) "experience-agency" framework; XX. But there are hints of a nascent three-factor structure, closer to BODY-HEART_MIND - not fully worked out, especially the distinction between BODY and HEART. Instead of BODY vs. HEART, negative vs. positive. The salience on negative vs. positive experiences among younger children is consistent with recent work on the development of emotion concepts, which suggests that emotion representations are dominanted by a single dimension of valence in early to middle childhood, before unfolding into a two-dimensional space characterized by valence and arousal over the course of later childhood and adolesence (Nook et al., 2017).]
+
+Regarding our third goal, XX.
 
 # Study 3
 

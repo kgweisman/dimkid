@@ -37,14 +37,18 @@ top_n_domCap <- function(efa, n, factor, abs_pos = "abs"){
       top_n(1, abs(loading)) %>%
       ungroup() %>%
       group_by(factor) %>%
-      top_n(n, abs(loading))
+      top_n(n, abs(loading)) %>%
+      ungroup() %>%
+      arrange(desc(abs(loading)))
   } else if(abs_pos == "pos"){
     dom_df <- loadings_df %>%
       group_by(capacity) %>%
       top_n(1, loading) %>%
       ungroup() %>%
       group_by(factor) %>%
-      top_n(n, loading)
+      top_n(n, loading) %>%
+      ungroup() %>%
+      arrange(desc(loading))
   }
   
   wordings <- dom_df$capacity[dom_df$factor == factor] %>% 
