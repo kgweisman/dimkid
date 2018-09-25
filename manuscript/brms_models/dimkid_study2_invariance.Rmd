@@ -1,0 +1,640 @@
+---
+title: "Study 2: Conceptual structure after dropping characters, capacities"
+output: 
+  html_notebook:
+    toc: true
+    toc_float: true
+---
+
+This is a notebook delving into the robustness of the conceptual structures for each age group revealed in Study 2. Here we explore what these structures would look like if we dropped one character at a time, or if we dropped one mental capacity at a time.
+
+```{r global_options, include = F}
+knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67, 
+                      include = T, echo = F)
+```
+
+```{r}
+# RUN DIMKID_MANUSCRIPT.RMD FIRST!
+```
+
+```{r}
+drop_char_fun <- function(df_wide, character){
+  d <- df_wide %>%
+    rownames_to_column("subid_char") %>%
+    filter(!grepl(character, subid_char)) %>%
+    column_to_rownames("subid_char")
+  return(d)
+}
+
+drop_cap_fun <- function(df_wide, capacity){
+  d <- df_wide %>%
+    select(-contains(capacity))
+  return(d)
+}
+```
+
+```{r}
+check_char_fun <- function(df_wide, character){
+  d <- drop_char_fun(df_wide, character)
+  
+  nfact_par <- fa.parallel(d, cor = chosen_cor, fm = chosen_fm, plot = F)$nfact
+  nfact_bic <- VSS(d, rotate = chosen_rot, cor = chosen_cor, fm = chosen_fm, 
+                   plot = F)$vss.stats$BIC %>% which.min()
+  nfact_wdm <- reten_fun(d, rot_type = chosen_rot)
+  
+  nfact_list <- paste("Parallel analysis:", nfact_par,
+                      "; Minimizing BIC:", nfact_bic,
+                      "; WDM criteria:", nfact_wdm)
+  
+  min_nfact <- min(nfact_par, nfact_bic, nfact_wdm)
+  max_nfact <- max(nfact_par, nfact_bic, nfact_wdm)
+  
+  plot_list <- list(NULL)
+  for(i in min_nfact:max_nfact){
+    p <- fa_fun(df = d, n = i) %>% heatmap_fun()
+    plot_list[[i]] <- p
+  }
+  
+  plot_list <- compact(plot_list)
+  
+  print(nfact_list)
+  return(plot_list)
+}
+```
+
+```{r}
+check_cap_fun <- function(df_wide, capacity){
+  d <- drop_cap_fun(df_wide, capacity)
+  
+  nfact_par <- fa.parallel(d, cor = chosen_cor, fm = chosen_fm, plot = F)$nfact
+  nfact_bic <- VSS(d, rotate = chosen_rot, cor = chosen_cor, fm = chosen_fm, 
+                   plot = F)$vss.stats$BIC %>% which.min()
+  nfact_wdm <- reten_fun(d, rot_type = chosen_rot)
+  
+  nfact_list <- paste("Parallel analysis:", nfact_par,
+                      "; Minimizing BIC:", nfact_bic,
+                      "; WDM criteria:", nfact_wdm)
+  
+  min_nfact <- min(nfact_par, nfact_bic, nfact_wdm)
+  max_nfact <- max(nfact_par, nfact_bic, nfact_wdm)
+  
+  plot_list <- list(NULL)
+  for(i in min_nfact:max_nfact){
+    p <- fa_fun(df = d, n = i) %>% heatmap_fun()
+    plot_list[[i]] <- p
+  }
+  
+  plot_list <- compact(plot_list)
+  
+  print(nfact_list)
+  return(plot_list)
+}
+```
+
+
+# Adults
+
+## Dropping characters
+
+### computer
+
+```{r}
+check_char_fun(d2_ad_wide_i, "computer")
+```
+
+### robot
+
+```{r}
+check_char_fun(d2_ad_wide_i, "robot")
+```
+
+### doll
+
+```{r}
+check_char_fun(d2_ad_wide_i, "doll")
+```
+
+### teddy bear
+
+```{r}
+check_char_fun(d2_ad_wide_i, "teddy")
+```
+
+### beetle
+
+```{r}
+check_char_fun(d2_ad_wide_i, "beetle")
+```
+
+### bird
+
+```{r}
+check_char_fun(d2_ad_wide_i, "bird")
+```
+
+### mouse
+
+```{r}
+check_char_fun(d2_ad_wide_i, "mouse")
+```
+
+### goat
+
+```{r}
+check_char_fun(d2_ad_wide_i, "goat")
+```
+
+### elephant
+
+```{r}
+check_char_fun(d2_ad_wide_i, "elephant")
+```
+
+
+## Dropping capacities
+
+### feel pain
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "feel pain")
+```
+
+### get hungry
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "get hungry")
+```
+
+### feel tired
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "feel tired")
+```
+
+### smell things
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "smell things")
+```
+
+### feel scared
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "feel scared")
+```
+
+### feel sick...
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "feel sick...")
+```
+
+### get angry
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "get angry")
+```
+
+### feel guilty
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "feel guilty")
+```
+
+### get hurt feelings
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "get hurt feelings")
+```
+
+### feel embarrassed
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "feel embarrassed")
+```
+
+### feel proud
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "feel proud")
+```
+
+### feel love
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "feel love")
+```
+
+### feel sad
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "feel sad")
+```
+
+### feel happy
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "feel happy")
+```
+
+### sense...far away
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "sense...far away")
+```
+
+### sense temperatures
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "sense temperatures")
+```
+
+### figure out how to do things
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "figure out how to do things")
+```
+
+### be aware of things
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "be aware of things")
+```
+
+### remember things
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "remember things")
+```
+
+### make choices
+
+```{r}
+check_cap_fun(d2_ad_wide_i, "make choices")
+```
+
+
+# Older children
+
+## Dropping characters
+
+### computer
+
+```{r}
+check_char_fun(d2_79_wide_i, "computer")
+```
+
+### robot
+
+```{r}
+check_char_fun(d2_79_wide_i, "robot")
+```
+
+### doll
+
+```{r}
+check_char_fun(d2_79_wide_i, "doll")
+```
+
+### teddy bear
+
+```{r}
+check_char_fun(d2_79_wide_i, "teddy")
+```
+
+### beetle
+
+```{r}
+check_char_fun(d2_79_wide_i, "beetle")
+```
+
+### bird
+
+```{r}
+check_char_fun(d2_79_wide_i, "bird")
+```
+
+### mouse
+
+```{r}
+check_char_fun(d2_79_wide_i, "mouse")
+```
+
+### goat
+
+```{r}
+check_char_fun(d2_79_wide_i, "goat")
+```
+
+### elephant
+
+```{r}
+check_char_fun(d2_79_wide_i, "elephant")
+```
+
+
+## Dropping capacities
+
+### feel pain
+
+```{r}
+check_cap_fun(d2_79_wide_i, "feel pain")
+```
+
+### get hungry
+
+```{r}
+check_cap_fun(d2_79_wide_i, "get hungry")
+```
+
+### feel tired
+
+```{r}
+check_cap_fun(d2_79_wide_i, "feel tired")
+```
+
+### smell things
+
+```{r}
+check_cap_fun(d2_79_wide_i, "smell things")
+```
+
+### feel scared
+
+```{r}
+check_cap_fun(d2_79_wide_i, "feel scared")
+```
+
+### feel sick...
+
+```{r}
+check_cap_fun(d2_79_wide_i, "feel sick...")
+```
+
+### get angry
+
+```{r}
+check_cap_fun(d2_79_wide_i, "get angry")
+```
+
+### feel guilty
+
+```{r}
+check_cap_fun(d2_79_wide_i, "feel guilty")
+```
+
+### get hurt feelings
+
+```{r}
+check_cap_fun(d2_79_wide_i, "get hurt feelings")
+```
+
+### feel embarrassed
+
+```{r}
+check_cap_fun(d2_79_wide_i, "feel embarrassed")
+```
+
+### feel proud
+
+```{r}
+check_cap_fun(d2_79_wide_i, "feel proud")
+```
+
+### feel love
+
+```{r}
+check_cap_fun(d2_79_wide_i, "feel love")
+```
+
+### feel sad
+
+```{r}
+check_cap_fun(d2_79_wide_i, "feel sad")
+```
+
+### feel happy
+
+```{r}
+check_cap_fun(d2_79_wide_i, "feel happy")
+```
+
+### sense...far away
+
+```{r}
+check_cap_fun(d2_79_wide_i, "sense...far away")
+```
+
+### sense temperatures
+
+```{r}
+check_cap_fun(d2_79_wide_i, "sense temperatures")
+```
+
+### figure out how to do things
+
+```{r}
+check_cap_fun(d2_79_wide_i, "figure out how to do things")
+```
+
+### be aware of things
+
+```{r}
+check_cap_fun(d2_79_wide_i, "be aware of things")
+```
+
+### remember things
+
+```{r}
+check_cap_fun(d2_79_wide_i, "remember things")
+```
+
+### make choices
+
+```{r}
+check_cap_fun(d2_79_wide_i, "make choices")
+```
+
+
+# Younger children
+
+## Dropping characters
+
+### computer
+
+```{r}
+check_char_fun(d2_46_wide_i, "computer")
+```
+
+### robot
+
+```{r}
+check_char_fun(d2_46_wide_i, "robot")
+```
+
+### doll
+
+```{r}
+check_char_fun(d2_46_wide_i, "doll")
+```
+
+### teddy bear
+
+```{r}
+check_char_fun(d2_46_wide_i, "teddy")
+```
+
+### beetle
+
+```{r}
+check_char_fun(d2_46_wide_i, "beetle")
+```
+
+### bird
+
+```{r}
+check_char_fun(d2_46_wide_i, "bird")
+```
+
+### mouse
+
+```{r}
+check_char_fun(d2_46_wide_i, "mouse")
+```
+
+### goat
+
+```{r}
+check_char_fun(d2_46_wide_i, "goat")
+```
+
+### elephant
+
+```{r}
+check_char_fun(d2_46_wide_i, "elephant")
+```
+
+
+## Dropping capacities
+
+### feel pain
+
+```{r}
+check_cap_fun(d2_46_wide_i, "feel pain")
+```
+
+### get hungry
+
+```{r}
+check_cap_fun(d2_46_wide_i, "get hungry")
+```
+
+### feel tired
+
+```{r}
+check_cap_fun(d2_46_wide_i, "feel tired")
+```
+
+### smell things
+
+```{r}
+check_cap_fun(d2_46_wide_i, "smell things")
+```
+
+### feel scared
+
+```{r}
+check_cap_fun(d2_46_wide_i, "feel scared")
+```
+
+### feel sick...
+
+```{r}
+check_cap_fun(d2_46_wide_i, "feel sick...")
+```
+
+### get angry
+
+```{r}
+check_cap_fun(d2_46_wide_i, "get angry")
+```
+
+### feel guilty
+
+```{r}
+check_cap_fun(d2_46_wide_i, "feel guilty")
+```
+
+### get hurt feelings
+
+```{r}
+check_cap_fun(d2_46_wide_i, "get hurt feelings")
+```
+
+### feel embarrassed
+
+```{r}
+check_cap_fun(d2_46_wide_i, "feel embarrassed")
+```
+
+### feel proud
+
+```{r}
+check_cap_fun(d2_46_wide_i, "feel proud")
+```
+
+### feel love
+
+```{r}
+check_cap_fun(d2_46_wide_i, "feel love")
+```
+
+### feel sad
+
+```{r}
+check_cap_fun(d2_46_wide_i, "feel sad")
+```
+
+### feel happy
+
+```{r}
+check_cap_fun(d2_46_wide_i, "feel happy")
+```
+
+### sense...far away
+
+```{r}
+check_cap_fun(d2_46_wide_i, "sense...far away")
+```
+
+### sense temperatures
+
+```{r}
+check_cap_fun(d2_46_wide_i, "sense temperatures")
+```
+
+### figure out how to do things
+
+```{r}
+check_cap_fun(d2_46_wide_i, "figure out how to do things")
+```
+
+### be aware of things
+
+```{r}
+check_cap_fun(d2_46_wide_i, "be aware of things")
+```
+
+### remember things
+
+```{r}
+check_cap_fun(d2_46_wide_i, "remember things")
+```
+
+### make choices
+
+```{r}
+check_cap_fun(d2_46_wide_i, "make choices")
+```
+
+
