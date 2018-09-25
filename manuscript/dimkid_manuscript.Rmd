@@ -2,7 +2,7 @@
 title: 'Children''s developing representations of mental life: Changes in conceptual
   structure between 4-9 years of age'
 author: "Kara Weisman, Carol S. Dweck, & Ellen M. Markman"
-subtitle: Draft updated 2018-09-23
+subtitle: Draft updated 2018-09-25
 output:
   html_notebook:
     toc: true
@@ -71,6 +71,10 @@ write_b_95CI_fun <- function(model, param, round_n = 2){
 
 binomial_smooth <- function(...) {
   geom_smooth(method = "glm", method.args = list(family = "binomial"), ...)
+}
+
+ital_by_cap_fun <- function(str) {
+  paste0("_", paste(str, collapse = "_, _"), "_")
 }
 ```
 
@@ -628,9 +632,13 @@ Taken together, these analyses converge to suggest only minor differences betwee
 
 Study 1 shed light on two distinct aspects of the development of children's concpetual representations of mental life: continuity in the underlying conceptual _structure_ and variabilty in the _application_ of these concepts. 
 
+### Conceptual structure is adultlike at 7-9y
+
 On the one hand, exploratory factor analyses suggested that by midddle childhood (7-9y), the conceptual structure underlying US children's attributions of mental life is very similar to that of US adults, anchored by suites of mental capacities related to _BODY_ (physiological sensations), _HEART_ (social-emotional abilities), and _MIND_ (perceptual-cognitive abilities). We note that, in principle, a number of additional or alternative latent factors could have emerged from the factor analysis of children's responses. For example, children might have distinguished primarily between internal experience and external action (Gray et al., 2007), or they might have demonstrated finer-grained groupings of mental capacities based on phrasing, rote knowledge, etc. Instead, the latent conceptual structure underlying children's responses appears to be very similar to that of adults, both in this study and in Weisman et al.'s (2017) previous work. In other words, any dramatic developmental changes to this conceptual structure likely occur prior to the age of 7 years.
 
-On the other hand, analyses of children's attributions within this shared conceptual structure suggested that their application of this concept—in particular, their attributions of the social-emotional abilities of the _HEART_—may be undergoing continuing refinement through middle childhood. The specificity of this age difference—which emerged dramatically in one domain (_HEART_), but not others (_BODY_, _MIND_)—suggests that this is unlikely to be due either to a general tendency toward "mentalizing" these characters (or a simple "yes" bias). But its extension to both beetles and robots raises many questions. With regard to robots, children growing up in the 21st century might be converging on a new understanding of technological "beings" as inanimate objects with some degree of social-emotional life (see Kahn, Gary, & Shen, 2013)—but this kind of historical conceptual change would not predict the high rates of social-emotional attributions to beetles that we observed. Our findings are perhaps more consistent with a general openness to untraditional social partners that extends into middle childhood (but not adulthood)—or with a difference in construals of what it means to feel proud, happy, guilty, etc. To what kinds of entities would children of this age deny social-emotional abilities, and how do they draw this line? How would younger children's attributions of _HEART_ (as well as _BODY_ and _MIND_) compare?
+### Attributions of _HEART_ undergo dramatic development extending well into middle childhood
+
+On the other hand, analyses of children's attributions within this shared conceptual structure suggested that their application of this concept—in particular, their attributions of the social-emotional abilities of the _HEART_—may be undergoing substantial refinement through middle childhood. The specificity of this age difference—which emerged dramatically in one domain (_HEART_), but not others (_BODY_, _MIND_)—suggests that this is unlikely to be due either to a general tendency toward "mentalizing" these characters (or a simple "yes" bias). But its extension to both beetles and robots raises many questions. With regard to robots, children growing up in the 21st century might be converging on a new understanding of technological "beings" as inanimate objects with some degree of social-emotional life (see Kahn, Gary, & Shen, 2013)—but this kind of historical conceptual change would not predict the high rates of social-emotional attributions to beetles that we observed. Our findings are perhaps more consistent with a general openness to untraditional social partners that extends into middle childhood (but not adulthood)—or with a difference in construals of what it means to feel proud, happy, guilty, etc. To what kinds of entities would children of this age deny social-emotional abilities, and how do they draw this line? How would younger children's attributions of _HEART_ (as well as _BODY_ and _MIND_) compare?
 
 # Study 2
 
@@ -837,7 +845,7 @@ cong_efa_2_d2_ad_46 <- fa.congruence(efa_2_d2_46$loadings,
 
 In the rotated two-factor solution suggested by parallel analysis, the first factor encompassed both physiological sensations and emotions. An analysis of factor congruence indicated that this factor was most similar to adults' _BODY_ factor (cosine similarity with _BODY_: `r cong_efa_2_d2_ad_46["F1", "F1"]`), but was also quite similar to adults' _HEART_ factor (cosine similarity with _HEART_: `r cong_efa_2_d2_ad_46["F1", "F2"]`; with _MIND_: `r cong_efa_2_d2_ad_46["F1", "F3"]`). It was the dominant factor for such items as `r top_n_domCap(efa_2_d2_46, 4, "F1", "pos")`, and accounted for `r round(efa_2_d2_46$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated two-factor solution. 
 
-The second factor corresponded primarily to perceptual-cognitive abilities, as well as one complex negative emotion (_feel guilty_). An analysis of factor congruence confirmed that this factor was most similar to adults' _MIND_ factor (cosine similarity with _MIND_: `r cong_efa_2_d2_ad_46["F2", "F3"]`; with _HEART_: `r cong_efa_2_d2_ad_46["F2", "F1"]`; with _BODY_: `r cong_efa_2_d2_ad_46["F2", "F1"]`). It was the dominant factor for such items as `r top_n_domCap(efa_2_d2_46, 4, "F2", "pos")`, and accounted for `r round(efa_2_d2_46$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. (See Figure 5, Panel A, for all factor loadings.)
+The second factor corresponded primarily to perceptual-cognitive abilities, as well as one complex negative emotion (_feel guilty_). An analysis of factor congruence confirmed that this factor was most similar to adults' _MIND_ factor (cosine similarity with _MIND_: `r cong_efa_2_d2_ad_46["F2", "F3"]`; with _HEART_: `r cong_efa_2_d2_ad_46["F2", "F2"]`; with _BODY_: `r cong_efa_2_d2_ad_46["F2", "F1"]`). It was the dominant factor for such items as `r top_n_domCap(efa_2_d2_46, 4, "F2", "pos")`, and accounted for `r round(efa_2_d2_46$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. (See Figure 5, Panel A, for all factor loadings.)
 
 In relation to the _BODY_-_HEART-_MIND_ structure found among older children and adults, we would describe this two-factor structure as being anchored by a contrast between the cognitive capacities of the _MIND_ vs. a set of warmer, more visercal experiences that constitute a more integrated representation of _BODY-HEART_.
 
@@ -900,7 +908,6 @@ efa_3_d2_46_project_scores <- predict(object = efa_3_d2_ad,
 ```
 
 Following Study 1, we projected all of children's responses into the factor space defined by adults (standardized in terms of adults' responses), and examined factor scores by age group (again, using the method articulated by ten Berge et al., 1999). As in Study 1, this yielded three scores for each participant, corresponding, in principle, to holistic judgments of the social-emotional, physiological, and perceptual-cognitive abilities of the target character the participant evaluated. (Note that each of these three scores takes into account adult factor loadings for all 20 mental capacities, as shown in Figure 5, Panel D.) 
-
 This allowed us to examine the effects of age group (younger children, older children, adults), factor (_BODY_, _HEART_, _MIND_), and target character on these scores via mixed effects Bayesian regression. As in Study 1, factor was effect-coded, and age group was dummy-coded with adults as the baseline, to assess whether children in each age group were "adult-like" in their assessments. To examine differences in mental capacity attributions to different target characters, we coded each character as either "animate" (elephant, goat, mouse, bird, beetle) or "inanimate" (computer, robot, doll, teddy bear), and included animacy status (effect-coded) as a fixed effect in our regression model. We included intercepts and slopes for individual characters as random effets in our model, along with intercepts for individual participants.[^1]
 
 [^1]: We notes that the complexities of the design of Study 2 could lend themselves to more complex models than what we have presented here, and we encourage readers to examine a model including multiple comparisons between sets of characters (e.g., mammals vs. non-mammals; technologies vs. toys) presented in the SOM. All of the effects described below also hold true in this more complex model.
@@ -1579,13 +1586,13 @@ d2_ch_age <- full_join(d2_46 %>% distinct(subid, age),
                        d2_79 %>% distinct(subid, age))
 ```
 
-To explore age-related differences continuously within the child samples, we conducted an additional regression analysis on children's factor scores alone, including interactions with exact age in years (centered at the mean: `r format(round(mean(d2_ch_age$age, na.rm = T), 2), nsmall = 2)`y) rather than age group. (See Table 4 for the full results of this model, and Figure 8 for a visualization of changes in children's factor scores across the age range.)
+To explore age-related differences continuously within the child samples, we conducted an additional regression analysis on children's factor scores alone, including interactions with exact age in years (centered at the mean: `r format(round(mean(d2_ch_age$age, na.rm = T), 2), nsmall = 2)`y) rather than age group. See Table 4 for the full results of this model, and Figure 8 for a visualization of changes in children's factor scores across the age range.
 
 This analysis confirmed that, relative to the grand mean, attributions of _HEART_ decreased with age (`r write_b_95CI_fun(d2_49_anim_r, "factor_nameH_GM:age")`) and attributions of _MIND_ increased with age (`r write_b_95CI_fun(d2_49_anim_r, "factor_nameM_GM:age")`). These findings are both in line with the age group analysis described in the previous section, suggesting that the observed group differences correspond to gradual developmental differences as children's responses become increasingly adult-like. 
 
-If children were also becoming increasingly adult-like in their distinctions between animate and inanimate target characters, we would also expect the overall animate-inanimate distinction (collapsing across factors) to increase with age, driven primarily by increases in the _BODY_ and especially _MIND_ domains. Instead, collapsing across factors, the general distinction between animates and inanimates did _not_ differ with age (`r write_b_95CI_fun(d2_49_anim_r, "anim_inananim_GM:age")`); _decreased_ in the _HEART_ domain, relative to the grand mean (`r write_b_95CI_fun(d2_49_anim_r, "factor_nameH_GM:anim_inananim_GM:age")`); and did not change substantially in the _MIND_ domain (but, if anything, decreased: `r write_b_95CI_fun(d2_49_anim_r, "factor_nameM_GM:anim_inananim_GM:age")`), as we might expect if older children were approaching "adult-like" responses in this aspect of their mental capacity attributions. 
+If children were also becoming increasingly adult-like in their distinctions between animate and inanimate target characters, based on the results of our age group analysis (previous section) we would also expect the overall animate-inanimate distinction to increase with age, driven primarily by increases in the _BODY_ and especially _MIND_ domains (see Figure 6, Panel A). Instead, collapsing across factors, the general distinction between animates and inanimates did _not_ differ with age (`r write_b_95CI_fun(d2_49_anim_r, "anim_inananim_GM:age")`); _decreased_ in the _HEART_ domain, relative to the grand mean (`r write_b_95CI_fun(d2_49_anim_r, "factor_nameH_GM:anim_inananim_GM:age")`); and did not change substantially in the _MIND_ domain (`r write_b_95CI_fun(d2_49_anim_r, "factor_nameM_GM:anim_inananim_GM:age")`). 
 
-We speculate on several possible explanations of these unexpected findings in the Study 2 discussion section, below. For now, we note that participants who assessed the robot seemed to become particularly un-adult-like at older ages, and excluding these participants yields a more coherent picture of increasing adult-like-ness with increasing age (see Figure 8, Panel A, turquoise lines and points). This did not appear to be the case when excluding any of the other inanimate target characters (computer, teddy bear, doll).
+We note that participants who assessed the robot seemed to become particularly un-adult-like at older ages (see Figure 8, Panel B, in blue). Excluding these participants yields a more coherent picture of increasing adult-like-ness with increasing age (Figure 8, Panel A, in turquoise). This did not appear to be the case when excluding any of the other inanimate target characters. We elaborate on children's conceptualizations of the mental lives of robots in particular in the General Discussion (see also Weisman, under review). (See also SOM for an analysis of how excluding any individual target character, or any individual mental capacity, affects the conceptual structures revealed by factor analysis for each of the three age groups in Study 2.)
 
 ```{r, results = "asis", include = T}
 fixef(d2_49_anim_r) %>%
@@ -1744,23 +1751,106 @@ ggdraw(fig08_with_caption)
 
 ## Discussion
 
-**BOOKMARK**
+We had three goals in Study 2: (1) To test whether the adult-like conceptual structure revealed among 7- to 9-year-old children in Study 1 would hold under the range of conditions that elicit this structure among US adults in Weisman et al.'s (2017) previous work; (2) To explore conceptual structure at an earlier point in development (4-6y); and (3) To explore age-related differences in the _application_ of concepts of mental life by examining which mental capacities participants of different ages tended to attribute to the nine target characters included in this study.
 
-We had three goals in Study 2: (1) To test whether the adult-like conceptual structure revealed among 7- to 9-year-old children in Study 1 would hold under the range of conditions that elicit this structure among US adults in Weisman et al.'s (2017) previous work; (2) To explore conceptual structure at an earlier point in development; and (3) To explore age-related differences in the application of concepts of mental life to a wide range of animate beings and inanimate objects.
+### Conceptual structure is robust among 7- to 9-year-old children
 
 Regarding our first goal, Study 2 suggests that the three-part conceptual structure—anchored by _BODY_, _HEART_, and _MIND_—is reliable and robust among 7- to 9-year-old US children. As in Weisman et al.'s (2017) original work with adults, the capacities that "hang together" in older children's reasoning when target characaters are perceived to vary in mental capacity profiles appear to be highly similiar to those that "hang together" when participants disagree about the mental lives of controversial "edge cases" in social reasoning (Study 1).
 
-Regarding our second goal, XX. [XX In coarser terms, XX BODY-HEART vs. MIND. This two-factor structure is also reminiscent of Gray et al.'s (2007) "experience-agency" framework; XX. But there are hints of a nascent three-factor structure, closer to BODY-HEART_MIND - not fully worked out, especially the distinction between BODY and HEART. Instead of BODY vs. HEART, negative vs. positive. The salience on negative vs. positive experiences among younger children is consistent with recent work on the development of emotion concepts, which suggests that emotion representations are dominanted by a single dimension of valence in early to middle childhood, before unfolding into a two-dimensional space characterized by valence and arousal over the course of later childhood and adolesence (Nook et al., 2017).]
+### Conceptual structure changes between 4-6y and 7-9y
 
-Regarding our third goal, XX. [XX fulfill the promised speculations: why does animate/inanimate distinction decrease with age in the HEART domain, and why doesn't it increase with age in the MIND domain?]
+Regarding our second goal, Study 2 suggests that this conceptual structure undergoes substantial changes between early and middle childhood. Like older children and adults, 4- to 6-year-old children’s responses were characterized by strong correlations among a suite of perceptual and cognitive capacities that we have labeled _MIND_. This highlights one aspect of conceptual structure that seems to be relatively stable from early childhood onward. 
+
+However, in contrast to the clear distinction between physiological abilities and social-emotional abilities that characterized mental capacity attributions among older children and adults, younger children’s responses suggest that they perceived physiological and social-emotional abilities to be more closely integrated and the line between them to be more blurred.
+
+```{r}
+efa_2_d2_46_highload <- loadings_fun(efa_2_d2_46, "long") %>% 
+  filter(loading >= 0.60) %>%
+  arrange(factor, desc(loading)) %>%
+  group_by(capacity) %>%
+  mutate(adult_factor = case_when(
+    grepl(capacity, top_n_domCap(efa_3_d2_ad, 20, "F1", "pos")) == T ~ "BODY",
+    grepl(capacity, top_n_domCap(efa_3_d2_ad, 20, "F2", "pos")) == T ~ "HEART",
+    grepl(capacity, top_n_domCap(efa_3_d2_ad, 20, "F3", "pos")) == T ~ "MIND",
+    TRUE ~ "no dominant factor")) %>%
+  ungroup()
+```
+
+One indication of this blurring comes from the two-factor solution suggested by parallel analysis, in which a single _BODY-HEART_ factor emerged and was highly congruent with both the _BODY_ (cosine similarity: `r cong_efa_2_d2_ad_46["F1", "F1"]`) and _HEART_ (`r cong_efa_2_d2_ad_46["F1", "F2"]`) factors of adults. Among the mental capacities that loaded strongly ($\geq$ 0.60) on this factor were both physiological sensations (e.g., `r ital_by_cap_fun(efa_2_d2_46_highload$capacity[efa_2_d2_46_highload$adult_factor=="BODY" & efa_2_d2_46_highload$factor == "F1" & efa_2_d2_46_highload$capacity != "get angry"])`) and social-emotional experiences (`r ital_by_cap_fun(efa_2_d2_46_highload$capacity[efa_2_d2_46_highload$adult_factor=="HEART" & efa_2_d2_46_highload$factor == "F1"])`), suggesting that younger children perceived physiological and social-emotional abilities to “go together” to a considerable degree.
+
+```{r}
+efa_3_d2_46_domCap <- loadings_fun(efa_3_d2_46, "long") %>% 
+  arrange(desc(loading)) %>%
+  group_by(capacity) %>%
+  top_n(1, loading) %>%
+  mutate(adult_factor = case_when(
+    grepl(capacity, top_n_domCap(efa_3_d2_ad, 20, "F1", "pos")) == T ~ "BODY",
+    grepl(capacity, top_n_domCap(efa_3_d2_ad, 20, "F2", "pos")) == T ~ "HEART",
+    grepl(capacity, top_n_domCap(efa_3_d2_ad, 20, "F3", "pos")) == T ~ "MIND",
+    TRUE ~ "no dominant factor")) %>%
+  ungroup() %>%
+  arrange(factor, desc(loading))
+
+efa_3_d2_46_lowload <- loadings_fun(efa_3_d2_46, "long") %>% 
+  filter(loading <= 0.40) %>%
+  arrange(factor, desc(loading)) %>%
+  group_by(factor, capacity) %>%
+  mutate(adult_factor = case_when(
+    grepl(capacity, top_n_domCap(efa_3_d2_ad, 20, "F1", "pos")) == T ~ "BODY",
+    grepl(capacity, top_n_domCap(efa_3_d2_ad, 20, "F2", "pos")) == T ~ "HEART",
+    grepl(capacity, top_n_domCap(efa_3_d2_ad, 20, "F3", "pos")) == T ~ "MIND",
+    TRUE ~ "no dominant factor")) %>%
+  ungroup()
+```
+
+Even in the 3-factor solution suggested by Weisman et al.'s (2017) original factor retention protocol, the distinction between physiological and social-emotional abilities was somewhat blurred. While the first factor, which we've labeled _BODY\*_, was highly congruent with adults' _BODY_ factor (cosine similarity: `r cong_efa_3_d2_ad_46["F1", "F1"]`), it was also the dominant factor for two social-emotional items (`r ital_by_cap_fun(efa_3_d2_46_domCap$capacity[efa_3_d2_46_domCap$factor == "F1" & efa_3_d2_46_domCap$adult_factor == "HEART"])`). And while the third factor, which we've labeled _HEART\*_, was highly congruent with adults' _HEART_ factor (cosine similarity: `r cong_efa_3_d2_ad_46["F3", "F2"]`), there were several social-emotional items that failed to load strongly on it (loadings $\leq$ 0.40: `r ital_by_cap_fun(efa_3_d2_46_lowload$capacity[efa_3_d2_46_lowload$factor == "F3" & efa_3_d2_46_lowload$adult_factor == "HEART"])`). Stepping back, it is not clear that “physiological vs. social-emotional” is the best way to characterize the differences between these two factors. In fact, given that the strongest-loading items for _BODY\*_ were negatively valenced (`r gsub("and ", "", top_n_domCap(efa_3_d2_46, 3, "F1", "abs"))`) while the strongest-loading items for _HEART\*_ were positively valenced (`r gsub("and ", "", top_n_domCap(efa_3_d2_46, 3, "F3", "abs"))`), it seems plausible that the more salient distinction among this age group may have been positive vs. negative valence, rather than _BODY_ vs. _HEART_. The salience on negative vs. positive experiences among younger children is consistent with recent work on the development of emotion concepts, which suggests that emotion representations are dominanted by a single dimension of valence in early to middle childhood, before unfolding into a two-dimensional space characterized by valence and arousal over the course of later childhood and adolesence (Nook et al., 2017).
+
+Finally, the very fact that different approaches to factor retention yielded different results is further evidence that, although we observed some evidence for a nascent distinction between _BODY_ and _HEART_ among 4- to 6-year-old children, this distinction was not as robust as it appeared to be among older children or adults.
+
+### Developmental changes in attributions of all three components of mental life—_BODY_, _HEART_, and _MIND_—begin by early childhood and continue into middle childhood
+
+Regarding our third goal, Study 2 revealed a wide variety of age-related changes in children's mental capacity attributions, in all three aspects of mental life as conceptualized by adults.  
+
+In Study 1, we observed that 7- to 9-year-old children's attributions of _HEART_ were particularly un-adult-like: As a group, these children attributed much more in the way of social-emotional abilities to both a beetle and a robot than did adults (according to an analysis of factor scores, with children's data projected into adults' conceptual space). In the Study 1 sample, this difference appeared to decline with age between 7-9y, but never quite reached adult-like levels.
+
+```{r}
+r_d2_49_robot_HEART <- brm(score ~ age,
+                           data = full_join(
+                             efa_3_d2_46_project_scores %>%
+                               filter(character == "robot", 
+                                      factor_name == "HEART") %>%
+                               left_join(d2_46 %>% distinct(subid, age)),
+                             efa_3_d2_79_project_scores %>% 
+                               filter(character == "robot",
+                                      factor_name == "HEART") %>%
+                               left_join(d2_79 %>% distinct(subid, age))) %>%
+                             mutate(age = scale(age, scale = F)) %>%
+                             distinct())
+
+summary(r_d2_49_robot_HEART)
+```
+
+In line with this, Study 2 also revealed age-related differences in attributions of _HEART_: Relative to adults, children across the age range tended to over-attribute social-emotional abilities—not only to the robot and the beetle, but to most of the target characters included in this study (see Figure 6). Again, this tendency generally declined with age, with one exception: If anything, children's attributions of _HEART_ to robots appeared to _increase_ between 4-9y of age in this sample (though not substantially, according to a Bayesian regression: `r write_b_95CI_fun(r_d2_49_robot_HEART, "age")`). The subset of 4- to 9-year-old children who assessed the robot (_n_=`r d2_all_char %>% filter(age_group != "adults", character == "robot") %>% summarise(N = sum(n)) %>% as.numeric()`) in Study 2 constituted a much smaller sample than the `r d1_79 %>% distinct(subid, character) %>% filter(character == "robot") %>% nrow()` 7- to 9-year-old children who assessed the robot in Study 1, so the "true" developmental trajectory of _HEART_ attributions to robots remains unclear. (We return to this question armed with more data from 4- to 6-year-old children in Study 3, and make further remarks on children's attributions to robots more generally in the General Discussion.) Setting aside robots for the moment, our general take-aways from Studies 1-2 are that chidlren's attributions of social-emotional abilities (what we call _HEART_) appear to undergo especially dramatic developmental changes over the course of early and middle childhood. These changes seem to be generally monotonic in nature; that is, we see gradual decreases in social-emotional attributions across the board from 4-9y, and no strong evidence for non-linearities. Finally, these developmental changes appears to extend well into middle childhood, and perhaps beyond.
+
+Beyond the general decline in _HEART_ attributions with age, we also observed age-related differences in attributions of both _BODY_ and especially _MIND_, which were revealed most clearly thorugh an examination of children's mental capacity attributions to animate beings (beetle, bird, mouse, goat, elephant) vs. inanimate objects (computer, robot, doll, teddy bear). 
+
+In the _BODY_ domain, a distinction between animate and inanimate target characters was clearly present even among the youngest children, but increased gradually across the 4-7y age range (appearing to reach a degree of separation comparable to adults sometime between 7-9y; see Figure 8). As described above, younger children diverged from adults primarily in their attributions of _BODY_ to the “edge cases” that were the focus of Study 1: the robot and the beetle. Looking back at Study 1, we observe a similar, though subtler, pattern even among 7- to 9-year-old children when the set of target characters was limited to these edge cases. Taken together, these results suggest that while by the age of 4-6y children are relatively far along in their mastery of which entities in the world are subject to the physiological sensations of the _BODY_, they continue to refine their application of this concept throughout early (and perhaps into middle) childhood.
+
+Finally, in the _MIND_ domain, we observed unanticipated age-related differences that were perhaps even more striking than the differences in the _HEART_ domain described earlier. Relative to adults, children across the age range tended to under-attribute perceptual and cognitive abilities, both to inanimate target characters and especially to animate target characters. Generally speaking, children's under-attributions of _MIND_ became less pronounced with age—but even the oldest children attributed less in the way of perceptual-cognitive abilities to such target characters as the elephant, the mouse, and the bird than did adults (see Figure 6).
+
+#### Interim summary
+
+In Studies 1-2 we documented differences in the conceptual structure underlying mental capacity attributions between early childhood (4-6y) and middle childhood (7-9y), as well as age-related changes in children's application of these concepts—i.e., their attributions of different aspects of mental life to different target characters—which appear to be underway by early childhood and extend well into middle childhood and beyond. We have interpreted both kinds of differences as aspects of _conceptual development_ in this domain.
+
+One major limitation of Studies 1-2, however, was that the task involved a rather advanced set of mental state vocabulary terms, including a variety of complex mental capacities (e.g., guilt, pride, awareness, depth perception) and using somewhat complicated syntax for some items (e.g., _sense whether something is close by or far away_, _figure out how to do things_). For 4- to 6-year-old children, in particular, some of the mental capacity items might have been outside of the range of the words they normally hear in discussions of mental states—let alone the words they normally use themselves. In addition, younger children may have found some aspects of the experimental paradigm distracting (e.g., being seated in front of the experimenter's laptop computer without being allowed to use it themselves) or difficult (e.g., using a three-point scale with minimal visual scaffolding; see SOM for an analysis of scale use across age groups).
+
+Thus, in our final study, we focused on 4- to 6-year-old children, using a simpler set of mental capacities and a modified version of the experimental paradigm (validated among adults) with the aim of getting a clearer picture of conceptual structure and mental capacity attributions at this earlier point in development.
 
 # Study 3
 
 The primary goal of Study 3 was to (conceptually) replicate and extend our findings with 4- to 6-year-old children in Study 2. In light of the concerns about vocabulary, attention, and use of the response scale among younger children in Study 2, we designed an even more child-friendly version well suited for young preschoolers, streamlining the experimental protocol, providing more scaffolding for the response scale, and including only vocabulary items that were pre-tested to be familiar to young preschool children (see "Method"). 
 
-A second goal of Study 3 was to assess younger children's attributions of mental life to edge cases. Recall that, in Study 1, older children attributed more social-emotional abilities ("heart") to both beetles and robots than did adults, despite sharing adults' three-part conceptual structure; this "edge case" approach of Study 1 allowed us to estimate older children's aggregate attributions to these entities with precision and to chart changes in these attributions over age continuously within the range of 7-9 years, because large numbers of children assessed each of the two target characters (rather than participants being distributed across a wider range of target characters). In Study 3, we returned to this approach, limiting the target characters to a beetle and a robot, so as to follow up on this secondary finding with a younger group of children. 
-
-Finally, Study 3 was designed in anticipation of developing participant-level analyses to supplement the group-level EFAs discussed so far (see "Continuous development at the participant level: A re-analysis of Studies 1-3," below). With this general goal in mind, we asked each child to assess the mental capacities of both a beetle and a robot, so as to maximize the number of observations per participant for these anticipated participant-level analyses.
+A second goal of Study 3 was to assess younger children's attributions of mental life to what we have called "edge cases" in social reasoning: beetles (which are atypical animals) and robots (which are atypical objects). In Studies 1 and 2, even older children attributed more social-emotional abilities (_HEART_) to these edge cases than did adults, despite sharing adults' conceptual structure (_BODY_-_HEART_-_MIND_). In Study 1, the approach of focusing on "edge cases" in particular allowed us to estimate older children's aggregate attributions to these entities with precision and to chart changes in these attributions over age continuously within the range of 7-9 years, because large numbers of children assessed each of the two target characters. In Study 2, 4- to 6-year-old children appear to have been particularly un-adult-like in their attributions to the beetle and the robot—but because participants were distributed across a wide range of target characters, we could not chart these differences with any precision. In Study 3, we returned to the "edge case" approach, limiting the target characters to a beetle and a robot.
 
 ## Method
 
