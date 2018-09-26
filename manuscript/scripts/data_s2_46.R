@@ -1,4 +1,4 @@
-# STUDY 1: CHILDREN
+# STUDY 2: YOUNGER CHILDREN
 # read in & tidy data
 d2_46 <- read.csv("./anonymized_data/study2_children46_anonymized.csv") %>%
   mutate(age = as.numeric(as.character(age))) %>%

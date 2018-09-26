@@ -1,0 +1,71 @@
+# STUDY 3: ADULTS
+# read in & tidy data
+d3_ad <- read.csv("./anonymized_data/study3_adults_anonymized.csv")[-1] %>%
+  mutate(study = "Study 3: Adults",
+         age_group = "adults") %>%
+  mutate_at(vars(ethnicity, religion),
+            funs(cat = case_when(grepl("\\,", as.character(.)) ~ "multi",
+                                 TRUE ~ as.character(.)))) %>%
+  mutate(age = 2018 - as.numeric(as.character(yob)),
+         age = ifelse(age > 100, NA, age)) %>%
+  mutate(capacity = gsub("\\.", " ", capacity),
+         response_num = recode(response,
+                               "NO" = 0,
+                               "KINDA" = 0.5,
+                               "YES" = 1,
+                               .default = NA_real_),
+         duration = duration/60) %>%
+  select(-summary, -comments) %>%
+  filter(!is.na(summary_coded)) %>%
+  distinct()
+
+# d3_ad %>% distinct(subid) %>% count()
+
+# make wideform
+d3_ad_wide <- d3_ad %>% 
+  # mutate(subid_char = paste(subid, character, sep = "_")) %>%
+  select(subid_char, summary_coded, capacity, response_num) %>%
+  spread(capacity, response_num) %>%
+  # clean data (part 1)
+  filter(summary_coded == 1) %>%
+  filter(`please choose yes` == 1,
+         `please click kinda` == 0.5,
+         `please select no` == 0) %>%
+  select(-summary_coded, -starts_with("please")) %>%
+  mutate(subid = gsub("_.*$", "", subid_char),
+         character = gsub("^.*_", "", subid_char))
+  
+# d3_ad_wide %>% distinct(subid) %>% count()
+
+# clean data (part 2): exclude subs who failed attn checks in EITHER block
+d3_ad_wide <- d3_ad_wide %>%
+  filter(!subid %in% data.frame(
+    d3_ad_wide %>%
+      distinct(subid, character) %>%
+      count(subid) %>%
+      filter(n!=2))$subid)
+
+# d3_ad_wide %>% distinct(subid) %>% count()
+
+d3_ad_wide <- d3_ad_wide %>%
+  select(-subid, -character) %>%
+  column_to_rownames("subid_char")
+
+# clean data (part 3)
+d3_ad <- d3_ad %>%
+  filter(subid_char %in% rownames(d3_ad_wide),
+         !grepl("please", capacity))
+
+# d3_ad %>% distinct(subid) %>% count()
+
+# impute missing values using the mean by character and capacity
+d3_ad_wide_i <- d3_ad_wide %>% 
+  rownames_to_column("subid_char") %>%
+  mutate(subid = gsub("_.*$", "", subid_char),
+         character = gsub("^.*_", "", subid_char)) %>%
+  group_by(character) %>%
+  mutate_at(vars(-c(subid, character, subid_char)),
+            funs(replace(., which(is.na(.)), mean(., na.rm = T)))) %>%
+  ungroup() %>%
+  select(-subid, -character) %>%
+  column_to_rownames("subid_char")

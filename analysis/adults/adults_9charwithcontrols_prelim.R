@@ -1,7 +1,8 @@
 library(tidyverse)
 library(psych)
 
-d_raw <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/QUALTRICS/9 characters/Dimkid (adults_many_char with controls)_handcoded.csv", header = T)
+d_raw <- read.csv("/Users/kweisman/Documents/Research (Stanford)/Projects/Dimkid/QUALTRICS/9 characters/Dimkid (adults_many_char with controls)_handcoded.csv", header = T) %>%
+  mutate(ResponseId = gsub("_", "-", ResponseId))
 
 question_key <- d_raw[1:2,] %>%
   t() %>%
