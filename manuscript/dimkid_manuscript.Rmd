@@ -2,16 +2,17 @@
 title: "Children's developing representations of mental life: Changes in conceptual
   structure between 4-9 years of age"
 author: "Kara Weisman, Carol S. Dweck, & Ellen M. Markman"
-subtitle: Draft updated 2018-09-26
 output:
   html_notebook:
     toc: yes
     toc_depth: 4
     toc_float: yes
+subtitle: "Draft updated 2018-09-26"
+always_allow_html: yes
 ---
 
 ```{r global_options, include = F}
-knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67, 
+knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
                       include = F, echo = F)
 ```
 
