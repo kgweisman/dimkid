@@ -1,19 +1,35 @@
 ---
-title: 'Children''s developing representations of mental life: Changes in conceptual
-  structure between 4-9 years of age'
+title: "Children's developing representations of mental life: Changes in conceptual
+  structure between 4-9 years of age"
 author: "Kara Weisman, Carol S. Dweck, & Ellen M. Markman"
 subtitle: Draft updated 2018-09-25
 output:
   html_notebook:
-    toc: true
+    toc: yes
     toc_depth: 4
-    toc_float: true
+    toc_float: yes
 ---
 
 ```{r global_options, include = F}
 knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67, 
                       include = F, echo = F)
 ```
+
+```{r}
+# # for knitting to .docx
+# output:
+#   word_document:
+#     reference_docx: "./word-styles-reference.docx"
+# always_allow_html: yes
+   
+# # for knitting to .nb.html 
+# output:
+#   html_notebook:
+#     toc: yes
+#     toc_depth: 4
+#     toc_float: yes
+```
+
 
 ```{r}
 library(tidyverse)
@@ -544,8 +560,6 @@ Of course, our sample of "children" included participants as young as 7 years an
 d1_ch_age <- d1_79 %>% distinct(subid, age)
 ```
 
-To explore age-related differences continuously within the child sample, we conducted an additional regression analysis on children's factor scores alone, including interactions with exact age in years (centered at the mean: `r format(round(mean(d1_ch_age$age, na.rm = T), 2), nsmall = 2)`y) rather than age group. In line with the age group analysis described in the previous section, this confirmed that, relative to the grand mean, attributions of _HEART_ decreased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameH_GM:age")`) and attributions of _MIND_ increased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameM_GM:age")`). (See Table 2 for the full results of this model.)
-
 ```{r}
 # efa_3_scores_r_d1_79 <- brm(score ~ factor_name * age * character
 #                             + (1|subid),
@@ -560,6 +574,8 @@ To explore age-related differences continuously within the child sample, we cond
 efa_3_scores_r_d1_79 <- readRDS("./brms_models/efa_3_scores_r_d1_79.rds")
 # summary(efa_3_scores_r_d1_79)
 ```
+
+To explore age-related differences continuously within the child sample, we conducted an additional regression analysis on children's factor scores alone, including interactions with exact age in years (centered at the mean: `r format(round(mean(d1_ch_age$age, na.rm = T), 2), nsmall = 2)`y) rather than age group. In line with the age group analysis described in the previous section, this confirmed that, relative to the grand mean, attributions of _HEART_ decreased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameH_GM:age")`) and attributions of _MIND_ increased with age (`r write_b_95CI_fun(efa_3_scores_r_d1_79, "factor_nameM_GM:age")`). (See Table 2 for the full results of this model.)
 
 ```{r, include = T, results = "asis"}
 fixef(efa_3_scores_r_d1_79) %>%
@@ -1158,7 +1174,7 @@ d2_anim_r <- readRDS("./brms_models/d2_anim_r.rds")
 # summarY(d2_anim_r)
 ```
 
-```{r, results = "asis", include = T}
+```{r, include = T, results = "asis"}
 fixef(d2_anim_r) %>%
   data.frame() %>%
   rownames_to_column("Parameter") %>%
@@ -1594,7 +1610,7 @@ If children were also becoming increasingly adult-like in their distinctions bet
 
 We note that participants who assessed the robot seemed to become particularly un-adult-like at older ages (see Figure 8, Panel B, in blue). Excluding these participants yields a more coherent picture of increasing adult-like-ness with increasing age (Figure 8, Panel A, in turquoise). This did not appear to be the case when excluding any of the other inanimate target characters. We elaborate on children's conceptualizations of the mental lives of robots in particular in the General Discussion (see also Weisman, under review). (See also SOM for an analysis of how excluding any individual target character, or any individual mental capacity, affects the conceptual structures revealed by factor analysis for each of the three age groups in Study 2.)
 
-```{r, results = "asis", include = T}
+```{r, include = T, results = "asis"}
 fixef(d2_49_anim_r) %>%
   data.frame() %>%
   rownames_to_column("Parameter") %>%
