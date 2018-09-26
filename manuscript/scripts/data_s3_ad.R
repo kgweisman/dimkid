@@ -2,7 +2,14 @@
 # read in & tidy data
 d3_ad <- read.csv("./anonymized_data/study3_adults_anonymized.csv")[-1] %>%
   mutate(study = "Study 3: Adults",
-         age_group = "adults") %>%
+         age_group = "adults",
+         character = as.character(character)) %>%
+  filter(grepl("beetle", character) | grepl("robot", character)) %>%
+  mutate(character = case_when(grepl("beetle", character) ~ "beetle",
+                               grepl("robot", character) ~ "robot",
+                               TRUE ~ NA_character_),
+         subid_char = gsub("beetles", "beetle", subid_char),
+         subid_char = gsub("robots", "robot", subid_char)) %>%
   mutate_at(vars(ethnicity, religion),
             funs(cat = case_when(grepl("\\,", as.character(.)) ~ "multi",
                                  TRUE ~ as.character(.)))) %>%

@@ -1,11 +1,15 @@
 # STUDY 3: CHILDREN
 # read in & tidy data
 d3_46 <- read.csv("./anonymized_data/study3_children46_anonymized.csv") %>%
-  mutate(age = as.numeric(as.character(age_years))) %>%
+  mutate(age = as.numeric(as.character(age_years)),
+         character = as.character(character)) %>%
   filter(((age >= 4 & age < 7) | is.na(age)),
-         character %in% c("beetle", "robot"),
+         (grepl("beetle", character) | grepl("robot", character)),
          !grepl("metal", capacity), 
          !grepl("turned on", capacity)) %>%
+  mutate(character = case_when(grepl("beetle", character) ~ "beetle",
+                               grepl("robot", character) ~ "robot",
+                               TRUE ~ NA_character_)) %>%
   select(subid, age, gender, ethnicity, ethnicity_collapse,
          game, version, character, question, capacity, 
          response, response_num) %>%
