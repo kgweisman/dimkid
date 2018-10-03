@@ -52,6 +52,16 @@ d1_all_endorse <- d1_buckets %>%
 
 ## Examine first-order age trends
 
+```{r, include = T}
+ggplot(d1_all_endorse, 
+       aes(x = prop_endorse, color = age_group, fill = age_group)) +
+  facet_grid(character ~ factor) +
+  geom_histogram(position = "identity", binwidth = 1/6, alpha = 0.5) +
+  scale_x_continuous(limits = c(-0.2, 1.2), breaks = seq(0, 1, 0.5)) +
+  scale_fill_brewer(palette = "Set1", direction = -1) +
+  scale_color_brewer(palette = "Set1", direction = -1)
+```
+
 ```{r}
 d1_all_endorse_boot <- d1_all_endorse %>%
   group_by(age_group, character, factor) %>%
@@ -61,7 +71,7 @@ d1_all_endorse_boot <- d1_all_endorse %>%
 
 ```{r}
 figSUPP1_plot <- d1_all_endorse %>%
-  filter(age_group == "children") %>%
+  filter(age_group != "adults") %>%
   left_join(d1_79 %>% distinct(subid, age)) %>%
   filter(!is.na(age)) %>%
   ggplot(aes(x = age, y = prop_endorse, 
@@ -114,6 +124,28 @@ d1_all_endorse_diff <- d1_all_endorse %>%
          diff_01_abs = abs(difference))
 ```
 
+```{r, include = T}
+ggplot(d1_all_endorse_diff, 
+       aes(x = diff_01, color = age_group, fill = age_group)) +
+  facet_grid(character ~ comparison) +
+  geom_histogram(position = "identity", binwidth = 1/12, alpha = 0.5) +
+  geom_vline(xintercept = 0.5, lty = 2) +
+  scale_x_continuous(limits = c(-0.2, 1.2), breaks = c(0, 1, 0.5)) +
+  scale_fill_brewer(palette = "Set1", direction = -1) +
+  scale_color_brewer(palette = "Set1", direction = -1)
+```
+
+```{r, include = T}
+ggplot(d1_all_endorse_diff, 
+       aes(x = diff_01, color = age_group, fill = age_group)) +
+  facet_grid(. ~ comparison) +
+  geom_histogram(position = "identity", binwidth = 1/12, alpha = 0.5) +
+  geom_vline(xintercept = 0.5, lty = 2) +
+  scale_x_continuous(limits = c(-0.2, 1.2), breaks = c(0, 1, 0.5)) +
+  scale_fill_brewer(palette = "Set1", direction = -1) +
+  scale_color_brewer(palette = "Set1", direction = -1)
+```
+
 ```{r}
 d1_all_endorse_diff_boot <- d1_all_endorse_diff %>%
   group_by(age_group, character, comparison) %>%
@@ -123,7 +155,7 @@ d1_all_endorse_diff_boot <- d1_all_endorse_diff %>%
 
 ```{r}
 figSUPP2_plot <- d1_all_endorse_diff %>%
-  filter(age_group == "children") %>%
+  filter(age_group != "adults") %>%
   left_join(d1_79 %>% distinct(subid, age)) %>%
   filter(!is.na(age)) %>%
   mutate(y = (difference + 6)/12) %>%
@@ -170,9 +202,31 @@ d1_all_endorse_diff_abs_boot <- d1_all_endorse_diff %>%
   ungroup()
 ```
 
+```{r, include = T}
+ggplot(d1_all_endorse_diff, 
+       aes(x = diff_01_abs, color = age_group, fill = age_group)) +
+  facet_grid(character ~ comparison) +
+  geom_histogram(position = "identity", binwidth = 1/6, alpha = 0.5) +
+  geom_vline(xintercept = 0.5, lty = 2) +
+  scale_x_continuous(limits = c(-0.2, 1.2), breaks = c(0, 1, 0.5)) +
+  scale_fill_brewer(palette = "Set1", direction = -1) +
+  scale_color_brewer(palette = "Set1", direction = -1)
+```
+
+```{r, include = T}
+ggplot(d1_all_endorse_diff, 
+       aes(x = diff_01_abs, color = age_group, fill = age_group)) +
+  facet_grid(. ~ comparison) +
+  geom_histogram(position = "identity", binwidth = 1/6, alpha = 0.5) +
+  geom_vline(xintercept = 0.5, lty = 2) +
+  scale_x_continuous(limits = c(-0.2, 1.2), breaks = c(0, 1, 0.5)) +
+  scale_fill_brewer(palette = "Set1", direction = -1) +
+  scale_color_brewer(palette = "Set1", direction = -1)
+```
+
 ```{r}
 figSUPP3_plot <- d1_all_endorse_diff %>%
-  filter(age_group == "children") %>%
+  filter(age_group != "adults") %>%
   left_join(d1_79 %>% distinct(subid, age)) %>%
   filter(!is.na(age)) %>%
   mutate(y = (difference + 6)/12) %>%
@@ -246,6 +300,16 @@ d2_all_endorse_boot_anim <- d2_all_endorse %>%
   group_by(age_group, anim_inan, factor) %>%
   multi_boot_standard(col = "prop_endorse") %>%
   ungroup()
+```
+
+```{r, include = T}
+ggplot(d2_all_endorse, 
+       aes(x = prop_endorse, color = age_group, fill = age_group)) +
+  facet_grid(anim_inan ~ factor) +
+  geom_histogram(position = "identity", binwidth = 1/6, alpha = 0.5) +
+  scale_x_continuous(limits = c(-0.2, 1.2), breaks = c(0, 1, 0.5)) +
+  scale_fill_brewer(palette = "Set1", direction = -1) +
+  scale_color_brewer(palette = "Set1", direction = -1)
 ```
 
 ```{r}
@@ -347,6 +411,28 @@ d2_all_endorse_diff <- d2_all_endorse %>%
   gather(comparison, difference, contains("min")) %>%
   mutate(diff_01 = (difference + 1)/2,
          diff_01_abs = abs(difference))
+```
+
+```{r, include = T}
+ggplot(d2_all_endorse_diff, 
+       aes(x = diff_01, color = age_group, fill = age_group)) +
+  facet_grid(anim_inan ~ comparison) +
+  geom_histogram(position = "identity", binwidth = 1/12, alpha = 0.5) +
+  geom_vline(xintercept = 0.5, lty = 2) +
+  scale_x_continuous(limits = c(-0.2, 1.2), breaks = c(0, 1, 0.5)) +
+  scale_fill_brewer(palette = "Set1", direction = -1) +
+  scale_color_brewer(palette = "Set1", direction = -1)
+```
+
+```{r, include = T}
+ggplot(d2_all_endorse_diff, 
+       aes(x = diff_01, color = age_group, fill = age_group)) +
+  facet_grid(. ~ comparison) +
+  geom_histogram(position = "identity", binwidth = 1/12, alpha = 0.5) +
+  geom_vline(xintercept = 0.5, lty = 2) +
+  scale_x_continuous(limits = c(-0.2, 1.2), breaks = c(0, 1, 0.5)) +
+  scale_fill_brewer(palette = "Set1", direction = -1) +
+  scale_color_brewer(palette = "Set1", direction = -1)
 ```
 
 ```{r}
@@ -455,6 +541,28 @@ d2_all_endorse_diff_abs_boot_anim <- d2_all_endorse_diff %>%
   ungroup()
 ```
 
+```{r, include = T}
+ggplot(d2_all_endorse_diff, 
+       aes(x = diff_01_abs, color = age_group, fill = age_group)) +
+  facet_grid(anim_inan ~ comparison) +
+  geom_histogram(position = "identity", binwidth = 1/6, alpha = 0.5) +
+  geom_vline(xintercept = 0.5, lty = 2) +
+  scale_x_continuous(limits = c(-0.2, 1.2), breaks = c(0, 1, 0.5)) +
+  scale_fill_brewer(palette = "Set1", direction = -1) +
+  scale_color_brewer(palette = "Set1", direction = -1)
+```
+
+```{r, include = T}
+ggplot(d2_all_endorse_diff, 
+       aes(x = diff_01_abs, color = age_group, fill = age_group)) +
+  facet_grid(. ~ comparison) +
+  geom_histogram(position = "identity", binwidth = 1/6, alpha = 0.5) +
+  geom_vline(xintercept = 0.5, lty = 2) +
+  scale_x_continuous(limits = c(-0.2, 1.2), breaks = c(0, 1, 0.5)) +
+  scale_fill_brewer(palette = "Set1", direction = -1) +
+  scale_color_brewer(palette = "Set1", direction = -1)
+```
+
 ```{r}
 figSUPP6a_plot <- d2_all_endorse_diff %>%
   filter(age_group != "adults") %>%
@@ -540,4 +648,193 @@ figSUPP6_plots <- plot_grid(figSUPP6a_plot, figSUPP6b_plot,
 figSUPP6_with_caption <- add_sub(figSUPP6_plots, str_wrap("Figure SUPP6: Absolute differences in the number of mental capacity items (out of 6) endorsed across the three domains (BODY minus HEART, BODY minus MIND, and MIND minus HEART) by 4- to 9-year-old children and adults in Study 2, in which each participant assessed 20 mental capacities for one of nine target characters. We defined each domain by the 6 items that loaded the most positively on the corresponding factor in an exploratory factor analysis of adults' responses, and we considered responses of either 'yes' or 'kinda' (but not 'no') to be endorsements. Lines correspond to logistic regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores.", 130), x = 0, hjust = 0)
 ggdraw(figSUPP6_with_caption)
 ```
+
+
+# Study 3
+
+## Define buckets
+
+```{r}
+d3_buckets <- loadings_fun(efa_3_d3_ad) %>%
+  mutate(factor = recode_factor(factor,
+                                "F1" = "BODY",
+                                "F2" = "HEART",
+                                "F3" = "MIND")) %>%
+  group_by(factor) %>%
+  top_n(6, loading) %>%
+  ungroup()
+```
+
+```{r}
+d3_all_endorse <- d3_buckets %>%
+  select(-loading) %>%
+  left_join(d3_all) %>%
+  mutate(endorse = ifelse(response_num > 0, 1, 0)) %>%
+  group_by(age_group, subid, character, factor) %>%
+  summarise(n = length(endorse),
+            sum_endorse = sum(endorse, na.rm = T),
+            prop_endorse = mean(endorse, na.rm = T)) %>%
+  ungroup()
+```
+
+## Examine first-order age trends
+
+```{r}
+d3_all_endorse_boot <- d3_all_endorse %>%
+  group_by(age_group, character, factor) %>%
+  multi_boot_standard(col = "prop_endorse") %>%
+  ungroup()
+```
+
+```{r}
+figSUPP7_plot <- d3_all_endorse %>%
+  filter(age_group != "adults") %>%
+  left_join(d3_46 %>% distinct(subid, age)) %>%
+  filter(!is.na(age)) %>%
+  ggplot(aes(x = age, y = prop_endorse, 
+             fill = character, color = character, shape = character)) +
+  facet_wrap(~ factor) +
+  geom_jitter(alpha = 0.4, width = 0, height = 0.03) +
+  binomial_smooth(aes(weight = n), show.legend = F) +
+  # geom_smooth(method = "glm",
+  #             method.args = list(family = "binomial")) +
+  geom_point(data = d3_all_endorse %>% filter(age_group == "adults"),
+             aes(x = 6), alpha = 0.4, show.legend = F,
+             position = position_jitterdodge(dodge.width = 0.5,
+                                             jitter.height = 0.03,
+                                             jitter.width = 0.25)) +
+  geom_pointrange(data = d3_all_endorse_boot %>% filter(age_group == "adults"),
+                  aes(x = 6, y = mean, ymin = ci_lower, ymax = ci_upper),
+                  position = position_dodge(width = 0.5), show.legend = F,
+                  color = "black", fatten = 5) +
+  scale_x_continuous(breaks = c(4:6), 
+                     labels = c(paste0(4:5, "y"), "adults")) +
+  scale_y_continuous(breaks = seq(0, 1, 1/6), labels = 0:6) +
+  scale_color_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_fill_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_shape_manual(values = c(21, 22)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 3))) +
+  labs(y = "number of items endorsed (out of 6)")
+```
+
+```{r, include = T, fig.width = 6, fig.asp = 0.7}
+figSUPP7_with_caption <- add_sub(figSUPP7_plot, str_wrap("Figure SUPP7: Number of mental capacity items (out of 6) endorsed in each domain (BODY, HEART, and MIND) by 4- to 5-year-old children and adults in Study 3, in which each participant assessed 18 mental capacities for each of two target characters: a beetle (pink circles) and a robot (blue squares). We defined each domain by the 6 items that loaded the most positively on the corresponding factor in an exploratory factor analysis of adults' responses, and we considered responses of either 'yes' or 'kinda' (but not 'no') to be endorsements. Lines correspond to logistic regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores.", 130), x = 0, hjust = 0)
+ggdraw(figSUPP7_with_caption)
+```
+
+## Examine difference scores
+
+```{r}
+d3_all_endorse_diff <- d3_all_endorse %>%
+  select(age_group, subid, character, factor, prop_endorse) %>%
+  spread(factor, prop_endorse) %>%
+  group_by(age_group, subid, character) %>%
+  mutate(`BODY minus HEART` = BODY - HEART,
+         `BODY minus MIND` = BODY - MIND,
+         `MIND minus HEART` = MIND - HEART) %>%
+  ungroup() %>% 
+  select(-c(BODY, HEART, MIND)) %>%
+  gather(comparison, difference, contains("min")) %>%
+  mutate(diff_01 = (difference + 1)/2,
+         diff_01_abs = abs(difference))
+```
+
+```{r}
+d3_all_endorse_diff_boot <- d3_all_endorse_diff %>%
+  group_by(age_group, character, comparison) %>%
+  multi_boot_standard(col = "diff_01") %>%
+  ungroup()
+```
+
+```{r}
+figSUPP8_plot <- d3_all_endorse_diff %>%
+  filter(age_group != "adults") %>%
+  left_join(d3_46 %>% distinct(subid, age)) %>%
+  filter(!is.na(age)) %>%
+  mutate(y = (difference + 6)/12) %>%
+  ggplot(aes(x = age, y = diff_01, 
+             fill = character, color = character, shape = character)) +
+  facet_wrap(~ comparison) +
+  geom_hline(yintercept = 0.5, lty = 2) +
+  geom_jitter(alpha = 0.4, width = 0, height = 0.015) +
+  binomial_smooth(aes(weight = 1), show.legend = F) +
+  # geom_smooth(method = "glm",
+  #             method.args = list(family = "binomial")) +
+  geom_point(data = d3_all_endorse_diff %>% filter(age_group == "adults"),
+             aes(x = 6), alpha = 0.4, show.legend = F,
+             position = position_jitterdodge(dodge.width = 0.5,
+                                             jitter.height = 0.015,
+                                             jitter.width = 0.25)) +
+  geom_pointrange(data = d3_all_endorse_diff_boot %>% filter(age_group == "adults"),
+                  aes(x = 6, y = mean, ymin = ci_lower, ymax = ci_upper),
+                  position = position_dodge(width = 0.5), show.legend = F,
+                  color = "black", fatten = 5) +
+  scale_x_continuous(breaks = c(4:6), 
+                     labels = c(paste0(4:5, "y"), "adults")) +
+  scale_y_continuous(breaks = seq(0, 1, 1/12), labels = seq(-6, 6, 1)) +
+  scale_color_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_fill_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_shape_manual(values = c(21, 22)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 3))) +
+  labs(y = "differences in number of items endorsed (out of 6)")
+```
+
+```{r, include = T, fig.width = 6, fig.asp = 0.7}
+figSUPP8_with_caption <- add_sub(figSUPP8_plot, str_wrap("Figure SUPP8: Differences in the number of mental capacity items (out of 6) endorsed across the three domains (BODY minus HEART, BODY minus MIND, and MIND minus HEART) by 4- to 5-year-old children and adults in Study 3, in which each participant assessed 18 mental capacities for each of two target characters: a beetle (pink circles) and a robot (blue squares). We defined each domain by the 6 items that loaded the most positively on the corresponding factor in an exploratory factor analysis of adults' responses, and we considered responses of either 'yes' or 'kinda' (but not 'no') to be endorsements. Lines correspond to logistic regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores.", 130), x = 0, hjust = 0)
+ggdraw(figSUPP8_with_caption)
+```
+
+## Examine absolute difference scores
+
+```{r}
+d3_all_endorse_diff_abs_boot <- d3_all_endorse_diff %>%
+  group_by(age_group, character, comparison) %>%
+  multi_boot_standard(col = "diff_01_abs") %>%
+  ungroup()
+```
+
+```{r}
+figSUPP9_plot <- d3_all_endorse_diff %>%
+  filter(age_group != "adults") %>%
+  left_join(d3_46 %>% distinct(subid, age)) %>%
+  filter(!is.na(age)) %>%
+  mutate(y = (difference + 6)/12) %>%
+  ggplot(aes(x = age, y = diff_01_abs, 
+             fill = character, color = character, shape = character)) +
+  facet_wrap(~ comparison) +
+  geom_jitter(alpha = 0.4, width = 0, height = 0.015) +
+  binomial_smooth(aes(weight = 1), show.legend = F) +
+  # geom_smooth(method = "glm",
+  #             method.args = list(family = "binomial")) +
+  geom_point(data = d3_all_endorse_diff %>% filter(age_group == "adults"),
+             aes(x = 6), alpha = 0.4, show.legend = F,
+             position = position_jitterdodge(dodge.width = 0.5,
+                                             jitter.height = 0.015,
+                                             jitter.width = 0.25)) +
+  geom_pointrange(data = d3_all_endorse_diff_abs_boot %>% 
+                    filter(age_group == "adults"),
+                  aes(x = 6, y = mean, ymin = ci_lower, ymax = ci_upper),
+                  position = position_dodge(width = 0.5), show.legend = F,
+                  color = "black", fatten = 5) +
+  scale_x_continuous(breaks = c(4:6), 
+                     labels = c(paste0(4:5, "y"), "adults")) +
+  scale_y_continuous(breaks = seq(0, 1, 1/6), labels = seq(0, 6, 1)) +
+  scale_color_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_fill_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_shape_manual(values = c(21, 22)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 3))) +
+  labs(y = "asbolute differences in number of items endorsed (out of 6)")
+```
+
+```{r, include = T, fig.width = 6, fig.asp = 0.7}
+figSUPP9_with_caption <- add_sub(figSUPP9_plot, str_wrap("Figure SUPP8: Absolute differences in the number of mental capacity items (out of 6) endorsed across the three domains (BODY minus HEART, BODY minus MIND, and MIND minus HEART) by 4- to 5-year-old children and adults in Study 3, in which each participant assessed 18 mental capacities for each of two target characters: a beetle (pink circles) and a robot (blue squares). We defined each domain by the 6 items that loaded the most positively on the corresponding factor in an exploratory factor analysis of adults' responses, and we considered responses of either 'yes' or 'kinda' (but not 'no') to be endorsements. Lines correspond to logistic regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores.", 130), x = 0, hjust = 0)
+ggdraw(figSUPP9_with_caption)
+```
+
 
