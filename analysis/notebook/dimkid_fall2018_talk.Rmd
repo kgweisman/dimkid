@@ -1,0 +1,69 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+First run dimkid_manuscript.Rmd
+
+```{r, fig.width = 3, fig.asp = 1.253833}
+efa_3_plot_d1_ad + theme(title = element_blank(), text = element_text(size = 14)) + guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, breaks = seq(-1, 1, 0.5)))
+
+efa_3_plot_d1_79 + theme(title = element_blank(), text = element_text(size = 14)) + guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, breaks = seq(-1, 1, 0.5)))
+```
+
+```{r, fig.width = 3, fig.asp = 1.253833}
+efa_3_plot_d2_ad + theme(title = element_blank(), text = element_text(size = 14)) + guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, breaks = seq(-1, 1, 0.5)))
+
+efa_3_plot_d2_79 + theme(title = element_blank(), text = element_text(size = 14)) + guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, breaks = seq(-1, 1, 0.5)))
+
+efa_3_plot_d2_46 + theme(title = element_blank(), text = element_text(size = 14)) + guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, breaks = seq(-1, 1, 0.5)))
+
+efa_2_plot_d2_46 + theme(title = element_blank(), text = element_text(size = 14)) + guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, breaks = seq(-1, 1, 0.5)))
+```
+
+```{r}
+fig02_plot + 
+  facet_wrap(~ factor_name, nrow = 1, scales = "free") + 
+  guides(color = guide_legend(byrow = F)) + 
+  scale_y_continuous("factor score", breaks = seq(-10, 10, 0.5)) +
+  labs(caption = "error bars are 95% bootstrapped CIs") +
+  theme(text = element_text(size = 12))
+```
+
+```{r}
+figSUPP1.25_mod <- d1_all_endorse_boot %>%
+  filter(!is.na(character)) %>%
+  mutate(age_group = recode_factor(age_group,
+                                   "children" = "7-9y",
+                                   "adults" = "adults")) %>%
+  ggplot(aes(x = age_group, group = character,
+             y = mean, color = character)) + 
+  facet_wrap(~ factor, nrow = 1) + 
+  geom_line(position = position_dodge(width = 0.15)) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper),
+                  position = position_dodge(width = 0.15)) +
+  scale_color_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_y_continuous("# items endorsed", limits = c(0, 1), 
+                     breaks = seq(0, 1, 2/6),
+                     labels = seq(0, 6, 2)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom",
+        text = element_text(size = 12)) +
+  guides(color = guide_legend(byrow = F)) + 
+  labs(x = "age group", y = "number of items endorsed", color = "character",
+       caption = "error bars are 95% bootstrapped CIs")
+figSUPP1.25_mod
+```
+
+
+```{r}
+figSUPP1.5a_plot +
+  facet_wrap(~ factor, nrow = 1) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom",
+        text = element_text(size = 12)) +
+  guides(color = guide_legend(byrow = F)) + 
+  labs(x = "age group", y = "number of items endorsed", color = "character",
+       caption = "error bars are 95% bootstrapped CIs")
+```
