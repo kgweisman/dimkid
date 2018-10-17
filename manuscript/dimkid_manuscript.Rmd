@@ -526,10 +526,15 @@ ggdraw(fig03_with_caption)
 ```
 
 ```{r}
-d1_all_endorse <- d1_all %>%
-  group_by(factor, subid) %>%
+d1_all_buckets <- d1_all %>%
+  filter(age_group == "adults") %>%
+  distinct(factor, capacity, order) %>%
+  group_by(factor) %>%
   top_n(-6, order) %>%
-  ungroup() %>%
+  arrange(factor, order)
+
+d1_all_endorse <- d1_all %>%
+  filter(capacity %in% d1_all_buckets$capacity) %>%
   mutate(endorse = ifelse(response_num > 0, 1, 0)) %>%
   group_by(age_group, subid, character, factor) %>%
   summarise(prop_endorse = mean(endorse, na.rm = T),
@@ -540,8 +545,37 @@ d1_all_endorse_boot <- d1_all_endorse %>%
   group_by(age_group, character, factor) %>%
   multi_boot_standard(col = "prop_endorse") %>%
   ungroup()
+```
 
-figSUPP1_plot <- d1_all_endorse %>%
+
+```{r}
+figSUPP1_plot <- d1_all_endorse_boot %>%
+  filter(!is.na(character)) %>%
+  mutate(age_group = recode_factor(age_group,
+                                   "children" = "7-9y",
+                                   "adults" = "adults")) %>%
+  ggplot(aes(x = age_group, group = character,
+             y = mean, color = character)) + 
+  facet_grid(rows = vars(factor), scales = "free") +
+  geom_line(position = position_dodge(width = 0.5)) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper),
+                  position = position_dodge(width = 0.5)) +
+  scale_color_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 2/6), 
+                     labels = seq(0, 6, 2)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom") +
+  guides(color = guide_legend(nrow = 2, reverse = T)) +
+  labs(x = "age group", y = "number of items endorsed", color = "character")
+```
+
+```{r, include = F, fig.width = 3, fig.asp = 3}
+figSUPP1_with_caption <- add_sub(figSUPP1_plot, str_wrap("Figure SUPP1: Number of mental capacity items (out of 6) endorsed in each domain (BODY, HEART, and MIND) by 7- to 9-year-old children and adults in Study 1, in which each participant assessed 40 mental capacities for one of two target characters: a beetle (pink circles) or a robot (blue squares). We defined each domain by the 6 items that loaded the most positively on the corresponding factor in an exploratory factor analysis of adults' responses, and we considered responses of either 'yes' or 'kinda' (but not 'no') to be endorsements. Error bars are bootstrapped 95% confidence intervals.", 60), x = 0, hjust = 0)
+ggdraw(figSUPP1_with_caption)
+```
+
+```{r}
+figSUPP2_plot <- d1_all_endorse %>%
   filter(age_group == "children") %>%
   left_join(d1_79 %>% distinct(subid, age)) %>%
   filter(!is.na(age)) %>%
@@ -574,8 +608,8 @@ figSUPP1_plot <- d1_all_endorse %>%
 ```
 
 ```{r, include = F, fig.width = 6, fig.asp = 0.7}
-figSUPP1_with_caption <- add_sub(figSUPP1_plot, str_wrap("Figure SUPP1: Number of mental capacity items (out of 6) endorsed in each domain (BODY, HEART, and MIND) by 7- to 9-year-old children and adults in Study 1, in which each participant assessed 40 mental capacities for one of two target characters: a beetle (pink circles) or a robot (blue squares). We defined each domain by the 6 items that loaded the most positively on the corresponding factor in an exploratory factor analysis of adults' responses, and we considered responses of either 'yes' or 'kinda' (but not 'no') to be endorsements. Lines correspond to logistic regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores.", 130), x = 0, hjust = 0)
-ggdraw(figSUPP1_with_caption)
+figSUPP2_with_caption <- add_sub(figSUPP2_plot, str_wrap("Figure SUPP1: Number of mental capacity items (out of 6) endorsed in each domain (BODY, HEART, and MIND) by 7- to 9-year-old children and adults in Study 1, in which each participant assessed 40 mental capacities for one of two target characters: a beetle (pink circles) or a robot (blue squares). We defined each domain by the 6 items that loaded the most positively on the corresponding factor in an exploratory factor analysis of adults' responses, and we considered responses of either 'yes' or 'kinda' (but not 'no') to be endorsements. Lines correspond to logistic regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores.", 130), x = 0, hjust = 0)
+ggdraw(figSUPP2_with_caption)
 ```
 
 #### Age differences within the child sample
@@ -1490,11 +1524,16 @@ ggdraw(fig07_with_caption)
 ```
 
 ```{r}
+d2_all_buckets <- d2_all %>%
+  filter(age_group == "adults") %>%
+  distinct(factor, capacity, order) %>%
+  group_by(factor) %>%
+  top_n(-6, order) %>%
+  arrange(factor, order)
+
 d2_all_endorse <- d2_all %>%
   left_join(d2_anim %>% distinct(character, anim_inan)) %>%
-  group_by(factor, subid) %>%
-  top_n(-6, order) %>%
-  ungroup() %>%
+  filter(capacity %in% d2_all_buckets$capacity) %>%
   mutate(endorse = ifelse(response_num > 0, 1, 0),
          anim_inan = recode_factor(anim_inan,
                                    "inanimate" = "inanimates",
@@ -1503,9 +1542,12 @@ d2_all_endorse <- d2_all %>%
   summarise(prop_endorse = mean(endorse, na.rm = T),
             n = length(endorse)) %>%
   ungroup()
-```
 
-```{r}
+d2_all_endorse_boot <- d2_all_endorse %>%
+  group_by(age_group, character, factor) %>%
+  multi_boot_standard(col = "prop_endorse") %>%
+  ungroup()
+
 d2_all_endorse_anim_boot <- d2_all_endorse %>%
   group_by(age_group, anim_inan, factor) %>%
   multi_boot_standard(col = "prop_endorse") %>%
@@ -1513,12 +1555,87 @@ d2_all_endorse_anim_boot <- d2_all_endorse %>%
 ```
 
 ```{r}
-figSUPP2a_plot <- d2_all_endorse %>%
+figSUPP3a_plot <- d2_all_endorse_anim_boot %>%
+  filter(!is.na(anim_inan)) %>%
+  mutate(age_group = recode_factor(age_group,
+                                   "children46" = "4-6y",
+                                   "children79" = "7-9y",
+                                   "adults" = "adults"),
+         anim_inan = recode_factor(anim_inan,
+                                   "inanimate" = "inanimates",
+                                   "animate" = "animates"),
+         facet_lab = "animates vs. inanimates") %>%
+  ggplot(aes(x = age_group, group = anim_inan,
+             y = mean, color = anim_inan)) + 
+  facet_grid(rows = vars(factor), cols = vars(facet_lab), scales = "free") +
+  geom_line(position = position_dodge(width = 0.5)) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper),
+                  position = position_dodge(width = 0.5)) +
+  scale_color_manual(values = c("slategrey", "firebrick1"), na.value = "gray") +
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 2/6), 
+                     labels = seq(0, 6, 2)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom") +
+  guides(color = guide_legend(nrow = 2, reverse = T)) +
+  labs(x = "age group", y = "number of items endorsed", color = "animacy")
+```
+
+```{r}
+figSUPP3b_plot <- ggplot(d2_all_endorse_boot %>%
+                           left_join(d2_all_char %>%
+                                       mutate(character = gsub("_", " ",
+                                                               character)) %>%
+                                       mutate(age_group = recode_factor(
+                                         age_group,
+                                         "children46" = "4-6y",
+                                         "children79" = "7-9y",
+                                         "adults" = "adults"))) %>%
+                           mutate(character = factor(
+                             character,
+                             levels = c("computer", "robot", "doll", 
+                                        "teddy bear", "beetle", "bird", 
+                                        "mouse", "goat", "elephant"))),
+                         aes(x = age_group, y = mean, color = character)) +
+  facet_grid(rows = vars(factor), cols = vars(character), scales = "free") +
+  geom_line(aes(group = character)) +
+  geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper)) +
+                  # fatten = 3, shape = 21, color = "black") +
+  # geom_label(aes(label = paste0("(n=", n, ")"), y = ci_lower),
+  #            label.size = 0, alpha = 0.8,
+  #            nudge_y = -0.1, color = "black", size = 2) +
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 2/6),
+                     labels = seq(0, 6, 2)) +
+  scale_color_brewer(palette = "Paired") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom") +
+  guides(color = guide_legend(override.aes = list(alpha = 1),
+                              nrow = 2, byrow = T, reverse = T)) +
+  labs(x = "age group", y = "", color = "character")
+```
+
+```{r}
+figSUPP3_plots <- plot_grid(figSUPP3a_plot, figSUPP3b_plot,
+                            nrow = 1, rel_widths = c(0.15, 1), 
+                            labels = "AUTO")
+```
+
+```{r, include = F, fig.width = 8, fig.asp = 0.5}
+figSUPP3_with_caption <- add_sub(figSUPP3_plots, str_wrap("Figure SUPP3: Number of mental capacity items (out of 6) endorsed in each domain (BODY, HEART, and MIND) by 4- to 9-year-old children and adults in Study 2, in which each participant assessed 20 mental capacities for one of nine target characters. We defined each domain by the 6 items that loaded the most positively on the corresponding factor in an exploratory factor analysis of adults' responses, and we considered responses of either 'yes' or 'kinda' (but not 'no') to be endorsements. Error bars are bootstrapped 95% confidence intervals.", 181), x = 0, hjust = 0)
+ggdraw(figSUPP3_with_caption)
+```
+
+```{r}
+figSUPP4a_plot <- d2_all_endorse %>%
   filter(age_group != "adults") %>%
   left_join(full_join(d2_79 %>% distinct(subid, age),
                       d2_46 %>% distinct(subid, age))) %>%
   filter(!is.na(age)) %>%
-  mutate(facet_lab = "animates vs. inanimates") %>%
+  mutate(facet_lab = "animates vs. inanimates",
+         anim_inan = case_when(grepl("inan", anim_inan) ~ "inanimates",
+                               grepl("anim", anim_inan) ~ "animates",
+                               TRUE ~ NA_character_),
+         anim_inan = factor(anim_inan, levels = c("inanimates", "animates"))) %>%
   ggplot(aes(x = age, y = prop_endorse, 
              fill = anim_inan, color = anim_inan)) +
   facet_grid(cols = vars(facet_lab), rows = vars(factor)) +
@@ -1526,16 +1643,29 @@ figSUPP2a_plot <- d2_all_endorse %>%
   binomial_smooth(aes(weight = n), alpha = 0.10, show.legend = F) +
   # geom_smooth(method = "glm",
   #             method.args = list(family = "binomial")) +
-  geom_point(data = d2_all_endorse %>% filter(age_group == "adults"),
+  geom_point(data = d2_all_endorse %>% 
+               filter(age_group == "adults") %>%
+               mutate(anim_inan = case_when(
+                 grepl("inan", anim_inan) ~ "inanimates",
+                 grepl("anim", anim_inan) ~ "animates",
+                 TRUE ~ NA_character_),
+                 anim_inan = factor(anim_inan, 
+                                    levels = c("inanimates", "animates"))),
              aes(x = 11), alpha = 0.2, show.legend = F,
-                  position = position_jitterdodge(dodge.width = 0.5,
-                                                  jitter.width = 0.25)) +
+                  position = position_jitterdodge(dodge.width = 1,
+                                                  jitter.width = 0.25,
+                                                  jitter.height = 0.03)) +
   geom_pointrange(data = d2_all_endorse_anim_boot %>% 
-                    filter(age_group == "adults"),
+                    filter(age_group == "adults") %>%
+                    mutate(anim_inan = case_when(
+                      grepl("inan", anim_inan) ~ "inanimates",
+                      grepl("anim", anim_inan) ~ "animates",
+                      TRUE ~ NA_character_),
+                      anim_inan = factor(anim_inan,
+                                         levels = c("inanimates", "animates"))),
                   aes(x = 11, y = mean, ymin = ci_lower, ymax = ci_upper),
-                  position = position_jitterdodge(dodge.width = 0.5,
-                                                  jitter.width = 0.25), 
-                  show.legend = F, color = "black", fatten = 1.5, shape = 21) +
+                  position = position_dodge(width = 1), 
+                  show.legend = F) + #, color = "black", fatten = 4, shape = 21) +
   scale_x_continuous(breaks = c(4:11), 
                      labels = c(paste0(4:10, "y"), "adults")) +
   scale_y_continuous(breaks = seq(0, 1, 1/6), labels = 0:6) +
@@ -1552,14 +1682,7 @@ figSUPP2a_plot <- d2_all_endorse %>%
 ```
 
 ```{r}
-d2_all_endorse_boot <- d2_all_endorse %>%
-  group_by(age_group, character, factor) %>%
-  multi_boot_standard(col = "prop_endorse") %>%
-  ungroup()
-```
-
-```{r}
-figSUPP2b_plot <- d2_all_endorse %>%
+figSUPP4b_plot <- d2_all_endorse %>%
   filter(age_group != "adults") %>%
   left_join(full_join(d2_79 %>% distinct(subid, age),
                       d2_46 %>% distinct(subid, age))) %>%
@@ -1594,14 +1717,14 @@ figSUPP2b_plot <- d2_all_endorse %>%
 ```
 
 ```{r}
-figSUPP2_plots <- plot_grid(figSUPP2a_plot, figSUPP2b_plot,
+figSUPP4_plots <- plot_grid(figSUPP4a_plot, figSUPP4b_plot,
                             nrow = 1, rel_widths = c(0.85, 1),
                             labels = "AUTO")
 ```
 
 ```{r, include = F, fig.width = 6, fig.asp = 1}
-figSUPP2_with_caption <- add_sub(figSUPP2_plots, str_wrap("Figure SUPP2: Number of mental capacity items (out of 6) endorsed in each domain (BODY, HEART, and MIND) by 4- to 9-year-old children and adults in Study 2, in which each participant assessed 20 mental capacities for one of nine target characters. We defined each domain by the 6 items that loaded the most positively on the corresponding factor in an exploratory factor analysis of adults' responses, and we considered responses of either 'yes' or 'kinda' (but not 'no') to be endorsements. Lines correspond to logistic regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores.", 153), x = 0, hjust = 0)
-ggdraw(figSUPP2_with_caption)
+figSUPP4_with_caption <- add_sub(figSUPP4_plots, str_wrap("Figure SUPP4: Number of mental capacity items (out of 6) endorsed in each domain (BODY, HEART, and MIND) by 4- to 9-year-old children and adults in Study 2, in which each participant assessed 20 mental capacities for one of nine target characters. We defined each domain by the 6 items that loaded the most positively on the corresponding factor in an exploratory factor analysis of adults' responses, and we considered responses of either 'yes' or 'kinda' (but not 'no') to be endorsements. Lines correspond to logistic regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores.", 153), x = 0, hjust = 0)
+ggdraw(figSUPP4_with_caption)
 ```
 
 #### Age differences within the child samples
@@ -1726,7 +1849,7 @@ fig08a_plot <- ggplot(d2_anim %>%
   scale_color_manual(values = c("firebrick1", "white", 
                                 "darkturquoise", "slategrey"), 
                      breaks = c("animate", "dummy", 
-                                "inanimate", "inan_norobot"),
+                                "inanimate", "inan_introduction"),
                      labels = c("animates", " ", 
                                 "inanimates", "(no robot)"),
                      na.value = "gray") +
@@ -2278,6 +2401,26 @@ ggdraw(fig11_with_caption)
 ```
 
 ```{r}
+d3_all_buckets <- d3_all %>%
+  filter(age_group == "adults") %>%
+  distinct(factor, capacity, order) %>%
+  group_by(factor) %>%
+  top_n(-6, order) %>%
+  arrange(factor, order)
+
+d3_all_endorse <- d3_all %>%
+  filter(capacity %in% d3_all_buckets$capacity) %>%
+  mutate(endorse = ifelse(response_num > 0, 1, 0)) %>%
+  group_by(age_group, subid, character, factor) %>%
+  summarise(prop_endorse = mean(endorse, na.rm = T),
+            n = length(endorse)) %>%
+  ungroup()
+
+d3_all_endorse_boot <- d3_all_endorse %>%
+  group_by(age_group, character, factor) %>%
+  multi_boot_standard(col = "prop_endorse") %>%
+  ungroup()
+
 d3_all_endorse <- d3_all %>%
   group_by(factor, subid) %>%
   top_n(-6, order) %>%
@@ -2292,8 +2435,10 @@ d3_all_endorse_boot <- d3_all_endorse %>%
   group_by(age_group, character, factor) %>%
   multi_boot_standard(col = "prop_endorse") %>%
   ungroup()
+```
 
-figSUPP3_plot <- d3_all_endorse %>%
+```{r}
+figSUPP5_plot <- d3_all_endorse %>%
   filter(age_group == "children") %>%
   left_join(d3_46 %>% distinct(subid, age)) %>%
   filter(!is.na(age)) %>%
@@ -2326,8 +2471,8 @@ figSUPP3_plot <- d3_all_endorse %>%
 ```
 
 ```{r, include = F, fig.width = 6, fig.asp = 0.7}
-figSUPP3_with_caption <- add_sub(figSUPP3_plot, str_wrap("Figure SUPP3: Number of mental capacity items (out of 6) endorsed in each domain (BODY, HEART, and MIND) by 4- to 5-year-old children and adults in Study 3, in which each participant assessed 18 mental capacities for two target characters: a beetle (pink circles) and a robot (blue squares). We defined each domain by the 6 items that loaded the most positively on the corresponding factor in an exploratory factor analysis of adults' responses, and we considered responses of either 'yes' or 'kinda' (but not 'no') to be endorsements. Lines correspond to logistic regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores.", 130), x = 0, hjust = 0)
-ggdraw(figSUPP3_with_caption)
+figSUPP5_with_caption <- add_sub(figSUPP5_plot, str_wrap("Figure SUPP5: Number of mental capacity items (out of 6) endorsed in each domain (BODY, HEART, and MIND) by 4- to 5-year-old children and adults in Study 3, in which each participant assessed 18 mental capacities for two target characters: a beetle (pink circles) and a robot (blue squares). We defined each domain by the 6 items that loaded the most positively on the corresponding factor in an exploratory factor analysis of adults' responses, and we considered responses of either 'yes' or 'kinda' (but not 'no') to be endorsements. Lines correspond to logistic regressions considering children's scores alone. Error bars are bootstrapped 95% confidence intervals on adults' scores.", 130), x = 0, hjust = 0)
+ggdraw(figSUPP5_with_caption)
 ```
 
 #### Age differences within the child sample

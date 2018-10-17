@@ -454,6 +454,186 @@ d2_all_endorse %>%
   # geom_smooth(aes(group = age_group), method = "lm")
 ```
 
+```{r, include = T, fig.width = 7, fig.asp = 0.45}
+d2_all_endorse %>%
+  filter(factor %in% c("BODY", "HEART")) %>%
+  select(age_group, subid, character, factor, sum_endorse) %>%
+  spread(factor, sum_endorse) %>%
+  ggplot(aes(x = BODY, y = HEART, color = character)) +
+  facet_grid(~ age_group) +
+  geom_abline(lty = 2) + 
+  annotate("rect", xmin = 3.5, xmax = Inf, ymin = -Inf, ymax = 2.5, 
+           fill = "lightblue", alpha = 0.25) +
+  annotate("rect", xmin = -Inf, xmax = 2.5, ymin = 3.5, ymax = Inf, 
+           fill = "lightblue", alpha = 0.25) +
+  geom_jitter(width = 0.2, height = 0.2, alpha = 0, size = 3) +
+  annotate("text", x = 6.5, y = -0.5, hjust = 1, label = "BODY without HEART") +
+  annotate("text", x = -0.5, y = 6.5, hjust = 0, label = "HEART without BODY") +
+  scale_color_brewer(palette = "Paired") +
+  scale_x_continuous("\nBODY: # items endorsed", breaks = seq(0, 6, 1)) +
+  scale_y_continuous("HEART: # items endorsed\n", breaks = seq(0, 6, 1)) +
+  theme(panel.grid.minor = element_blank(),
+        text = element_text(size = 22),
+        # panel.grid.major = element_line(color = "gray50"),
+        legend.position = "top") +
+  guides(color = guide_legend(override.aes = list(alpha = 1), nrow = 1))
+
+d2_all_endorse %>%
+  filter(factor %in% c("BODY", "MIND")) %>%
+  select(age_group, subid, character, factor, sum_endorse) %>%
+  spread(factor, sum_endorse) %>%
+  ggplot(aes(x = BODY, y = MIND, color = character)) +
+  facet_grid(~ age_group) +
+  geom_abline(lty = 2) + 
+  annotate("rect", xmin = 3.5, xmax = Inf, ymin = -Inf, ymax = 2.5, 
+           fill = "lightblue", alpha = 0.25) +
+  annotate("rect", xmin = -Inf, xmax = 2.5, ymin = 3.5, ymax = Inf, 
+           fill = "lightblue", alpha = 0.25) +
+  geom_jitter(width = 0.2, height = 0.2, alpha = 0, size = 3) +
+  annotate("text", x = 6.5, y = -0.5, hjust = 1, label = "BODY without MIND") +
+  annotate("text", x = -0.5, y = 6.5, hjust = 0, label = "MIND without BODY") +
+  scale_color_brewer(palette = "Paired") +
+  scale_x_continuous("\nBODY: # items endorsed", breaks = seq(0, 6, 1)) +
+  scale_y_continuous("MIND: # items endorsed\n", breaks = seq(0, 6, 1)) +
+  theme(panel.grid.minor = element_blank(),
+        text = element_text(size = 22),
+        # panel.grid.major = element_line(color = "gray50"),
+        legend.position = "top") +
+  guides(color = guide_legend(override.aes = list(alpha = 1), nrow = 1))
+
+d2_all_endorse %>%
+  filter(factor %in% c("HEART", "MIND")) %>%
+  select(age_group, subid, character, factor, sum_endorse) %>%
+  spread(factor, sum_endorse) %>%
+  ggplot(aes(x = HEART, y = MIND, color = character)) +
+  facet_grid(~ age_group) +
+  geom_abline(lty = 2) + 
+  annotate("rect", xmin = 3.5, xmax = Inf, ymin = -Inf, ymax = 2.5, 
+           fill = "lightblue", alpha = 0.25) +
+  annotate("rect", xmin = -Inf, xmax = 2.5, ymin = 3.5, ymax = Inf, 
+           fill = "lightblue", alpha = 0.25) +
+  geom_jitter(width = 0.2, height = 0.2, alpha = 0, size = 3) +
+  annotate("text", x = 6.5, y = -0.5, hjust = 1, label = "HEART without MIND") +
+  annotate("text", x = -0.5, y = 6.5, hjust = 0, label = "MIND without HEART") +
+  scale_color_brewer(palette = "Paired") +
+  scale_x_continuous("\nHEART: # items endorsed", breaks = seq(0, 6, 1)) +
+  scale_y_continuous("MIND: # items endorsed\n", breaks = seq(0, 6, 1)) +
+  theme(panel.grid.minor = element_blank(),
+        text = element_text(size = 22),
+        # panel.grid.major = element_line(color = "gray50"),
+        legend.position = "top") +
+  guides(color = guide_legend(override.aes = list(alpha = 1), nrow = 1))
+```
+
+
+
+```{r, include = T, fig.width = 7, fig.asp = 0.45}
+d2_all_endorse %>%
+  filter(factor %in% c("BODY", "HEART")) %>%
+  select(age_group, subid, character, factor, sum_endorse) %>%
+  spread(factor, sum_endorse) %>%
+  ggplot(aes(x = BODY, y = HEART, color = character)) +
+  facet_grid(~ age_group) +
+  geom_abline(lty = 2) + 
+  annotate("rect", xmin = 3.5, xmax = Inf, ymin = -Inf, ymax = 2.5, 
+           fill = "lightblue", alpha = 0.25) +
+  annotate("rect", xmin = -Inf, xmax = 2.5, ymin = 3.5, ymax = Inf, 
+           fill = "lightblue", alpha = 0.25) +
+  geom_jitter(width = 0.2, height = 0.2, alpha = 0.8, size = 3) +
+  annotate("text", x = 6.5, y = -0.5, hjust = 1, label = "BODY without HEART") +
+  annotate("text", x = -0.5, y = 6.5, hjust = 0, label = "HEART without BODY") +
+  scale_color_brewer(palette = "Paired") +
+  scale_x_continuous("\nBODY: # items endorsed", breaks = seq(0, 6, 1)) +
+  scale_y_continuous("HEART: # items endorsed\n", breaks = seq(0, 6, 1)) +
+  theme(panel.grid.minor = element_blank(),
+        text = element_text(size = 22),
+        # panel.grid.major = element_line(color = "gray50"),
+        legend.position = "top") +
+  guides(color = guide_legend(override.aes = list(alpha = 1), nrow = 1))
+
+d2_all_endorse %>%
+  filter(factor %in% c("BODY", "MIND")) %>%
+  select(age_group, subid, character, factor, sum_endorse) %>%
+  spread(factor, sum_endorse) %>%
+  ggplot(aes(x = BODY, y = MIND, color = character)) +
+  facet_grid(~ age_group) +
+  geom_abline(lty = 2) + 
+  annotate("rect", xmin = 3.5, xmax = Inf, ymin = -Inf, ymax = 2.5, 
+           fill = "lightblue", alpha = 0.25) +
+  annotate("rect", xmin = -Inf, xmax = 2.5, ymin = 3.5, ymax = Inf, 
+           fill = "lightblue", alpha = 0.25) +
+  geom_jitter(width = 0.2, height = 0.2, alpha = 0.8, size = 3) +
+  annotate("text", x = 6.5, y = -0.5, hjust = 1, label = "BODY without MIND") +
+  annotate("text", x = -0.5, y = 6.5, hjust = 0, label = "MIND without BODY") +
+  scale_color_brewer(palette = "Paired") +
+  scale_x_continuous("\nBODY: # items endorsed", breaks = seq(0, 6, 1)) +
+  scale_y_continuous("MIND: # items endorsed\n", breaks = seq(0, 6, 1)) +
+  theme(panel.grid.minor = element_blank(),
+        text = element_text(size = 22),
+        # panel.grid.major = element_line(color = "gray50"),
+        legend.position = "top") +
+  guides(color = guide_legend(override.aes = list(alpha = 1), nrow = 1))
+
+d2_all_endorse %>%
+  filter(factor %in% c("HEART", "MIND")) %>%
+  select(age_group, subid, character, factor, sum_endorse) %>%
+  spread(factor, sum_endorse) %>%
+  ggplot(aes(x = HEART, y = MIND, color = character)) +
+  facet_grid(~ age_group) +
+  geom_abline(lty = 2) + 
+  annotate("rect", xmin = 3.5, xmax = Inf, ymin = -Inf, ymax = 2.5, 
+           fill = "lightblue", alpha = 0.25) +
+  annotate("rect", xmin = -Inf, xmax = 2.5, ymin = 3.5, ymax = Inf, 
+           fill = "lightblue", alpha = 0.25) +
+  geom_jitter(width = 0.2, height = 0.2, alpha = 0.8, size = 3) +
+  annotate("text", x = 6.5, y = -0.5, hjust = 1, label = "HEART without MIND") +
+  annotate("text", x = -0.5, y = 6.5, hjust = 0, label = "MIND without HEART") +
+  scale_color_brewer(palette = "Paired") +
+  scale_x_continuous("\nHEART: # items endorsed", breaks = seq(0, 6, 1)) +
+  scale_y_continuous("MIND: # items endorsed\n", breaks = seq(0, 6, 1)) +
+  theme(panel.grid.minor = element_blank(),
+        text = element_text(size = 22),
+        # panel.grid.major = element_line(color = "gray50"),
+        legend.position = "top") +
+  guides(color = guide_legend(override.aes = list(alpha = 1), nrow = 1))
+```
+
+
+```{r}
+temp_squares_d2 <- d2_all_endorse %>%
+  # filter(factor %in% c("BODY", "HEART")) %>%
+  select(age_group, subid, character, factor, sum_endorse) %>%
+  spread(factor, sum_endorse) %>%
+  mutate(BvH = case_when(BODY > 3 & HEART < 3 ~ "BODY without HEART",
+                         BODY < 3 & HEART > 3 ~ "HEART without BODY",
+                         TRUE ~ "roughly equal"),
+         BvM = case_when(BODY > 3 & MIND < 3 ~ "BODY without MIND",
+                         BODY < 3 & MIND > 3 ~ "MIND without BODY",
+                         TRUE ~ "roughly equal"),
+         HvM = case_when(HEART > 3 & MIND < 3 ~ "HEART without MIND",
+                         HEART < 3 & MIND > 3 ~ "MIND without HEART",
+                         TRUE ~ "roughly equal"))
+
+temp_squares_d2 %>%
+  count(age_group, BvH) %>%
+  group_by(age_group) %>%
+  mutate(`%` = round(n/sum(n), 2)*100) %>%
+  ungroup()
+
+temp_squares_d2 %>%
+  count(age_group, BvM) %>%
+  group_by(age_group) %>%
+  mutate(`%` = round(n/sum(n), 2)*100) %>%
+  ungroup()
+
+temp_squares_d2 %>%
+  count(age_group, HvM) %>%
+  group_by(age_group) %>%
+  mutate(`%` = round(n/sum(n), 2)*100) %>%
+  ungroup()
+```
+
+
 ```{r}
 temp <- d2_all_endorse %>%
   select(age_group, subid, anim_inan, factor, sum_endorse) %>%
