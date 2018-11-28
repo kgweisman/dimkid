@@ -319,6 +319,18 @@ heatmap_fun(fa_fun(d2_46_wide_i, 2),
 # Cosine similarities
 
 ```{r}
+rad2deg <- function(rad) {(rad * 180) / (pi)}
+deg2rad <- function(deg) {(deg * pi) / (180)}
+
+acos(-1) %>% rad2deg()
+acos(0) %>% rad2deg()
+acos(0.7) %>% rad2deg()
+acos(0.95) %>% rad2deg()
+acos(1) %>% rad2deg()
+```
+
+
+```{r}
 subset <- sample(1:40, 20, replace = F)
 subset_d2 <- names(d1_ad_wide_i)[names(d1_ad_wide_i) %in% names(d2_ad_wide_i)]
 
