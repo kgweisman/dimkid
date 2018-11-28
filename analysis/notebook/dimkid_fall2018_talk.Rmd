@@ -32,7 +32,7 @@ fig02_plot +
 ```
 
 ```{r}
-figSUPP1.25_mod <- d1_all_endorse_boot %>%
+figSUPP1_mod <- d1_all_endorse_boot %>%
   filter(!is.na(character)) %>%
   mutate(age_group = recode_factor(age_group,
                                    "children" = "7-9y",
@@ -53,17 +53,327 @@ figSUPP1.25_mod <- d1_all_endorse_boot %>%
   guides(color = guide_legend(byrow = F)) + 
   labs(x = "age group", y = "number of items endorsed", color = "character",
        caption = "error bars are 95% bootstrapped CIs")
-figSUPP1.25_mod
+figSUPP1_mod
+```
+
+```{r}
+d1_all_endorse %>%
+  filter(age_group == "children") %>%
+  left_join(d1_79 %>% distinct(subid, age)) %>%
+  filter(!is.na(age)) %>%
+  ggplot(aes(x = age, y = prop_endorse, 
+             fill = character, color = character, shape = character)) +
+  facet_wrap(~ factor) +
+  geom_jitter(size = 0.4, alpha = 0.4, width = 0, height = 0.03) +
+  binomial_smooth(aes(weight = n), show.legend = F) +
+  # geom_smooth(method = "glm",
+  #             method.args = list(family = "binomial")) +
+  geom_point(data = d1_all_endorse %>% filter(age_group == "adults"),
+             aes(x = 11), size = 0.4, alpha = 0.4, show.legend = F,
+             position = position_jitterdodge(dodge.width = 0.5,
+                                             jitter.height = 0.03,
+                                             jitter.width = 0.25)) +
+  geom_pointrange(data = d1_all_endorse_boot %>% filter(age_group == "adults"),
+                  aes(x = 11, y = mean, ymin = ci_lower, ymax = ci_upper),
+                  position = position_dodge(width = 0.5), show.legend = F,
+                  color = "black", fatten = 5) +
+  scale_x_continuous(breaks = c(7:11), 
+                     labels = c(paste0(7:10, "y"), "adults")) +
+  scale_y_continuous(breaks = seq(0, 1, 1/6), labels = 0:6) +
+  scale_color_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_fill_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_shape_manual(values = c(21, 22)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom") +
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 3))) +
+  labs(y = "# items endorsed")
 ```
 
 
 ```{r}
-figSUPP1.5a_plot +
+figSUPP3a_plot +
   facet_wrap(~ factor, nrow = 1) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
         legend.position = "bottom",
         text = element_text(size = 12)) +
+  scale_color_manual(values = c("white", "firebrick1"), na.value = "gray") +
   guides(color = guide_legend(byrow = F)) + 
   labs(x = "age group", y = "number of items endorsed", color = "character",
        caption = "error bars are 95% bootstrapped CIs")
+
+figSUPP3a_plot +
+  facet_wrap(~ factor, nrow = 1) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom",
+        text = element_text(size = 12)) +
+  scale_color_manual(values = c("slategrey", "white"), na.value = "gray") +
+  guides(color = guide_legend(byrow = F)) + 
+  labs(x = "age group", y = "number of items endorsed", color = "character",
+       caption = "error bars are 95% bootstrapped CIs")
+
+figSUPP3a_plot +
+  facet_wrap(~ factor, nrow = 1) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom",
+        text = element_text(size = 12)) +
+  scale_color_manual(values = c("slategrey", "firebrick1"), na.value = "gray") +
+  guides(color = guide_legend(byrow = F)) + 
+  labs(x = "age group", y = "number of items endorsed", color = "character",
+       caption = "error bars are 95% bootstrapped CIs")
+```
+
+```{r}
+d2_all_endorse %>%
+  filter(age_group != "adults") %>%
+  left_join(d2_79 %>% distinct(subid, age) %>%
+              full_join(d2_46 %>% distinct(subid, age))) %>%
+  filter(!is.na(age)) %>%
+  left_join(d2_anim %>% distinct(character, anim_inan)) %>%
+  mutate(anim_inan = factor(anim_inan,
+                            levels = c("inanimates", "animates"))) %>%
+  ggplot(aes(x = age, y = prop_endorse, 
+             fill = anim_inan, color = anim_inan, shape = anim_inan)) +
+  facet_wrap(~ factor) +
+  geom_jitter(size = 0.4, alpha = 0.4, width = 0, height = 0.03) +
+  binomial_smooth(aes(weight = n), show.legend = F) +
+  # geom_smooth(method = "glm",
+  #             method.args = list(family = "binomial")) +
+  geom_point(data = d2_all_endorse %>% 
+               filter(age_group == "adults") %>%
+               left_join(d2_anim %>% distinct(character, anim_inan)) %>%
+               mutate(anim_inan = factor(anim_inan,
+                            levels = c("inanimates", "animates"))),
+             aes(x = 11), size = 0.4, alpha = 0.4, show.legend = F,
+             position = position_jitterdodge(dodge.width = 0.5,
+                                             jitter.height = 0.03,
+                                             jitter.width = 0.25)) +
+  geom_pointrange(data = d2_all_endorse_anim_boot %>% 
+                    filter(age_group == "adults"),
+                  aes(x = 11, y = mean, ymin = ci_lower, ymax = ci_upper),
+                  position = position_dodge(width = 0.5), show.legend = F,
+                  color = "black", fatten = 5) +
+  scale_x_continuous(breaks = c(4:11), 
+                     labels = c(paste0(4:10, "y"), "adults")) +
+  scale_y_continuous(breaks = seq(0, 1, 1/6), labels = 0:6) +
+  scale_color_manual(values = c("slategrey", "firebrick1"), na.value = "gray") +
+  scale_fill_manual(values = c("slategrey", "firebrick1"), na.value = "gray") +
+  scale_shape_manual(values = c(22, 21)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "bottom") +
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 3))) +
+  labs(y = "# items endorsed", 
+       color = "character type", fill = "character type", shape = "character type")
+```
+
+```{r, fig.width = 5, fig.asp = 0.5}
+d2_all_endorse %>%
+  filter(age_group != "adults") %>%
+  left_join(d2_79 %>% distinct(subid, age) %>%
+              full_join(d2_46 %>% distinct(subid, age))) %>%
+  filter(!is.na(age)) %>%
+  ggplot(aes(x = age, y = prop_endorse, 
+             fill = character, color = character)) +
+  facet_grid(factor ~ character) +
+  geom_jitter(size = 0.8, alpha = 0.8, width = 0, height = 0.03) +
+  binomial_smooth(aes(weight = n), show.legend = F) +
+  # geom_smooth(method = "glm",
+  #             method.args = list(family = "binomial")) +
+  geom_point(data = d2_all_endorse %>% 
+               filter(age_group == "adults"),
+             aes(x = 11), size = 0.8, alpha = 0.8, show.legend = F,
+             position = position_jitterdodge(dodge.width = 0.5,
+                                             jitter.height = 0.03,
+                                             jitter.width = 0.25)) +
+  geom_pointrange(data = d2_all_endorse_boot %>% 
+                    filter(age_group == "adults"),
+                  aes(x = 11, y = mean, ymin = ci_lower, ymax = ci_upper),
+                  position = position_dodge(width = 0.5), show.legend = F,
+                  color = "black", fatten = 5, shape = 22) +
+  scale_x_continuous(breaks = c(seq(5, 9, 2), 11), 
+                     labels = c(paste0(seq(5, 9, 2), "y"), "adults")) +
+  scale_y_continuous(breaks = seq(0, 1, 1/6), labels = 0:6) +
+  scale_color_brewer(palette = "Paired") +
+  scale_fill_brewer(palette = "Paired") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "none",
+        panel.grid.minor = element_blank()) +
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 3))) +
+  labs(y = "# items endorsed", 
+       color = "character", fill = "character", shape = "character")
+```
+
+# Oblimin rotations
+
+
+```{r, fig.width = 3, fig.asp = 1.253833}
+chosen_rot <- "oblimin"
+
+heatmap_fun(fa_fun(d1_ad_wide_i, reten_fun(d1_ad_wide_i, "oblimin")),
+            factor_names = c("HEART", "BODY", "MIND")) + 
+  theme(title = element_blank(), 
+        text = element_text(size = 14)) + 
+  guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, 
+                               breaks = seq(-1, 1, 0.5)))
+
+heatmap_fun(fa_fun(d1_79_wide_i, reten_fun(d1_79_wide_i, "oblimin")),
+            factor_names = c("HEART", "BODY", "MIND")) + 
+  theme(title = element_blank(), 
+        text = element_text(size = 14)) + 
+  guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, 
+                               breaks = seq(-1, 1, 0.5)))
+
+heatmap_fun(fa_fun(d2_ad_wide_i, reten_fun(d2_ad_wide_i, "oblimin")),
+            factor_names = c("BODY", "HEART", "MIND")) + 
+  theme(title = element_blank(), 
+        text = element_text(size = 14)) + 
+  guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, 
+                               breaks = seq(-1, 1, 0.5)))
+
+heatmap_fun(fa_fun(d2_79_wide_i, reten_fun(d2_79_wide_i, "oblimin")),
+            factor_names = c("BODY", "HEART", "MIND")) + 
+  theme(title = element_blank(), 
+        text = element_text(size = 14)) + 
+  guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, 
+                               breaks = seq(-1, 1, 0.5)))
+
+heatmap_fun(fa_fun(d2_46_wide_i, reten_fun(d2_46_wide_i, "oblimin")),
+            factor_names = c("BODY*", "HEART*", "MIND")) + 
+  theme(title = element_blank(), 
+        text = element_text(size = 14)) + 
+  guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, 
+                               breaks = seq(-1, 1, 0.5)))
+
+# heatmap_fun(fa_fun(d2_46_wide_i, 3),
+#             factor_names = c("BODY*", "HEART*", "MIND")) + 
+#   theme(title = element_blank(), 
+#         text = element_text(size = 14)) + 
+#   guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, 
+#                                breaks = seq(-1, 1, 0.5)))
+
+heatmap_fun(fa_fun(d2_46_wide_i, 2),
+            factor_names = c("BODY-HEART", "MIND")) + 
+  theme(title = element_blank(), 
+        text = element_text(size = 14)) + 
+  guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, 
+                               breaks = seq(-1, 1, 0.5)))
+
+chosen_rot <- "varimax"
+```
+
+```{r, fig.width = 3, fig.asp = 1.253833}
+chosen_rot <- "varimax"
+
+heatmap_fun(fa_fun(d1_ad_wide_i, reten_fun(d1_ad_wide_i, "varimax")),
+            factor_names = c("HEART", "BODY", "MIND")) + 
+  theme(title = element_blank(), 
+        text = element_text(size = 14)) + 
+  guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, 
+                               breaks = seq(-1, 1, 0.5)))
+
+heatmap_fun(fa_fun(d1_79_wide_i, reten_fun(d1_79_wide_i, "varimax")),
+            factor_names = c("HEART", "BODY", "MIND")) + 
+  theme(title = element_blank(), 
+        text = element_text(size = 14)) + 
+  guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, 
+                               breaks = seq(-1, 1, 0.5)))
+
+heatmap_fun(fa_fun(d2_ad_wide_i, reten_fun(d2_ad_wide_i, "varimax")),
+            factor_names = c("BODY", "HEART", "MIND")) + 
+  theme(title = element_blank(), 
+        text = element_text(size = 14)) + 
+  guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, 
+                               breaks = seq(-1, 1, 0.5)))
+
+heatmap_fun(fa_fun(d2_79_wide_i, reten_fun(d2_79_wide_i, "varimax")),
+            factor_names = c("BODY", "HEART", "MIND")) + 
+  theme(title = element_blank(), 
+        text = element_text(size = 14)) + 
+  guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, 
+                               breaks = seq(-1, 1, 0.5)))
+
+heatmap_fun(fa_fun(d2_46_wide_i, reten_fun(d2_46_wide_i, "varimax")),
+            factor_names = c("BODY*", "MIND", "HEART*")) + 
+  theme(title = element_blank(), 
+        text = element_text(size = 14)) + 
+  guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, 
+                               breaks = seq(-1, 1, 0.5)))
+
+# heatmap_fun(fa_fun(d2_46_wide_i, 3),
+#             factor_names = c("BODY*", "MIND", "HEART*")) + 
+#   theme(title = element_blank(), 
+#         text = element_text(size = 14)) + 
+#   guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, 
+#                                breaks = seq(-1, 1, 0.5)))
+
+heatmap_fun(fa_fun(d2_46_wide_i, 2),
+            factor_names = c("BODY-HEART", "MIND")) + 
+  theme(title = element_blank(), 
+        text = element_text(size = 14)) + 
+  guides(fill = guide_colorbar(barheight = 20, barwidth = 0.5, 
+                               breaks = seq(-1, 1, 0.5)))
+```
+
+# Cosine similarities
+
+```{r}
+subset <- sample(1:40, 20, replace = F)
+subset_d2 <- names(d1_ad_wide_i)[names(d1_ad_wide_i) %in% names(d2_ad_wide_i)]
+
+efa_n_d1_ad_subset <- fa_fun(d1_ad_wide_i[,subset_d2], 
+                             reten_fun(d1_ad_wide_i[,subset_d2], "varimax"))
+
+efa_n_d1_79_subset <- fa_fun(d1_79_wide_i[,subset_d2], 
+                             reten_fun(d1_79_wide_i[,subset_d2], "varimax"))
+```
+
+```{r}
+cat("study 1 7-9y (subset) vs. study 1 adults (subset) \n")
+fa.congruence(efa_n_d1_79_subset, efa_n_d1_ad_subset)
+
+cat("\nstudy 1 7-9y (subset) vs. study 2 adults\n")
+fa.congruence(efa_n_d1_79_subset, efa_3_d2_ad)
+
+cat("\nstudy 2 7-9y vs. study 1 adults (subset)\n")
+fa.congruence(efa_3_d2_79, efa_n_d1_ad_subset)
+
+cat("\nstudy 2 4-6y vs. study 1 adults (subset)\n")
+fa.congruence(efa_3_d2_46, efa_n_d1_ad_subset)
+
+cat("\nstudy 2 4-6y vs. study 1 adults (subset)\n")
+fa.congruence(efa_2_d2_46, efa_n_d1_ad_subset)
+```
+
+Can you use cosine similarity to compare factors within a sample (like inter-factor correlations)?
+
+```{r}
+cat("study 1 adults (subset) [vs. self]\n")
+fa.congruence(efa_3_d1_ad$loadings, efa_3_d1_ad$loadings)
+
+cat("\nstudy 1 7-9y (subset) [vs. self]\n")
+fa.congruence(efa_3_d1_79$loadings, efa_3_d1_79$loadings)
+```
+
+```{r}
+cat("\nstudy 2 adults (subset) [vs. self]\n")
+fa.congruence(efa_3_d2_ad$loadings, efa_3_d2_ad$loadings)
+
+cat("\nstudy 2 7-9y (subset) [vs. self]\n")
+fa.congruence(efa_3_d2_79$loadings, efa_3_d2_79$loadings)
+
+cat("\nstudy 2 4-6y (subset) [vs. self]\n")
+fa.congruence(efa_3_d2_46$loadings, efa_3_d2_46$loadings)
+
+cat("\nstudy 2 4-6y (subset) [vs. self]\n")
+fa.congruence(efa_2_d2_46$loadings, efa_2_d2_46$loadings)
+```
+
+```{r}
+cat("\nstudy 3 adults (subset) [vs. self]\n")
+fa.congruence(efa_3_d3_ad$loadings, efa_3_d3_ad$loadings)
+
+cat("\nstudy 3 4-6y (subset) [vs. self]\n")
+fa.congruence(efa_3_d3_46$loadings, efa_3_d3_46$loadings)
 ```
