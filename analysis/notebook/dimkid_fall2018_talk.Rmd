@@ -319,6 +319,31 @@ heatmap_fun(fa_fun(d2_46_wide_i, 2),
 # Cosine similarities
 
 ```{r}
+library(lsa)
+
+temp1 <- loadings_fun(efa_3_d1_ad, "wide") %>%
+  rename(F1_ad = F1, F2_ad = F2, F3_ad = F3) %>%
+  full_join(loadings_fun(efa_3_d1_79, "wide") %>%
+              rename(F1_79 = F1, F2_79 = F2, F3_79 = F3)) %>%
+  column_to_rownames("capacity") %>%
+  as.matrix()
+
+lsa::cosine(temp1)
+
+temp2 <- loadings_fun(efa_3_d2_ad, "wide") %>%
+  rename(F1_ad = F1, F2_ad = F2, F3_ad = F3) %>%
+  full_join(loadings_fun(efa_3_d2_79, "wide") %>%
+              rename(F1_79 = F1, F2_79 = F2, F3_79 = F3)) %>%
+  full_join(loadings_fun(efa_3_d2_46, "wide") %>%
+              rename(F1_46 = F1, F2_46 = F2, F3_46 = F3)) %>%
+  column_to_rownames("capacity") %>%
+  as.matrix()
+
+lsa::cosine(temp2)
+```
+
+
+```{r}
 rad2deg <- function(rad) {(rad * 180) / (pi)}
 deg2rad <- function(deg) {(deg * pi) / (180)}
 
