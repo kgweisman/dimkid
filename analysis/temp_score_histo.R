@@ -1,3 +1,8 @@
+# adults' scores are generally more dichotomous than even older children's
+# what does this mean? 
+# within a factor, things "hang together" MORE (stronger correlations?)
+# more like "part of mental life" rather than "dimension of mental life"?
+
 score_histo_fun <- function(df, which_efa, kinda = 1){
   how_many_cap <- loadings_fun(which_efa) %>%
     group_by(capacity) %>%
@@ -34,6 +39,7 @@ score_histo_fun <- function(df, which_efa, kinda = 1){
   return(plot)
 }
 
+# kinda scored as 1 -----
 score_histo_fun(d1_all, efa_3_d1_ad)
 score_histo_fun(d1_all, efa_3_d1_79)
 
@@ -41,3 +47,12 @@ score_histo_fun(d2_all, efa_3_d2_ad)
 score_histo_fun(d2_all, efa_3_d2_79)
 score_histo_fun(d2_all, efa_3_d2_46)
 score_histo_fun(d2_all, efa_2_d2_46)
+
+# kinda scored as 0.5 -----
+score_histo_fun(d1_all, efa_3_d1_ad, kinda = 0.5)
+score_histo_fun(d1_all, efa_3_d1_79, kinda = 0.5)
+
+score_histo_fun(d2_all, efa_3_d2_ad, kinda = 0.5)
+score_histo_fun(d2_all, efa_3_d2_79, kinda = 0.5)
+score_histo_fun(d2_all, efa_3_d2_46, kinda = 0.5)
+score_histo_fun(d2_all, efa_2_d2_46, kinda = 0.5)
