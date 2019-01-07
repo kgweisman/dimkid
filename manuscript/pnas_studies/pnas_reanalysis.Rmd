@@ -1,0 +1,1283 @@
+---
+title: "Body, Heart, & Mind: Re-analysis for dissertation"
+output:
+  html_notebook:
+    theme: flatly
+    toc: yes
+  html_document:
+    toc: yes
+  pdf_document:
+    toc: yes
+---
+
+```{r global_options, include = F}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+# Setup
+
+```{r workspace setup}
+# load libraries
+library(tidyverse)
+library(psych)
+library(langcog) # source: https://github.com/langcog/langcog
+
+# supporting functions
+source("../scripts/max_factors_efa.R")
+source("../scripts/reten_fun.R")
+source("../scripts/plot_fun.R")
+source("../scripts/efa_fun.R")
+```
+
+```{r functions}
+# make cleanup function
+cleanup <- function(datasource) {
+  if(datasource %in% c("study 1", "study 2")) {
+    
+    # set target dataset
+    if(datasource == "study 1"){d <- d_raw_study1}
+    if(datasource == "study 2"){d <- d_raw_study2}
+    
+    # enact exclusionary criteria
+    d_clean_1 <- d %>%
+      mutate(finished_mod = ifelse(is.na(CATCH), 0,
+                                   ifelse(finished == 1, 1,
+                                          0.5))) %>%
+      filter(CATCH == 1, # exclude Ps who fail catch trials 
+             finished_mod != 0) %>% # exclude Ps who did not complete task
+      mutate(yob_correct = as.numeric(
+        ifelse(as.numeric(as.character(yob)) > 1900 & 
+                 as.numeric(as.character(yob)) < 2000, 
+               as.numeric(as.character(yob)), NA)), # correct formatting in yob
+        age_approx = 2016 - yob_correct) %>% # calculate approximate age
+      mutate(gender = factor(gender, levels = c(1, 2, 0), 
+                             labels = c("m", "f", "other"))) %>%
+      filter(age_approx >= 18) # exclude Ps who are younger than 18 years
+    
+    # recode background and demographic variables
+    d_clean <- d_clean_1 %>%
+      mutate( # deal with study number
+        study = factor(study)) %>%
+      mutate( # deal with study duration
+        duration = as.numeric(difftime(strptime(end_time, "%I:%M:%S"),
+                                       strptime(start_time, "%I:%M:%S"),
+                                       units = "mins"))) %>%
+      mutate( # deal with race
+        race_asian_east = 
+          factor(ifelse(is.na(race_asian_east), "", "asian_east ")),
+        race_asian_south = 
+          factor(ifelse(is.na(race_asian_south), "", "asian_south ")),
+        race_asian_other = 
+          factor(ifelse(is.na(race_asian_other), "", "asian_other ")),
+        race_black = 
+          factor(ifelse(is.na(race_black), "", "black ")),
+        race_hispanic = 
+          factor(ifelse(is.na(race_hispanic), "", "hispanic ")),
+        race_middle_eastern = 
+          factor(ifelse(is.na(race_middle_eastern), "", "middle_eastern ")),
+        race_native_american = 
+          factor(ifelse(is.na(race_native_american), "", "native_american ")),
+        race_pac_islander = 
+          factor(ifelse(is.na(race_pac_islander), "", "pac_islander ")),
+        race_white = 
+          factor(ifelse(is.na(race_white), "", "white ")),
+        race_other_prefno = 
+          factor(ifelse(is.na(race_other_prefno), "", "other_prefno ")),
+        race_cat = paste0(race_asian_east, race_asian_south, race_asian_other,
+                          race_black, race_hispanic, race_middle_eastern,
+                          race_native_american, race_pac_islander, race_white,
+                          race_other_prefno),
+        race_cat2 = factor(sub(" +$", "", race_cat)),
+        race_cat3 = factor(ifelse(grepl(" ", race_cat2) == T, "multiracial",
+                                  as.character(race_cat2)))) %>%
+      dplyr::select(study, subid:end_time, duration, finished:gender, 
+             religion_buddhism:age_approx, race_cat3) %>%
+      rename(race_cat = race_cat3) %>%
+      mutate( # deal with religion
+        religion_buddhism = 
+          factor(ifelse(is.na(religion_buddhism), "", "buddhism ")),
+        religion_christianity = 
+          factor(ifelse(is.na(religion_christianity), "", "christianity ")),
+        religion_hinduism = 
+          factor(ifelse(is.na(religion_hinduism), "", "hinduism ")),
+        religion_islam = 
+          factor(ifelse(is.na(religion_islam), "", "islam ")),
+        religion_jainism = 
+          factor(ifelse(is.na(religion_jainism), "", "jainism ")),
+        religion_judaism = 
+          factor(ifelse(is.na(religion_judaism), "", "judaism ")),
+        religion_sikhism = 
+          factor(ifelse(is.na(religion_sikhism), "", "sikhism ")),
+        religion_other = 
+          factor(ifelse(is.na(religion_other), "", "other ")),
+        religion_none = 
+          factor(ifelse(is.na(religion_none), "", "none ")),
+        religion_prefno = 
+          factor(ifelse(is.na(religion_prefno), "", "other_prefno ")),
+        religion_cat = paste0(religion_buddhism, religion_christianity, 
+                              religion_hinduism, religion_islam, 
+                              religion_jainism, religion_judaism, 
+                              religion_sikhism, religion_other, 
+                              religion_none, religion_prefno),
+        religion_cat2 = factor(sub(" +$", "", religion_cat)),
+        religion_cat3 = factor(ifelse(grepl(" ", religion_cat2) == T, 
+                                      "multireligious",
+                                      as.character(religion_cat2)))) %>%
+      dplyr::select(study:gender, feedback:race_cat, religion_cat3) %>%
+      rename(religion_cat = religion_cat3)
+    
+    # remove extraneous dfs and variables
+    rm(d, d_clean_1)
+  }
+  
+  if(datasource == "study 3") {
+    
+    # set target dataset
+    d <- d_raw_study3
+    
+    # enact exclusionary criteria
+    d_clean_1 <- d %>%
+      mutate(finished_mod = ifelse(is.na(CATCH..characterL) | 
+                                     is.na(CATCH..characterR), 0,
+                                   ifelse(finished == 1, 1,
+                                          0.5))) %>%
+      filter(CATCH..characterL == 5, # exclude Ps who fail catch trials 
+             CATCH..characterR == 5,
+             finished_mod != 0) %>% # exclude Ps who did not complete task
+      mutate(yob_correct = as.numeric(
+        ifelse(as.numeric(as.character(yob)) > 1900 & 
+                 as.numeric(as.character(yob)) < 2000, 
+               as.numeric(as.character(yob)), NA)), # correct formatting in yob
+        age_approx = 2016 - yob_correct) %>% # calculate approximate age
+      mutate(gender = factor(gender, levels = c(1, 2, 0), 
+                             labels = c("m", "f", "other"))) %>%
+      filter(age_approx >= 18) # exclude Ps who are younger than 18 years
+    
+    # recode background and demographic variables
+    d_clean_2 <- d_clean_1 %>%
+      mutate( # deal with study number
+        study = factor(study)) %>%
+      mutate( # deal with study duration
+        duration = as.numeric(difftime(strptime(end_time, "%I:%M:%S"),
+                                       strptime(start_time, "%I:%M:%S"),
+                                       units = "mins"))) %>%
+      mutate( # deal with race
+        race_asian_east = 
+          factor(ifelse(is.na(race_asian_east), "", "asian_east ")),
+        race_asian_south = 
+          factor(ifelse(is.na(race_asian_south), "", "asian_south ")),
+        race_asian_other = 
+          factor(ifelse(is.na(race_asian_other), "", "asian_other ")),
+        race_black = 
+          factor(ifelse(is.na(race_black), "", "black ")),
+        race_hispanic = 
+          factor(ifelse(is.na(race_hispanic), "", "hispanic ")),
+        race_middle_eastern = 
+          factor(ifelse(is.na(race_middle_eastern), "", "middle_eastern ")),
+        race_native_american = 
+          factor(ifelse(is.na(race_native_american), "", "native_american ")),
+        race_pac_islander = 
+          factor(ifelse(is.na(race_pac_islander), "", "pac_islander ")),
+        race_white = 
+          factor(ifelse(is.na(race_white), "", "white ")),
+        race_other_prefno = 
+          factor(ifelse(is.na(race_other_prefno), "", "other_prefno ")),
+        race_cat = paste0(race_asian_east, race_asian_south, race_asian_other,
+                          race_black, race_hispanic, race_middle_eastern,
+                          race_native_american, race_pac_islander, race_white,
+                          race_other_prefno),
+        race_cat2 = factor(sub(" +$", "", race_cat)),
+        race_cat3 = factor(ifelse(grepl(" ", race_cat2) == T, "multiracial",
+                                  as.character(race_cat2)))) %>%
+      dplyr::select(study, subid:end_time, duration, finished:gender, 
+             religion_buddhism:age_approx, race_cat3) %>%
+      rename(race_cat = race_cat3) %>%
+      mutate( # deal with religion
+        religion_buddhism = 
+          factor(ifelse(is.na(religion_buddhism), "", "buddhism ")),
+        religion_christianity = 
+          factor(ifelse(is.na(religion_christianity), "", "christianity ")),
+        religion_hinduism = 
+          factor(ifelse(is.na(religion_hinduism), "", "hinduism ")),
+        religion_islam = 
+          factor(ifelse(is.na(religion_islam), "", "islam ")),
+        religion_jainism = 
+          factor(ifelse(is.na(religion_jainism), "", "jainism ")),
+        religion_judaism = 
+          factor(ifelse(is.na(religion_judaism), "", "judaism ")),
+        religion_sikhism = 
+          factor(ifelse(is.na(religion_sikhism), "", "sikhism ")),
+        religion_other = 
+          factor(ifelse(is.na(religion_other), "", "other ")),
+        religion_none = 
+          factor(ifelse(is.na(religion_none), "", "none ")),
+        religion_prefno = 
+          factor(ifelse(is.na(religion_prefno), "", "other_prefno ")),
+        religion_cat = paste0(religion_buddhism, religion_christianity, 
+                              religion_hinduism, religion_islam, 
+                              religion_jainism, religion_judaism, 
+                              religion_sikhism, religion_other, 
+                              religion_none, religion_prefno),
+        religion_cat2 = factor(sub(" +$", "", religion_cat)),
+        religion_cat3 = factor(ifelse(grepl(" ", religion_cat2) == T, 
+                                      "multireligious",
+                                      as.character(religion_cat2)))) %>%
+      dplyr::select(study:gender, feedback:race_cat, religion_cat3) %>%
+      rename(religion_cat = religion_cat3)
+    
+    # rename response variables
+    d_clean_3 <- d_clean_2
+    names(d_clean_3) <- gsub("get", "", names(d_clean_3))
+    names(d_clean_3) <- gsub("\\.", "", names(d_clean_3))
+    names(d_clean_3) <- gsub("char", "_char", names(d_clean_3))
+    names(d_clean_3)[names(d_clean_3) %in% c("_characterL", "_characterR")] <- 
+      c("characterL", "characterR")
+    
+    # recode response variables (center)
+    d_clean_4 <- d_clean_3
+    for(i in 11:92) {
+      d_clean_4[,i] <- d_clean_4[,i] - 4 # transform from 1 to 7 --> -3 to 3
+    }
+    
+    # recode characterL vs. characterR as beetle vs. robot
+    d_clean_5_demo <- d_clean_4 %>%
+      dplyr::select(study:condition, yob:religion_cat)
+    
+    d_clean_5_characterL <- d_clean_4 %>%
+      mutate(target = characterL) %>%
+      dplyr::select(study, subid, target, happy_characterL:CATCH_characterL)
+    names(d_clean_5_characterL) <- gsub("_characterL", "", 
+                                        names(d_clean_5_characterL))
+    
+    d_clean_5_characterR <- d_clean_4 %>%
+      mutate(target = characterR) %>%
+      dplyr::select(study, subid, target, happy_characterR:CATCH_characterR)
+    names(d_clean_5_characterR) <- gsub("_characterR", "", 
+                                        names(d_clean_5_characterR))
+    
+    d_clean <- d_clean_5_characterL %>%
+      full_join(d_clean_5_characterR) %>%
+      full_join(d_clean_5_demo) %>%
+      dplyr::select(study, subid, date:religion_cat, target:CATCH)
+    
+    # remove extraneous dfs and variables
+    rm(d, d_clean_1, d_clean_2, d_clean_3, d_clean_4, d_clean_5_characterL, 
+       d_clean_5_characterR, d_clean_5_demo, i)
+  }
+  
+  if(datasource == "study 4") {
+    
+    # set target dataset
+    d <- d_raw_study4
+
+        # enact exclusionary criteria
+    d_clean_1 <- d %>%
+      mutate(finished_mod = ifelse(is.na(CATCH), 0,
+                                   ifelse(finished == 1, 1,
+                                          0.5))) %>%
+      filter(CATCH == 1, # exclude Ps who fail catch trials 
+             finished_mod != 0) %>% # exclude Ps who did not complete task
+      mutate(yob_correct = as.numeric(
+        ifelse(as.numeric(as.character(yob)) > 1900 & 
+                 as.numeric(as.character(yob)) < 2000, 
+               as.numeric(as.character(yob)), NA)), # correct formatting in yob
+        age_approx = 2016 - yob_correct) %>% # calculate approximate age
+      mutate(gender = factor(gender, levels = c(1, 2, 0), 
+                             labels = c("m", "f", "other"))) %>%
+      filter(age_approx >= 18) # exclude Ps who are younger than 18 years
+    
+    # recode one character
+    d_clean_2 <- d_clean_1 %>%
+      mutate(condition = factor(ifelse(
+        grepl("vegetative", as.character(condition)), "pvs",
+        ifelse(grepl("blue", as.character(condition)), "bluejay",
+               ifelse(grepl("chimp", as.character(condition)), "chimp",
+                      as.character(condition))))))
+
+    # recode background and demographic variables
+    d_clean <- d_clean_2 %>%
+      mutate( # deal with study number
+        study = factor(study)) %>%
+      mutate( # deal with study duration
+        duration = as.numeric(difftime(strptime(end_time, "%I:%M:%S"),
+                                       strptime(start_time, "%I:%M:%S"),
+                                       units = "mins"))) %>%
+      mutate( # deal with race
+        race_asian_east = 
+          factor(ifelse(is.na(race_asian_east), "", "asian_east ")),
+        race_asian_south = 
+          factor(ifelse(is.na(race_asian_south), "", "asian_south ")),
+        race_asian_other = 
+          factor(ifelse(is.na(race_asian_other), "", "asian_other ")),
+        race_black = 
+          factor(ifelse(is.na(race_black), "", "black ")),
+        race_hispanic = 
+          factor(ifelse(is.na(race_hispanic), "", "hispanic ")),
+        race_middle_eastern = 
+          factor(ifelse(is.na(race_middle_eastern), "", "middle_eastern ")),
+        race_native_american = 
+          factor(ifelse(is.na(race_native_american), "", "native_american ")),
+        race_pac_islander = 
+          factor(ifelse(is.na(race_pac_islander), "", "pac_islander ")),
+        race_white = 
+          factor(ifelse(is.na(race_white), "", "white ")),
+        race_other_prefno = 
+          factor(ifelse(is.na(race_other_prefno), "", "other_prefno ")),
+        race_cat = paste0(race_asian_east, race_asian_south, race_asian_other,
+                          race_black, race_hispanic, race_middle_eastern,
+                          race_native_american, race_pac_islander, race_white,
+                          race_other_prefno),
+        race_cat2 = factor(sub(" +$", "", race_cat)),
+        race_cat3 = factor(ifelse(grepl(" ", race_cat2) == T, "multiracial",
+                                  as.character(race_cat2)))) %>%
+      dplyr::select(study, subid:end_time, duration, finished:gender, 
+             education:age_approx, race_cat3) %>%
+      rename(race_cat = race_cat3)
+    
+    # filter conditions if desired
+    if(is.element("none", chosenExclude)) {} else {
+      d_clean <- d_clean %>%
+        filter(!condition %in% chosenExclude)
+    }
+    
+    # remove extraneous dfs and variables
+    rm(d, d_clean_1, d_clean_2)
+  }
+  
+#   # transform to 0 to 6 scale
+#   d_clean <- d_clean %>%
+#     gather(mc, score, happy:pride) %>%
+#     mutate(score = score + 3) %>% # transform from -3 to 3 --> 0 to 6
+#     spread(mc, score)
+  
+  # remove outliers
+  if(chosenOutlierHandling == "remove") {
+    
+    if(datasource %in% c("study 1", "study 2", "study 4")) {
+        d_clean <- d_clean %>%
+        gather(mc, score, happy:pride) %>%
+        group_by(condition, mc) %>%
+        filter(!score %in% boxplot.stats(score, 2.5)$out) %>%
+        spread(mc, score) %>%
+        arrange(condition, subid)
+    }
+    
+    if(datasource == "study 3") {
+      d_clean <- d_clean %>%
+        gather(mc, score, happy:pride) %>%
+        group_by(target, mc) %>%
+        filter(!score %in% boxplot.stats(score, 2.5)$out) %>%
+        spread(mc, score) %>%
+        arrange(target, subid)
+    }
+    
+  }
+  
+  # filter items if desired
+  if(is.element("none", chosenExcludeItem)) {} else {
+    d_clean <- d_clean %>%
+      dplyr::select(-contains(chosenExcludeItem))
+  }
+
+  # return cleaned dataset
+  return(d_clean)
+}
+
+# make function for examining exclusion of participants
+excludedCounts <- function(datasource) {
+  
+  # set datasource
+  if(datasource == "study 1"){
+    d <- d1
+    d_raw <- d_raw_study1
+  }
+  if(datasource == "study 2"){
+    d <- d2
+    d_raw <- d_raw_study2
+  }
+  if(datasource == "study 3"){
+    d <- d3
+    d_raw <- d_raw_study3
+  }
+  if(datasource == "study 4"){
+    d <- d4
+    d_raw <- d_raw_study4
+  }
+  
+  # get subids of successful participants
+  d_subids <- levels(factor(as.character(d$subid)))
+  
+  # get subids of excluded participants
+  d_excluded <- d_raw %>%
+    filter(is.element(subid, d_subids) == FALSE) %>%
+    dplyr::select(condition, subid, finished, starts_with("CATCH"), yob)
+
+  # count excluded participants
+  d_excluded_n <- length(d_excluded$subid)
+  
+  if(datasource %in% c("study 1", "study 2", "study 4")) {
+    # count participants who did not finish
+    d_excluded_unfinished <- d_excluded %>%
+      filter(is.na(CATCH) == T,
+             finished != 1) %>%
+      dplyr::select(subid) %>%
+      c()
+    
+    # count participants who finished, but failed catch trial
+    d_excluded_CATCH <- d_excluded %>%
+      filter(is.element(subid, d_excluded_unfinished$subid) == FALSE) %>%
+      filter(CATCH != 1) %>%
+      dplyr::select(subid) %>%
+      c()
+  }
+  
+  if(datasource == "study 3") {
+    # count participants who did not finish
+    d_excluded_unfinished <- d_excluded %>%
+      filter(is.na(CATCH..characterL) == T,
+             is.na(CATCH..characterR) == T,
+             finished != 1) %>%
+      dplyr::select(subid) %>%
+      c()
+    
+    # count participants who finished, but failed catch trial
+    d_excluded_CATCH <- d_excluded %>%
+      filter(is.element(subid, d_excluded_unfinished$subid) == FALSE) %>%
+      filter(CATCH..characterL != 5 | CATCH..characterR != 5) %>%
+      dplyr::select(subid) %>%
+      c()
+  }
+  
+  # count participants who finished and passed catch trial, 
+  # but did not provide year of birth
+  d_excluded_no_yob <- d_excluded %>%
+    filter(is.element(subid, d_excluded_unfinished$subid) == FALSE,
+           is.element(subid, d_excluded_CATCH$subid) == FALSE) %>%
+    mutate(yob = as.numeric(as.character(yob))) %>%
+    filter(is.na(yob) | yob < 1899 | nchar(as.character(yob)) != 4) %>%
+    dplyr::select(subid) %>%
+    c()
+  
+  # count participants who finished and passed catch trial, 
+  # but did not provide year of birth
+  d_excluded_young <- d_excluded %>%
+    filter(is.element(subid, d_excluded_unfinished$subid) == FALSE,
+           is.element(subid, d_excluded_CATCH$subid) == FALSE,
+           is.element(subid, d_excluded_no_yob$subid) == FALSE) %>%
+    mutate(yob = as.numeric(as.character(yob))) %>%
+    filter(is.na(yob) | 2016 - yob < 18) %>%
+    dplyr::select(subid) %>%
+    c()
+  
+  # sum up excluded participants by category
+  total <- sum(length(d_excluded_unfinished$subid),
+               length(d_excluded_CATCH$subid),
+               length(d_excluded_no_yob$subid),
+               length(d_excluded_young$subid))
+  
+  # calculate counts
+  excluded_counts <- 
+    data.frame("did_not_finish" = length(d_excluded_unfinished$subid),
+               "failed_catch_trial" = length(d_excluded_CATCH$subid),
+               "did_not_provide_yob" = length(d_excluded_no_yob$subid),
+               "too_young" = length(d_excluded_young$subid),
+               "TOTAL_excluded" = total,
+               "TOTAL_participated" = length(d$subid),
+               "OVERALL_TOTAL" = sum(total, length(d$subid)))
+  
+  if(total != d_excluded_n) {
+    stop("Error: 4 sources of exclusion do not add up to total.")
+    } else {
+      return(excluded_counts)
+    }
+}
+
+# make function for stripping dataframes for dimension reducation
+makeDRDF <- function(datasource, chosenCondition) {
+  
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 2"){d <- d2}
+  if(datasource == "study 3"){
+    # rename variables for ease of function applpication
+    d <- d3 %>%
+      rename(order = condition,
+             condition = target)
+    
+    # rename subids by condition if collapses across conditions
+    d <- d %>%
+      mutate(subid = paste(condition, subid, sep = "_"))
+  }
+  if(datasource == "study 4"){d <- d4}
+  
+  # filter by condition if specified
+  if(chosenCondition %in% c("beetle", "robot")) {
+    d <- d %>% filter(condition == chosenCondition)
+  }
+  
+  # make stripped dataframe for dimension reducation analyses
+  d_strip <- d %>%
+    dplyr::select(subid, happy:pride)
+  d_strip <- data.frame(d_strip[,-1], row.names = d_strip$subid)
+  
+  # return stripped dataframe
+  return(d_strip)
+}
+
+# make demographics functions
+demoSampleSize <- function(datasource) {
+
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 2"){d <- d2}
+  if(datasource == "study 3"){
+    # rename variables for ease of function applpication
+    d <- d3 %>%
+      rename(order = condition,
+             condition = target)
+  }
+  if(datasource == "study 4"){d <- d4}
+
+  # get sample size per condition
+  sample_size <- vector()
+  for(i in levels(d$condition)) {
+    sample_size[as.character(i)] <- 
+      as.numeric(d %>% filter(condition == i) %>% dplyr::select(subid) %>% 
+                   unique() %>% count())
+  }
+
+  # add total sample size  
+  sample_size["all"] <- as.numeric(d %>% dplyr::select(subid) %>% 
+                                     unique() %>% count())
+  
+  # make into dataframe for using kable
+  sample_size <- data.frame(sample_size) %>%
+    rownames_to_column() %>%
+    rename(condition = rowname,
+           n = sample_size)
+  
+  # return dataframe for using kable
+  return(sample_size)
+}
+demoDuration <- function(datasource) {
+
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 2"){d <- d2}
+  if(datasource == "study 3"){
+    # recode variables for ease of function applpication
+    d <- d3 %>%
+      mutate(condition = "within-subjects")
+  }
+  if(datasource == "study 4"){d <- d4}
+
+  # get sample size per condition
+  duration <- d %>%
+    group_by(condition) %>%
+    summarise(min_duration = min(duration),
+              max_duration = max(duration),
+              median_duration = median(duration),
+              mean_duration = mean(duration),
+              sd_duration = sd(duration))
+
+  # add total duration
+  if(datasource %in% c("study 1", "study 2", "study 4")) {
+    all <- d %>%
+      summarise(min_duration = min(duration),
+                max_duration = max(duration),
+                median_duration = median(duration),
+                mean_duration = mean(duration),
+                sd_duration = sd(duration)) %>%
+      mutate(condition = "all")
+    duration <- rbind(duration, all) # not sure why full_join doesn't work    
+  }
+
+  # return dataframe for using kable
+  return(duration)
+}
+demoAge <- function(datasource) {
+
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 2"){d <- d2}
+  if(datasource == "study 3"){
+    # recode variables for ease of function applpication
+    d <- d3 %>%
+      mutate(condition = "within-subjects")
+  }
+  if(datasource == "study 4"){d <- d4}
+
+  # get sample size per condition
+  age <- d %>%
+    group_by(condition) %>%
+    summarise(min_age = min(age_approx),
+              max_age = max(age_approx),
+              median_age = median(age_approx),
+              mean_age = mean(age_approx),
+              sd_age = sd(age_approx))
+
+  # add total age
+  if(datasource %in% c("study 1", "study 2", "study 4")) {
+    all <- d %>%
+      summarise(min_age = min(age_approx),
+                max_age = max(age_approx),
+                median_age = median(age_approx),
+                mean_age = mean(age_approx),
+                sd_age = sd(age_approx)) %>%
+      mutate(condition = "all")
+    age <- full_join(age, all)
+  }
+
+  # return dataframe for using kable
+  return(age)
+}
+demoGender <- function(datasource) {
+
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 2"){d <- d2}
+  if(datasource == "study 3"){d <- d3}
+  if(datasource == "study 4"){d <- d4}
+
+  # get gender per condition and overall
+  if(datasource %in% c("study 1", "study 2", "study 4")) {
+    gender <- data.frame(addmargins(with(d, table(condition, gender)))) %>%
+      filter(gender != "Sum") %>%
+      rename(n = Freq)
+  }
+  
+  if(datasource == "study 3") {
+    gender <- data.frame(with(d, table(gender))) %>%
+      rename(n = Freq) %>%
+      mutate(condition = "Sum") %>%
+      dplyr::select(condition, gender, n)
+  }
+  
+  if(datasource %in% c("study 1", "study 2", "study 3")) {
+    gender <- gender %>%
+    mutate(condition = factor(ifelse(condition == "Sum", 
+                                     "all", as.character(condition)),
+                              levels = c("beetle", "robot", "all"))) %>%
+    arrange(condition, gender) %>%
+    spread(gender, n)
+  }
+  
+  if(datasource == "study 4") {
+    gender <- gender %>%
+    mutate(condition = factor(ifelse(condition == "Sum", 
+                                     "all", as.character(condition)),
+                              levels = c(levels(d$condition), "all"))) %>%
+    arrange(condition, gender) %>%
+    spread(gender, n)
+  }
+  
+  # return dataframe for using kable
+  return(gender)
+}
+demoRace <- function(datasource) {
+
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 2"){d <- d2}
+  if(datasource == "study 3"){d <- d3}
+  if(datasource == "study 4"){d <- d4}
+
+  # get race per condition and overall
+  if(datasource %in% c("study 1", "study 2", "study 4")) {
+    race <- data.frame(addmargins(with(d, table(condition, race_cat)))) %>%
+      filter(race_cat != "Sum") %>%
+      rename(n = Freq)
+  }
+  
+  if(datasource == "study 3") {
+    race <- data.frame(with(d, table(race_cat))) %>%
+      rename(n = Freq) %>%
+      mutate(condition = "Sum") %>%
+      dplyr::select(condition, race_cat, n)
+  }
+  
+  if(datasource %in% c("study 1", "study 2", "study 3")) {
+    race <- race %>%
+    mutate(condition = factor(ifelse(condition == "Sum", 
+                                     "all", as.character(condition)),
+                              levels = c("beetle", "robot", "all"))) %>%
+    arrange(condition, race_cat) %>%
+    spread(race_cat, n)
+  }
+  
+  if(datasource == "study 4") {
+    race <- race %>%
+    mutate(condition = factor(ifelse(condition == "Sum", 
+                                     "all", as.character(condition)),
+                              levels = c(levels(d$condition), "all"))) %>%
+    arrange(condition, race_cat) %>%
+    spread(race_cat, n)
+  }
+  
+  # return dataframe for using kable
+  return(race)
+}
+demoReligion <- function(datasource) {
+
+  # set target dataset
+  if(datasource == "study 1"){d <- d1}
+  if(datasource == "study 2"){d <- d2}
+  if(datasource == "study 3"){d <- d3}
+
+  # get religion per condition and overall
+  if(datasource %in% c("study 1", "study 2")) {
+    religion <- data.frame(addmargins(with(d, table(condition, religion_cat)))) %>%
+      filter(religion_cat != "Sum") %>%
+      rename(n = Freq)
+  }
+  
+  if(datasource == "study 3") {
+    religion <- data.frame(with(d, table(religion_cat))) %>%
+      rename(n = Freq) %>%
+      mutate(condition = "Sum") %>%
+      dplyr::select(condition, religion_cat, n)
+  }
+  
+  if(datasource %in% c("study 1", "study 2", "study 3")) {
+    religion <- religion %>%
+    mutate(condition = factor(ifelse(condition == "Sum", 
+                                     "all", as.character(condition)),
+                              levels = c("beetle", "robot", "all"))) %>%
+    arrange(condition, religion_cat) %>%
+    spread(religion_cat, n)
+  }
+  
+  # return dataframe for using kable
+  if(datasource == "study 4"){
+    stop("Religion information not available for Study 4")
+  } else {return(religion)}
+}
+demoEducation <- function(datasource) {
+
+  # set target dataset
+  if(datasource == "study 4"){d <- d4}
+  
+  # get education per condition and overall
+  if(datasource == "study 4") {
+    education <- 
+      data.frame(addmargins(with(d, table(condition, education)))) %>%
+      filter(education != "Sum") %>%
+      rename(n = Freq) %>%
+      mutate(condition = factor(ifelse(condition == "Sum",
+                                       "all", as.character(condition)),
+                                levels = c(levels(d$condition), "all")),
+             education = factor(education,
+                                levels = c(1:7, 0),
+                                labels = c("some_HS",
+                                           "HS_diploma",
+                                           "some_college",
+                                           "associates",
+                                           "bachelors",
+                                           "some_grad",
+                                           "grad",
+                                           "pref_no"))) %>%
+      arrange(condition, education) %>%
+      spread(education, n)
+  }
+  
+  # return dataframe for using kable
+  if(datasource %in% c("study 1", "study 2", "study 3")){
+    stop("Education information not available for Studies 1-3")
+  } else {return(education)}
+}
+
+# plotting functions
+makeFacetLabs <- function(df_plotting) {
+  facet_labels <- array()
+  df_plotting <- df_plotting %>% mutate(condition = factor(condition))
+  for(i in 1:length(levels(df_plotting$condition))) {
+    df <- df_plotting %>% filter(condition == levels(df_plotting$condition)[i]) %>%
+      select(condition, n) %>% unique()
+    facet_labels[i] <- paste0(df$condition, " (n = ", df$n, ")")
+  }
+  names(facet_labels) <- levels(df_plotting$condition)
+  return(facet_labels)
+}
+```
+
+```{r modeling decisions}
+# remove outliers?
+chosenOutlierHandling <- "keep"
+# chosenOutlierHandling <- "remove"
+
+# exclude any conditions in study 4?
+chosenExclude <- "none"
+# chosenExclude <- c("stapler", "car", "computer")
+
+# exclude any items?
+chosenExcludeItem <- "none"
+# chosenExcludeItem <- "computations"
+
+# NOTE: always choose minimal residual (fm = "minres") instead of ML because of non-normality
+
+# for EFAs, what kind of correlation?
+chosenCorType <- "cor" # pearson correlation
+# chosenCorType <- "poly" # polychoric correlation
+
+# for EFAs, what kind of rotation?
+chosenRotType <- "varimax" # varimax rotation
+# chosenRotType <- "oblimin" # oblimin rotation
+# chosenRotType <- "none" # no rotation
+
+data.frame("conditionsExcluded" = chosenExclude,
+           "outlierHandling" = chosenOutlierHandling,
+           "EFA_correlation" = chosenCorType,
+           "EFA_rotation" = chosenRotType)
+```
+
+<p style="text-align:right"><a href="#header">back to TOC</a></p>
+
+# Data preparation
+
+```{r data upload}
+# study 1 (2015-12-15, 2 conditions, between-subjects)
+d_raw_study1 <- read.csv("https://osf.io/29vng/download") %>%
+  mutate(study = "study 1")
+
+# study 2 (2016-01-12, 2 conditions, between-subjects - REPLICATION)
+d_raw_study2 <- read.csv("https://osf.io/g76hj/download") %>%
+  mutate(study = "study 2")
+
+# study 3 (2016-01-10, 2 conditions, within-subjects)
+d_raw_study3 <- read.csv("https://osf.io/epykf/download") %>%
+  mutate(study = "study 3")
+
+# study 4 (2016-01-14, 21 conditions, between-subjects)
+d_raw_study4 <- read.csv("https://osf.io/kdzge/download") %>%
+  mutate(study = "study 4")
+```
+
+```{r data cleanup}
+# clean up datasets
+d1 <- cleanup("study 1")
+d2 <- cleanup("study 2")
+d3 <- cleanup("study 3")
+d4 <- cleanup("study 4")
+```
+
+```{r dataframes for dimension reducation}
+# make dataframes for s1
+# d1_beetle <- makeDRDF("study 1", "beetle")
+# d1_robot <- makeDRDF("study 1", "robot")
+d1_all <- makeDRDF("study 1", "all")
+
+# make dataframes for study 2
+# d2_beetle <- makeDRDF("study 2", "beetle")
+# d2_robot <- makeDRDF("study 2", "robot")
+d2_all <- makeDRDF("study 2", "all")
+
+# make dataframes for study 3
+# d3_beetle <- makeDRDF("study 3", "beetle")
+# d3_robot <- makeDRDF("study 3", "robot")
+d3_all <- makeDRDF("study 3", "all")
+
+# make dataframes for study 4
+d4_all <- makeDRDF("study 4", "all")
+```
+
+<p style="text-align:right"><a href="#header">back to TOC</a></p>
+
+
+# Conceptual units
+
+```{r}
+chosen_fm <- "minres"
+chosen_cor <- chosenCorType
+chosen_rot <- chosenRotType
+chosen_scores <- "tenBerge"
+```
+
+
+## Study 1
+
+```{r}
+efa_pnasd1 <- fa_fun(d1_all, reten_fun(d1_all, "varimax"))
+```
+
+```{r, fig.width = 2.5, fig.asp = 1.5, include = T}
+heatmap_fun(efa_pnasd1) + labs(title = "PNAS Study 1")
+```
+
+## Study 2
+
+```{r}
+efa_pnasd2 <- fa_fun(d2_all, reten_fun(d2_all, "varimax"))
+```
+
+```{r, fig.width = 2.5, fig.asp = 1.5, include = T}
+heatmap_fun(efa_pnasd2) + labs(title = "PNAS Study 2")
+```
+
+## Study 3
+
+```{r}
+efa_pnasd3 <- fa_fun(d3_all, reten_fun(d3_all, "varimax"))
+```
+
+```{r, fig.width = 2.5, fig.asp = 1.5, include = T}
+heatmap_fun(efa_pnasd3) + labs(title = "PNAS Study 3")
+```
+
+## Study 4
+
+```{r}
+efa_pnasd4 <- fa_fun(d4_all, reten_fun(d4_all, "varimax"))
+```
+
+```{r, fig.width = 2.5, fig.asp = 1.5, include = T}
+heatmap_fun(efa_pnasd4) + labs(title = "PNAS Study 4")
+```
+
+
+# Organization of conceptual units
+
+```{r}
+hier_plot_fun_pnas <- function(df, factor1, factor2, which_efa){
+  
+  how_many_cap <- loadings_fun(which_efa) %>%
+    group_by(capacity) %>%
+    top_n(1, loading) %>%
+    ungroup() %>%
+    count(factor)
+  how_many_cap <- min(how_many_cap$n)
+  
+  loadings <- loadings_fun(which_efa) %>%
+    group_by(capacity) %>%
+    top_n(1, loading) %>%
+    ungroup() %>%
+    group_by(factor) %>%
+    top_n(how_many_cap, loading) %>%
+    ungroup()
+  
+  bypart <-  df %>%
+    select(subid, condition, happy:pride) %>%
+    distinct() %>%
+    gather(capacity, response_num, happy:pride) %>%
+    filter(capacity %in% loadings$capacity) %>%
+    left_join(loadings) %>%
+    group_by(subid, condition, factor) %>%
+    mutate(score = sum(response_num, na.rm = T)) %>%
+    ungroup() %>%
+    distinct(subid, condition, factor, score)
+  
+  means <- bypart %>%
+    group_by(condition, factor) %>%
+    multi_boot_standard(col = "score") %>%
+    ungroup()
+  
+  means_x <- means %>%
+    filter(factor == factor1) %>%
+    select(-factor) %>%
+    rename(ci_lower_x = ci_lower,
+           ci_upper_x = ci_upper,
+           mean_x = mean)
+  
+  means_y <- means %>%
+    filter(factor == factor2) %>%
+    select(-factor) %>%
+    rename(ci_lower_y = ci_lower,
+           ci_upper_y = ci_upper,
+           mean_y = mean)
+  
+  means_xy <- full_join(means_x, means_y)
+  
+  plot <- means_xy %>%
+    ggplot(aes(x = mean_x, y = mean_y,
+               color = condition, fill = condition)) +
+    geom_abline(lty = 2) +
+    geom_jitter(data = bypart %>% spread(factor, score),
+                aes_string(x = factor1, y = factor2),
+                alpha = 0.25, width = 0.25, height = 0.25) +
+    geom_errorbarh(aes(xmin = ci_lower_x, xmax = ci_upper_x), 
+                   color = "black", height = 0, size = 0.6) +
+    geom_errorbar(aes(ymin = ci_lower_y, ymax = ci_upper_y),
+                  color = "black", width = 0, size = 0.6) +
+    geom_point(color = "black", shape = 21, size = 3, stroke = 1) +
+    scale_x_continuous(limits = c(-3 * how_many_cap - 0.25, 
+                                  3 * how_many_cap + 0.25),
+                       breaks = seq(-3 * how_many_cap, 3 * how_many_cap, 6)) +
+    scale_y_continuous(limits = c(-3 * how_many_cap - 0.25, 
+                                  3 * how_many_cap + 0.25),
+                       breaks = seq(-3 * how_many_cap, 3 * how_many_cap, 6)) +
+    theme_bw() +
+    guides(color = guide_legend(override.aes = list(alpha = 1, size = 3)))
+  
+  return(plot)
+}
+```
+
+```{r}
+hier_plot_fun_pnas_s3 <- function(df, factor1, factor2, which_efa){
+  
+  how_many_cap <- loadings_fun(which_efa) %>%
+    group_by(capacity) %>%
+    top_n(1, loading) %>%
+    ungroup() %>%
+    count(factor)
+  how_many_cap <- min(how_many_cap$n)
+  
+  loadings <- loadings_fun(which_efa) %>%
+    group_by(capacity) %>%
+    top_n(1, loading) %>%
+    ungroup() %>%
+    group_by(factor) %>%
+    top_n(how_many_cap, loading) %>%
+    ungroup()
+  
+  bypart <-  df %>%
+    rownames_to_column("subid_condition") %>%
+    mutate(condition = gsub("_.*$", "", subid_condition),
+           subid = gsub("beetle_", "",
+                        gsub("robot_", "", subid_condition))) %>%
+    select(-subid_condition) %>%
+    distinct() %>%
+    gather(capacity, response_num, happy:pride) %>%
+    filter(capacity %in% loadings$capacity) %>%
+    left_join(loadings) %>%
+    group_by(subid, condition, factor) %>%
+    mutate(score = sum(response_num, na.rm = T)) %>%
+    ungroup() %>%
+    distinct(subid, condition, factor, score)
+  
+  means <- bypart %>%
+    group_by(condition, factor) %>%
+    multi_boot_standard(col = "score") %>%
+    ungroup()
+  
+  means_x <- means %>%
+    filter(factor == factor1) %>%
+    select(-factor) %>%
+    rename(ci_lower_x = ci_lower,
+           ci_upper_x = ci_upper,
+           mean_x = mean)
+  
+  means_y <- means %>%
+    filter(factor == factor2) %>%
+    select(-factor) %>%
+    rename(ci_lower_y = ci_lower,
+           ci_upper_y = ci_upper,
+           mean_y = mean)
+  
+  means_xy <- full_join(means_x, means_y)
+  
+  plot <- means_xy %>%
+    ggplot(aes(x = mean_x, y = mean_y,
+               color = condition, fill = condition)) +
+    geom_abline(lty = 2) +
+    geom_jitter(data = bypart %>% spread(factor, score),
+                aes_string(x = factor1, y = factor2),
+                alpha = 0.25, width = 0.25, height = 0.25) +
+    geom_errorbarh(aes(xmin = ci_lower_x, xmax = ci_upper_x), 
+                   color = "black", height = 0, size = 0.6) +
+    geom_errorbar(aes(ymin = ci_lower_y, ymax = ci_upper_y),
+                  color = "black", width = 0, size = 0.6) +
+    geom_point(color = "black", shape = 21, size = 3, stroke = 1) +
+    scale_x_continuous(limits = c(-3 * how_many_cap - 0.25, 
+                                  3 * how_many_cap + 0.25),
+                       breaks = seq(-3 * how_many_cap, 3 * how_many_cap, 6)) +
+    scale_y_continuous(limits = c(-3 * how_many_cap - 0.25, 
+                                  3 * how_many_cap + 0.25),
+                       breaks = seq(-3 * how_many_cap, 3 * how_many_cap, 6)) +
+    theme_bw() +
+    guides(color = guide_legend(override.aes = list(alpha = 1, size = 3)))
+  
+  return(plot)
+}
+```
+
+
+## Study 1
+
+```{r}
+# fa.sort(efa_pnasd1)
+```
+
+```{r, fig.width = 3, fig.asp = 0.8, include = T}
+hier_plot_fun_pnas(d1, factor1 = "F1", factor2 = "F2", efa_pnasd1) +
+  scale_color_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_fill_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_shape_manual(values = c(21, 22)) +
+  labs(title = "PNAS Study 1: Endorsements of BODY vs. HEART capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "BODY (Factor 1)", y = "HEART (Factor 2)")
+```
+
+```{r, fig.width = 3, fig.asp = 0.8, include = T}
+hier_plot_fun_pnas(d1, factor1 = "F1", factor2 = "F3", efa_pnasd1) +
+  scale_color_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_fill_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_shape_manual(values = c(21, 22)) +
+  labs(title = "PNAS Study 1: Endorsements of BODY vs. MIND capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "BODY (Factor 1)", y = "MIND (Factor 3)")
+```
+
+```{r, fig.width = 3, fig.asp = 0.8, include = T}
+hier_plot_fun_pnas(d1, factor1 = "F2", factor2 = "F3", efa_pnasd1) +
+  scale_color_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_fill_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_shape_manual(values = c(21, 22)) +
+  labs(title = "PNAS Study 1: Endorsements of HEART vs. MIND capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "HEART (Factor 2)", y = "MIND (Factor 3)")
+```
+
+## Study 2
+
+```{r}
+# fa.sort(efa_pnasd2)
+```
+
+```{r, fig.width = 3, fig.asp = 0.8, include = T}
+hier_plot_fun_pnas(d2, factor1 = "F1", factor2 = "F2", efa_pnasd2) +
+  scale_color_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_fill_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_shape_manual(values = c(21, 22)) +
+  labs(title = "PNAS Study 2: Endorsements of BODY vs. HEART capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "BODY (Factor 1)", y = "HEART (Factor 2)")
+```
+
+```{r, fig.width = 3, fig.asp = 0.8, include = T}
+hier_plot_fun_pnas(d2, factor1 = "F1", factor2 = "F3", efa_pnasd2) +
+  scale_color_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_fill_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_shape_manual(values = c(21, 22)) +
+  labs(title = "PNAS Study 2: Endorsements of BODY vs. MIND capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "BODY (Factor 1)", y = "MIND (Factor 3)")
+```
+
+```{r, fig.width = 3, fig.asp = 0.8, include = T}
+hier_plot_fun_pnas(d2, factor1 = "F2", factor2 = "F3", efa_pnasd2) +
+  scale_color_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_fill_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_shape_manual(values = c(21, 22)) +
+  labs(title = "PNAS Study 2: Endorsements of HEART vs. MIND capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "HEART (Factor 2)", y = "MIND (Factor 3)")
+```
+
+## Study 3
+
+```{r}
+# fa.sort(efa_pnasd3)
+```
+
+```{r, fig.width = 3, fig.asp = 0.8, include = T}
+hier_plot_fun_pnas_s3(d3_all, factor1 = "F1", factor2 = "F2", efa_pnasd3) +
+  scale_color_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_fill_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_shape_manual(values = c(21, 22)) +
+  labs(title = "PNAS Study 3: Endorsements of BODY vs. HEART capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "BODY (Factor 1)", y = "HEART (Factor 2)")
+```
+
+```{r, fig.width = 3, fig.asp = 0.8, include = T}
+hier_plot_fun_pnas_s3(d3_all, factor1 = "F1", factor2 = "F3", efa_pnasd3) +
+  scale_color_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_fill_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_shape_manual(values = c(21, 22)) +
+  labs(title = "PNAS Study 3: Endorsements of BODY vs. MIND capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "BODY (Factor 1)", y = "MIND (Factor 3)")
+```
+
+```{r, fig.width = 3, fig.asp = 0.8, include = T}
+hier_plot_fun_pnas_s3(d3_all, factor1 = "F2", factor2 = "F3", efa_pnasd3) +
+  scale_color_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_fill_manual(values = c("#fb9a99", "#1f78b4")) +
+  scale_shape_manual(values = c(21, 22)) +
+  labs(title = "PNAS Study 3: Endorsements of HEART vs. MIND capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "HEART (Factor 2)", y = "MIND (Factor 3)")
+```
+
+## Study 4
+
+```{r}
+# fa.sort(efa_pnasd4)
+```
+
+```{r, fig.width = 3, fig.asp = 1, include = T}
+hier_plot_fun_pnas(d4 %>%
+                     mutate(condition = factor(condition,
+                                               levels = c("stapler", "car", 
+                                                          "computer", "robot", 
+                                                          "microbe", "beetle", 
+                                                          "fish", "frog", 
+                                                          "bluejay", "mouse", 
+                                                          "goat", "bear", "dog", 
+                                                          "dolphin", "elephant", 
+                                                          "chimp", "fetus", 
+                                                          "pvs", "infant", 
+                                                          "child", "adult"))), 
+                   factor1 = "F1", factor2 = "F2", efa_pnasd4) +
+  ggrepel::geom_text_repel(aes(label = condition), 
+                           color = "black", box.padding = 0.75) +
+  scale_color_hue(h = c(0, 250) + 15) +
+  scale_fill_hue(h = c(0, 250) + 15) +
+  scale_shape_manual(values = rep(19, 9)) +
+  theme(legend.position = "none") +
+  labs(title = "PNAS Study 4: Endorsements of BODY vs. HEART capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "BODY (Factor 1)", y = "HEART (Factor 2)")
+```
+
+```{r, fig.width = 3, fig.asp = 1, include = T}
+hier_plot_fun_pnas(d4 %>%
+                     mutate(condition = factor(condition,
+                                               levels = c("stapler", "car", 
+                                                          "computer", "robot", 
+                                                          "microbe", "beetle", 
+                                                          "fish", "frog", 
+                                                          "bluejay", "mouse", 
+                                                          "goat", "bear", "dog", 
+                                                          "dolphin", "elephant", 
+                                                          "chimp", "fetus", 
+                                                          "pvs", "infant", 
+                                                          "child", "adult"))), 
+                   factor1 = "F1", factor2 = "F3", efa_pnasd4) +
+  ggrepel::geom_text_repel(aes(label = condition), 
+                           color = "black", box.padding = 0.75) +
+  scale_color_hue(h = c(0, 250) + 15) +
+  scale_fill_hue(h = c(0, 250) + 15) +
+  scale_shape_manual(values = rep(19, 9)) +
+  theme(legend.position = "none") +
+  labs(title = "PNAS Study 4: Endorsements of BODY vs. MIND capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "BODY (Factor 1)", y = "MIND (Factor 3)")
+```
+
+```{r, fig.width = 3, fig.asp = 1, include = T}
+hier_plot_fun_pnas(d4 %>%
+                     mutate(condition = factor(condition,
+                                               levels = c("stapler", "car", 
+                                                          "computer", "robot", 
+                                                          "microbe", "beetle", 
+                                                          "fish", "frog", 
+                                                          "bluejay", "mouse", 
+                                                          "goat", "bear", "dog", 
+                                                          "dolphin", "elephant", 
+                                                          "chimp", "fetus", 
+                                                          "pvs", "infant", 
+                                                          "child", "adult"))), 
+                   factor1 = "F2", factor2 = "F3", efa_pnasd4) +
+  ggrepel::geom_text_repel(aes(label = condition), 
+                           color = "black", box.padding = 0.75) +
+  scale_color_hue(h = c(0, 250) + 15) +
+  scale_fill_hue(h = c(0, 250) + 15) +
+  scale_shape_manual(values = rep(19, 9)) +
+  theme(legend.position = "none") +
+  labs(title = "PNAS Study 4: Endorsements of HEART vs. MIND capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "HEART (Factor 2)", y = "MIND (Factor 3)")
+```
+
+
