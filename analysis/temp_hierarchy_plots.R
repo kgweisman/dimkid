@@ -864,3 +864,97 @@ hier_plot_fun3(d2_all, "F1", "F2", efa_2_d2_46) +
   labs(title = "Study 2: Endorsements of BODY-HEART vs. MIND capacities",
        subtitle = "Defining factors by 4- to 6-y-old children's 2-factor EFA solution",
        x = "BODY-HEART (Factor 1)", y = "MIND (Factor 2)")
+
+
+# study 3 -----
+
+## adults' factor space -----
+
+# to determine labels for factors
+# fa.sort(efa_3_d3_ad)
+
+### 1 point per participant -----
+
+hier_plot_fun(d3_all, "F1", "F2", efa_3_d3_ad) +
+  geom_smooth(method = "lm", aes(group = age_group), 
+              color = "black", show.legend = F) +
+  scale_color_brewer(palette = "Paired") +
+  scale_fill_brewer(palette = "Paired") +
+  scale_shape_manual(values = rep(19, 9)) +
+  labs(title = "Study 3: Endorsements of BODY vs. HEART capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "BODY (Factor 1)", y = "HEART (Factor 2)")
+
+hier_plot_fun(d3_all, "F1", "F3", efa_3_d3_ad) +
+  geom_smooth(method = "lm", aes(group = age_group), 
+              color = "black", show.legend = F) +
+  scale_color_brewer(palette = "Paired") +
+  scale_fill_brewer(palette = "Paired") +
+  scale_shape_manual(values = rep(19, 9)) +
+  labs(title = "Study 3: Endorsements of BODY vs. MIND capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "BODY (Factor 1)", y = "MIND (Factor 3)")
+
+hier_plot_fun(d3_all, "F2", "F3", efa_3_d3_ad) +
+  geom_smooth(method = "lm", aes(group = age_group), 
+              color = "black", show.legend = F) +
+  scale_color_brewer(palette = "Paired") +
+  scale_fill_brewer(palette = "Paired") +
+  scale_shape_manual(values = rep(19, 9)) +
+  labs(title = "Study 3: Endorsements of HEART vs. MIND capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "HEART (Factor 2)", y = "MIND (Factor 3)")
+
+### 1 point per character -----
+
+hier_plot_fun2(d3_all, "F1", "F2", efa_3_d3_ad) +
+  scale_color_brewer(palette = "Paired") +
+  scale_fill_brewer(palette = "Paired") +
+  scale_shape_manual(values = rep(19, 9)) +
+  labs(title = "Study 3: Endorsements of BODY vs. HEART capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "BODY (Factor 1)", y = "HEART (Factor 2)")
+
+hier_plot_fun2(d3_all, "F1", "F3", efa_3_d3_ad) +
+  scale_color_brewer(palette = "Paired") +
+  scale_fill_brewer(palette = "Paired") +
+  scale_shape_manual(values = rep(19, 9)) +
+  labs(title = "Study 3: Endorsements of BODY vs. MIND capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "BODY (Factor 1)", y = "MIND (Factor 3)")
+
+hier_plot_fun2(d3_all, "F2", "F3", efa_3_d3_ad) +
+  scale_color_brewer(palette = "Paired") +
+  scale_fill_brewer(palette = "Paired") +
+  scale_shape_manual(values = rep(19, 9)) +
+  labs(title = "Study 3: Endorsements of HEART vs. MIND capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "HEART (Factor 2)", y = "MIND (Factor 3)")
+
+### combo -----
+
+hier_plot_fun3(d3_all, "F1", "F2", efa_3_d3_ad) +
+  scale_color_brewer(palette = "Paired") +
+  scale_fill_brewer(palette = "Paired") +
+  scale_shape_manual(values = rep(19, 9)) +
+  labs(title = "Study 3: Endorsements of BODY vs. HEART capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "BODY (Factor 1)", y = "HEART (Factor 2)")
+
+hier_plot_fun3(d3_all, "F1", "F3", efa_3_d3_ad) +
+  scale_color_brewer(palette = "Paired") +
+  scale_fill_brewer(palette = "Paired") +
+  scale_shape_manual(values = rep(19, 9)) +
+  labs(title = "Study 3: Endorsements of BODY vs. MIND capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "BODY (Factor 1)", y = "MIND (Factor 3)")
+
+hier_plot_fun3(d3_all, "F2", "F3", efa_3_d3_ad) +
+  scale_color_brewer(palette = "Paired") +
+  scale_fill_brewer(palette = "Paired") +
+  scale_shape_manual(values = rep(19, 9)) +
+  labs(title = "Study 3: Endorsements of HEART vs. MIND capacities",
+       subtitle = "Defining factors by adults' 3-factor EFA solution",
+       x = "HEART (Factor 2)", y = "MIND (Factor 3)")
+
+
