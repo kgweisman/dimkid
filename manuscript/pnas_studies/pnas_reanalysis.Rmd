@@ -1281,3 +1281,202 @@ hier_plot_fun_pnas(d4 %>%
 ```
 
 
+# Application
+
+```{r}
+app_plot_fun_pnas <- function(df, which_efa){
+  
+  how_many_cap <- loadings_fun(which_efa) %>%
+    group_by(capacity) %>%
+    top_n(1, loading) %>%
+    ungroup() %>%
+    count(factor)
+  how_many_cap <- min(how_many_cap$n)
+  
+  loadings <- loadings_fun(which_efa) %>%
+    group_by(capacity) %>%
+    top_n(1, loading) %>%
+    ungroup() %>%
+    group_by(factor) %>%
+    top_n(how_many_cap, loading) %>%
+    ungroup()
+  
+  bypart <- df %>%
+    select(subid, condition, happy:pride) %>%
+    distinct() %>%
+    gather(capacity, response_num, happy:pride) %>%
+    filter(capacity %in% loadings$capacity) %>%
+    left_join(loadings) %>%
+    group_by(subid, condition, factor) %>%
+    mutate(score = sum(response_num, na.rm = T)) %>%
+    ungroup() %>%
+    distinct(subid, condition, factor, score)
+  
+  means <- bypart %>%
+    group_by(condition, factor) %>%
+    multi_boot_standard(col = "score") %>%
+    ungroup()
+  
+  plot <- means %>%
+    ggplot(aes(x = factor, y = mean, color = condition, fill = condition)) +
+    geom_hline(yintercept = 0, lty = 2) +
+    geom_point(data = bypart, aes(y = score), alpha = 0.5,
+               position = position_jitterdodge(jitter.width = 0.25, 
+                                               jitter.height = 0, 
+                                               dodge.width = 0.5)) +
+    geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper),
+                    color = "black", shape = 21) +
+    scale_y_continuous(limits = c(-3 * how_many_cap - 0.25, 
+                                  3 * how_many_cap + 0.25),
+                       breaks = seq(-3 * how_many_cap, 3 * how_many_cap, 6)) +
+    theme_bw()
+  
+  return(plot)
+}
+```
+
+```{r}
+app_plot_fun_pnas_s3 <- function(df, which_efa){
+  
+  how_many_cap <- loadings_fun(which_efa) %>%
+    group_by(capacity) %>%
+    top_n(1, loading) %>%
+    ungroup() %>%
+    count(factor)
+  how_many_cap <- min(how_many_cap$n)
+  
+  loadings <- loadings_fun(which_efa) %>%
+    group_by(capacity) %>%
+    top_n(1, loading) %>%
+    ungroup() %>%
+    group_by(factor) %>%
+    top_n(how_many_cap, loading) %>%
+    ungroup()
+  
+  bypart <-  df %>%
+    rownames_to_column("subid_condition") %>%
+    mutate(condition = gsub("_.*$", "", subid_condition),
+           subid = gsub("beetle_", "",
+                        gsub("robot_", "", subid_condition))) %>%
+    select(-subid_condition) %>%
+    distinct() %>%
+    gather(capacity, response_num, happy:pride) %>%
+    filter(capacity %in% loadings$capacity) %>%
+    left_join(loadings) %>%
+    group_by(subid, condition, factor) %>%
+    mutate(score = sum(response_num, na.rm = T)) %>%
+    ungroup() %>%
+    distinct(subid, condition, factor, score)
+  
+  means <- bypart %>%
+    group_by(condition, factor) %>%
+    multi_boot_standard(col = "score") %>%
+    ungroup()
+  
+  plot <- means %>%
+    ggplot(aes(x = factor, y = mean, color = condition, fill = condition)) +
+    geom_hline(yintercept = 0, lty = 2) +
+    geom_point(data = bypart, aes(y = score), alpha = 0.5,
+               position = position_jitterdodge(jitter.width = 0.25, 
+                                               jitter.height = 0, 
+                                               dodge.width = 0.5)) +
+    geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper),
+                    color = "black", shape = 21) +
+    scale_y_continuous(limits = c(-3 * how_many_cap - 0.25, 
+                                  3 * how_many_cap + 0.25),
+                       breaks = seq(-3 * how_many_cap, 3 * how_many_cap, 6)) +
+    theme_bw()
+  
+  return(plot)
+}
+```
+
+```{r}
+app_plot_fun_pnas_s4 <- function(df, which_efa){
+  
+  how_many_cap <- loadings_fun(which_efa) %>%
+    group_by(capacity) %>%
+    top_n(1, loading) %>%
+    ungroup() %>%
+    count(factor)
+  how_many_cap <- min(how_many_cap$n)
+  
+  loadings <- loadings_fun(which_efa) %>%
+    group_by(capacity) %>%
+    top_n(1, loading) %>%
+    ungroup() %>%
+    group_by(factor) %>%
+    top_n(how_many_cap, loading) %>%
+    ungroup()
+  
+  bypart <- df %>%
+    select(subid, condition, happy:pride) %>%
+    distinct() %>%
+    gather(capacity, response_num, happy:pride) %>%
+    filter(capacity %in% loadings$capacity) %>%
+    left_join(loadings) %>%
+    group_by(subid, condition, factor) %>%
+    mutate(score = sum(response_num, na.rm = T)) %>%
+    ungroup() %>%
+    distinct(subid, condition, factor, score)
+  
+  means <- bypart %>%
+    group_by(condition, factor) %>%
+    multi_boot_standard(col = "score") %>%
+    ungroup()
+  
+  plot <- means %>%
+    ggplot(aes(x = condition, y = mean)) +
+    facet_grid(~ factor) +
+    geom_hline(yintercept = 0, lty = 2) +
+    geom_pointrange(aes(ymin = ci_lower, ymax = ci_upper)) +
+    scale_y_continuous(limits = c(-3 * how_many_cap - 0.25, 
+                                  3 * how_many_cap + 0.25),
+                       breaks = seq(-3 * how_many_cap, 3 * how_many_cap, 6)) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+    theme_bw()
+  
+  return(plot)
+}
+```
+
+## Study 1
+
+```{r, include = T}
+app_plot_fun_pnas(d1, efa_pnasd1) +
+  labs(title = "PNAS Study 1")
+```
+
+## Study 2
+
+```{r, include = T}
+app_plot_fun_pnas(d2, efa_pnasd2) +
+  labs(title = "PNAS Study 2")
+```
+
+## Study 2
+
+```{r, include = T}
+app_plot_fun_pnas_s3(d3_all, efa_pnasd3) +
+  labs(title = "PNAS Study 3")
+```
+
+## Study 4
+
+```{r, fig.width = 5, fig.asp = 0.5, include = T}
+app_plot_fun_pnas_s4(d4 %>%
+                       mutate(condition = factor(condition,
+                                                 levels = c("stapler", "car",
+                                                            "computer", "robot",
+                                                            "microbe", "beetle",
+                                                            "fish", "frog",
+                                                            "bluejay", "mouse",
+                                                            "goat", "bear", "dog",
+                                                            "dolphin", "elephant",
+                                                            "chimp", "fetus",
+                                                            "pvs", "infant",
+                                                            "child", "adult"))),
+                     efa_pnasd4) +
+  labs(title = "PNAS Study 4") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
