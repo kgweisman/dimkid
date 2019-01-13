@@ -458,8 +458,7 @@ catscore_fun_pnas <- function(df, which_efa){
     filter(capacity %in% loadings$capacity) %>%
     left_join(loadings) %>%
     group_by(subid, condition, factor) %>%
-    mutate(score = sum(response_num + 3, na.rm = T)/ # make 0-6 scale
-             (how_many_cap * 6)) %>% # divide by total possible
+    mutate(score = mean((response_num + 3), na.rm = T)) %>% # make 0-6 scale
     ungroup() %>%
     distinct(subid, condition, factor, score)
 
@@ -471,6 +470,7 @@ hier_plot_fun_pnas <- function(df, factor1, factor2, which_efa){
   bypart <- catscore_fun_pnas(df, which_efa)
   
   means <- bypart %>%
+    distinct(subid, condition, factor, score) %>%
     group_by(condition, factor) %>%
     multi_boot_standard(col = "score") %>%
     ungroup()
@@ -497,7 +497,7 @@ hier_plot_fun_pnas <- function(df, factor1, factor2, which_efa){
     geom_abline(lty = 2) +
     geom_jitter(data = bypart %>% spread(factor, score),
                 aes_string(x = factor1, y = factor2),
-                alpha = 0.25, width = 0.05, height = 0.05) +
+                alpha = 0.4, width = 0.3, height = 0.3) +
     geom_errorbarh(aes(xmin = ci_lower_x, xmax = ci_upper_x), 
                    color = "black", height = 0, size = 0.6) +
     geom_errorbar(aes(ymin = ci_lower_y, ymax = ci_upper_y),
@@ -505,8 +505,8 @@ hier_plot_fun_pnas <- function(df, factor1, factor2, which_efa){
     geom_point(color = "black", shape = 21, size = 2, stroke = 1) +
     ggrepel::geom_text_repel(aes(label = condition), color = "black", 
                              box.padding = 0.5) +
-    scale_x_continuous(limits = c(-0.05, 1.05), breaks = seq(0, 1, 0.25)) +
-    scale_y_continuous(limits = c(-0.05, 1.05), breaks = seq(0, 1, 0.25)) +
+    scale_x_continuous(limits = c(-0.3, 6.3), breaks = seq(0, 6, 2)) +
+    scale_y_continuous(limits = c(-0.3, 6.3), breaks = seq(0, 6, 2)) +
     theme_bw() +
     theme(legend.position = "none")
 
@@ -519,30 +519,33 @@ hier_plot_agg_pnas <- function(df, which_efa, colors, shapes, title, lab_letter)
     scale_color_manual(values = colors) +
     scale_fill_manual(values = colors) +
     scale_shape_manual(values = shapes) +
-    labs(title = "BODY vs. HEART",
-         x = "BODY", y = "HEART")
+    labs(#title = "BODY vs. HEART",
+         x = "Mean BODY endorsement", 
+         y = "Mean HEART endorsement")
   
   plot_b <- hier_plot_fun_pnas(df, factor1 = "F1", factor2 = "F3", 
                                which_efa = which_efa) +
     scale_color_manual(values = colors) +
     scale_fill_manual(values = colors) +
     scale_shape_manual(values = shapes) +
-    labs(title = "BODY vs. MIND",
-         x = "BODY", y = "MIND")
+    labs(#title = "BODY vs. MIND",
+         x = "Mean BODY endorsement", 
+         y = "Mean MIND endorsement")
   
   plot_c <- hier_plot_fun_pnas(df, factor1 = "F2", factor2 = "F3", 
                                which_efa = which_efa) +
     scale_color_manual(values = colors) +
     scale_fill_manual(values = colors) +
     scale_shape_manual(values = shapes) +
-    labs(title = "HEART vs. MIND",
-         x = "HEART", y = "MIND")
+    labs(#title = "HEART vs. MIND",
+         x = "Mean HEART endorsement", 
+         y = "Mean MIND endorsement")
   
   plot_title <- ggdraw() +
-    draw_label(title, fontface = "bold")
+    draw_label(title)
   
   plots <- plot_grid(plot_a, plot_b, plot_c, nrow = 3,
-                     labels = paste0(lab_letter, 1:3))
+                     labels = paste0(lab_letter, 1:3), scale = 0.95)
   
   fig_with_cap <- plot_grid(plot_title, plots, ncol = 1, 
                             rel_heights = c(0.025, 1))
@@ -558,8 +561,10 @@ app_plot_fun_pnas <- function(df, which_efa,
     ggplot(aes(x = factor(factor, labels = factor_names), 
                y = score, color = condition)) +
     facet_wrap(~ condition, ncol = 7) +
-    geom_jitter(aes(shape = condition), width = 0.25, height = 0, alpha = 0.25) +
-    geom_pointrange(data = . %>% group_by(condition, factor) %>%
+    geom_jitter(aes(shape = condition), width = 0.25, height = 0, alpha = 0.4) +
+    geom_pointrange(data = . %>% 
+                      distinct(subid, condition, factor, score) %>%
+                      group_by(condition, factor) %>%
                       multi_boot_standard(col = "score") %>%
                       ungroup(),
                     aes(y = mean, ymin = ci_lower, ymax = ci_upper),
@@ -567,7 +572,7 @@ app_plot_fun_pnas <- function(df, which_efa,
     scale_color_manual(values = colors) +
     scale_shape_manual(values = shapes) +
     theme(legend.position = "none") +
-    labs(x = "Conceptual unit", y = "Endorsement score")
+    labs(x = "Conceptual unit", y = "Mean endorsement")
   
   return(plot)
   
