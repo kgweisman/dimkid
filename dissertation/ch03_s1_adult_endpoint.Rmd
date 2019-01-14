@@ -1,0 +1,301 @@
+---
+title: "Chapter III: Study 1: An adult endpoint for conceptual representations of mental life"
+subtitle: "Reanalysis of Weisman, Dweck, & Markman (2017)"
+output:
+  html_notebook:
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+always_allow_html: yes
+---
+
+```{r global_options, include = F}
+knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
+                      include = F, echo = F)
+```
+
+```{r}
+# # for knitting to .docx
+# output:
+#   word_document:
+#     reference_docx: "./word-styles-reference.docx"
+# always_allow_html: yes
+   
+# # for knitting to .nb.html 
+# output:
+#   html_notebook:
+#     toc: yes
+#     toc_depth: 4
+#     toc_float: yes
+```
+
+```{r}
+library(tidyverse)
+library(psych)
+library(langcog) # source: https://github.com/langcog/langcog-package
+# library(lme4)
+library(brms)
+library(stringi)
+library(cowplot)
+library(kableExtra)
+
+# plotting
+theme_set(theme_bw())
+colors21 <- colorRampPalette(c("#6a3d9a", "#1f78b4", "#33a02c", "#e31a1c", 
+                               "#ff7f00"), # from colorbrewer2.org "Paired"
+                             space = "Lab")(21)
+```
+
+```{r}
+# supporting functions
+source("./scripts/max_factors_efa.R")
+source("./scripts/reten_fun.R")
+source("./scripts/plot_fun.R")
+source("./scripts/efa_fun.R")
+source("./scripts/ms_fun.R")
+
+# functions from Weisman et al. (2017)
+source("./scripts/pnas_fun.R")
+```
+
+```{r}
+# how to handle outliers
+chosenOutlierHandling <- "keep" # REPORTED: keep all data
+# chosenOutlierHandling <- "remove"
+
+# whether to exclude any characters in study 4
+chosenExclude <- "none" # REPORTED: keep all characters
+# chosenExclude <- c("stapler", "car", "computer")
+
+# whether to exclude any mental capacities
+chosenExcludeItem <- "none" # REPORTED: keep all capacities
+# chosenExcludeItem <- "computations"
+
+# what factoring method to use
+chosen_fm <- "minres" # REPORTED (see alternative options in ?fa)
+
+# what correlation to use
+chosenCorType <- "cor" # REPORTED: pearson correlation
+# chosenCorType <- "poly" # polychoric correlation
+chosen_cor <- chosenCorType
+
+# what rotation to use
+chosenRotType <- "varimax" # REPORTED: varimax rotation
+# chosenRotType <- "oblimin" # oblimin rotation
+# chosenRotType <- "none" # no rotation
+chosen_rot <- chosenRotType
+
+# what scoring method to use
+chosen_scores <- "tenBerge" # REPORTED
+# chosen_scores <- "regression" # alternative option
+```
+
+```{r}
+# study 1 (2015-12-15, 2 conditions, between-subjects)
+d_raw_study1 <- read.csv("https://osf.io/29vng/download") %>%
+  mutate(study = "study 1")
+
+# study 2 (2016-01-12, 2 conditions, between-subjects - REPLICATION)
+d_raw_study2 <- read.csv("https://osf.io/g76hj/download") %>%
+  mutate(study = "study 2")
+
+# study 3 (2016-01-10, 2 conditions, within-subjects)
+d_raw_study3 <- read.csv("https://osf.io/epykf/download") %>%
+  mutate(study = "study 3")
+
+# study 4 (2016-01-14, 21 conditions, between-subjects)
+d_raw_study4 <- read.csv("https://osf.io/kdzge/download") %>%
+  mutate(study = "study 4")
+```
+
+```{r}
+# clean up datasets
+d1 <- cleanup("study 1")
+d2 <- cleanup("study 2")
+d3 <- cleanup("study 3")
+d4 <- cleanup("study 4") %>%
+  mutate(condition = factor(condition,
+                            levels = c("stapler", "car", "computer", "robot",
+                                       "microbe", "beetle", "fish", "bluejay",
+                                       "frog", "mouse", "goat", "bear", 
+                                       "dog", "dolphin", "elephant", "chimp",
+                                       "fetus", "pvs", "infant", "child", "adult")))
+```
+
+```{r}
+d1_all <- makeDRDF("study 1", "all")
+d2_all <- makeDRDF("study 2", "all")
+d3_all <- makeDRDF("study 3", "all")
+d4_all <- makeDRDF("study 4", "all")
+```
+
+
+# Chapter overview
+
+The primary goal of this dissertation is to describe how conceptual representations of mental life develop over early and middle childhood - but before diving into the development of this concept, it is useful to examine an adult endpoint. This is provided by my previous work on concepts of mental life among ordinary US adults (Weisman et al., 2017). This previous work provides the theoretical foundation for this dissertation, as well as a design template for the developmental studies to be discussed in the following chapters.
+
+The studies described in Weisman et al. (2017) were designed to address our first question about conceptual representation: What are the fundamental components, or "conceptual units," of ordinary people's representation of mental life? Analyses of this question were the primary focus of Weisman et al. (2017). However, as I argued in Chapter XX, the design of these studies also provides an opportunity to examine two other key aspects of these representations: the organization of these units and the way this concept is applied or deployed in reasoning about the wide variety of "beings" in the world.
+
+In this chapter, I provide a summary of my previous findings regarding the conceptual units employed by US adults in their representations of mental life, as published in Weisman et al. (2017). I then present a novel re-analysis of these datasets, designed to shed light on the organization of these conceptual units - a topic that was not addressed in Weisman et al. (2017). Finally, I summarize what these studies suggest about the application or deployment of these conceptual representations in reasoning about specific target beings (e.g., humans, other mammals, insects, technologies, etc.) - a topic that was only briefly discussed in Weisman et al. (2017). Taken together, these three perspectives on the data first published in Weisman et al. (2017) paint a comprehensive picture of US adults' conceptual representations of mental life, which in turn provides an adult endpoint for the developmental work that constitutes the bulk of this dissertation.
+
+# Conceptual units
+
+```{r}
+# do all EFAs
+efa_pnasd1 <- fa_fun(d1_all %>% rename_fun(), reten_fun(d1_all, "varimax"))
+efa_pnasd2 <- fa_fun(d2_all %>% rename_fun(), reten_fun(d2_all, "varimax"))
+efa_pnasd3 <- fa_fun(d3_all %>% rename_fun(), reten_fun(d3_all, "varimax"))
+efa_pnasd4 <- fa_fun(d4_all %>% rename_fun(), reten_fun(d4_all, "varimax"))
+```
+
+```{r}
+# make all heatmaps
+fig01a <- heatmap_fun(efa_pnasd1, factor_names = c("BODY", "HEART", "MIND")) +
+  theme(legend.position = "none") +
+  labs(title = paste0("Weisman et al., (2017): Study 1\n(Adults, n=", 
+                      nrow(d1_all), ")"))
+
+fig01b <- heatmap_fun(efa_pnasd2, factor_names = c("BODY", "HEART", "MIND")) + 
+  theme(legend.position = "none") +
+  labs(title = paste0("Weisman et al., (2017): Study 2\n(Adults, n=", 
+                      nrow(d2_all), ")"))
+
+fig01c <- heatmap_fun(efa_pnasd3, factor_names = c("BODY", "HEART", "MIND")) + 
+  theme(legend.position = "none") +
+  labs(title = paste0("Weisman et al., (2017): Study 3\n(Adults, n=", 
+                      nrow(d3_all), ")"))
+
+fig01d <- heatmap_fun(efa_pnasd4, factor_names = c("BODY", "HEART", "MIND")) + 
+  # theme(legend.position = "none") +
+  labs(title = paste0("Weisman et al., (2017): Study 4\n(Adults, n=", 
+                      nrow(d4_all), ")"))
+```
+
+```{r, fig.width = 9, include = T}
+# put em all together and what do you get
+fig01_plots <- plot_grid(fig01a, fig01b, fig01c, fig01d,
+                         nrow = 1, rel_widths = c(1, 1, 1, 1.2), labels = "AUTO")
+
+fig01_with_caption <- add_sub(fig01_plots, str_wrap("Figure 3.1: Exploratory factor analysis results for adults in Weisman et al. (2017), Studies 1-4. In Studies 1 (A) and 2 (B), each participant assessed 40 mental capacities for one of two target characters: a beetle or a robot. In Study 3 (C), each participant assessed 40 mental capacities for two target characters, presented side by side: a beetle and a robot. In Study 4 (D), each participant assessed 40 mental capacities for one of 21 target characters, including a variety of humans, non-human animals, technologies, and other entities.", 210), x = 0, hjust = 0)
+ggdraw(fig01_with_caption)
+```
+
+```{r}
+# library(plotly)
+# plot_ly(loadings_fun(efa_pnasd4, long_wide = "wide"), 
+#         x = ~F1, y = ~F2, z = ~F3,
+#         text = ~capacity) %>%
+#   add_markers() %>%
+#   layout(scene = list(xaxis = list(title = 'BODY'),
+#                       yaxis = list(title = 'HEART'),
+#                       zaxis = list(title = 'MIND')))
+```
+
+
+# Organization of conceptual units
+
+```{r}
+plot02a <- hier_plot_agg_pnas(df = d1 %>% rename_fun(), which_efa = efa_pnasd1,
+                              colors = c("#fb9a99", "#1f78b4"), shapes = c(21, 22),
+                              title = "Weisman et al. (2017): Study 1",
+                              lab_letter = "A")
+
+plot02b <- hier_plot_agg_pnas(df = d2 %>% rename_fun(), which_efa = efa_pnasd2,
+                              colors = c("#fb9a99", "#1f78b4"), shapes = c(21, 22),
+                              title = "Weisman et al. (2017): Study 2",
+                              lab_letter = "B")
+
+plot02c <- hier_plot_agg_pnas(df = d3 %>%
+                                rename_fun() %>%
+                                select(-condition) %>%
+                                rename(condition = target),
+                              which_efa = efa_pnasd1,
+                              colors = c("#fb9a99", "#1f78b4"), shapes = c(21, 22),
+                              title = "Weisman et al. (2017): Study 3",
+                              lab_letter = "C")
+
+plot02d <- hier_plot_agg_pnas(df = d4 %>% rename_fun(), which_efa = efa_pnasd4,
+                              colors = colors21,
+                              shapes = rep(21, 21),
+                              title = "Weisman et al. (2017): Study 4",
+                              lab_letter = "D")
+```
+
+```{r}
+fig02_plots <- plot_grid(plot02a, plot02b, plot02c, plot02d, nrow = 1)
+```
+
+```{r, fig.width = 7, fig.asp = 0.85, include = T}
+fig02_with_caption <- add_sub(fig02_plots, str_wrap("Figure 3.2: Comparison of endorsements of BODY, HEART, and MIND capacities among adults in Weisman et al. (2017), Studies 1-4 (columns A-D). The top row (A1-D1) compares endorsements of BODY vs. HEART capacities; the middle row (A2-D2) compares BODY vs. MIND; and the bottom row (A3-D3) compares HEART vs. MIND. For each study, EFA was used to determine which capacities were considered part of BODY, HEART, and MIND (see main text). For each capacity, degree of endorsement could range from 0 (not at all capable) to 6 (fully capable). Error bars are 95% bootstrapped confidence intervals.", 150), x = 0, hjust = 0)
+ggdraw(fig02_with_caption)
+```
+
+
+# Application
+
+```{r}
+plot03a <- app_plot_fun_pnas(d1 %>% rename_fun(), efa_pnasd1,
+                             colors = c("#fb9a99", "#1f78b4"), 
+                             shapes = c(16, 15)) +
+  labs(title = "Weisman et al. (2017): Study 1")
+
+plot03b <- app_plot_fun_pnas(d2 %>% rename_fun(), efa_pnasd2, # coudl do efa_pnasd1
+                             colors = c("#fb9a99", "#1f78b4"), 
+                             shapes = c(16, 15)) +
+  labs(title = "Weisman et al. (2017): Study 2")
+
+plot03c <- app_plot_fun_pnas(d3 %>%
+                                rename_fun() %>%
+                                select(-condition) %>%
+                                rename(condition = target),
+                             efa_pnasd3, # coudl do efa_pnasd1
+                             colors = c("#fb9a99", "#1f78b4"), 
+                             shapes = c(16, 15)) +
+  labs(title = "Weisman et al. (2017): Study 3")
+
+plot03d <- app_plot_fun_pnas(d4 %>% rename_fun(), efa_pnasd4, # coudl do efa_pnasd1
+                             colors = colors21,
+                             shapes = rep(16, 21)) +
+  labs(title = "Weisman et al. (2017): Study 4")
+```
+
+```{r}
+fig03_plots <- plot_grid(plot_grid(plot03a, plot03b, plot03c,
+                                   nrow = 1, labels = "AUTO", scale = 0.95),
+                         plot_grid(plot03d, labels = "D", scale = 0.985),
+                         nrow = 2, rel_heights = c(1, 2))
+```
+
+```{r, fig.width = 7, fig.asp = 0.8, include = T}
+fig03_with_caption <- add_sub(fig03_plots, str_wrap("Figure 3.3: Mean endorsements of BODY, HEART, and MIND capacities among adults in Weisman et al. (2017), Studies 1-4 (A-D). For each study, EFA was used to determine which capacities were considered part of BODY, HEART, and MIND (see main text). For each capacity, degree of endorsement could range from 0 (not at all capable) to 6 (fully capable). Error bars are 95% bootstrapped confidence intervals. (See also Figure 3.2.)", 150), x = 0, hjust = 0)
+ggdraw(fig03_with_caption)
+```
+
+```{r}
+# library(plotly)
+# plot_ly(catscore_fun_pnas(d4 %>% rename_fun(), efa_pnasd4) %>%
+#           spread(factor, score), 
+#         x = ~F1, y = ~F2, z = ~F3, 
+#         text = ~condition, color = ~condition,
+#         colors = colors21) %>%
+#   add_markers() %>%
+#   layout(scene = list(xaxis = list(title = 'BODY'),
+#                       yaxis = list(title = 'HEART'),
+#                       zaxis = list(title = 'MIND')))
+```
+
+```{r}
+# library(plotly)
+# plot_ly(catscore_fun_pnas(d4 %>% rename_fun(), efa_pnasd4) %>%
+#           group_by(condition, factor) %>%
+#           summarise(mean = mean(score, na.rm = T)) %>%
+#           ungroup() %>%
+#           spread(factor, mean), 
+#         x = ~F1, y = ~F2, z = ~F3, 
+#         text = ~condition, color = ~condition,
+#         colors = colors21) %>%
+#   add_markers() %>%
+#   layout(scene = list(xaxis = list(title = 'BODY'),
+#                       yaxis = list(title = 'HEART'),
+#                       zaxis = list(title = 'MIND')))
+```
