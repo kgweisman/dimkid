@@ -1,5 +1,5 @@
 ---
-title: "Chapter II: Overview of studies"
+title: "Chapter II: Overview of study methods and analyses"
 output:
   html_notebook:
     toc: yes
@@ -28,39 +28,290 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 #     toc_float: yes
 ```
 
-Here I provide an overview of the methods and analyses for the four sets of studies that form the backbone of this dissertation. These studies all used very similar experimental paradigms to address three key questions about conceptual representations of mental life at various points in development: (1) _What are the components, or "conceptual units," that anchor representaitons of mental life?_; (2) _How are these conceptual units organized in relation to each other?_; and (3) _How is this conceptual representation of mental life deployed in reasoning about specific entities in the world?_. This chapter is intended to provide the reader with a general sense of the methods and analysis approaches common to all studies.
 
-# General approach
+```{r}
+library(tidyverse)
+library(psych)
+library(langcog) # source: https://github.com/langcog/langcog-package
+# library(lme4)
+library(brms)
+library(stringi)
+library(cowplot)
+library(kableExtra)
 
-There are many approaches that one could take to studying conceptual representations of mental life. For example, one could focus on representations of _human_ minds in particular, and ask participants to reason about how different mental states unfold over time in a causal chain (e.g., a person's visual perception causing them to form a belief, or to have an emotional reaction; XX CITE Wellman). Conversely, one could ask participants to reason about the mental lives of unfamiliar or unknown entities (e.g., XX CITE Weisman, Markman, & Dweck, 2015 CogSci). One could also ask participants explicitly about their understanding of mental capacities themselves, rather than inferring these conceptual representations from questions about the mental lives of any particular entity, human or otherwise (e.g., asking questions like, "Is planning a part of deciding?" or "Is remembering a kind of thinking?", XX CITE Rips & Conrad, 1989; "How similar are these words: happy and sad?", XX CITE Nook et al., 2017; see also XX CITE Fabricius, Schwanenflugel). All of these approaches have proved to be useful ways of examining how people represent the mind.
+theme_set(theme_bw())
+```
 
-In the current studies, however, I instead chose to examine conceptual representations of mental life by documenting participants' mental capacity attributions to a wide variety of entities that might be perceived to vary in their mental lives (e.g., humans, non-human animals, technologies, and inert objects). These studies were designed to capture participants' beliefs about the _co-occurrence_ of a diverse range of mental capacities: When a participant indicates that an entity has one capacity (e.g., for pain, or happiness, or memory), what other capacities do they tend to attribute to that entity?
+```{r}
+# supporting functions
+source("./scripts/max_factors_efa.R")
+source("./scripts/reten_fun.R")
+source("./scripts/plot_fun.R")
+source("./scripts/efa_fun.R")
+source("./scripts/ms_fun.R")
 
-This general strategy has been employed by several research teams in studies of adults' understanding of the mind, yielding fascinating results that have been met with great interest in the burgeoning field of "mind perception" (XX CITE Gray et al., maybe Haslam? maybe Weisman et al.). In my view, this approach offers several advantages over the approaches described in the previous paragraph. At its core, this approach centers on asking participants straightforward, concrete questions, drawing on their intuitions about familiar entities in the world (e.g., "Can a robot feel happy?", "Can a beetle remember things?"). In particular, asking many such questions about a single target entity, provides a natural way to focus participants' attention on the similarities, differences, and relationships among a wide range of mental capacities (a point I emphasized in writing about my initial studies with adults, which will be discussed in Chapter III; see Weisman et al., 2017). Such questions may be easier, quicker, and more enjoyable for particpants - both adults and children - to answer than the more abstract, hypothetical, or metacognitive tasks described above. As such, it opens up the possibility of using the same experimental method to study conceptual representations across a wide age range, including even quite young children (4y).
+# data scripts
+source("./scripts/data_s1_ad.R")
+source("./scripts/data_s1_79.R")
+source("./scripts/data_s2_ad.R")
+source("./scripts/data_s2_79.R")
+source("./scripts/data_s2_46.R")
+source("./scripts/data_s3_ad.R")
+source("./scripts/data_s3_46.R")
+```
 
-In the following sections, I describe in greater detail the methods and analyses common to the studies included in this dissertation.
+```{r}
+# what correlation to use
+chosen_cor <- "cor" # reported
+# chosen_cor <- "poly" # alternative option
 
-# Common methods
+# what rotation to use
+chosen_rot <- "varimax" # reported
+# chosen_rot <- "oblimin" # alternative option
 
-In these studies, each participant was either randomly or pseudo-randomly assigned to assess 1-2 target characters (e.g., a beetle, a robot, a goat, etc.) on a wide range of sensory, perceptual, emotional, social, cognitive, and other mental capacities, ranging in number from 18-40 across studies and presented in either a random or a pseudo-random (counterbalanced) order. Participants were presented with a vivid, full-color photograph of their assigned target in a naturalistic context (e.g., a beetle on a leaf; a robot in an office; a goat in a grassy field), which they had access to throughout the study. 
+# what factoring method to use
+chosen_fm <- "minres" # reported (see alternative options in ?fa)
 
-On each trial, participants were asked to assess whether the target entity was capable of a particular mental capacity. In our initial studies with US adults (Chapter III), these questions were phrased following the template _How capable is a [target] of [mental capacity]?_ (e.g., "How capable is a beetle of feeling happy?"), and participants responded using a seven-point scale (0: "not at all capable", 6: "highly capable"). In the child-friendly studies that constitute the bulk of this dissertation, these questions were either phrased like _Do you think a [target] can [have a mental capacity]?_ (e.g., "Do you think a beetle can feel happy?") or _Can a [target] [have a mental capacity]?_ (e.g., "Can a beetle feel happy?"), and participants responded using a three-point scale (0: "no", 0.5: "kinda", 1: "yes"). Although a three-point scale is not optimal for factor analyses, pilot testing suggested that it was critical in allowing children to move fast enough through the study to answer all questions, and maintaining this within-subjects design was our top priority for the planned analyses.
+# what scoring method to use
+chosen_scores <- "tenBerge" # reported
+# chosen_scores <- "regression" # alternative option
+```
 
-See the Methods section for each study for details of the particular target characters and mental capacities included in each study, as well as the materials and physical setup. [XX CHECK THIS BASED ON ORGANIZATION]
+In the remainder of this dissertation, I provide a comprehensive overview of conceptual representations of mental life among US adults (Study 1, Chapter III) and then address the three key questions about the development of these representations introduced in the previous chapter: (1) _What are the components, or "conceptual units," that anchor representations of mental life at different points in childhood?_ (Chapter IV); (2) _How are these conceptual units organized in relation to each other, and how does this organization change over development?_ (Chapter V); and (3) _How do children of different ages deploy their conceptual representations of mental life to reason about specific entities in the world?_ (Chapter VI). 
 
-# Common analyses
+The organization of Chapters IV-VI is somewhat unconventional. Rather than introducing a new study in each chapter, I draw on a set of three developmental studies (Studies 2-4) in Chapter IV, and then return to re-analyze these same three studies in Chapter V, and again in Chapter VI; in other words, instead of proceeding study by study (including multiple analyses for each study), I proceed analysis by analysis, drawing on the full set of studies for each analysis. My goal in presenting these results in this unusual manner is to paint a holistic picture of developmental change in each of these  distinct aspects of conceptual representation, without requiring the reader to thumb back and forth between chapters to make comparisons across parallel analyses (or switch back and forth between different complex analyses within a single chapter).
+
+With this roadmap in mind, in the current chapter I describe the methods and analyses for all of the studies included in this dissertation. This chapter is intended to provide the reader with a sense of the general methods common to all studies, as well as an easily accessible resource for finding details about any particular study or any particular analysis as they become relevant in Chapters III-VI. The chapter also provides an overview of the different "passes" at analysis that inform my overview of adult conceptual structure in Chapter III and that organize my three-pronged approach to investigating conceptual development in Chapters IV-VI.
+
+# Methods
+
+There are many approaches that one could take to designing empirical studies of ordinary people's concepts of mental life. For example, one could focus on how people represent human minds, and design studies that ground participants' reasoning about mental life in their own experiences (e.g., XX CITE Wellman?); conversely, one could ask participants to reason about unfamiliar or hypothetical non-human minds, in order to gauge how participants understand mental life outside of the peculiarities of personal experience and the human mind in particular (e.g., XX CITE Weisman, Markman & Dweck, 2015 COGSCI; XX CITE Haslam?). One could even ask participants explicitly about mental life in the abstract, without focusing on the mind of any particular entity, human or otherwise (e.g., asking questions like, "Is planning a part of deciding?" or "Is remembering a kind of thinking?", XX CITE Rips & Conrad, 1989; "How similar are these words: happy and sad?", XX CITE Nook et al., 2017; see also XX CITE Fabricius, Schwanenflugel).
+
+In the current studies, I instead chose to examine conceptual representations of mental life by documenting participants' mental capacity attributions to a wide variety of familiar entities that might be perceived to vary in their mental lives, including humans, non-human animals, technologies, and inert objects). These studies were designed to capture participants' beliefs about the _co-occurrence_ of a diverse range of mental capacities: When a participant indicates that some entity has one capacity (e.g., for pain, or happiness, or memory), what other capacities do they tend to attribute to that entity? This general strategy has been employed by several research teams in studies of adults' understanding of the mind, yielding fascinating results that have been met with great interest in the burgeoning field of "mind perception" (XX CITE Gray et al., XX CITE Haslam? XX CITE Weisman et al.?). 
+
+At its core, this approach centers on asking participants straightforward questions about familiar entities in the world (e.g., "Can a robot feel happy?", "Can a beetle remember things?"). Such questions may be easier, quicker, and more enjoyable for particpants - particularly children - to answer than the more abstract, hypothetical, or metacognitive tasks described above. In the current studies, I chose to ask each participant about many mental capacities for just 1-2 target characters (rather than, e.g., asking each participant about a single mental capacity for many target characters, as in XX CITE Gray et al., 2007; XX CITE Haslam?) - an approach that I have argued confers the major advantage of focusing participants' attention on the similarities, differences, and relationships among a wide range of mental capacities, facilitating their engagement with deep questions about the nature of mental life while remaining grounded in concrete, real-world examples (see Weisman et al., 2017). The simplicity and concereteness of this approach opens up the possibility of using the same experimental method to study conceptual representations across a wide age range - the primary goal of this dissertation.
+
+This dissertation features two variants of this general approach. In some studies (Studies 1a-1c, Study 2, and Study 4), participants were asked to reason about two "edge cases" in social reasoning: beetles and robots. Because beetles are animals and robots are artifacts, this pair provides insight into the role of biological life in attributions of mental life - an issue of particular interest from a developmental perspective, given the long history of work on the development of the animate-inanimate distinction and its relation to folk psychology (XX CITE Gelman & Opfer, R. Gelman & Spelke, others?). Most critically for my bottom-up approach to uncovering conceptual structure, the "mental lives" of these entities are controversial: People differ in their assessments of the mental capacities of beetles and robots. This allowed me to address the following question: _When participants disagree about the mental capacities of some entity, which capacities "go together"?_ Other studies (Study 1d and Study 3), included a more diverse range of target characters for participants to reason about, including humans (e.g., adults, children), non-human animals (e.g., mammals, birds, insects), technologies (e.g., robots, computers), and inert objects (e.g., toys, tools). This allowed me to address a subtly different question: _Which capacities "go together" when different entities are percieved to have different mental capacity profiles?_ Interestingly, these two variants on the general approach yielded very similar pictures of conceptual representations of mental life, both among adults and among children; I will return to this point in the General Discussion. [XX CHECK THAT THIS IS TRUE]
+
+In the following sections, I describe in greater detail the methods and analyses for the four sets of studies included in this dissertation.
+
+
+## Common methods
+
+In these studies, each participant was asked to assess 1-2 target characters (e.g., a beetle, a robot, a goat, etc.) on a wide range of sensory, perceptual, emotional, social, cognitive, and other mental capacities, ranging in number from 18-40 across studies and presented in either a random or a pseudo-random (counterbalanced) order. Participants were presented with a vivid, full-color photograph of their assigned target in a naturalistic context (e.g., a beetle on a leaf; a robot in an office; a goat in a grassy field), which they had access to throughout the study. On each trial, participants were asked to assess whether the target entity was capable of a particular mental capacity. 
+
+Below I present details about the particular target characters and mental capacities included in each study, as well as the materials and physical setup.
+
+## Study 1: An adult endpoint
+
+_Note: The full deatiled methods for Study 1 have been published in XX CITE Weisman et al. (2017). For the sake of comparison with Studies 2-3, I will provide an abridged version here._
+
+Study 1 was designed to investigate conceptual respresentations of mental life among US adults; as such, it provides an adult "endpoint" for the developmental processes under exploration in Studies 2-3.
+
+Adults participated online via Amazon Mechanical Turk (MTurk). Participants were shown a vivid, full-color image and a label for their assigned target character(s) (e.g., "a robot"; "a beetle"), and were asked to rate the character(s) on 40 different mental capacities, presented in a random order. For each mental capacity, the participant was required to answer the question, "On a scale of 0 (Not at all capable) to 6 (Highly capable), how capable is a [target] of [capacity]?" Participants responded using a 7-point Likert-type scale.
+
+The list of 40 mental capacities employed in these studies was generated from an a priori conceptual analysis of candidate ontological categories of mental life, with the constraint that each category should include at least five items of varying valence, complexity, and phrasing; see Table 2.1. [XX MAKE THIS TABLE! fill in for all studies.]
+
+In Studies 1a-1b, participants (Study 1a: _n_=405 US adults; Study 1b: _n_=406 US adults) were randomly assigned to assess one of two target characters (either a beetle or a robot) on all 40 mental capaciaties. [XX This is the "edge case" approach described above.]
+
+In Study 1c, _n_=400 US adults were asked to assess two target characters (a beetle and a robot), presented side-by-side with left-right order determined randomly, on all 40 mental capaciaties. [XX This is the "edge case" approach described above.]
+
+In Study 1d, _n_=431 US adults were randomly assigned to assess one of 21 target characters on all 40 mental capacities. The list of characters again included a beetle and a robot (as in Studies 1a-1c), as well as a stapler, a car, a computer, a microbe, a fish, a blue jay, a frog, a mouse, a goat, a dog, a bear, a dolphin, an elephant, a chimpanzee, a fetus, a person in a persistent vegetative state, an infant, a child, and an adult. [XX This is the "diverse range of targets" approach described above.]
+
+[XX insert image of characters?]
+
+
+## Study 2: Conceptual change between middle childhood (7-9y) and adulthood
+
+The goal of Study 2 was to develop an experimental paradigm similar to that employed in Study 1 that could be used to explore the development of conceptual representations of mental life among children, and to conduct an initial exploration of these conceptual representations in middle childhood. Study 2 employed the "edge case" strategy used in Studies 1a-1c, with participants asked to reason about the mental lives of either a beetle or a robot. 
+
+Pilot testing suggested that children as young as 7 years of age found the paradigm easy and enjoyable, and work on the development of lay biology and psychology has suggested that these concepts may continue to develop well into middle childhood (e.g., XX CITE Carey, 1985; Hatano & Inagaki, 1997; Piaget, 1929; cf. Gelman & Opfer, 2002). Thus, I targeted 7- to 9-year-old children for the first child sample. I also recruited a group of adults to validate this child- friendly paradigm, i.e., to evaluate whether it replicated the results of Study 1 (XX CITE Weisman et al., 2017).
+
+Recall that, in Study 1, adult participants evaluated target characters on 40 mental capacities using a seven-point Likert-type scale. Pilot testing suggested two necessary modifications for children: rewording some of the mental capacity items, and using a simpler, three-point response scale (no, kinda, or yes; see "Overview of Methods and Analyses, above"). 
+
+### Participants
+
+In total, `r nrow(d1_ad_wide) + nrow(d1_79_wide)` people participated in this study.
+
+```{r}
+# demographics
+d1_ad_gender <- demo_fun(d1_ad, "gender", 2)
+d1_ad_ethnicity <- demo_fun(d1_ad, "ethnicity_cat", 2)
+d1_ad_english <- demo_fun(d1_ad, "englishNative", 2)
+```
+
+Adults (_n_=`r nrow(d1_ad_wide)`) participated via MTurk in July 2016. Adult participants had gained approval for at least 95% of their previous work on MTurk; had MTurk accounts based in the US; and indicated that they were at least 18 years old. Adults were paid \$0.30 for approximately 2-3 minutes of their time (median duration: `r summary(d1_ad$duration)["Median"] %>% round(2)` min). 
+
+According to self report, the adult sample ranged in age from `r summary(d1_ad$age)["Min."]`-`r summary(d1_ad$age)["Max."]` years (median: `r summary(d1_ad$age)["Median"]`y) and was roughly split between women (`r d1_ad_gender$prop[d1_ad_gender$gender=="female"] * 100`%) and men (`r d1_ad_gender$prop[d1_ad_gender$gender=="male"] * 100`%; `r d1_ad_gender$prop[d1_ad_gender$gender=="other_prefNo"] * 100`% of participants identified as some other gender or opted not to disclose). Adults predominantly identified as White (`r d1_ad_ethnicity$prop[d1_ad_ethnicity$ethnicity_cat=="white"] * 100`%; `r d1_ad_ethnicity$prop[d1_ad_ethnicity$ethnicity_cat=="multi"] * 100`% identified as more than one race/ethnicity, and $\leq$ `r data.frame(d1_ad_ethnicity %>% filter(!ethnicity_cat %in% c("white", "multi")))$prop %>% max() * 100`% as any other race/ethnicity). The vast majority of adults reported English being their only native language (`r d1_ad_english$prop[d1_ad_english$englishNative == "yes_only"] * 100`%; an additional `r d1_ad_english$prop[d1_ad_english$englishNative == "yes_multiple"] * 100`% indicated that English was one of multiple native languages for them.)
+
+```{r}
+# demographics
+d1_79_gender <- demo_fun(d1_79, "gender", 2)
+d1_79_ethnicity <- demo_fun(d1_79, "ethnicity", 2)
+d1_79_bilingual <- demo_fun(d1_79, "bilingual", 2)
+```
+
+Children (_n_=`r nrow(d1_79_wide)`) participated at one of several San Francisco Bay Area museums or at their younger sibling's preschool between July-December 2016. The study took most children under 10 minutes to complete (median duration: `r summary(d1_79$duration)["Median"] %>% round(2)` min). An additional 12 children participated but were excluded for being outside the target age range (_n_=7), being of unknown age (_n_=4), or being shown a target character other than a beetle or a robot (_n_=1). Children received a small thank-you gift (e.g., a sticker) for their participation. 
+
+Children ranged in age from `r summary(d1_79$age)["Min."] %>% round(2)`-`r summary(d1_79$age)["Max."] %>% round(2)` years (median: `r summary(d1_79$age)["Median"] %>% round(2)`y). According to parental report, the child sample included slightly more girls (`r d1_79_gender$prop[d1_79_gender$gender=="f"] * 100`%) than boys (`r d1_79_gender$prop[d1_79_gender$gender=="m"] * 100`%; `r d1_79_gender$prop[d1_79_gender$gender=="MISSING"] * 100`% of children's gender was non-binary or unknown). Parents predominantly identified their children as White (`r d1_79_ethnicity$prop[d1_79_ethnicity$ethnicity=="white"] * 100`%), multiracial (`r d1_79_ethnicity$prop[d1_79_ethnicity$ethnicity=="multi"] * 100`%), East Asian (`r d1_79_ethnicity$prop[d1_79_ethnicity$ethnicity=="east asian"] * 100`%), or South Asian (`r d1_79_ethnicity$prop[d1_79_ethnicity$ethnicity=="south or southeast asian"] * 100`%; $\leq$ `r data.frame(d1_79_ethnicity %>% filter(!ethnicity %in% c("white", "multi", "east asian", "south or southeast asian", "MISSING")))$prop %>% max() * 100`% of children were identified as any other race/ethnicity, and `r d1_79_ethnicity$prop[d1_79_ethnicity$ethnicity=="MISSING"] * 100`% of children's race/ethnicity was unknown). Roughly half of parents (`r d1_79_bilingual$prop[d1_79_bilingual$bilingual=="yes"] * 100`%) reported that their child was bilingual (though, anecdotally, parents' interpretations of "bilingual" ranged from taking classes at school to speaking a langauge at home).
+
+### Materials and procedure
+
+Following Studies 1a-1c, participants were randomly assigned to assess the mental capacities of either a beetle (_n_=`r d1_ad %>% filter(character == "beetle") %>% distinct(subid) %>% nrow()` adults, _n_=`r d1_79 %>% filter(character == "beetle") %>% distinct(subid) %>% nrow()` children) or a robot (_n_=`r d1_ad %>% filter(character == "robot") %>% distinct(subid) %>% nrow()` adults, _n_=`r d1_79 %>% filter(character == "robot") %>% distinct(subid) %>% nrow()` children).
+
+Instructions to participants focused on the idea that the research team wanted to know what participants thought "[beetles/robots] can do and can not do." Participants rated the target character on 40 mental capacities, presented in a random order for each participant. On each trial, participants responded _no_, _kinda_, or _yes_ to the question "Do you think a [beetle/robot] can...?" The three response options were visible throughout the experiment.
+
+The 40 mental capacities were designed to be as close as possible to those in Study 1, while being comprehensible to children in early elementary school. As in Study 1, each a priori category included at least five items of varying valence, complexity, and phrasing; see Table 2.1 [XX MAKE THIS].
+
+I also prepared a short definition for each item, to allow the data collection team to be consistent in our responses to participants (particularly children) if they asked for clarification; see Table 2.1 [XX MAKE SURE THIS INCLUDES THIS]. Children were encouraged at the beginning of the study to ask questions if they did not know what a word meant, in which case they given these definitions; adults were told that they could access these definitions by hovering over the text on the computer screen. Pilot testing suggested that seven items required clarification for most children, so these items were always accompanied by their definitions from the beginning of the trial (for both adults and children), as follows: _have a personality, like when someone is shy and somebody else is silly_; _have beliefs, like when you think something is true_; _feel pleasure, like when something feels really good_; _have desires, like when you really want something_; _have self- control, like when you stop yourself from doing something you shouldn't do_; _have goals, like when you're trying hard to do something or make something happen_; and _feel sick, like when you feel like you might throw up_. 
+
+Adults completed the study by clicking through a website at their own pace, with one trial presented on each page and no ability to go backwards. Children completed the study on an experimenter's laptop computer. The experimenter read the instructions and the first several trials out loud, requesting verbal responses from the child and selected his or her response for her; after several trials, the experimenter gave the child the option to continue independently (reading the questions and selecting their answers themselves) if they desired. Roughly half of participants completed the remainder of the task independently.
+
+### Data processing
+
+Trials with response times that were faster than a preset criterion of 250ms (_n_=3 child trials, _n_=97 adult trials) were dropped, participants were retained regardless of skipped trials (_n_=55 child trials, _n_=1 adult trial). Overall, only 1% of adult trials and 1% of child trials were missing data; in these cases, I imputed missing values using the median by target character, capacity, and age group.
+
+
+## Study 3: Conceptual change over early and middle childhood (4-9y)
+
+The goals of Study 3 were twofold 
+
+First, I aimed to extend the findings with 7- to 9-year-old children in Study 2 by expanding the list of the target characters to include not only the two "edge cases" from Study 2 (a beetle and a robot), but a also a wider range of animate beings (a bird, a goat, and an elephant) and inanimate objects (a computer, a teddy bear, and a doll) - i.e., moving from the "edge case" variant of the general approach to the "many target characters" variant. In studies with adults, these two approaches yielded very similar pictures of conceptual representations (XX CITE Weisman et al., 2017; presented here as Study 1). I reasoned that if this three-part conceptual structure is stable and robust by the age of 7-9 years, it should manifest among 7- to 9-year-old children under the same range of conditions that it does among adults. 
+
+My second goal was to assess the earlier development of conceptual structure in a group of younger children. I targeted 4- to 6-year-old children for my younger age group because this has been identified as a period of dramatic development in several relevant domains. As described in Chapter I [XX MAKE SURE THIS IS TRUE], many studies have documented shifts in children's abilities to take others' perspectives, represent false beliefs, and integrate representations of intentions and outcomes in evaluating moral responsibility (for reveiws, see XX CITE Flavell, 1999; Wellman, 2015). The preschool years have also been the focus of a rich tradition of work on lay biology and the animate-inanimate distinction extending back nearly a century (e.g., XX CITE Carey, 1985; R. Gelman, Spelke, & Meck, 1983; Medin, Waxman, Woodring, & Washinawatok, 2010; Piaget, 1929; for a review, see S. Gelman & Opfer, 2002). All of these accounts make the case that becoming a sophisticated reasoner—and particularly a sophisticated social reasoner—requires substantial refinement of one's representations of others' experiences, beliefs, desires, and needs. Might these refinements include changes to the structure of children's concepts of mental life? 
+
+### Participants
+
+A total of `r nrow(d2_ad_wide) + nrow(d2_79_wide) + nrow(d2_46_wide)` people participated in this study, including a group of adults, a group of "older" children (7-9y), and a group of "younger" children (4-6y).
+
+```{r}
+# demographics
+d2_ad_gender <- demo_fun(d2_ad, "gender", 2)
+d2_ad_ethnicity <- demo_fun(d2_ad, "ethnicity_cat", 2)
+```
+
+Adults (_n_=`r nrow(d2_ad_wide)`) participated via MTurk in September 2018. Adult participants had gained approval for at least 95% of their previous work on MTurk; had MTurk accounts based in the US; and indicated that they were at least 18 years old. Adults were paid \$0.45 for approximately 2-4 minutes of their time (median duration: `r summary(d2_ad$duration)["Median"] %>% round(2)` min). An additional 22 adults participated but were excluded for failing to respond sensibly to an open-ended question about what they had been asked to do in the study (e.g., copying and pasting text from the question, writing "good study," or describing a different study, e.g., "I wrote an essay about nature"; _n_=11) or for failing to pass one or more attention checks (e.g., "Please select no"; _n_=11). According to self report, the final adult sample ranged in age from `r summary(d2_ad$age)["Min."]`-`r summary(d2_ad$age)["Max."]` years (median: `r summary(d2_ad$age)["Median"]`y) and included slightly more men (`r round(d2_ad_gender$prop[d2_ad_gender$gender=="m"], 2) * 100`%) than women (`r round(d2_ad_gender$prop[d2_ad_gender$gender=="f"], 2) * 100`%). Adults predominantly identified as White (`r d2_ad_ethnicity$prop[d2_ad_ethnicity$ethnicity_cat=="white"] * 100`%; `r d2_ad_ethnicity$prop[d2_ad_ethnicity$ethnicity_cat=="multi"] * 100`% identified as more than one race/ethnicity, and $\leq$ `r data.frame(d2_ad_ethnicity %>% filter(!ethnicity_cat %in% c("white", "multi")))$prop %>% max() * 100`% as any other race/ethnicity).
+
+```{r}
+# demographics
+d2_79_gender <- demo_fun(d2_79, "gender", 2)
+d2_79_ethnicity <- demo_fun(d2_79, "ethnicity", 2)
+d2_46_gender <- demo_fun(d2_46, "gender", 2)
+d2_46_ethnicity <- demo_fun(d2_46, "ethnicity", 2)
+```
+
+Two groups of children were recruited for this study: "older" children (7-9y) and "younger" children (4-6y). The planned sample size was 120 per age group, but the research team also retained a handful of extra participants who completed the study on the final day of data collection for each group.
+
+The group that I will refer to as "older children" (_n_=`r nrow(d2_79_wide)`) ranged in age from `r summary(d2_79$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d2_79$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d2_79$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y), and participated at one of several San Francisco Bay Area museums or at their younger sibling's preschool between July-December 2016. The study took most older children under `r quantile(d2_79$duration, .75, na.rm = T) %>% as.numeric() %>% ceiling()` minutes to complete (median duration: `r summary(d2_79$duration)["Median"] %>% round(2) %>% format(nsmall = 2)` min). According to parental report, the sample of older children included slightly more boys (`r d2_79_gender$prop[d2_79_gender$gender=="m"] * 100`%) than girls (`r d2_79_gender$prop[d2_79_gender$gender=="f"] * 100`%); `r d2_79_gender$prop[d2_79_gender$gender=="MISSING"] * 100`% of children's gender was non-binary or unknown). Parents predominantly identified their children as White (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="white"] * 100`%), South Asian (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="south or southeast asian"] * 100`%), multiracial (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="multi"] * 100`%), or East Asian (`r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="east asian"] * 100`%); $\leq$ `r data.frame(d2_79_ethnicity %>% filter(!ethnicity %in% c("white", "multi", "east asian", "south or southeast asian", "MISSING")))$prop %>% max() * 100`% of children were identified as any other race/ethnicity, and `r d2_79_ethnicity$prop[d2_79_ethnicity$ethnicity=="MISSING"] * 100`% of children's parents declined to provide information on their race/ethnicity). 
+
+"Younger children" (_n_=`r nrow(d2_46_wide)`) ranged in age from `r summary(d2_46$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d2_46$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d2_46$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y), and participated either at a university-affiliated preschool or at a Bay Area museum between January-June 2017. The study took most younger children under `r quantile(d2_46$duration, .75, na.rm = T) %>% as.numeric() %>% ceiling()` minutes to complete (median duration: `r summary(d2_46$duration)["Median"] %>% round(2) %>% format(nsmall = 2)` min). According to parental report and school records, the sample of younger children included roughly the same number of girls (`r d2_46_gender$prop[d2_46_gender$gender=="m"] * 100`%) and boys (`r d2_46_gender$prop[d2_46_gender$gender=="f"] * 100`%). Children were predominantly identified as multiracial (`r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="multi"] * 100`%) or White (`r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="white"] * 100`%; $\leq$ `r data.frame(d2_46_ethnicity %>% filter(!ethnicity %in% c("white", "multi", "MISSING")))$prop %>% max() * 100`% of children were identified as any other race/ethnicity, and `r d2_46_ethnicity$prop[d2_46_ethnicity$ethnicity=="MISSING"] * 100`% of children's parents declined to provide information on their race/ethnicity).
+
+An additional 7 children participated but were excluded for being outside the target age ranges. At museums (but not at the preschool), children received a small thank-you gift (e.g., a sticker) for their participation. 
+
+### Materials and procedure
+
+Pilot testing suggested that working with younger children would require making a briefer experimental paradigm with fewer than the 40 questions included in Study 2; limiting the list to 20 questions seemed to allow children as young as 4 years of age to complete the study easily and without getting bored or frustrated, while still including enough items to facilitate the exploratory "dimensionality reduction" approach to uncovering conceptual structure.
+
+```{r}
+d2_ad_char <- demo_fun(d2_ad, "character")
+d2_79_char <- demo_fun(d2_79, "character")
+d2_46_char <- demo_fun(d2_46, "character")
+d2_all_char <- d2_ad_char %>% mutate(age_group = "adults") %>%
+  full_join(d2_79_char %>% mutate(age_group = "children79")) %>%
+  full_join(d2_46_char %>% mutate(age_group = "children46"))
+```
+
+Participants were assigned to evaluate one of the following target characters: an elephant, a goat, a mouse, a bird, a beetle, a teddy bear, a doll, a robot, or a computer (_n_ per characater: `r min(d2_ad_char$n)`-`r max(d2_ad_char$n)` adults, `r min(d2_79_char$n)`-`r max(d2_79_char$n)` older children, and `r min(d2_46_char$n)`-`r max(d2_46_char$n)` younger children; see Figure 6 for exact counts).
+
+Participants were assigned to target characters randomly, with two exceptions: (1) The doll and teddy bear conditions were run last for older children (but included in the initial randomization scheme for adults and younger children); and (2) Toward the end of data collection with children, children were assigned to conditions that had the fewest participants. (This was not possible with adults, which is why the number of adults per condition was more variable than the number of children per condition.) As in Study 1, a vivid, high-resolution photo of the target character in a naturalistic context was visible for the duration of the study. 
+
+Instructions and procedure were identical to Study 2, with two exceptions: (1) Participants rated the target character on 20 (rather than 40) mental capacities; and (2) For younger children, the experimenter read all questions out loud and children responded verbally. 
+
+The 20 mental capacities were a subset of the 40 items used in Study 2, chosen to cover a simialr range of capacities as included in Studies 1-2 and to include some of the strongest-loading items for each of the three factors uncovered among adults in Study 2 (see Table 2.1) [XX MAKE THIS]. As in Study 2, each mental capacity was associated with a short, preset definition. Both older and younger children were encouraged at the beginning of the study to ask questions if they did not know what a word meant, in which case they were given these definitions. (Adults did not have access to these definitions.)
+
+After completing the 20 questions about mental capacities, a subset of participants also answered two additional questions: "Is a [target] made out of metal?" and "Can a [target] be turned on and off?" These questions were always asked last, were not intended to be included in any of the primary analyses, and will not be analyzed here. [XX COULD INCLUDE IN SOME APPENDIX?]
+
+### Data processing
+
+As in Study 2, I planned to drop trials with response times that were faster than a preset criterion of 250ms, but there were none among children, and I failed to record response times among adults. As in Study 2, participants were retained regardless of skipped trials. Overall, none of adults or older children's trials, and only `r round(sum(is.na(d2_46_wide))/sum(!is.na(d2_46_wide))*100, 2)`% of younger children's trials (_n_=`r sum(is.na(d2_46_wide))`) were missing data.
+
+
+## Study 4: A focus on early childhood (4-5y)
+
+The primary goal of Study 4 was to provide a conceptual replication and extension of Study 3, with a special focus on the youngest children included in the previous studies (4-year-old children). In light of concerns about vocabulary, attention, and use of the response scale among preschool-age children in Study 3, I designed an even more child-friendly version specifically tailored to appropriate for young preschoolers, by streamlining the experimental protocol, providing more scaffolding for the response scale, and including only vocabulary items that were pre-tested to be familiar to young preschool children. 
+
+To extend the results of Study 3, and for the sake of completeness of the comparison between children in early chidlhood, middle childhood, and adulthood, in Study 4 I returned to the "edge case" approach, limiting the target characters to a beetle and a robot (as in Studies 1a-1c and Study 2).
+
+### Participants
+
+`r d3_ad %>% distinct(subid) %>% count() %>% as.numeric() + d3_46 %>% distinct(subid) %>% count() %>% as.numeric()` people participated in this study, including a group of adults and a group of 4- to 5-year-old children.
+
+```{r}
+# demographics
+d3_ad_gender <- demo_fun(d3_ad, "gender", 2)
+d3_ad_ethnicity <- demo_fun(d3_ad, "ethnicity_cat", 2)
+```
+
+Adults (_n_=`r d3_ad %>% distinct(subid) %>% count() %>% as.numeric()`) participated via MTurk in September 2018. Adult participants had gained approval for at least 95% of their previous work on MTurk; had MTurk accounts based in the US; and indicated that they were at least 18 years old. Adults were paid \$0.45 for approximately 2-4 minutes of their time (median duration: `r summary(d3_ad$duration)["Median"] %>% round(2)` min). An additional 21 adults participated but were excluded for failing to respond sensibly to an open-ended question about what they had been asked to do in the study (see Study 3 for examples; _n_=16) or for failing to pass one or more attention checks (e.g., "Please select no"; _n_=5). According to self report, the final adult sample ranged in age from `r summary(d3_ad$age)["Min."]`-`r summary(d3_ad$age)["Max."]` years (median: `r summary(d3_ad$age)["Median"]`y) and included slightly more men (`r round(d3_ad_gender$prop[d3_ad_gender$gender=="m"], 2) * 100`%) than women (`r round(d3_ad_gender$prop[d3_ad_gender$gender=="f"], 2) * 100`%). Adults predominantly identified as White (`r d3_ad_ethnicity$prop[d3_ad_ethnicity$ethnicity_cat=="white"] * 100`%; `r d3_ad_ethnicity$prop[d3_ad_ethnicity$ethnicity_cat=="black"] * 100`% identified as Black; `r d3_ad_ethnicity$prop[d3_ad_ethnicity$ethnicity_cat=="multi"] * 100`% identified as more than one race/ethnicity, and $\leq$ `r data.frame(d3_ad_ethnicity %>% filter(!ethnicity_cat %in% c("white", "multi")))$prop %>% max() * 100`% as any other race/ethnicity).
+
+```{r}
+# demographics
+d3_46_gender <- demo_fun(d3_46, "gender", 2)
+d3_46_ethnicity <- demo_fun(d3_46, "ethnicity", 2)
+```
+
+**XX CHECK WHEN SAMPLE IS COMPLETE**: The planned sample size was 100 4- to 5-year-old children. Our final sample of children (_n_=`r d3_46 %>% distinct(subid) %>% count() %>% as.numeric()`) ranged in age from `r summary(d3_46$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d3_46$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d3_46$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y), and participated at a university-affiliated preschool in the Bay Area between January-XX 2018. The research team did not record study duration. According to school records, the sample of younger children included slightly more girls (`r d3_46_gender$prop[d3_46_gender$gender=="f"] * 100`%) than boys (`r d3_46_gender$prop[d3_46_gender$gender=="m"] * 100`%). Children were predominantly identified as White (`r d3_46_ethnicity$prop[d3_46_ethnicity$ethnicity=="white"] * 100`%) or multiracial (`r d3_46_ethnicity$prop[d3_46_ethnicity$ethnicity=="multi"] * 100`%; $\leq$ `r data.frame(d3_46_ethnicity %>% filter(!ethnicity %in% c("white", "multi", "MISSING")))$prop %>% max() * 100`% of children were identified as any other race/ethnicity, and `r d3_46_ethnicity$prop[d3_46_ethnicity$ethnicity=="MISSING"] * 100`% of children's parents declined to provide information on their race/ethnicity).
+
+An additional XX children participated but were excluded for being outside the target age ranges.
+
+### Materials and procedure 
+
+Materials and procedure were adapted to be more appropriate for young preschoolers, with two primary goals in mind: Streamlining the experimental protocol to improve children's comprehension and attention to the task, and limiting mental capacities to words that are highly familiar to young preschool children.
+
+In order to streamline the experimental protocol, the task was moved off of the computer (for children but not adults); the experimenter instead used printed photographs to illustrate the target characters (measuring approximately 5 x 8 inches, printed in color and laminated) and recorded children's responses by hand. At the time of testing, the experimenter and child sat side by side at a table, with the photograph placed on the table directly in front of the child for the duration of the task. 
+
+The introduction to the task was also streamlined. The experimenter began by placing the photograph of the first target character in front of the child and asking, "Can you tell me what this is?" If a child provided an answer other than "beetle" or "robot," the experimenter said something to the effect of, "I'm going to call it a [beetle/robot]"; otherwise, the experimenter affirmed the child's correct response. The experimenter then said, "We're going to play a game about [beetles/robots]"; reminded children, "If you ever want to stop playing, you can just let me know and we'll go back to the classroom" (per this university preschool's protocol); and then launched directly into the first question (e.g., "Can beetles get sad?").
+
+To scaffold children's use of the three-point response scale, the experimenter provided the child with a physical representation of the scale consisting of three large boxes, separated by blank space, containing the words "NO," "KINDA," and "YES" written in large font with all capital letters (to aid children with at least some reading skills in recognizing these words); color-coded according to the intensity of response (NO = very light blue, KINDA = medium blue, YES = dark blue); and ordered from left (NO) to right (YES). Each box measured approximately 2 x 4 inches; the boxes were laminated with slightly less than 1 inch of empty space between them (through which the table was visible). In addition to providing these visual and spatial cues to the fact that there were three response options—no, yes, and something conceptually and literally "in between" these extremes—the experimenter described (and then reiterated) these response options on the first three trials ("You can say no [pointing to NO], kinda [pointing to KINDA], or yes [pointing to YES]"). The experimenter repeated these options on the first three trials for all children, and on any other trials where a child took more than a few seconds to answer or provided a response other than saying "yes," "kinda," or "no" or clearly pointing to one of these options on the response scale.
+
+For each of the two target characters (beetle, robot), children answered 18 questions about its mental capacities. These items were chosen to be as short as possible and to be highly familiar to young preschool children. They were selected from a larger pilot study in which 3- to 5-year-old children were asked to complete stories that began with each of these mental capacities as a premise (e.g., "Let's imagine a person who _loves someone_. What happens next?"; "Now let's pretend that someone _remembers something_. What happens next?") and were judged on the appropriateness of their story completion. 
+
+[XX WHAT TO DO HERE??]
+
+For the final set of questions, I aimed to select six clear examples of physiological sensations (_BODY_), social-emotional abilities (_HEART_), and perceptual-cognitive capacities (_MIND_), according to Studies 1-2 and Weisman et al.'s (2017) original studies with US adults. We reasoned that if these carefully selected examples of _BODY_, _HEART_, and _MIND_ still elicited differences in correlational structures between 4- to 5-year-old children and adults, this would be particularly strong evidence of age-related changes in conceptual structure.
+
+The final set of _BODY_ items included _feel hungry_, _get thirsty_, _feel sick_, _feel tired_, _get scared_, and _smell things_. _HEART_ items included _love someone_, _hate someone_, _feel happy_, _get sad_, _feel sorry_, and _get lonely_. _MIND_ items included _see_, _hear_, _think_, _remember things_, _know stuff_, and _figure things out_. We ensured that each category included a variety of phrasings (e.g., "_feel_ hungry" vs. "_get_ thirsty"; "remember _things_" vs. "know _stuff_") and valences when appropriate (e.g., happiness vs. sadness); when possible, we aimed to have these aspects of phrasing vary orthogonally with categories, such that "get" and "feel" appeared roughly equally often among the _BODY_ and _HEART_ items, and "things" appeared equally often among the _BODY_ and _MIND_ items. As in Studies 1-2, each mental capacity was associated with a short, preset definition, which was read to children if they expressed uncertainty about what a word meant or did not respond after prompting use of the response scale (see SOM).
+
+Children first assessed all 18 mental capacities for one of the two target characters (e.g., the beetle), then completed an easy jigsaw puzzle featuring clothing and accessories appropriate for a rainy day (which took about 30-60 s to complete), and finally assessed all 18 mental capacities for the other target character (e.g., the robot).
+
+This modified procedure—particularly moving the experiment off of the computer for children—required several changes to the experimental design. Rather than randomly assigning children to assess the beetle first or the robot first, the order of target characters was counterbalanced in advance. Likewise, rather than asking about the 18 mental capacities in a random order, questions about the first target character were asked in one of 8 pre-made random orders, and questions about the second target character were asked in the reverse order. The order of the target characters (beetle-robot or robot-beetle) and the order of the mental capacity questions (sequences 1-8) were fully crossed across participants. 
+
+Adults participated in an online version of this same task, without a break between target characters. As in Studies 1-2, adults clicked through a website at their own pace, with one trial presented on each page and no ability to go backwards. 
+
+### Data processing
+
+The research team did not record response times or use this as a criterion for inclusion. As in Studies 1-2, participants were retained regardless of skipped trials (_n_=XX trials among children; XX% of all trials).
+
+[XX MOVE TO ANALYSES? and make sure that there's a parallel statement for each study...] Following Study 1d, for our exploratory factor analyses we treated each participant's assessments of each target character as a separate set of observations (as if they came from different participants). This effectively doubled our sample size to `r nrow(d3_ad)` adults and `r nrow(d3_46)` children. (See SOM for separate EFAs of the participants' responses to the first target character that they were assigned to rate vs. the second character.)
+
+
+
+
+
+
+# Analyses
 
 As described in Chapter I, these studies provided datasets that can be analyzed in many different ways to address different questions about conceptual representations of mental life. Here I describe the three analyses that I will apply to each dataset to answer my three key questions: (1) _What are the components, or "conceptual units," that anchor representaitons of mental life?_; (2) _How are these conceptual units organized in relation to each other?_; and (3) _How is this conceptual representation of mental life deployed in reasoning about specific entities in the world?_. 
 
 ## Identifying conceptual units through exploratory factor analysis (EFA)
 
-Our initial goal in conducting these studies was to uncover a set of latent constructs that might plausibly have given rise to the observed correlations among mental capacity attributions in each group of participants - i.e., to identify a set of "conceptual units" that constitute the core components of conceptual representations of menta life. As such, our primary planned analysis for all studies was an exploratory factor analysis (EFA). We interpreted each of the constructs ("factors") as corresponding to one conceptual unit of a given group of participants' broader representation of mental life.
+My initial goal in conducting these studies was to uncover a set of latent constructs that might plausibly have given rise to the observed correlations among mental capacity attributions in each group of participants - i.e., to identify a set of "conceptual units" that constitute the core components of conceptual representations of menta life. As such, my primary planned analysis for all studies was an exploratory factor analysis (EFA). I interpreted each of the constructs ("factors") as corresponding to one conceptual unit of a given group of participants' broader representation of mental life.
 
-For all EFAs, we used ordinary least squares to find the minimum residual solution, using the "psych" package for R (Revelle, 2018). Here we focus on results using Pearson correlations using pairwise complete observations. (In principle, polychoric correlations are better suited to handle responses on a three-point scale; however, doing these analyses with polychoric correlations instead of Pearson correlations generally appeared to over-fit our data, e.g., suggesting that we should retain many factors that each accounted for only a very small amount of the shared variance.)
+For all EFAs, I used ordinary least squares to find the minimum residual solution, using the "psych" package for R (Revelle, 2018). Here I focus on results using Pearson correlations using pairwise complete observations. (In principle, polychoric correlations are better suited to handle responses on a three-point scale; however, doing these analyses with polychoric correlations instead of Pearson correlations generally appeared to over-fit the data, e.g., suggesting retaining many factors that each accounted for only a very small amount of the shared variance.)
 
-In order to determine how many factors to retain, we examined the results of three factor retention protocols: (1) Parallel Analysis, which compares the observed correlation structure to the correlation structure arising from random datasets of the same size; (2) Minimizing the Bayesian Information Criterion (BIC), which is one method of optimizing both goodness of fit and parsimony; and (3) A set of factor retention criteria that we have used previous work with adults (Weisman et al., 2017), in which they began with the maximal number of factors according to an analysis of degrees of freedom, and retained factors that met all three of the following criteria: (a) had eigenvalues greater than 1.00, (b) individually accounted for greater than 5% of the shared variance before rotation, and (c) were the "dominant" factor (the factor with the strongest absolute factor loading) for at least 1 mental capacity after rotation. For each study, our interpretation of how best to characterize the dataset (i.e., how many factors we observe) was determined by the degree of consensus among these three protocols and the interpretability of the retained factors under each protocol. 
+In order to determine how many factors to retain, I examined the results of three factor retention protocols: (1) Parallel Analysis, which compares the observed correlation structure to the correlation structure arising from random datasets of the same size; (2) Minimizing the Bayesian Information Criterion (BIC), which is one method of optimizing both goodness of fit and parsimony; and (3) A set of factor retention criteria that I have used previous work with adults (Weisman et al., 2017), in which I began with the maximal number of factors according to an analysis of degrees of freedom, and retained factors that met all three of the following criteria: (a) had eigenvalues greater than 1.00, (b) individually accounted for greater than 5% of the shared variance before rotation, and (c) were the "dominant" factor (the factor with the strongest absolute factor loading) for at least 1 mental capacity after rotation. For each study, my interpretation of how best to characterize the dataset (i.e., how many factors I observed) was determined by the degree of consensus among these three protocols and the interpretability of the retained factors under each protocol. 
 
-Here we focus our interpretations on varimax-rotated solutions, which constrain all factors to be orthogonal. (See OSM for solutions using oblique ["oblimin"] rotations, which allow for correlated factors.) [XX RE-ASSESS THIS]
+Here I focus my interpretations on varimax-rotated solutions, which constrain all factors to be orthogonal. (See OSM for solutions using oblique ["oblimin"] rotations, which allow for correlated factors.) [XX RE-ASSESS THIS]
 
 
 ## Assessing hierarchical relationships among conceptual units through XX
@@ -72,8 +323,8 @@ Here we focus our interpretations on varimax-rotated solutions, which constrain 
 
 [XX CORRECT TO BE NOT ABOUT FACTOR SCORES! change from factor scores to endorsements. Factor scores don't give a sense of absolutely yes/no.]
 
-Having inferred a conceptual structure for a given group of participants via EFA, we then sought to examine attributions of mental capacities to the particular target characters included in each study within this conceptual structure: To what extent did participants attribute each of the fundamental components of mental life revealed by EFA to a given target character, and how did this attributions vary with age (either within an age group or between age groups)? 
+Having inferred a conceptual structure for a given group of participants via EFA, I then sought to examine attributions of mental capacities to the particular target characters included in each study within this conceptual structure: To what extent did participants attribute each of the fundamental components of mental life revealed by EFA to a given target character, and how did this attributions vary with age (either within an age group or between age groups)? 
 
-To explore this question, for each study we projected children's data into adults' conceptual space and examined "factor scores"—summaries of each participant's attributions of each of factors revealed by EFA. We used the correlation-preserving "ten Berge" method (as implemented in the "psych" package; Revelle, 2018), imputing missing values using the mean (by target character, capacity, and age group). This yielded one factor score for each of (adults') factors, for each participant. We consider these to be summaries of that person's attributions of the corresponding latent construct.
+To explore this question, for each study I projected children's data into adults' conceptual space and examined "factor scores"—summaries of each participant's attributions of each of factors revealed by EFA. I used the correlation-preserving "ten Berge" method (as implemented in the "psych" package; Revelle, 2018), imputing missing values using the mean (by target character, capacity, and age group). This yielded one factor score for each of (adults') factors, for each participant. I consider these to be summaries of that person's attributions of the corresponding latent construct.
 
-We analyzed these factor scores via mixed effects Bayesian regression analyses using the "brms" package for R (Bürkner, 2017). In all of these analyses, we included the maximal random effect structures given the design for the relevant study. Further details varied by study, depending on the number of target characters included in that study, the number of factors revealed by EFA for the relevant group(s) of participants, and the goals of the analysis (e.g., comparing two age groups vs. examining continuous effects of age within one or more groups of participants).
+I analyzed these factor scores via mixed effects Bayesian regression analyses using the "brms" package for R (Bürkner, 2017). In all of these analyses, I included the maximal random effect structures given the design for the relevant study. Further details varied by study, depending on the number of target characters included in that study, the number of factors revealed by EFA for the relevant group(s) of participants, and the goals of the analysis (e.g., comparing two age groups vs. examining continuous effects of age within one or more groups of participants).
