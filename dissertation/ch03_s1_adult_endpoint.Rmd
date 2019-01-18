@@ -230,6 +230,58 @@ fig02_with_caption <- add_sub(fig02_plots, str_wrap("Figure 3.2: Comparison of e
 ggdraw(fig02_with_caption)
 ```
 
+```{r, fig.width = 2, fig.asp = 1}
+newfun <- function(df, which_efa, colors) {
+  
+  plot <- df %>% 
+    catscore_fun_pnas(which_efa = which_efa) %>%
+    distinct() %>%
+    spread(factor, score) %>%
+    mutate(F1minusF2 = F1 - F2,
+           F1minusF3 = F1 - F3,
+           F2minusF3 = F2 - F3) %>%
+    select(-c(F1, F2, F3)) %>%
+    gather(factors, diff, starts_with("F")) %>%
+    distinct() %>%
+    ggplot(aes(x = factors, y = diff, color = condition)) +
+    geom_hline(yintercept = 0, lty = 2) +
+    # geom_boxplot(width = 0.5) +
+    geom_point(aes(fill = condition), alpha = 0.2,
+               position = position_jitterdodge(jitter.height = 0,
+                                               jitter.width = 0.7,
+                                               dodge.width = 0.75)) +
+    # geom_pointrange(data = .
+    #                 %>% group_by(factors, condition) %>%
+    #                   multi_boot_standard(col = "diff") %>%
+    #                   ungroup(),
+    #                 aes(y = mean, ymin = ci_lower, ymax = ci_upper, 
+    #                     fill = condition),
+    #                 position = position_dodge(width = 0.75), fatten = 1.2,
+    #                 shape = 21, color = "black") +
+    geom_pointrange(data = .
+                    %>% group_by(factors) %>%
+                      multi_boot_standard(col = "diff") %>%
+                      ungroup(),
+                    aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                    shape = 18, color = "black") +
+      scale_color_manual(values = colors) +
+      scale_fill_manual(values = colors) +
+    ylim(-6, 6)
+    
+    return(plot)
+}
+
+newfun(df = rename_fun(d1), which_efa = efa_pnasd1, colors = c("#fb9a99", "#1f78b4"))
+newfun(df = rename_fun(d2), which_efa = efa_pnasd2, colors = c("#fb9a99", "#1f78b4"))
+newfun(df = d3 %>%
+         rename_fun() %>%
+         select(-condition) %>%
+         rename(condition = target),
+       which_efa = efa_pnasd3, colors = c("#fb9a99", "#1f78b4"))
+newfun(df = rename_fun(d4), which_efa = efa_pnasd4, colors = colors21)
+```
+
+
 
 # Application
 
