@@ -195,6 +195,60 @@ ggdraw(fig01_with_caption)
 # Organization of conceptual units
 
 ```{r}
+catscore_alpha_fun_pnas <- function(df, which_efa){
+  
+  how_many_cap <- loadings_fun(which_efa) %>%
+    group_by(capacity) %>%
+    top_n(1, loading) %>%
+    ungroup() %>%
+    count(factor)
+  how_many_cap <- min(how_many_cap$n)
+  
+  loadings <- loadings_fun(which_efa) %>%
+    group_by(capacity) %>%
+    top_n(1, loading) %>%
+    ungroup() %>%
+    group_by(factor) %>%
+    top_n(how_many_cap, loading) %>%
+    ungroup()
+  
+  bypart <-  df %>%
+    # select(-c(study, date, start_time, end_time, duration, finished, mturkcode,
+    #           CATCH, yob, gender, feedback, display_order, finished_mod, 
+    #           yob_correct, age_approx, race_cat, religion_cat)) %>%
+    select(subid, condition, `feeling happy`:`experiencing pride`) %>%
+    distinct() %>%
+    gather(capacity, response_num, -c(subid, condition)) %>%
+    filter(capacity %in% loadings$capacity) %>%
+    left_join(loadings)
+  
+  alpha <- NULL
+  for(i in levels(factor(bypart$factor))){
+    a <- bypart %>%
+      filter(factor == i) %>%
+      select(subid, condition, capacity, response_num) %>%
+      spread(capacity, response_num) %>%
+      alpha()
+    
+    alpha[i] <- a$total$raw_alpha
+  }
+  
+  return(alpha)
+}
+```
+
+```{r}
+suppressWarnings(catscore_alpha_fun_pnas(rename_fun(d1), efa_pnasd1))
+suppressWarnings(catscore_alpha_fun_pnas(rename_fun(d2), efa_pnasd2))
+suppressWarnings(catscore_alpha_fun_pnas(d3 %>%
+                                rename_fun() %>%
+                                select(-condition) %>%
+                                rename(condition = target), efa_pnasd3))
+suppressWarnings(catscore_alpha_fun_pnas(rename_fun(d4), efa_pnasd4))
+```
+
+
+```{r}
 plot02a <- hier_plot_agg_pnas(df = d1 %>% rename_fun(), which_efa = efa_pnasd1,
                               colors = c("#fb9a99", "#1f78b4"), shapes = c(21, 22),
                               title = "Weisman et al. (2017): Study 1",
@@ -316,7 +370,7 @@ newfun(df = rename_fun(d4), which_efa = efa_pnasd4, colors = colors21) +
 ```
 
 ```{r}
-newfun_stat <- function(df, which_efa, colors, fun = "diff") {
+newfun_stat <- function(df, which_efa, colors, fun = "diff", std = T) {
   
   plot_df <- df %>% 
     catscore_fun_pnas(which_efa = which_efa) %>%
@@ -344,11 +398,25 @@ newfun_stat <- function(df, which_efa, colors, fun = "diff") {
     distinct()
   
   if(fun == "diff"){
+    
+    if(std){plot_df <- plot_df %>%
+      group_by(factors) %>%
+      mutate(comp = scale(comp, center = F)) %>%
+      ungroup()
+    }
+    
     results <- lme4::lmer(comp ~ 0 + factors + (1 | subid), plot_df)
   }
   
   if(fun == "ratio"){
-    results <- lme4::lmer(I(comp - 1) ~ 0 + factors + (1 | subid), plot_df)
+    
+    if(std){plot_df <- plot_df %>%
+      group_by(factors) %>%
+      mutate(comp = scale(comp - 1, center = F)) %>% # make "1" comparison 0
+      ungroup()
+    }
+    
+    results <- lme4::lmer(comp ~ 0 + factors + (1 | subid), plot_df)
   }
   
   return(results)
