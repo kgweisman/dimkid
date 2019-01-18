@@ -41,8 +41,8 @@ library(kableExtra)
 
 # plotting
 theme_set(theme_bw())
-colors21 <- colorRampPalette(c("#6a3d9a", "#1f78b4", "#33a02c", "#e31a1c", 
-                               "#ff7f00"), # from colorbrewer2.org "Paired"
+colors21 <- colorRampPalette(c("#6a3d9a", "#1f78b4", "#33a02c", "#ff7f00", 
+                               "#e31a1c"), # from colorbrewer2.org "Paired"
                              space = "Lab")(21)
 ```
 
@@ -230,29 +230,49 @@ fig02_with_caption <- add_sub(fig02_plots, str_wrap("Figure 3.2: Comparison of e
 ggdraw(fig02_with_caption)
 ```
 
-```{r, fig.width = 2, fig.asp = 1}
-newfun <- function(df, which_efa, colors) {
+```{r}
+newfun <- function(df, which_efa, colors, fun = "diff", points = T) {
   
-  plot <- df %>% 
+  plot_df <- df %>% 
     catscore_fun_pnas(which_efa = which_efa) %>%
     distinct() %>%
-    spread(factor, score) %>%
+    spread(factor, score)
+  
+  if(fun == "diff"){
+    plot_df <- plot_df %>%
     mutate(F1minusF2 = F1 - F2,
            F1minusF3 = F1 - F3,
-           F2minusF3 = F2 - F3) %>%
+           F2minusF3 = F2 - F3)
+  }
+  
+  if(fun == "ratio"){
+    plot_df <- plot_df %>%
+      mutate_at(vars(starts_with("F")), funs(. + 0.001)) %>%
+      mutate(F1divF2 = F1/F2,
+             F1divF3 = F1/F3,
+             F2divF3 = F2/F3)
+  }
+  
+  plot_df <- plot_df %>%
     select(-c(F1, F2, F3)) %>%
-    gather(factors, diff, starts_with("F")) %>%
-    distinct() %>%
-    ggplot(aes(x = factors, y = diff, color = condition)) +
-    geom_hline(yintercept = 0, lty = 2) +
-    # geom_boxplot(width = 0.5) +
-    geom_point(aes(fill = condition), alpha = 0.2,
-               position = position_jitterdodge(jitter.height = 0,
-                                               jitter.width = 0.7,
-                                               dodge.width = 0.75)) +
+    gather(factors, comp, starts_with("F")) %>%
+    distinct()
+  
+  plot <- plot_df %>%
+    ggplot(aes(x = factors, y = comp, color = condition))
+  
+  if(points){
+    plot <- plot +
+      geom_point(aes(fill = condition), alpha = 0.2,
+                 position = position_jitterdodge(jitter.height = 0,
+                                                 jitter.width = 0.7,
+                                                 dodge.width = 0.75))
+  }
+  
+  plot <- plot +
     # geom_pointrange(data = .
     #                 %>% group_by(factors, condition) %>%
-    #                   multi_boot_standard(col = "diff") %>%
+    #                   multi_boot_standard(col = "comp") %>%
     #                   ungroup(),
     #                 aes(y = mean, ymin = ci_lower, ymax = ci_upper, 
     #                     fill = condition),
@@ -260,17 +280,30 @@ newfun <- function(df, which_efa, colors) {
     #                 shape = 21, color = "black") +
     geom_pointrange(data = .
                     %>% group_by(factors) %>%
-                      multi_boot_standard(col = "diff") %>%
+                      multi_boot_standard(col = "comp") %>%
                       ungroup(),
                     aes(y = mean, ymin = ci_lower, ymax = ci_upper),
                     shape = 18, color = "black") +
       scale_color_manual(values = colors) +
       scale_fill_manual(values = colors) +
-    ylim(-6, 6)
+    theme(legend.position = "top")
+  
+  if(fun == "diff"){
+    plot <- plot + 
+      geom_hline(yintercept = 0, lty = 2)
+  }
+  
+  if(fun == "ratio"){
+    plot <- plot + 
+      geom_hline(yintercept = 1, lty = 2) +
+      facet_wrap(~ factors, scales = "free")
+  }
     
     return(plot)
 }
+```
 
+```{r}
 newfun(df = rename_fun(d1), which_efa = efa_pnasd1, colors = c("#fb9a99", "#1f78b4"))
 newfun(df = rename_fun(d2), which_efa = efa_pnasd2, colors = c("#fb9a99", "#1f78b4"))
 newfun(df = d3 %>%
@@ -278,10 +311,86 @@ newfun(df = d3 %>%
          select(-condition) %>%
          rename(condition = target),
        which_efa = efa_pnasd3, colors = c("#fb9a99", "#1f78b4"))
-newfun(df = rename_fun(d4), which_efa = efa_pnasd4, colors = colors21)
+newfun(df = rename_fun(d4), which_efa = efa_pnasd4, colors = colors21) +
+  theme(legend.position = "none")
 ```
 
+```{r}
+newfun_stat <- function(df, which_efa, colors, fun = "diff") {
+  
+  plot_df <- df %>% 
+    catscore_fun_pnas(which_efa = which_efa) %>%
+    distinct() %>%
+    spread(factor, score)
+  
+  if(fun == "diff"){
+    plot_df <- plot_df %>%
+    mutate(F1minusF2 = F1 - F2,
+           F1minusF3 = F1 - F3,
+           F2minusF3 = F2 - F3)
+  }
+  
+  if(fun == "ratio"){
+    plot_df <- plot_df %>%
+      mutate_at(vars(starts_with("F")), funs(. + 0.001)) %>%
+      mutate(F1divF2 = F1/F2,
+             F1divF3 = F1/F3,
+             F2divF3 = F2/F3)
+  }
+  
+  plot_df <- plot_df %>%
+    select(-c(F1, F2, F3)) %>%
+    gather(factors, comp, starts_with("F")) %>%
+    distinct()
+  
+  if(fun == "diff"){
+    results <- lme4::lmer(comp ~ 0 + factors + (1 | subid), plot_df)
+  }
+  
+  if(fun == "ratio"){
+    results <- lme4::lmer(I(comp - 1) ~ 0 + factors + (1 | subid), plot_df)
+  }
+  
+  return(results)
+}
+```
 
+```{r}
+summary(newfun_stat(rename_fun(d1), efa_pnasd1, fun = "diff"))$coefficients
+summary(newfun_stat(rename_fun(d2), efa_pnasd2, fun = "diff"))$coefficients
+summary(newfun_stat(d3 %>%
+                      rename_fun() %>%
+                      select(-condition) %>%
+                      rename(condition = target), 
+                    efa_pnasd1, fun = "diff"))$coefficients
+summary(newfun_stat(rename_fun(d4), efa_pnasd4, fun = "diff"))$coefficients
+```
+
+```{r}
+newfun(df = rename_fun(d1), which_efa = efa_pnasd1, 
+       colors = c("#fb9a99", "#1f78b4"), fun = "ratio", points = F)
+newfun(df = rename_fun(d2), which_efa = efa_pnasd2,
+       colors = c("#fb9a99", "#1f78b4"), fun = "ratio", points = F)
+newfun(df = d3 %>%
+         rename_fun() %>%
+         select(-condition) %>%
+         rename(condition = target),
+       which_efa = efa_pnasd3, colors = c("#fb9a99", "#1f78b4"), 
+       fun = "ratio", points = F)
+newfun(df = rename_fun(d4), which_efa = efa_pnasd4,
+       colors = colors21, fun = "ratio", points = F)
+```
+
+```{r}
+summary(newfun_stat(rename_fun(d1), efa_pnasd1, fun = "ratio"))$coefficients
+summary(newfun_stat(rename_fun(d2), efa_pnasd2, fun = "ratio"))$coefficients
+summary(newfun_stat(d3 %>%
+                      rename_fun() %>%
+                      select(-condition) %>%
+                      rename(condition = target), 
+                    efa_pnasd1, fun = "ratio"))$coefficients
+summary(newfun_stat(rename_fun(d4), efa_pnasd4, fun = "ratio"))$coefficients
+```
 
 # Application
 
