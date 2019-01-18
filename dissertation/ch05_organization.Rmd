@@ -1,5 +1,5 @@
 ---
-title: "Chapter VI: Study 4: A focus on early childhood (4-5y)"
+title: "Chapter V: Changes in organization of conceptual units"
 output:
   html_notebook:
     toc: yes

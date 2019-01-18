@@ -1,5 +1,5 @@
 ---
-title: "Chapter V: Study 3: Conceptual change over early and middle childhood (4-9y)"
+title: "Chapter IV: Changes in conceptual units"
 output:
   html_notebook:
     toc: yes

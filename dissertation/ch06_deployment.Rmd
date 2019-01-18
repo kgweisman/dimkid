@@ -1,5 +1,5 @@
 ---
-title: "Chapter IV: Study 2: Conceptual change between middle childhood (7-9y) and adulthood"
+title: "Chapter VI: Changes in deployment of the concept"
 output:
   html_notebook:
     toc: yes
