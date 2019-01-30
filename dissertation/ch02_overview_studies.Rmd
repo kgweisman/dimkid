@@ -314,10 +314,34 @@ Adults participated in an online version of this same task, without a break betw
 
 ### Data processing
 
-The research team did not record response times or use this as a criterion for inclusion. As in Studies 1-2, participants were retained regardless of skipped trials (_n_=XX trials among children; XX% of all trials).
+The research team did not record response times or use this as a criterion for inclusion. As in Studies 1-3, participants were retained regardless of skipped trials (_n_=XX trials among children; XX% of all trials).
 
 
 # Analyses
+
+The 
+
+```{r table2.2, include = T, warning = F, message = F}
+read_csv("./design/example_data.csv") %>%
+  arrange(trial) %>%
+  select(age_group, age, character, 
+         trial, capacity, response, response_num) %>%
+  rename(# Study = study,
+         # `Participant ID` = subid,
+         `Target character` = character,
+         `Trial` = trial,
+         `Mental capacity` = capacity,
+         `Response` = response,
+         `Response (coded)` = response_num,
+         `Age group` = age_group,
+         `Age (y)` = age) %>%
+  mutate_all(funs(replace_na(., "-"))) %>%
+  kable(format = "html", #align = c("l", rep("r", 3)),
+        caption = "Table 2.2: Example data from one participant. In Studies 1a, 1b, 1d, 2, and 3, each participant assessed a single target character (as shown here). In Studies 1c and 4, each participant assessed two target characters; in this example, this would manifest as an additional 20 trials in which the participant assessed the same 20 mental capacities for a robot, rather than a beetle. In Studies 1a-1d and 2, each participant assessed 40 mental capacities per target character; in Study 3, each participant assessed 20 mental capacities per target character (as shown here); and in Study 4, each participant assessed 18 mental capacities per target character. On each trial, the participant responded using a response scale ('Response' column), which was later re-coded as a numeric variable ('Response (coded)' column). A variety of additional variables were recorded, including response times, whether or not the participant was provided with additional clarification about the mental capacity on a given trial (see 'Methods'), and various demographics variables (which varied across studies and age groups). Age group and exact age (in years) are shown here, since these variables were recorded in all studies and used frequently in analyses.") %>%
+  kable_styling()
+```
+
+
 
 As described in Chapter I, these studies provided datasets that can be analyzed in many different ways to address different questions about conceptual representations of mental life. Here I describe the three analyses that I will apply to each dataset to answer my three key questions: (1) _What are the components, or "conceptual units," that anchor representaitons of mental life?_; (2) _How are these conceptual units organized in relation to each other?_; and (3) _How is this conceptual representation of mental life deployed in reasoning about specific entities in the world?_. 
 
