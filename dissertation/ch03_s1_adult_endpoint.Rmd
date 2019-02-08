@@ -251,11 +251,13 @@ suppressWarnings(catscore_alpha_fun_pnas(rename_fun(d4), efa_pnasd4))
 ```{r}
 plot02a <- hier_plot_agg_pnas(df = d1 %>% rename_fun(), which_efa = efa_pnasd1,
                               colors = c("#fb9a99", "#1f78b4"), shapes = c(21, 22),
+                              line = TRUE,
                               title = "Weisman et al. (2017): Study 1",
                               lab_letter = "A")
 
 plot02b <- hier_plot_agg_pnas(df = d2 %>% rename_fun(), which_efa = efa_pnasd2,
                               colors = c("#fb9a99", "#1f78b4"), shapes = c(21, 22),
+                              line = TRUE,
                               title = "Weisman et al. (2017): Study 2",
                               lab_letter = "B")
 
@@ -265,12 +267,14 @@ plot02c <- hier_plot_agg_pnas(df = d3 %>%
                                 rename(condition = target),
                               which_efa = efa_pnasd1,
                               colors = c("#fb9a99", "#1f78b4"), shapes = c(21, 22),
+                              line = TRUE,
                               title = "Weisman et al. (2017): Study 3",
                               lab_letter = "C")
 
 plot02d <- hier_plot_agg_pnas(df = d4 %>% rename_fun(), which_efa = efa_pnasd4,
                               colors = colors21,
                               shapes = rep(21, 21),
+                              line = TRUE,
                               title = "Weisman et al. (2017): Study 4",
                               lab_letter = "D")
 ```
@@ -340,17 +344,20 @@ newfun <- function(df, which_efa, colors, fun = "diff", points = T) {
                     shape = 18, color = "black") +
       scale_color_manual(values = colors) +
       scale_fill_manual(values = colors) +
-    theme(legend.position = "top")
+    theme(legend.position = "none",
+          axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
   
   if(fun == "diff"){
     plot <- plot + 
-      geom_hline(yintercept = 0, lty = 2)
+      geom_hline(yintercept = 0, lty = 2) +
+      labs(x = "Pair", y = "Difference")  
   }
   
   if(fun == "ratio"){
     plot <- plot + 
       geom_hline(yintercept = 1, lty = 2) +
-      facet_wrap(~ factors, scales = "free")
+      facet_wrap(~ factors, scales = "free")+
+      labs(x = "Pair", y = "Ratio")  
   }
     
     return(plot)
@@ -358,15 +365,29 @@ newfun <- function(df, which_efa, colors, fun = "diff", points = T) {
 ```
 
 ```{r}
-newfun(df = rename_fun(d1), which_efa = efa_pnasd1, colors = c("#fb9a99", "#1f78b4"))
-newfun(df = rename_fun(d2), which_efa = efa_pnasd2, colors = c("#fb9a99", "#1f78b4"))
-newfun(df = d3 %>%
-         rename_fun() %>%
-         select(-condition) %>%
-         rename(condition = target),
-       which_efa = efa_pnasd3, colors = c("#fb9a99", "#1f78b4"))
-newfun(df = rename_fun(d4), which_efa = efa_pnasd4, colors = colors21) +
-  theme(legend.position = "none")
+plot04a <- newfun(df = rename_fun(d1), which_efa = efa_pnasd1, 
+                  colors = c("#fb9a99", "#1f78b4")) + ylim(-6, 6)
+
+plot04b <- newfun(df = rename_fun(d2), which_efa = efa_pnasd2, 
+                  colors = c("#fb9a99", "#1f78b4")) + ylim(-6, 6)
+
+plot04c <- newfun(df = d3 %>%
+                    rename_fun() %>%
+                    select(-condition) %>%
+                    rename(condition = target),
+                  which_efa = efa_pnasd3, 
+                  colors = c("#fb9a99", "#1f78b4")) + ylim(-6, 6)
+
+plot04d <- newfun(df = rename_fun(d4), which_efa = efa_pnasd4, colors = colors21) + ylim(-6, 6)
+```
+
+```{r}
+fig04_plots <- plot_grid(plot04a, plot04b, plot04c, plot04d, nrow = 1,
+                         labels = "AUTO")
+```
+
+```{r, fig.width = 6, fig.asp = 0.4, include = T}
+fig04_plots
 ```
 
 ```{r}
@@ -435,18 +456,34 @@ summary(newfun_stat(rename_fun(d4), efa_pnasd4, fun = "diff"))$coefficients
 ```
 
 ```{r}
-newfun(df = rename_fun(d1), which_efa = efa_pnasd1, 
-       colors = c("#fb9a99", "#1f78b4"), fun = "ratio", points = F)
-newfun(df = rename_fun(d2), which_efa = efa_pnasd2,
-       colors = c("#fb9a99", "#1f78b4"), fun = "ratio", points = F)
-newfun(df = d3 %>%
-         rename_fun() %>%
-         select(-condition) %>%
-         rename(condition = target),
-       which_efa = efa_pnasd3, colors = c("#fb9a99", "#1f78b4"), 
-       fun = "ratio", points = F)
-newfun(df = rename_fun(d4), which_efa = efa_pnasd4,
-       colors = colors21, fun = "ratio", points = F)
+plot05a <- newfun(df = rename_fun(d1), which_efa = efa_pnasd1,
+                  fun = "ratio", points = F,
+                  colors = c("#fb9a99", "#1f78b4"))
+
+plot05b <- newfun(df = rename_fun(d2), which_efa = efa_pnasd2, 
+                  fun = "ratio", points = F,
+                  colors = c("#fb9a99", "#1f78b4"))
+
+plot05c <- newfun(df = d3 %>%
+                    rename_fun() %>%
+                    select(-condition) %>%
+                    rename(condition = target),
+                  which_efa = efa_pnasd3, 
+                  fun = "ratio", points = F,
+                  colors = c("#fb9a99", "#1f78b4"))
+
+plot05d <- newfun(df = rename_fun(d4), which_efa = efa_pnasd4, 
+                                    fun = "ratio", points = F,
+                  colors = colors21)
+```
+
+```{r}
+fig05_plots <- plot_grid(plot05a, plot05b, plot05c, plot05d, nrow = 1,
+                         labels = "AUTO")
+```
+
+```{r, fig.width = 6, fig.asp = 0.4, include = T}
+fig05_plots
 ```
 
 ```{r}
@@ -459,6 +496,78 @@ summary(newfun_stat(d3 %>%
                     efa_pnasd1, fun = "ratio"))$coefficients
 summary(newfun_stat(rename_fun(d4), efa_pnasd4, fun = "ratio"))$coefficients
 ```
+
+```{r}
+corfun <- function(df, which_efa){
+  df %>%
+    rename_fun() %>%
+    catscore_fun_pnas(which_efa = which_efa) %>%
+    distinct() %>%
+    spread(factor, score) %>%
+    select(starts_with("F")) %>%
+    cor()
+}
+```
+
+```{r}
+corfun(d1, efa_pnasd1) %>% round(2)
+corfun(d2, efa_pnasd2) %>% round(2)
+corfun(d3, efa_pnasd3) %>% round(2)
+corfun(d4, efa_pnasd4) %>% round(2)
+```
+
+```{r}
+lm(F2 ~ poly(F1, 3), 
+   data = d1 %>%
+     rename_fun() %>%
+     catscore_fun_pnas(efa_pnasd1) %>%
+     distinct() %>%
+     spread(factor, score)) %>%
+  summary()
+
+lm(F3 ~ poly(F1, 3), 
+   data = d1 %>%
+     rename_fun() %>%
+     catscore_fun_pnas(efa_pnasd1) %>%
+     distinct() %>%
+     spread(factor, score)) %>%
+  summary()
+
+lm(F3 ~ poly(F2, 3), 
+   data = d1 %>%
+     rename_fun() %>%
+     catscore_fun_pnas(efa_pnasd1) %>%
+     distinct() %>%
+     spread(factor, score)) %>%
+  summary()
+```
+
+```{r}
+lm(F2 ~ poly(F1, 3), 
+   data = d4 %>%
+     rename_fun() %>%
+     catscore_fun_pnas(efa_pnasd4) %>%
+     distinct() %>%
+     spread(factor, score)) %>%
+  summary()
+
+lm(F3 ~ poly(F1, 3), 
+   data = d4 %>%
+     rename_fun() %>%
+     catscore_fun_pnas(efa_pnasd4) %>%
+     distinct() %>%
+     spread(factor, score)) %>%
+  summary()
+
+lm(F3 ~ poly(F2, 3), 
+   data = d4 %>%
+     rename_fun() %>%
+     catscore_fun_pnas(efa_pnasd4) %>%
+     distinct() %>%
+     spread(factor, score)) %>%
+  summary()
+```
+
 
 # Application
 
