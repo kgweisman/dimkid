@@ -319,57 +319,31 @@ The research team did not record response times or use this as a criterion for i
 
 # Analyses
 
-The 
+In Chapter I, I introduced three key questions about conceptual representations of mental life: (1) _What are the components, or "conceptual units," that anchor representaitons of mental life?_; (2) _How are these conceptual units organized in relation to each other?_; and (3) _How is this conceptual representation of mental life deployed in reasoning about specific entities in the world?_. 
+
+Below I provide a general overview of the three analyses that I will apply to each dataset to answer each of these questions.
+
+## 
+
 
 ```{r table2.2, include = T, warning = F, message = F}
 read_csv("./design/example_data.csv") %>%
-  arrange(trial) %>%
-  select(age_group, age, character, 
-         trial, capacity, response, response_num) %>%
+  arrange(capacity) %>%
+  group_by(subid) %>%
+  top_n(6, capacity) %>%
+  ungroup() %>%
+  select(subid, age_group, age, character, capacity, response) %>%
+  spread(capacity, response) %>%
+  full_join(data.frame(subid = "[other participants...]")) %>%
   rename(# Study = study,
-         # `Participant ID` = subid,
+         `Participant ID` = subid,
          `Target character` = character,
-         `Trial` = trial,
-         `Mental capacity` = capacity,
-         `Response` = response,
-         `Response (coded)` = response_num,
          `Age group` = age_group,
          `Age (y)` = age) %>%
-  mutate_all(funs(replace_na(., "-"))) %>%
+  mutate(`[other mental capacities...]` = "...") %>%
+  mutate_all(funs(replace_na(., "..."))) %>%
   kable(format = "html", #align = c("l", rep("r", 3)),
-        caption = "Table 2.2: Example data from one participant. In Studies 1a, 1b, 1d, 2, and 3, each participant assessed a single target character (as shown here). In Studies 1c and 4, each participant assessed two target characters; in this example, this would manifest as an additional 20 trials in which the participant assessed the same 20 mental capacities for a robot, rather than a beetle. In Studies 1a-1d and 2, each participant assessed 40 mental capacities per target character; in Study 3, each participant assessed 20 mental capacities per target character (as shown here); and in Study 4, each participant assessed 18 mental capacities per target character. On each trial, the participant responded using a response scale ('Response' column), which was later re-coded as a numeric variable ('Response (coded)' column). A variety of additional variables were recorded, including response times, whether or not the participant was provided with additional clarification about the mental capacity on a given trial (see 'Methods'), and various demographics variables (which varied across studies and age groups). Age group and exact age (in years) are shown here, since these variables were recorded in all studies and used frequently in analyses.") %>%
-  kable_styling()
+        caption = "Table 2.2: Example data from two (hypothetical) participants. TARGET CHARACTERS: In Studies 1a, 1b, 1d, 2, and 3, each participant assessed a single target character, yielding one row of data per participant (as shown here). In Studies 1c and 4, each participant assessed two target characters, which would manifest as one additional row of data per participant. MENTAL CAPACITIES: In Studies 1a-1d and 2, each participant assessed 40 mental capacities per target character; this would manifest as 40 columns of responses to the right of the 'Target character' column. In Study 3, each participant assessed 20 mental capacities per target character (20 columns of responses); and in Study 4, each participant assessed 18 mental capacities per target character (18 columns of responses).  ADDITIONAL VARIABLES: A variety of additional variables were recorded, including the identity of the experimenter; the date, time, total duration, and location of the testing session; the gender and race/ethnicity of the participant (as well as and other demographic variables, which varied across studies and age groups); and, for each trial, response time, whether or not the participant was provided with additional clarification about the mental capacity under discussion, and other aspects of the experimental display (see 'Methods'). Only age group and exact age (in years) are shown here, since these variables were considered primary variables of interest.") %>%
+  kable_styling() %>%
+  column_spec(4, border_right = T)
 ```
-
-
-
-As described in Chapter I, these studies provided datasets that can be analyzed in many different ways to address different questions about conceptual representations of mental life. Here I describe the three analyses that I will apply to each dataset to answer my three key questions: (1) _What are the components, or "conceptual units," that anchor representaitons of mental life?_; (2) _How are these conceptual units organized in relation to each other?_; and (3) _How is this conceptual representation of mental life deployed in reasoning about specific entities in the world?_. 
-
-## Identifying conceptual units through exploratory factor analysis (EFA)
-
-My initial goal in conducting these studies was to uncover a set of latent constructs that might plausibly have given rise to the observed correlations among mental capacity attributions in each group of participants—i.e., to identify a set of "conceptual units" that constitute the core components of conceptual representations of menta life. As such, my primary planned analysis for all studies was an exploratory factor analysis (EFA). I interpreted each of the constructs ("factors") as corresponding to one conceptual unit of a given group of participants' broader representation of mental life.
-
-[XX INTEGRATE and make sure that there's a parallel statement for each study...: Following Study 1d, for our exploratory factor analyses we treated each participant's assessments of each target character as a separate set of observations (as if they came from different participants). This effectively doubled our sample size to `r nrow(d3_ad)` adults and `r nrow(d3_46)` children. (See SOM for separate EFAs of the participants' responses to the first target character that they were assigned to rate vs. the second character.)]
-
-
-For all EFAs, I used ordinary least squares to find the minimum residual solution, using the "psych" package for R (Revelle, 2018). Here I focus on results using Pearson correlations using pairwise complete observations. (In principle, polychoric correlations are better suited to handle responses on a three-point scale; however, doing these analyses with polychoric correlations instead of Pearson correlations generally appeared to over-fit the data, e.g., suggesting retaining many factors that each accounted for only a very small amount of the shared variance.)
-
-In order to determine how many factors to retain, I examined the results of three factor retention protocols: (1) Parallel Analysis, which compares the observed correlation structure to the correlation structure arising from random datasets of the same size; (2) Minimizing the Bayesian Information Criterion (BIC), which is one method of optimizing both goodness of fit and parsimony; and (3) A set of factor retention criteria that I have used previous work with adults (Weisman et al., 2017), in which I began with the maximal number of factors according to an analysis of degrees of freedom, and retained factors that met all three of the following criteria: (a) had eigenvalues greater than 1.00, (b) individually accounted for greater than 5% of the shared variance before rotation, and (c) were the "dominant" factor (the factor with the strongest absolute factor loading) for at least 1 mental capacity after rotation. For each study, my interpretation of how best to characterize the dataset (i.e., how many factors I observed) was determined by the degree of consensus among these three protocols and the interpretability of the retained factors under each protocol. 
-
-Here I focus my interpretations on varimax-rotated solutions, which constrain all factors to be orthogonal. (See OSM for solutions using oblique ["oblimin"] rotations, which allow for correlated factors.) [XX RE-ASSESS THIS]
-
-
-## Assessing hierarchical relationships among conceptual units through XX
-
-[XX}]
-
-
-## Documenting the application or deployment of conceptual representations through XX
-
-[XX CORRECT TO BE NOT ABOUT FACTOR SCORES! change from factor scores to endorsements. Factor scores don't give a sense of absolutely yes/no.]
-
-Having inferred a conceptual structure for a given group of participants via EFA, I then sought to examine attributions of mental capacities to the particular target characters included in each study within this conceptual structure: To what extent did participants attribute each of the fundamental components of mental life revealed by EFA to a given target character, and how did this attributions vary with age (either within an age group or between age groups)? 
-
-To explore this question, for each study I projected children's data into adults' conceptual space and examined "factor scores"—summaries of each participant's attributions of each of factors revealed by EFA. I used the correlation-preserving "ten Berge" method (as implemented in the "psych" package; Revelle, 2018), imputing missing values using the mean (by target character, capacity, and age group). This yielded one factor score for each of (adults') factors, for each participant. I consider these to be summaries of that person's attributions of the corresponding latent construct.
-
-I analyzed these factor scores via mixed effects Bayesian regression analyses using the "brms" package for R (Bürkner, 2017). In all of these analyses, I included the maximal random effect structures given the design for the relevant study. Further details varied by study, depending on the number of target characters included in that study, the number of factors revealed by EFA for the relevant group(s) of participants, and the goals of the analysis (e.g., comparing two age groups vs. examining continuous effects of age within one or more groups of participants).

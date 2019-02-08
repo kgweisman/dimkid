@@ -513,7 +513,8 @@ hier_plot_fun_pnas <- function(df, factor1, factor2, which_efa){
   return(plot)
 }
 
-hier_plot_agg_pnas <- function(df, which_efa, colors, shapes, title, lab_letter){
+hier_plot_agg_pnas <- function(df, which_efa, colors, shapes, 
+                               line = FALSE, title, lab_letter){
   plot_a <- hier_plot_fun_pnas(df, factor1 = "F1", factor2 = "F2", 
                                which_efa = which_efa) +
     scale_color_manual(values = colors) +
@@ -540,6 +541,27 @@ hier_plot_agg_pnas <- function(df, which_efa, colors, shapes, title, lab_letter)
     labs(#title = "HEART vs. MIND",
          x = "Mean HEART endorsement", 
          y = "Mean MIND endorsement")
+  
+  if(line == TRUE){
+    bypart <- catscore_fun_pnas(df, which_efa)
+    plot_a <- plot_a + 
+      geom_smooth(data = bypart %>% spread(factor, score) %>% ungroup(),
+                  aes(x = F1, y = F2, 
+                      group = NULL, color = NULL, fill = NULL, shape = NULL),
+                  color = "black", fill = "gray")
+      
+    plot_b <- plot_b + 
+      geom_smooth(data = bypart %>% spread(factor, score) %>% ungroup(),
+                  aes(x = F1, y = F3, 
+                      group = NULL, color = NULL, fill = NULL, shape = NULL),
+                  color = "black", fill = "gray")
+    
+    plot_c <- plot_c + 
+      geom_smooth(data = bypart %>% spread(factor, score) %>% ungroup(),
+                  aes(x = F2, y = F3, 
+                      group = NULL, color = NULL, fill = NULL, shape = NULL),
+                  color = "black", fill = "gray")
+  }
   
   plot_title <- ggdraw() +
     draw_label(title)
