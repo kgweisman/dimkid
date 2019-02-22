@@ -77,6 +77,8 @@ chosen_scores <- "tenBerge" # reported
 # chosen_scores <- "regression" # alternative option
 ```
 
+# Chapter overview
+
 In the following chapters, I address the three key questions about the development of representations of mental life introduced in the previous chapter: (1) _What are the components, or "conceptual units," that anchor representations of mental life at different points in development?_ (Chapter III); (2) _How are these conceptual units organized in relation to each other, and how does this organization change over development?_ (Chapter IV); and (3) _How do people of different ages deploy their conceptual representations of mental life to reason about specific entities in the world?_ (Chapter V). 
 
 The organization of Chapters III-V is somewhat unconventional. Rather than introducing a new study in each chapter, I analyze data from all four studies in Chapter III, and then return to re-analyze these same datasets in Chapter IV, and again in Chapter V; in other words, instead of proceeding study by study (including multiple analyses for each study), I proceed analysis by analysis, drawing on the full set of studies for each analysis. My goal in presenting these results in this unusual manner is to paint a holistic picture of developmental change in each of these  distinct aspects of conceptual representation, without requiring the reader to look back and forth between chapters to make comparisons across parallel analyses (or switch back and forth between different complex analyses within a single chapter).
@@ -386,7 +388,7 @@ table2.3
 ```
 
 
-# Conclusion
+# Chapter conclusion
 
 The goal of this chapter was to provide a roadmap for the remainder of the dissertation and to describe the general approach and specific methods employed in this line of work. In the following chapters I present three analyses of this collection of datasets, beginning with an attempt to identify the "conceptual units" available to participants of different ages as they assessed the mental capacities of the target characters included in these studies. 
 

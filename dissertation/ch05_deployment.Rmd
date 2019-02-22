@@ -28,6 +28,63 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 #     toc_float: yes
 ```
 
+# Chapter overview
+
+
+# General analysis plan: Documenting the application or deployment of conceptual representations
+
+
+# Study 1: An adult endpoint
+
+## Special notes on data processing and analysis
+
+## Results
+
+## Discussion
+
+
+# Study 2: Conceptual change between middle childhood (7-9y) and adulthood
+
+## Special notes on data processing and analysis
+
+## Results
+
+## Discussion
+
+
+# Study 3: Conceptual change over early and middle childhood (4-9y)
+
+## Special notes on data processing and analysis
+
+## Results
+
+## Discussion
+
+
+# Study 4: A focus on early childhood (4-5y)
+
+## Special notes on data processing and analysis
+
+## Results
+
+## Discussion
+
+
+# General discussion of the application or deployment of conceptual representations
+
+
+# Chapter conclusion
+
+
+
+
+
+
+
+
+
+# SCRAPS
+
 ## Documenting the application or deployment of conceptual representations through XX
 
 [XX CORRECT TO BE NOT ABOUT FACTOR SCORES! change from factor scores to endorsements. Factor scores don't give a sense of absolutely yes/no.]
