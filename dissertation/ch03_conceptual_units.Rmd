@@ -30,8 +30,12 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 
 # Chapter overview
 
+In this chapter, I focus on the first of my three key questions about the development of representations of mental life introduced in Chapter I: _What are the components, or "conceptual units," that anchor representations of mental life at different points in development?_ As described in Chapter II, to address this question I draw on data from all of the current studies (Studies 1-4); for details about the methods of these studies, see Chapter II. The goal of this chapter is to provide "snapshots" of these conceptual units in early childhood, middle childhood, and adulthood.
+
 
 # General analysis plan: Identifying conceptual units
+
+1. Tracking the _covariance_ of mental capacity attributions (Chapter III) provides a way of identifying "conceptual units." For example, if participants who endorse Capacity X also tend to endorse Capacity Y, this provides some evidence that Capacity X and Capacity Y might be associated with the same conceptual unit.  
 
 
 # Study 1: An adult endpoint

@@ -30,8 +30,13 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 
 # Chapter overview
 
+In this chapter, I focus on the second of my three key questions about the development of representations of mental life introduced in Chapter I: _How are these conceptual units organized in relation to each other, and how does this organization change over development?_ As in Chapter III, to address this question I draw on data from all of the current studies (Studies 1-4); for details about the methods of these studies, see Chapter II. The goal of this chapter is to provide "snapshots" of these organizations in early childhood, middle childhood, and adulthood.
+
+
 
 # General analysis plan: Assessing the hierarchical organization of conceptual units
+
+2. Tracking _asymmetries_ in mental capacity attributions (Chapter IV) provides a way of assessing the hierarchical organization of these units. For example, if many participants endorse capacities associated with Conceptual Unit A without endorsing capacities associated with Conceptual Unit B, but very few participants endorse capacities do the reverse (endorsing capcaities associated with Conceptual Unit B but not Conceptual Unit A), this provides some evidence that Conceptual Unit A might be considered more basic or fundamental than Conceptual Unit B, or a necessary prerequiste for Conceptual Unit B. 
 
 
 # Study 1: An adult endpoint

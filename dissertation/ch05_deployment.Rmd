@@ -30,8 +30,14 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 
 # Chapter overview
 
+In this chapter, I focus on the third of my three key questions about the development of representations of mental life introduced in Chapter I: _How do people of different ages deploy their conceptual representations of mental life to reason about specific entities in the world?_ As in Chapters III-IV, to address this question I draw on data from all of the current studies (Studies 1-4); for details about the methods of these studies, see Chapter II. The goal of this chapter is to provide "snapshots" of these organizations in early childhood, middle childhood, and adulthood, and to explore in finer-grained detail changes in children's beliefs about the mental lives of animate and inanimate beings between 4-9y of age.
+
+
 
 # General analysis plan: Documenting the application or deployment of conceptual representations
+
+3. Tracking which mental capacities are attributed to which beings in the world (Chapter V) provides a way of observing the application or deployment of these conceptual representations in reasoning about specific entities in the real world. For example, if participants who assess the mental capacities of Characters 1, 2, and 3 share one general pattern of mental capacity attributions, and participants who assess the mental capacities of Characters 4, 5, and 6 share another pattern, this provides some evidence that conceptual representations of mental life might play a role in structuring representations of (and interactions with) different classes of beings in the world. 
+
 
 
 # Study 1: An adult endpoint
