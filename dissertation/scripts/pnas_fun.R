@@ -515,6 +515,7 @@ hier_plot_fun_pnas <- function(df, factor1, factor2, which_efa){
 
 hier_plot_agg_pnas <- function(df, which_efa, colors, shapes, 
                                line = FALSE, title, lab_letter){
+  
   plot_a <- hier_plot_fun_pnas(df, factor1 = "F1", factor2 = "F2", 
                                which_efa = which_efa) +
     scale_color_manual(values = colors) +
@@ -524,43 +525,47 @@ hier_plot_agg_pnas <- function(df, which_efa, colors, shapes,
          x = "Mean BODY endorsement", 
          y = "Mean HEART endorsement")
   
-  plot_b <- hier_plot_fun_pnas(df, factor1 = "F1", factor2 = "F3", 
+  plot_b <- hier_plot_fun_pnas(df, factor1 = "F3", factor2 = "F2", 
+                               which_efa = which_efa) +
+    scale_color_manual(values = colors) +
+    scale_fill_manual(values = colors) +
+    scale_shape_manual(values = shapes) +
+    labs(#title = "MIND vs. HEART",
+         x = "Mean MIND endorsement", 
+         y = "Mean HEART endorsement")
+
+  plot_c <- hier_plot_fun_pnas(df, factor1 = "F1", factor2 = "F3", 
                                which_efa = which_efa) +
     scale_color_manual(values = colors) +
     scale_fill_manual(values = colors) +
     scale_shape_manual(values = shapes) +
     labs(#title = "BODY vs. MIND",
-         x = "Mean BODY endorsement", 
-         y = "Mean MIND endorsement")
-  
-  plot_c <- hier_plot_fun_pnas(df, factor1 = "F2", factor2 = "F3", 
-                               which_efa = which_efa) +
-    scale_color_manual(values = colors) +
-    scale_fill_manual(values = colors) +
-    scale_shape_manual(values = shapes) +
-    labs(#title = "HEART vs. MIND",
-         x = "Mean HEART endorsement", 
-         y = "Mean MIND endorsement")
+      x = "Mean BODY endorsement", 
+      y = "Mean MIND endorsement")
   
   if(line == TRUE){
     bypart <- catscore_fun_pnas(df, which_efa)
+      
     plot_a <- plot_a + 
       geom_smooth(data = bypart %>% spread(factor, score) %>% ungroup(),
                   aes(x = F1, y = F2, 
                       group = NULL, color = NULL, fill = NULL, shape = NULL),
-                  color = "black", fill = "gray")
-      
+                  color = "black", alpha = 0,
+                  method = "lm", formula = "y ~ poly(x, 3)")
+    
     plot_b <- plot_b + 
+      geom_smooth(data = bypart %>% spread(factor, score) %>% ungroup(),
+                  aes(x = F3, y = F2, 
+                      group = NULL, color = NULL, fill = NULL, shape = NULL),
+                  color = "black", alpha = 0,
+                  method = "lm", formula = "y ~ poly(x, 3)")
+    plot_c <- plot_c + 
       geom_smooth(data = bypart %>% spread(factor, score) %>% ungroup(),
                   aes(x = F1, y = F3, 
                       group = NULL, color = NULL, fill = NULL, shape = NULL),
-                  color = "black", fill = "gray")
-    
-    plot_c <- plot_c + 
-      geom_smooth(data = bypart %>% spread(factor, score) %>% ungroup(),
-                  aes(x = F2, y = F3, 
-                      group = NULL, color = NULL, fill = NULL, shape = NULL),
-                  color = "black", fill = "gray")
+                  color = "black", alpha = 0,
+                  method = "lm", formula = "y ~ poly(x, 3)")
+
   }
   
   plot_title <- ggdraw() +

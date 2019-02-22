@@ -284,7 +284,7 @@ fig02_plots <- plot_grid(plot02a, plot02b, plot02c, plot02d, nrow = 1)
 ```
 
 ```{r, fig.width = 7, fig.asp = 0.85, include = T}
-fig02_with_caption <- add_sub(fig02_plots, str_wrap("Figure 3.2: Comparison of endorsements of BODY, HEART, and MIND capacities among adults in Weisman et al. (2017), Studies 1-4 (columns A-D). The top row (A1-D1) compares endorsements of BODY vs. HEART capacities; the middle row (A2-D2) compares BODY vs. MIND; and the bottom row (A3-D3) compares HEART vs. MIND. For each study, EFA was used to determine which capacities were considered part of BODY, HEART, and MIND (see main text). For each capacity, degree of endorsement could range from 0 (not at all capable) to 6 (fully capable). Error bars are 95% bootstrapped confidence intervals.", 150), x = 0, hjust = 0)
+fig02_with_caption <- add_sub(fig02_plots, str_wrap("Figure 3.2: Comparison of endorsements of BODY, HEART, and MIND capacities among adults in Weisman et al. (2017), Studies 1-4 (columns A-D). The top row (A1-D1) compares endorsements of BODY vs. HEART capacities; the middle row (A2-D2) compares MIND vs. HEART; and the bottom row (A3-D3) compares BODY vs. MIND. For each study, EFA was used to determine which capacities were considered part of BODY, HEART, and MIND (see main text). For each capacity, degree of endorsement could range from 0 (not at all capable) to 6 (fully capable). Error bars are 95% bootstrapped confidence intervals.", 150), x = 0, hjust = 0)
 ggdraw(fig02_with_caption)
 ```
 
@@ -298,22 +298,22 @@ newfun <- function(df, which_efa, colors, fun = "diff", points = T) {
   
   if(fun == "diff"){
     plot_df <- plot_df %>%
-    mutate(F1minusF2 = F1 - F2,
-           F1minusF3 = F1 - F3,
-           F2minusF3 = F2 - F3)
+    mutate(pair1_F1minusF2 = F1 - F2,
+           pair2_F3minusF2 = F3 - F2,
+           pair3_F1minusF3 = F1 - F3)
   }
   
   if(fun == "ratio"){
     plot_df <- plot_df %>%
       mutate_at(vars(starts_with("F")), funs(. + 0.001)) %>%
-      mutate(F1divF2 = F1/F2,
-             F1divF3 = F1/F3,
-             F2divF3 = F2/F3)
+      mutate(pair1_F1divF2 = F1/F2,
+             pair2_F3divF2 = F3/F2,
+             pair3_F1divF3 = F1/F3)
   }
   
   plot_df <- plot_df %>%
     select(-c(F1, F2, F3)) %>%
-    gather(factors, comp, starts_with("F")) %>%
+    gather(factors, comp, starts_with("pair")) %>%
     distinct()
   
   plot <- plot_df %>%
@@ -400,22 +400,22 @@ newfun_stat <- function(df, which_efa, colors, fun = "diff", std = T) {
   
   if(fun == "diff"){
     plot_df <- plot_df %>%
-    mutate(F1minusF2 = F1 - F2,
-           F1minusF3 = F1 - F3,
-           F2minusF3 = F2 - F3)
+    mutate(pair1_F1minusF2 = F1 - F2,
+           pair2_F3minusF2 = F3 - F2,
+           pair3_F1minusF3 = F1 - F3)
   }
   
   if(fun == "ratio"){
     plot_df <- plot_df %>%
       mutate_at(vars(starts_with("F")), funs(. + 0.001)) %>%
-      mutate(F1divF2 = F1/F2,
-             F1divF3 = F1/F3,
-             F2divF3 = F2/F3)
+      mutate(pair1_F1divF2 = F1/F2,
+             pair2_F3divF2 = F3/F2,
+             pair3_F1divF3 = F1/F3)
   }
   
   plot_df <- plot_df %>%
     select(-c(F1, F2, F3)) %>%
-    gather(factors, comp, starts_with("F")) %>%
+    gather(factors, comp, starts_with("pair")) %>%
     distinct()
   
   if(fun == "diff"){
