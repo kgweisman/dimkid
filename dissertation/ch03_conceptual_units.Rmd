@@ -30,12 +30,13 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 
 # Chapter overview
 
-In this chapter, I focus on the first of my three key questions about the development of representations of mental life introduced in Chapter I: _What are the components, or "conceptual units," that anchor representations of mental life at different points in development?_ As described in Chapter II, to address this question I draw on data from all of the current studies (Studies 1-4); for details about the methods of these studies, see Chapter II. The goal of this chapter is to provide "snapshots" of these conceptual units in early childhood, middle childhood, and adulthood.
+In this chapter, I focus on the first of my three key questions about the development of representations of mental life introduced in Chapter I: _What are the components, or "conceptual units," that anchor representations of mental life at different points in development?_ As described in Chapter II, to address this question I draw on data from all of the current studies (Studies 1-4); for details about the methods of these studies, see Chapter II. The goal of this chapter is to provide "snapshots" of the sets of conceptual units available to participants in early childhood, middle childhood, and adulthood.
 
 
 # General analysis plan: Identifying conceptual units
 
-1. Tracking the _covariance_ of mental capacity attributions (Chapter III) provides a way of identifying "conceptual units." For example, if participants who endorse Capacity X also tend to endorse Capacity Y, this provides some evidence that Capacity X and Capacity Y might be associated with the same conceptual unit.  
+In analyzing these datasets with an eye toward identifying "conceptual units," the basic insight is that tracking the covariance of mental capacity attributions provides a way of identifying suites of mental capacities that "hang together" in reasoning about mental life, and that these suites of mental capacities might correspond to the units of some larger conceptual representation of this general domain. In Chapter II, I illustrated this with the following example: If participants who endorse Capacity X also tend to endorse Capacities Y and Z, this provides some evidence that Capacities X, Y, and Z consitute a suite of mental capacities that are closely associated with the same underlying "conceptual unit." Here I will translate this general intuition into a specific analysis plan to be applied to each of these datasets in turn. 
+
 
 
 # Study 1: An adult endpoint
