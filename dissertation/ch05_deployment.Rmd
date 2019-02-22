@@ -1,0 +1,39 @@
+---
+title: "Chapter V: Changes in deployment of the concept"
+output:
+  html_notebook:
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+always_allow_html: yes
+---
+
+```{r global_options, include = F}
+knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
+                      include = F, echo = F)
+```
+
+```{r}
+# # for knitting to .docx
+# output:
+#   word_document:
+#     reference_docx: "./word-styles-reference.docx"
+# always_allow_html: yes
+   
+# # for knitting to .nb.html 
+# output:
+#   html_notebook:
+#     toc: yes
+#     toc_depth: 4
+#     toc_float: yes
+```
+
+## Documenting the application or deployment of conceptual representations through XX
+
+[XX CORRECT TO BE NOT ABOUT FACTOR SCORES! change from factor scores to endorsements. Factor scores don't give a sense of absolutely yes/no.]
+
+Having inferred a conceptual structure for a given group of participants via EFA, I then sought to examine attributions of mental capacities to the particular target characters included in each study within this conceptual structure: To what extent did participants attribute each of the fundamental components of mental life revealed by EFA to a given target character, and how did this attributions vary with age (either within an age group or between age groups)? 
+
+To explore this question, for each study I projected children's data into adults' conceptual space and examined "factor scores"—summaries of each participant's attributions of each of factors revealed by EFA. I used the correlation-preserving "ten Berge" method (as implemented in the "psych" package; Revelle, 2018), imputing missing values using the mean (by target character, capacity, and age group). This yielded one factor score for each of (adults') factors, for each participant. I consider these to be summaries of that person's attributions of the corresponding latent construct.
+
+I analyzed these factor scores via mixed effects Bayesian regression analyses using the "brms" package for R (Bürkner, 2017). In all of these analyses, I included the maximal random effect structures given the design for the relevant study. Further details varied by study, depending on the number of target characters included in that study, the number of factors revealed by EFA for the relevant group(s) of participants, and the goals of the analysis (e.g., comparing two age groups vs. examining continuous effects of age within one or more groups of participants).
