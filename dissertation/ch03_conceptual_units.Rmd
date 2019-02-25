@@ -121,26 +121,7 @@ As noted in Chapter II, in the original analysis of these datasets responses wer
 
 In Study 1c, participants assessed two target characaters side by side (in contrast to Studies 1a, 1b, and 1d, in which each participant assessed just one target character). In the current analyses, I treat each participant's assessments of each target character as a separate set of observations (as if they came from different participants), in effect doubling the sample size for these studies (but ignoring the within-subject design). ([XX SEE APPENDIX?] for separate EFAs of the participants' responses to the first target character that they were assigned to rate vs. the second character.)
 
-
 ## Results
-
-```{r}
-reten_report_bystudy <- reten_report %>% 
-  rownames_to_column("study") %>%
-  gather(protocol, nfact, -study) %>% 
-  group_by(study) %>% 
-  summarise(min = min(nfact), 
-            max = max(nfact), 
-            mean = mean(nfact), 
-            median = median(nfact)) %>%
-  ungroup()
-
-reten_report_bystudy
-```
-
-### Study 1a
-
-In Study 1a, `r nrow(d1a_ad_wide)` US adults each assessed a single target character on 40 mental capacities. This study employed the "edge case" variant of the general approach, with participants randomly assigned to assess either a beetle or a robot. (See Chapter II and Weisman et al., 2017, for detailed methods.)
 
 ```{r}
 reten_report <- list("Study 1a" = d1a_ad_wide_i, 
@@ -169,6 +150,24 @@ reten_report_byprotocol <- reten_report %>%
 
 reten_report_byprotocol
 ```
+
+```{r}
+reten_report_bystudy <- reten_report %>% 
+  rownames_to_column("study") %>%
+  gather(protocol, nfact, -study) %>% 
+  group_by(study) %>% 
+  summarise(min = min(nfact), 
+            max = max(nfact), 
+            mean = mean(nfact), 
+            median = median(nfact)) %>%
+  ungroup()
+
+reten_report_bystudy
+```
+
+### Study 1a
+
+In Study 1a, `r nrow(d1a_ad_wide)` US adults each assessed a single target character on 40 mental capacities. This study employed the "edge case" variant of the general approach, with participants randomly assigned to assess either a beetle or a robot. (See Chapter II and Weisman et al., 2017, for detailed methods.)
 
 ```{r}
 table3.1 <- reten_report %>%
