@@ -120,6 +120,10 @@ In Study 2, `r nrow(d2_ad_wide)` US adults and `r nrow(d2_79_wide)` US children 
 
 ## Results
 
+### Adults
+
+### Children (7-9y)
+
 ## Discussion
 
 
@@ -131,6 +135,12 @@ In Study 3, `r nrow(d3_ad_wide)` US adults, `r nrow(d3_79_wide)` "older" childre
 
 ## Results
 
+### Adults
+
+### Children (7-9y)
+
+### Children (4-6y)
+
 ## Discussion
 
 
@@ -141,6 +151,10 @@ In Study 4, `r nrow(d4_ad_wide)/2` US adults and `r nrow(d4_46_wide)/2` US child
 ## Special notes on data processing and analysis
 
 ## Results
+
+### Adults
+
+### Children (4-5y)
 
 ## Discussion
 

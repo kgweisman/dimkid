@@ -164,11 +164,11 @@ In Study 3, `r nrow(d3_ad_wide)` US adults, `r nrow(d3_79_wide)` "older" childre
 
 ## Results
 
-### Study 3a: Adults
+### Adults
 
-### Study 3b: Older children (7-9y)
+### Older children (7-9y)
 
-### Study 3b: Younger children (4-6y)
+### Younger children (4-6y)
 
 ## Discussion
 
@@ -183,9 +183,9 @@ In Study 4, participants assessed two target characaters side by side (in contra
 
 ## Results
 
-### Study 4a: Adults
+### Adults
 
-### Study 3b: Children (4-5y)
+### Children (4-5y)
 
 ## Discussion
 
