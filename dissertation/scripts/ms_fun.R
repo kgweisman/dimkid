@@ -1,3 +1,19 @@
+# functions for describing missing data
+missing_percent_fun <- function(df, round_n = NA){
+  res <- sum(is.na(df))/sum(!is.na(df))*100
+  if(!is.na(round_n)){
+    res <- round(res, round_n)
+  }
+  return(res)
+}
+
+missing_print_fun <- function(df, round_n = NA){
+  ifelse(missing_percent_fun(df) == 0, 
+         "none", 
+         paste0(missing_percent_fun(df, round_n = 2), "%"))
+}
+
+
 # function for quickly getting counts and proportions for categorical demo variables
 demo_fun <- function(df, var, n_round = NA){
   new_df <- df %>%
@@ -32,3 +48,4 @@ binomial_smooth <- function(...) {
 ital_by_cap_fun <- function(str) {
   paste0("_", paste(str, collapse = "_, _"), "_")
 }
+

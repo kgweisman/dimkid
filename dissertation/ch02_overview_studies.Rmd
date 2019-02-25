@@ -78,6 +78,7 @@ chosen_scores <- "tenBerge" # reported
 # chosen_scores <- "regression" # alternative option
 ```
 
+
 # Chapter overview
 
 In the following chapters, I address the three key questions about the development of representations of mental life introduced in the previous chapter: (1) _What are the components, or "conceptual units," that anchor representations of mental life at different points in development?_ (Chapter III); (2) _How are these conceptual units organized in relation to each other, and how does this organization change over development?_ (Chapter IV); and (3) _How do people of different ages deploy their conceptual representations of mental life to reason about specific entities in the world?_ (Chapter V). 
@@ -218,7 +219,7 @@ Adults completed the study by clicking through a website at their own pace, with
 
 ### Data processing
 
-Trials with response times that were faster than a preset criterion of 250ms (_n_=3 child trials, _n_=97 adult trials) were dropped, participants were retained regardless of skipped trials (_n_=55 child trials, _n_=1 adult trial). Overall, only 1% of adult trials and 1% of child trials were missing data; in these cases, I imputed missing values using the median by target character, capacity, and age group.
+Trials with response times that were faster than a preset criterion of 250ms were dropped, and participants were retained regardless of skipped trials. Overall, only `r missing_print_fun(d2_ad_wide)` of adults' trials (_n_=`r sum(is.na(d2_ad_wide))`) and `r missing_print_fun(d2_79_wide)` of children's trials (_n_=`r sum(is.na(d2_79_wide))`) were missing data; in these cases, I imputed missing values using the median by target character, capacity, and age group.
 
 
 ## Study 3: Conceptual change over early and middle childhood (4-9y)
@@ -309,8 +310,7 @@ After completing the 20 questions about mental capacities, a subset of participa
 
 ### Data processing
 
-As in Study 2, I planned to drop trials with response times that were faster than a preset criterion of 250ms, but there were none among children, and I failed to record response times among adults. As in Study 2, participants were retained regardless of skipped trials. Overall, none of adults or older children's trials, and only `r round(sum(is.na(d3_46_wide))/sum(!is.na(d3_46_wide))*100, 2)`% of younger children's trials (_n_=`r sum(is.na(d3_46_wide))`) were missing data.
-
+As in Study 2, I planned to drop trials with response times that were faster than a preset criterion of 250ms, but there were none among children, and I failed to record response times among adults. As in Study 2, participants were retained regardless of skipped trials. Overall, `r missing_print_fun(d3_ad_wide)` of adults' trials, `r missing_print_fun(d3_79_wide)` of older children's trials, and only `r missing_print_fun(d3_46_wide)` of younger children's trials (_n_=`r sum(is.na(d3_46_wide))`) were missing data.
 
 ## Study 4: A focus on early childhood (4-5y)
 
@@ -360,7 +360,7 @@ Adults participated in an online version of this same task, without a break betw
 
 ### Data processing
 
-The research team did not record response times or use this as a criterion for inclusion. As in Studies 1-3, participants were retained regardless of skipped trials (_n_=XX trials among children; XX% of all trials).
+The research team did not record response times or use this as a criterion for inclusion. As in Studies 1-3, participants were retained regardless of skipped trials. Overall `r missing_print_fun(d4_ad_wide)` of adults' trials and only `r missing_print_fun(d4_46_wide)` of children's trials (_n_=`r sum(is.na(d4_46_wide))`) were missing data; in these cases, I imputed missing values using the median by target character, capacity, and age group.
 
 ```{r}
 table2.3 <- read_csv("./design/example_data.csv") %>%
