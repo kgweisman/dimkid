@@ -1,14 +1,15 @@
-# STUDY 2: OLDER CHILDREN
+# STUDY 2: CHILDREN
 # read in & tidy data
 d2_79 <- read.csv("./anonymized_data/study2_children79_anonymized.csv") %>%
   mutate(age = as.numeric(as.character(age))) %>%
-  filter(((age >= 7 & age < 10) | is.na(age)),
-         # character %in% c("beetle", "robot"),
+  filter(age >= 7, age < 10,
+         character %in% c("beetle", "robot"),
          !grepl("metal", capWording), !grepl("on and off", capWording)) %>%
-  select(subid, age, gender, ethnicity, 
+  select(subid, age, gender, ethnicity, bilingual, languages,
          character, capWording, response, rt, sessionDuration) %>%
   rename(duration = sessionDuration) %>%
-  mutate(age_group = "children79") %>%
+  mutate(study = "Study 2: Children",
+         age_group = "children79") %>%
   mutate(response_num = case_when(
     tolower(response) == "no" ~ 0,
     tolower(response) %in% c("kinda", "kida") ~ 0.5,
@@ -27,27 +28,15 @@ d2_79 <- read.csv("./anonymized_data/study2_children79_anonymized.csv") %>%
            grepl("personality", capWording) ~ "have a personality...",
            grepl("beliefs", capWording) ~ "have beliefs...",
            TRUE ~ capWording)) %>%
-  mutate(ethnicity = tolower(as.character(ethnicity)),
+  mutate(ethnicity = as.character(ethnicity),
          ethnicity = case_when(
            grepl("\\;", ethnicity) | 
-             grepl("\\&", ethnicity) |
              grepl("mix", ethnicity) | 
-             grepl("half", ethnicity) | 
-             (grepl("\\/", ethnicity) & !grepl("hisp", ethnicity)) |
-             grepl("\\, black", ethnicity) |
-             grepl("\\, white", ethnicity) |
-             grepl("\\, east", ethnicity) | 
-             grepl("\\, south", ethnicity) |
-             grepl("\\, philippies", ethnicity) ~ "multi",
+             (grepl("\\/", ethnicity) & !grepl("hisp", ethnicity)) ~ "multi",
            ethnicity == "white, caucasian, or european american" ~ "white",
            ethnicity %in% c("east asian", "other (asian)", 
                             "other: east asian american", 
                             "other: south korean") ~ "east asian",
-           ethnicity %in% c("south or southeast asian",
-                            "south our southeast asian",
-                            "south or southeast asisan",
-                            "indian") ~ 
-             "south or southeast asian",
            TRUE ~ ethnicity)) %>%
   distinct()
 
@@ -73,4 +62,3 @@ d2_79_wide_i <- d2_79_wide %>%
   ungroup() %>%
   select(-subid, -character) %>%
   column_to_rownames("subid_char")
-

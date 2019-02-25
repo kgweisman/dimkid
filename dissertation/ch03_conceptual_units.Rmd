@@ -28,6 +28,29 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 #     toc_float: yes
 ```
 
+```{r}
+# supporting functions
+source("./scripts/max_factors_efa.R")
+source("./scripts/reten_fun.R")
+source("./scripts/plot_fun.R")
+source("./scripts/efa_fun.R")
+source("./scripts/ms_fun.R")
+
+# data scripts
+source("./scripts/data_s2_ad.R")
+source("./scripts/data_s2_79.R")
+source("./scripts/data_s3_ad.R")
+source("./scripts/data_s3_79.R")
+source("./scripts/data_s3_46.R")
+source("./scripts/data_s4_ad.R")
+source("./scripts/data_s4_46.R")
+```
+
+```{r}
+
+```
+
+
 # Chapter overview
 
 In this chapter, I focus on the first of my three key questions about the development of representations of mental life introduced in Chapter I: _What are the components, or "conceptual units," that anchor representations of mental life at different points in development?_ As described in Chapter II, to address this question I draw on data from all of the current studies (Studies 1-4); for details about the methods of these studies, see Chapter II. The goal of this chapter is to provide "snapshots" of the sets of conceptual units available to participants in early childhood, middle childhood, and adulthood. I note that this was the primary planned analysis for all of the studies included in this dissertation (see, e.g., Weisman et al., 2017). 
