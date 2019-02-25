@@ -1,3 +1,8 @@
+# 'ceiling' and 'floor' functions for n decimal places
+# from https://stackoverflow.com/questions/35807523/r-decimal-ceiling
+floor_dec <- function(x, level=1){round(x - 5*10^(-level-1), level)}
+ceiling_dec <- function(x, level=1){round(x + 5*10^(-level-1), level)}
+
 # functions for describing missing data
 missing_percent_fun <- function(df, round_n = NA){
   res <- sum(is.na(df))/sum(!is.na(df))*100
@@ -51,6 +56,34 @@ reten_report_fun <- function(df_list){
   }
   
   return(res)
+}
+
+# functions for summarizing factor loadings
+loadings_count_dom_fun <- function(efa){
+  loadings_fun(efa) %>%
+    group_by(capacity) %>%
+    top_n(1, abs(loading)) %>%
+    ungroup() %>%
+    count(factor)
+}
+
+loadings_summarize_fun <- function(efa, abs = TRUE){
+  loadings <- loadings_fun(efa)
+  
+  if(abs){
+    loadings <- loadings %>%
+      group_by(factor) %>%
+      summarise(min_abs = min(abs(loading)),
+                max_abs = max(abs(loading))) %>%
+      ungroup()
+  } else {
+    loadings <- loadings %>%
+      group_by(factor) %>%
+      summarise(min = min(loading),
+                max = max(abs(loading))) %>%
+      ungroup()
+  }
+  return(loadings)
 }
 
 # function for getting write-up of brms model results
