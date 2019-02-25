@@ -132,6 +132,8 @@ The list of 40 mental capacities employed in these studies was generated from an
 
 The set of target characters employed in these studies is presented in Figure 2.1.
 
+__NOTE TO SELF: CHECK SAMPLE SIZES AGAINST PNAS PAPER. EXCLUSION CRITERIA??__
+
 Studies 1a-1c employed the "edge case" strategy for eliciting mental capacity attributions, which involved asking participants to assess the mental capacities of beetles and robots. In Studies 1a and 1b, participants (Study 1a: _n_=`r nrow(d1a_ad_wide)` US adults; Study 1b: _n_=`r nrow(d1b_ad_wide)` US adults) were randomly assigned to assess one of these two target characters on all 40 mental capaciaties. In Study 1c, _n_=`r nrow(d1c_ad_wide)/2` US adults were asked to assess both target characters, presented side-by-side with left-right order determined randomly, on all 40 mental capaciaties.
 
 Study 1d employed the "diverse characters" strategy for eliciting mental capacity attributions, which in this case involved asking participants to assess the mental capacities of 21 target characters, spanning a wide range of potential mental capacity profiles. The list of characters included an adult, a child, an infant, a person in a persistent vegetative state, a fetus, a chimpanzee, an elephant, a dolphin, a bear, a dog, a goat, a mouse, a frog, a blue jay, a fish, a beetle, a microbe, a robot, a computer, a car, or a stapler. In Study 1d, _n_=`r nrow(d1d_ad_wide)` US adults were randomly assigned to assess one of these 21 target characters on all 40 mental capacities. 

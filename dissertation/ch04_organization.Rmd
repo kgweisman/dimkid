@@ -49,8 +49,8 @@ source("./scripts/data_s4_46.R")
 
 ```{r}
 # what correlation to use
-# chosen_cor <- "cor" # REPORTED
-chosen_cor <- "poly" # alternative option
+chosen_cor <- "cor" # REPORTED
+# chosen_cor <- "poly" # alternative option
 
 # what rotation to use
 chosen_rot <- "varimax" # REPORTED
@@ -105,7 +105,7 @@ Study 1b was a direct replication of Study 1a: `r nrow(d1b_ad_wide)` US adults e
 
 In Study 1c, `r nrow(d1c_ad_wide)/2` US adults each assessed two target characters on 40 mental capacities. Like Studies 1a and 1b, this study employed the "edge case" variant of the general approach; but in this study, all participants assessed both of these target characters side by side (with left-right position counterbalaned across participants). (See Chapter II and Weisman et al., 2017, for detailed methods.)
 
-### Study 1d: Adults, 21 target characters, between-subjects
+### Study 1d
 
 In Study 1d, `r nrow(d1d_ad_wide)` US adults each assessed a single target character on 40 mental capacities. Unlike Studies 1a-1c, this study employed the "many characters" variant of the general approach, in which participants were randomly assigned to assess one of the following 21 target characters: an adult, a child, an infant, a person in a persistent vegetative state, a fetus, a chimpanzee, an elephant, a dolphin, a bear, a dog, a goat, a mouse, a frog, a blue jay, a fish, a beetle, a microbe, a robot, a computer, a car, or a stapler. (See Chapter II and Weisman et al., 2017, for detailed methods.)
 

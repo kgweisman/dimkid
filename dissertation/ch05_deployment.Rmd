@@ -49,8 +49,8 @@ source("./scripts/data_s4_46.R")
 
 ```{r}
 # what correlation to use
-# chosen_cor <- "cor" # REPORTED
-chosen_cor <- "poly" # alternative option
+chosen_cor <- "cor" # REPORTED
+# chosen_cor <- "poly" # alternative option
 
 # what rotation to use
 chosen_rot <- "varimax" # REPORTED
