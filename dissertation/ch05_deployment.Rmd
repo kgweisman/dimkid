@@ -28,10 +28,54 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 #     toc_float: yes
 ```
 
+```{r}
+# supporting functions
+source("./scripts/max_factors_efa.R")
+source("./scripts/reten_fun.R")
+source("./scripts/plot_fun.R")
+source("./scripts/efa_fun.R")
+source("./scripts/ms_fun.R")
+
+# data scripts
+source("./scripts/data_s1.R")
+source("./scripts/data_s2_ad.R")
+source("./scripts/data_s2_79.R")
+source("./scripts/data_s3_ad.R")
+source("./scripts/data_s3_79.R")
+source("./scripts/data_s3_46.R")
+source("./scripts/data_s4_ad.R")
+source("./scripts/data_s4_46.R")
+```
+
+```{r}
+# what correlation to use
+# chosen_cor <- "cor" # REPORTED
+chosen_cor <- "poly" # alternative option
+
+# what rotation to use
+chosen_rot <- "varimax" # REPORTED
+# chosen_rot <- "oblimin" # alternative option
+
+# what factoring method to use
+chosen_fm <- "minres" # REPORTED (minimum residuals)
+# chosen_fm <- "ols" # ordinary least squares using empirical first derivative
+# chosen_fm <- "wls" # weighted least squares
+# chosen_fm <- "gls" # generalized weighted least squares
+# chosen_fm <- "pa" # principal factors
+# chosen_fm <- "ml" # maximum likelihood
+# chosen_fm <- "minchi" # minimize ss-weighted chisq
+# chosen_fm <- "minrank" # minimum rank
+# chosen_fm <- "old.min" # minres < April 2017
+# chosen_fm <- "alpha" # alpha fa (Kaiser & Coffey, 1965)
+
+# what scoring method to use
+chosen_scores <- "tenBerge" # REPORTED
+# chosen_scores <- "regression" # alternative option
+```
+
 # Chapter overview
 
 In this chapter, I focus on the third of my three key questions about the development of representations of mental life introduced in Chapter I: _How do people of different ages deploy their conceptual representations of mental life to reason about specific entities in the world?_ As in Chapters III-IV, to address this question I draw on data from all of the current studies (Studies 1-4); for details about the methods of these studies, see Chapter II. The goal of this chapter is to provide "snapshots" of mental capacity attributions to various target characters in early childhood, middle childhood, and adulthood, and to explore in finer-grained detail changes in children's beliefs about the mental lives of these characters between 4-9y of age, with particular attention to children's assessment of animate vs. inanimate beings.
-
 
 
 # General analysis plan: Documenting the application or deployment of conceptual representations
@@ -41,14 +85,36 @@ In analyzing these datasets with an eye toward documenting the application or de
 
 # Study 1: An adult endpoint
 
+In our previously published work on these studies (Weisman et al., 2017), we focused mainly on the "conceptual units" analysis presented in Chapter III; we touched only briefly on which mental capacities were attributd to the various target characters included in this study. Here I re-analyze these data from this new perspective.
+
 ## Special notes on data processing and analysis
 
+As noted in Chapter II, in the original analysis of these datasets responses were recoded to run from -3 to +3 before analyses (Weisman et al., 2017); in this dissertation, I maintain the 0-6 coding for comparability to Studies 2-4.
+
 ## Results
+
+### Study 1a
+
+In Study 1a, `r nrow(d1a_ad_wide)` US adults each assessed a single target character on 40 mental capacities. This study employed the "edge case" variant of the general approach, with participants randomly assigned to assess either a beetle or a robot. (See Chapter II and Weisman et al., 2017, for detailed methods.)
+
+### Study 1b
+
+Study 1b was a direct replication of Study 1a: `r nrow(d1b_ad_wide)` US adults each assessed a single target character (either a beetle or a robot) on 40 mental capacities. (See Chapter II and Weisman et al., 2017, for detailed methods.)
+
+### Study 1c
+
+In Study 1c, `r nrow(d1c_ad_wide)/2` US adults each assessed two target characters on 40 mental capacities. Like Studies 1a and 1b, this study employed the "edge case" variant of the general approach; but in this study, all participants assessed both of these target characters side by side (with left-right position counterbalaned across participants). (See Chapter II and Weisman et al., 2017, for detailed methods.)
+
+### Study 1d
+
+In Study 1d, `r nrow(d1d_ad_wide)` US adults each assessed a single target character on 40 mental capacities. Unlike Studies 1a-1c, this study employed the "many characters" variant of the general approach, in which participants were randomly assigned to assess one of the following 21 target characters: an adult, a child, an infant, a person in a persistent vegetative state, a fetus, a chimpanzee, an elephant, a dolphin, a bear, a dog, a goat, a mouse, a frog, a blue jay, a fish, a beetle, a microbe, a robot, a computer, a car, or a stapler. (See Chapter II and Weisman et al., 2017, for detailed methods.)
 
 ## Discussion
 
 
 # Study 2: Conceptual change between middle childhood (7-9y) and adulthood
+
+In Study 2, `r nrow(d2_ad_wide)` US adults and `r nrow(d2_79_wide)` US children between the ages of `r summary(d2_79$age)["Min."] %>% round(2)`-`r summary(d2_79$age)["Max."] %>% round(2)` years (median: `r summary(d2_79$age)["Median"] %>% round(2)`y) each assessed a single target character on 40 mental capacities. To make the study appropriate for children in this age range, the wording of some the 40 mental capacities employed in Study 1 was modified to use more age-appropriate vocabulary, and participants responded on a 3-point scale ("no," coded as 0; "kinda," coded as 0.5, "yes," coded as 1). This study employed the "edge case" variant of the general approach, with participants randomly assigned to assess either a beetle or a robot. (See Chapter II for detailed methods.)
 
 ## Special notes on data processing and analysis
 
@@ -59,6 +125,8 @@ In analyzing these datasets with an eye toward documenting the application or de
 
 # Study 3: Conceptual change over early and middle childhood (4-9y)
 
+In Study 3, `r nrow(d3_ad_wide)` US adults, `r nrow(d3_79_wide)` "older" children (`r summary(d3_79$age)["Min."] %>% round(2)`-`r summary(d3_79$age)["Max."] %>% round(2)` years; median: `r summary(d3_79$age)["Median"] %>% round(2)`y), and `r nrow(d3_46_wide)` "younger" children (`r summary(d3_46$age)["Min."] %>% round(2)`-`r summary(d3_46$age)["Max."] %>% round(2)` years; median: `r summary(d3_46$age)["Median"] %>% round(2)`y) each assessed a single target character on 20 mental capacities. To make the study appropriate for children in this age range, participants assessed a subset of the 40 mental capacities employed in Study 2; as in Study 2, participants responded on a 3-point scale ("no," coded as 0; "kinda," coded as 0.5, "yes," coded as 1). This study employed the "diverse characters" variant of the general approach, with participants randomly or pseudo-randomly assigned to assess either one of the following 9 characters: an elephant, a goat, a mouse, a bird, a beetle, a teddy bear, a doll, a robot, or a computer. (See Chapter II for detailed methods.)
+
 ## Special notes on data processing and analysis
 
 ## Results
@@ -67,6 +135,8 @@ In analyzing these datasets with an eye toward documenting the application or de
 
 
 # Study 4: A focus on early childhood (4-5y)
+
+In Study 4, `r nrow(d4_ad_wide)/2` US adults and `r nrow(d4_46_wide)/2` US children between the ages of `r summary(d4_46$age)["Min."] %>% round(2)`-`r summary(d4_46$age)["Max."] %>% round(2)` years (median: `r summary(d4_46$age)["Median"] %>% round(2)`y) each assessed two target characters on 18 mental capacities. To make the study appropriate for children in this age range, this study employed a new set of 18 mental capacities (some but not all of which were used in Studies 1-3), and participants were presented with a more child-friendly visual representation of the 3-point response scale ("no," coded as 0; "kinda," coded as 0.5, "yes," coded as 1). This study employed the "edge case" variant of the general approach, with participants assessing both a beetle or a robot in sequence (with order counterbalanced across participants). (See Chapter II for detailed methods.)
 
 ## Special notes on data processing and analysis
 

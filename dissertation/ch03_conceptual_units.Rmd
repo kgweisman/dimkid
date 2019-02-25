@@ -37,6 +37,7 @@ source("./scripts/efa_fun.R")
 source("./scripts/ms_fun.R")
 
 # data scripts
+source("./scripts/data_s1.R")
 source("./scripts/data_s2_ad.R")
 source("./scripts/data_s2_79.R")
 source("./scripts/data_s3_ad.R")
@@ -46,63 +47,145 @@ source("./scripts/data_s4_ad.R")
 source("./scripts/data_s4_46.R")
 ```
 
-```{r}
-
-```
-
 
 # Chapter overview
 
-In this chapter, I focus on the first of my three key questions about the development of representations of mental life introduced in Chapter I: _What are the components, or "conceptual units," that anchor representations of mental life at different points in development?_ As described in Chapter II, to address this question I draw on data from all of the current studies (Studies 1-4); for details about the methods of these studies, see Chapter II. The goal of this chapter is to provide "snapshots" of the sets of conceptual units available to participants in early childhood, middle childhood, and adulthood. I note that this was the primary planned analysis for all of the studies included in this dissertation (see, e.g., Weisman et al., 2017). 
+In this chapter, I focus on the first of my three key questions about the development of representations of mental life introduced in Chapter I: _What are the components, or "conceptual units," that anchor representations of mental life at different points in development?_ As described in Chapter II, to address this question I draw on data from all of the current studies (Studies 1-4); for details about the methods of these studies, see Chapter II. The goal of this chapter is to provide "snapshots" of the sets of conceptual units available to participants in early childhood, middle childhood, and adulthood. 
+
+(Note that this was the primary planned analysis for all of the studies included in this dissertation; see, e.g., Weisman et al., 2017.)
 
 
 # General analysis plan: Identifying conceptual units
 
 In analyzing these datasets with an eye toward identifying "conceptual units," the basic insight is that tracking the covariance of mental capacity attributions provides a way of discovering suites of mental capacities that "hang together" in reasoning about mental life, and that these suites of mental capacities might correspond to the units of some larger conceptual representation of this general domain. To borrow an example from Chapter II: If participants who endorse Capacity X also tend to endorse Capacities Y and Z, this provides some evidence that Capacities X, Y, and Z consitute a suite of mental capacities that are closely associated with the same underlying "conceptual unit." 
 
-One way of restating the general intuition just described would be to say that the goal of the analyses under discussion in this chapter is to uncover a set of latent constructs—"conceptual units"—that could have given rise to the correlations among mental capacity attributions as observed in a given group of participants. A canonical way to accomplish this goal of identifying latent constructs through observed correlations is exploratory factor analysis (EFA), a form of dimensionality reduction that posits that the observed variables in a given dataset are related, to varying degrees, to a smaller set of unobserved "factors"; and that individual observations of each of these variables reflect a combination of the state of these latent factors, a particular variable's relationship to each of these latent factors, and noise. Following this logic, I posit that, for any of the current datasets, the various mental capacities included in that dataset are related, to varying degrees, to a smaller set of latent "conceptual units"; and that a participant's attributions of each of these mental capacities to a particular target character reflects a combination of that participant's beliefs about the extent to which these conceptual units apply to that target character, a particular mental capacity's relationships to each of these conceptual units, and noise. In other words, one way to identify conceptual units for a particular sample of interest (e.g., US adults; US 7- to 9-year-olds) is to conduct an EFA over participants mental capacity attributions and treat the resulting "factors" as candidate conceptual units.
+In other words, my goal in the current chapter is to uncover a set of latent constructs—"conceptual units"—that could have given rise to the correlations among mental capacity attributions as observed in a given group of participants. A canonical way to identify latent constructs via observed correlations is exploratory factor analysis (EFA), a form of dimensionality reduction that posits that the observed variables in a given dataset are related, to varying degrees, to a smaller set of unobserved "factors"; and that individual observations of each of these variables reflect a combination of the state of these latent factors, a particular variable's relationship to each of these latent factors, and noise. Following this logic, I posit that, for any of the current datasets, the many mental capacities included in that dataset are related, to varying degrees, to a smaller set of latent "conceptual units"; and that a participant's attributions of each of these mental capacities to a particular target character reflect a combination of that participant's beliefs about the extent to which these conceptual units apply to that target character, a particular mental capacity's relationships to each of these conceptual units, and noise. In other words, one way to identify conceptual units for a particular sample of interest (e.g., US adults; children of different age groups) is to conduct an EFA over participants' mental capacity attributions and treat the resulting "factors" as candidate conceptual units.
 
-In the remainder of this chapter, I report EFAs for each age group included in each of the current studies (Studies 1-4). For all EFAs, I used ordinary least squares to find the minimum residual solution, using the "psych" package for R (Revelle, 2018). Here I focus on results using Pearson correlations using pairwise complete observations. (In principle, polychoric correlations are better suited to handle responses on a three-point scale; however, doing these analyses with polychoric correlations instead of Pearson correlations generally appeared to over-fit the data, e.g., suggesting retaining many factors that each accounted for only a very small amount of the shared variance. [XX SEE APPENDIX?])
+In the remainder of this chapter, I report EFAs for each age group included in each of the current studies (Studies 1-4). Conducting an EFA requires making a variety of analysis choices, including how to handle missing data, what kind of correlations to use, the choice of factoring algorithm, how to determine the number of factors to retain, the choice of rotation method (if any), and the method for calculating factor scores. In the analysis code for this chapter I have included easy short-cuts for the interest reader to explore different options for each of these parameters. Here, I have set all of these parameters to be constant across EFAs of different samples so as to maximize comparability across studies:
 
-In order to determine how many factors to retain, I examined the results of three factor retention protocols: (1) Parallel Analysis, which compares the observed correlation structure to the correlation structure arising from random datasets of the same size; (2) Minimizing the Bayesian Information Criterion (BIC), which is one method of optimizing both goodness of fit and parsimony; and (3) A set of factor retention criteria that I have used previous work with adults (Weisman et al., 2017), in which I began with the maximal number of factors according to an analysis of degrees of freedom, and retained factors that met all three of the following criteria: (a) had eigenvalues greater than 1.00, (b) individually accounted for greater than 5% of the shared variance before rotation, and (c) were the "dominant" factor (the factor with the strongest absolute factor loading) for at least 1 mental capacity after rotation. For each study, my interpretation of how best to characterize the dataset (i.e., how many factors I observed) is determined by the degree of consensus among these three protocols and the interpretability of the retained factors under each protocol. 
+```{r}
+# what correlation to use
+# chosen_cor <- "cor" # REPORTED
+chosen_cor <- "poly" # alternative option
 
-To maximize the interpretability of these factors, I present varimax-rotated solutions, which constrain all factors to be orthogonal. (For solutions using oblique ["oblimin"] rotations, which allow for correlated factors, [XX SEE APPENDIX?].)
+# what rotation to use
+chosen_rot <- "varimax" # REPORTED
+# chosen_rot <- "oblimin" # alternative option
 
-For two of the current studies (Study 1c and Study 4), participants assessed two target characaters instead of one. For the purposes of the current analyses, I treat each participant's assessments of each target character as a separate set of observations (as if they came from different participants), in effect doubling the sample size for these studies (but ignoring the within-subject design). ([XX SEE APPENDIX?] for separate EFAs of the participants' responses to the first target character that they were assigned to rate vs. the second character.)
+# what factoring method to use
+chosen_fm <- "minres" # REPORTED (minimum residuals)
+# chosen_fm <- "ols" # ordinary least squares using empirical first derivative
+# chosen_fm <- "wls" # weighted least squares
+# chosen_fm <- "gls" # generalized weighted least squares
+# chosen_fm <- "pa" # principal factors
+# chosen_fm <- "ml" # maximum likelihood
+# chosen_fm <- "minchi" # minimize ss-weighted chisq
+# chosen_fm <- "minrank" # minimum rank
+# chosen_fm <- "old.min" # minres < April 2017
+# chosen_fm <- "alpha" # alpha fa (Kaiser & Coffey, 1965)
+
+# what scoring method to use
+chosen_scores <- "tenBerge" # REPORTED
+# chosen_scores <- "regression" # alternative option
+```
+
+```{r}
+# overview of missing data
+n_missing <- NULL
+for(i in list(d1a_ad_wide, d1b_ad_wide, d1c_ad_wide, d1d_ad_wide,
+              d2_ad_wide, d2_79_wide, d3_ad_wide, d3_79_wide, d3_46_wide,
+              d4_ad_wide, d4_46_wide)){
+  n_missing <- c(n_missing, missing_percent_fun(i))
+}
+```
+
+- _Missing data_: For all EFAs, I impute missing trial-level data (e.g., skipped trials among child particpiants) using the median response for that mental capacity among other participants who evaluated the same target character. For example, if an 8-year-old participant in the "beetle" condition failed to provide a response to a question about a beetle's capacity for happiness, I set this response to be the median response to the happiness question among of all other children from the 7- to 9-year-old age group for that study who evaluated the beetle (ignoring children who evaluated some other target character). Across all studies, fewer than `r round(max(n_missing), 2) + 0.01`% of trials in any age group were missing data. In my judgment, the advantages of retaining the most participants per sample (particularly for EFA, which is highly sensitive to sample size) justifies imputing values for this small number of missing datapoints. 
+- _Correlations_: I conduct analyses over Pearson correlations among mental capacity attributions, using pairwise complete observations. In principle, polychoric correlations are better suited to handle responses on the three-point scales employed in Studies 2-4; however, in my experience with these data, conducting EFAs with polychoric correlations instead of Pearson correlations tends to generate errors further down the analysis pipeline (e.g., generating correlation matrices that are not positive definite) and appears to be somewhat vulnerable to over-fitting (e.g., suggesting retaining many factors that each accounted for only a very small amount of the shared variance).
+- _Factoring algorithm_: I use ordinary least squares to find the minimum residual solution, which is robust to a variety of ways that matrices can be "badly behaved" (see Revelle, 2018). While this dissertation does not include a systematic exploration of all of the possible options, in my casual explorations of the various algorithms available I have yet to observe any substantial differences to the number of factors retained or to the resulting solutions that would change the interpretations offered here.
+- _Factor retention protocol_: I examine the results of three factor retention protocols: (1) Parallel Analysis, which compares the observed correlation structure to the correlation structure arising from random datasets of the same size; (2) Minimizing the Bayesian Information Criterion (BIC), which is one method of optimizing both goodness of fit and parsimony; and (3) A set of factor retention criteria that I have used previous work with adults (Weisman et al., 2017), in which I begin with the maximal number of factors according to an analysis of degrees of freedom and retain factors that meet all three of the following criteria: (a) have eigenvalues greater than 1.00, (b) individually account for greater than 5% of the shared variance before rotation, and (c) are the "dominant" factor (the factor with the strongest absolute factor loading) for at least 1 mental capacity after rotation. For each study, my interpretation of how best to characterize the dataset (i.e., how many factors I observed) is determined by the degree of consensus among these three protocols and the interpretability of the retained factors under each protocol.
+- _Rotation_: To maximine interpretability factors, I present varimax-rotated solutions, which constrain all factors to be orthogonal. (For solutions using oblique ["oblimin"] rotations, which allow for correlated factors, [XX SEE APPENDIX?].)
+- _Factor scores_: I use the method developed by ten Berge, Krijnen, Wansbeek, & Shapiro (1999) to calculate factor scores, as suggested by Revelle (2018). (I include this parameter here for completeness; this chapter does not include any analyses of factor scores.)
+
+To conduct these EFAs, I use the "psych" package for R (Revelle, 2018).
 
 
 # Study 1: An adult endpoint
 
+An in-depth analysis and discussion of the conceptual units available to US adults in Studies 1a-1d is provided in our previously published work on these studies (Weisman et al., 2017). Here I present these analyses anew, with slight tweaks to the analysis pipeline to maximize comparability to Studies 2-4. These results serve as the backdrop for the extended anaysis of conceptual development in this domain that is the focus of this dissertation.
+
 ## Special notes on data processing and analysis
 
+As noted in Chapter II, in the original analysis of these datasets responses were recoded to run from -3 to +3 before analyses (Weisman et al., 2017); in this dissertation, I maintain the 0-6 coding for comparability to Studies 2-4.
+
+In Study 1c, participants assessed two target characaters side by side (in contrast to Studies 1a, 1b, and 1d, in which each participant assessed just one target character). In the current analyses, I treat each participant's assessments of each target character as a separate set of observations (as if they came from different participants), in effect doubling the sample size for these studies (but ignoring the within-subject design). ([XX SEE APPENDIX?] for separate EFAs of the participants' responses to the first target character that they were assigned to rate vs. the second character.)
+
+
 ## Results
+
+### Study 1a
+
+In Study 1a, `r nrow(d1a_ad_wide)` US adults each assessed a single target character on 40 mental capacities. This study employed the "edge case" variant of the general approach, with participants randomly assigned to assess either a beetle or a robot. (See Chapter II and Weisman et al., 2017, for detailed methods.)
+
+### Study 1b
+
+Study 1b was a direct replication of Study 1a: `r nrow(d1b_ad_wide)` US adults each assessed a single target character (either a beetle or a robot) on 40 mental capacities. (See Chapter II and Weisman et al., 2017, for detailed methods.)
+
+### Study 1c
+
+In Study 1c, `r nrow(d1c_ad_wide)/2` US adults each assessed two target characters on 40 mental capacities. Like Studies 1a and 1b, this study employed the "edge case" variant of the general approach; but in this study, all participants assessed both of these target characters side by side (with left-right position counterbalaned across participants). (See Chapter II and Weisman et al., 2017, for detailed methods.)
+
+### Study 1d: Adults, 21 target characters, between-subjects
+
+In Study 1d, `r nrow(d1d_ad_wide)` US adults each assessed a single target character on 40 mental capacities. Unlike Studies 1a-1c, this study employed the "many characters" variant of the general approach, in which participants were randomly assigned to assess one of the following 21 target characters: an adult, a child, an infant, a person in a persistent vegetative state, a fetus, a chimpanzee, an elephant, a dolphin, a bear, a dog, a goat, a mouse, a frog, a blue jay, a fish, a beetle, a microbe, a robot, a computer, a car, or a stapler. (See Chapter II and Weisman et al., 2017, for detailed methods.)
 
 ## Discussion
 
 
 # Study 2: Conceptual change between middle childhood (7-9y) and adulthood
 
+In Study 2, `r nrow(d2_ad_wide)` US adults and `r nrow(d2_79_wide)` US children between the ages of `r summary(d2_79$age)["Min."] %>% round(2)`-`r summary(d2_79$age)["Max."] %>% round(2)` years (median: `r summary(d2_79$age)["Median"] %>% round(2)`y) each assessed a single target character on 40 mental capacities. To make the study appropriate for children in this age range, the wording of some the 40 mental capacities employed in Study 1 was modified to use more age-appropriate vocabulary, and participants responded on a 3-point scale ("no," coded as 0; "kinda," coded as 0.5, "yes," coded as 1). This study employed the "edge case" variant of the general approach, with participants randomly assigned to assess either a beetle or a robot. (See Chapter II for detailed methods.)
+
 ## Special notes on data processing and analysis
 
 ## Results
+
+### Adults
+
+### Children (7-9y)
 
 ## Discussion
 
 
 # Study 3: Conceptual change over early and middle childhood (4-9y)
 
+In Study 3, `r nrow(d3_ad_wide)` US adults, `r nrow(d3_79_wide)` "older" children (`r summary(d3_79$age)["Min."] %>% round(2)`-`r summary(d3_79$age)["Max."] %>% round(2)` years; median: `r summary(d3_79$age)["Median"] %>% round(2)`y), and `r nrow(d3_46_wide)` "younger" children (`r summary(d3_46$age)["Min."] %>% round(2)`-`r summary(d3_46$age)["Max."] %>% round(2)` years; median: `r summary(d3_46$age)["Median"] %>% round(2)`y) each assessed a single target character on 20 mental capacities. To make the study appropriate for children in this age range, participants assessed a subset of the 40 mental capacities employed in Study 2; as in Study 2, participants responded on a 3-point scale ("no," coded as 0; "kinda," coded as 0.5, "yes," coded as 1). This study employed the "diverse characters" variant of the general approach, with participants randomly or pseudo-randomly assigned to assess either one of the following 9 characters: an elephant, a goat, a mouse, a bird, a beetle, a teddy bear, a doll, a robot, or a computer. (See Chapter II for detailed methods.)
+
 ## Special notes on data processing and analysis
 
 ## Results
+
+### Study 3a: Adults
+
+### Study 3b: Older children (7-9y)
+
+### Study 3b: Younger children (4-6y)
 
 ## Discussion
 
 
 # Study 4: A focus on early childhood (4-5y)
 
+In Study 4, `r nrow(d4_ad_wide)/2` US adults and `r nrow(d4_46_wide)/2` US children between the ages of `r summary(d4_46$age)["Min."] %>% round(2)`-`r summary(d4_46$age)["Max."] %>% round(2)` years (median: `r summary(d4_46$age)["Median"] %>% round(2)`y) each assessed two target characters on 18 mental capacities. To make the study appropriate for children in this age range, this study employed a new set of 18 mental capacities (some but not all of which were used in Studies 1-3), and participants were presented with a more child-friendly visual representation of the 3-point response scale ("no," coded as 0; "kinda," coded as 0.5, "yes," coded as 1). This study employed the "edge case" variant of the general approach, with participants assessing both a beetle or a robot in sequence (with order counterbalanced across participants). (See Chapter II for detailed methods.)
+
 ## Special notes on data processing and analysis
 
+In Study 4, participants assessed two target characaters side by side (in contrast to Studies 1a, 1b, 1d, 2, and 3, in which each participant assessed just one target character). In the current analyses, I treat each participant's assessments of each target character as a separate set of observations (as if they came from different participants), in effect doubling the sample size for these studies (but ignoring the within-subject design). ([XX SEE APPENDIX?] for separate EFAs of the participants' responses to the first target character that they were assigned to rate vs. the second character.)
+
 ## Results
+
+### Study 4a: Adults
+
+### Study 3b: Children (4-5y)
 
 ## Discussion
 
