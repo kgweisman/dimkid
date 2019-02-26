@@ -111,7 +111,7 @@ To conduct these EFAs, I use the "psych" package for R (Revelle, 2018).
 
 # Study 1: An adult endpoint
 
-An in-depth analysis and discussion of the conceptual units available to US adults in Studies 1a-1d is provided in our previously published work on these studies (Weisman et al., 2017). Here I present these analyses anew, with slight tweaks to the analysis pipeline to maximize comparability to Studies 2-4. These results serve as the backdrop for the extended anaysis of conceptual development in this domain that is the focus of this dissertation.
+An in-depth analysis and discussion of the conceptual units available to US adults in Studies 1a-1d is provided in the original publication of these studies (Weisman et al., 2017). Here I present these analyses anew, with slight tweaks to the analysis pipeline to maximize comparability to Studies 2-4. These results serve as the backdrop for the extended anaysis of conceptual development in this domain that is the focus of this dissertation.
 
 __NOTE TO SELF: CHECK SAMPLE SIZES AGAINST PNAS PAPER. EXCLUSION CRITERIA??__
 
@@ -188,7 +188,7 @@ loadings_summarize_fun(efa_bic_d1a_ad) %>%
   mutate_at(vars(-factor), funs(round(., 2)))
 ```
 
-Two of our three protocols for determining how many factors to retain (parallel analysis and the factor retention criteria reported in our original publication of Studies 1a-1d; Weisman et al., 2017) suggested retaining three factors, while the third (minimizing BIC) suggested retaining five factors; see Table 3.1. However, three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d1a_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth and fifth factors each accounted for $<$ `r efa_bic_d1a_ad$Vaccounted["Proportion Explained", c("F4", "F5")] %>% max() %>% ceiling_dec(2) * 100`% of the shared variance, and neither was the dominant factor for any of the 40 mental capacities included in this study. Indeed, factor loadings for these two factors were all quite small (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1a_ad) %>% filter(factor %in% c("F4", "F5")))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 5-factor solution).
+Two of the three protocols for determining how many factors to retain (parallel analysis and the factor retention criteria reported in the original publication of Studies 1a-1d; Weisman et al., 2017) suggested retaining three factors, while the third (minimizing BIC) suggested retaining five factors; see Table 3.1. However, three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d1a_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth and fifth factors each accounted for $<$ `r efa_bic_d1a_ad$Vaccounted["Proportion Explained", c("F4", "F5")] %>% max() %>% ceiling_dec(2) * 100`% of the shared variance, and neither was the dominant factor for any of the 40 mental capacities included in this study. Indeed, factor loadings for these two factors were all quite small (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1a_ad) %>% filter(factor %in% c("F4", "F5")))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 5-factor solution).
 
 ```{r}
 table3.1 <- reten_report %>%
@@ -222,7 +222,7 @@ table3.1
 
 #### What are these conceptual units?
 
-After rotation, the first factor corresponded primarily to physiological sensations related to biological needs—a suite of capacities that I will refer to as _BODY_ (a label we employed in our original reporting of this study; Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1a_ad, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d1a_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+After rotation, the first factor corresponded primarily to physiological sensations related to biological needs—a suite of capacities that I will refer to as _BODY_ (a label employed in the original reporting of this study; Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1a_ad, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d1a_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
 The second factor corresponded primarily to capacities for self- and other-relevant emotions—a suite of capacities that I will refer to as _HEART_ (as in Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1a_ad, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d1a_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
 
@@ -272,9 +272,9 @@ loadings_summarize_fun(efa_bic_d1b_ad) %>%
   mutate_at(vars(-factor), funs(round(., 2)))
 ```
 
-Each of our three factor retention protocols suggested a different number of factors to retain; see Table 3.1.
+Each of the three factor retention protocols suggested a different number of factors to retain; see Table 3.1.
 
-The retention criteria used in our original reporting of this study (Weisman et al., 2017) suggested retaining three factors. 
+The retention criteria used in the original reporting of this study (Weisman et al., 2017) suggested retaining three factors. 
 
 Parallel analysis suggested retaining four factors. However, three of the five factors suggested by parallel analysis were qualitatively very similar to the three factors reported below, and together accounted for `r efa_par_d1b_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth factor accounted for only `r efa_par_d1b_ad$Vaccounted["Proportion Explained", "F4"] %>% round(2) * 100`% of the shared variance, and was not the dominant factor for any of the 40 mental capacities included in this study, with small loadings for all capacities (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_par_d1b_ad) %>% filter(factor == "F4"))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). 
 
@@ -315,7 +315,7 @@ loadings_summarize_fun(efa_bic_d1c_ad) %>%
   mutate_at(vars(-factor), funs(round(., 2)))
 ```
 
-Two of our three protocols for determining how many factors to retain (parallel analysis and the factor retention criteria reported in our original publication of Studies 1c-1d; Weisman et al., 2017) suggested retaining three factors, while the third (minimizing BIC) suggested retaining five factors; see Table 3.1. However, much as in Studies 1a and 1b, three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d1c_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth factor accounted for only `r efa_bic_d1c_ad$Vaccounted["Proportion Explained", "F4"] %>% round(2) * 100`% of the shared variance, was not the dominant factor for any of the 40 mental capacities included in this study, with small factor loadings for all capacities (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1c_ad) %>% filter(factor == "F4"))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will again focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 4-factor solution).
+Two of the three protocols for determining how many factors to retain (parallel analysis and the factor retention criteria reported in the original publication of Studies 1c-1d; Weisman et al., 2017) suggested retaining three factors, while the third (minimizing BIC) suggested retaining five factors; see Table 3.1. However, much as in Studies 1a and 1b, three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d1c_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth factor accounted for only `r efa_bic_d1c_ad$Vaccounted["Proportion Explained", "F4"] %>% round(2) * 100`% of the shared variance, was not the dominant factor for any of the 40 mental capacities included in this study, with small factor loadings for all capacities (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1c_ad) %>% filter(factor == "F4"))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will again focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 4-factor solution).
 
 #### What are these conceptual units?
 
@@ -364,9 +364,9 @@ loadings_summarize_fun(efa_bic_d1d_ad) %>%
   mutate_at(vars(-factor), funs(round(., 2)))
 ```
 
-Each of our three factor retention protocols suggested a different number of factors to retain; see Table 3.1.
+Each of the three factor retention protocols suggested a different number of factors to retain; see Table 3.1.
 
-The retention criteria used in our original reporting of this study (Weisman et al., 2017) suggested retaining three factors. 
+The retention criteria used in the original reporting of this study (Weisman et al., 2017) suggested retaining three factors. 
 
 Parallel analysis suggested retaining four factors. However, three of the five factors suggested by parallel analysis were qualitatively very similar to the three factors reported below, and together accounted for `r efa_par_d1d_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth factor accounted for only `r efa_par_d1d_ad$Vaccounted["Proportion Explained", "F4"] %>% round(2) * 100`% of the shared variance, and was not the dominant factor for any of the 40 mental capacities included in this study, with small loadings for all capacities (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_par_d1d_ad) %>% filter(factor == "F4"))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). 
 
@@ -416,7 +416,7 @@ loadings_summarize_fun(efa_par_d2_ad) %>%
   mutate_at(vars(-factor), funs(round(., 2)))
 ```
 
-Two of our three protocols for determining how many factors to retain (minimizing BIC and the factor retention criteria employed in our original publication of Study 1; Weisman et al., 2017) suggested retaining three factors, while the third (parallel analysis) suggested retaining four factors; see Table 3.1. Unlike in Studies 1a-1d, in which factors beyond the first three uniformly accounted for very small amounts of the shared variance, were not the dominant factor for any mental capacities, and tended to have small factor loadings for all mental capacities, none of these considerations clearly rules out the fourth factor suggested by parallel analysis. Given this, I will present and interpret both 3- and 4-factor solutions.
+Two of the three protocols for determining how many factors to retain (minimizing BIC and the factor retention criteria employed in the original publication of Study 1; Weisman et al., 2017) suggested retaining three factors, while the third (parallel analysis) suggested retaining four factors; see Table 3.1. Unlike in Studies 1a-1d, in which factors beyond the first three uniformly accounted for very small amounts of the shared variance, were not the dominant factor for any mental capacities, and tended to have small factor loadings for all mental capacities, none of these considerations clearly rules out the fourth factor suggested by parallel analysis. Given this, I will present and interpret both 3- and 4-factor solutions.
 
 #### What are these conceptual units?
 
@@ -432,7 +432,7 @@ The third factor corresponded primarily to the perceptual-cognitive abilities th
 
 See Figure 3.1 for all factor loadings. (Note that to ease comparison across studies I have plotted these factors in the same order for all studies: _BODY_, _HEART_, and _MIND_.)
 
-In sum, as in Study 1, this three-factor solution was characterized by a distinction between _BODY_, _HEART_, and _MIND_. This suggests that our child-friendly paradigm was valid: Using reworded items and a three-point response scale elicited the same intuitive ontology of mental life, among adults, that has been revealed by more complex, "adult-friendly" experimental paradigms. 
+In sum, as in Study 1, this three-factor solution was characterized by a distinction between _BODY_, _HEART_, and _MIND_. This suggests that the child-friendly paradigm developed for Study 2 was valid: Using reworded items and a three-point response scale elicited the same intuitive ontology of mental life, among adults, that has been revealed by more complex, "adult-friendly" experimental paradigms. 
 
 ##### 4-factor solution
 
@@ -484,12 +484,18 @@ In sum, like adults in Study 1, and like the 3-factor summary of adults in the c
 
 ## Discussion
 
-Exploratory factor analyses suggested that by midddle childhood (7-9y), the conceptual structure underlying US children's attributions of mental life is very similar to that of US adults, anchored by suites of mental capacities related to _BODY_ (physiological sensations), _HEART_ (social-emotional abilities), and _MIND_ (perceptual-cognitive abilities). We note that, in principle, a number of additional or alternative latent factors could have emerged from the factor analysis of children's responses. For example, children might have distinguished primarily between internal experience and external action (Gray et al., 2007), or they might have demonstrated finer-grained groupings of mental capacities based on phrasing, rote knowledge, etc. Instead, the latent conceptual structure underlying children's responses appears to be very similar to that of adults, both in this study and in Weisman et al.'s (2017) previous work. In other words, any dramatic developmental changes to this conceptual structure likely occur prior to the age of 7 years.
+Exploratory factor analyses suggested that by midddle childhood (7-9y), the conceptual structure underlying US children's attributions of mental life is very similar to that of US adults, anchored by suites of mental capacities related to _BODY_ (physiological sensations), _HEART_ (social-emotional abilities), and _MIND_ (perceptual-cognitive abilities). In principle, a number of additional or alternative latent factors could have emerged from the factor analysis of children's responses. For example, children might have distinguished primarily between internal experience and external action (Gray et al., 2007), or they might have demonstrated finer-grained groupings of mental capacities based on phrasing, rote knowledge, etc. Instead, the latent conceptual structure underlying children's responses appears to be very similar to that of adults, both in this study and in Weisman et al.'s (2017) previous work. In other words, any dramatic developmental changes to this conceptual structure likely occur prior to the age of 7 years.
 
 
 # Study 3: Conceptual change over early and middle childhood (4-9y)
 
-In Study 3, `r nrow(d3_ad_wide)` US adults, `r nrow(d3_79_wide)` "older" children (`r summary(d3_79$age)["Min."] %>% round(2)`-`r summary(d3_79$age)["Max."] %>% round(2)` years; median: `r summary(d3_79$age)["Median"] %>% round(2)`y), and `r nrow(d3_46_wide)` "younger" children (`r summary(d3_46$age)["Min."] %>% round(2)`-`r summary(d3_46$age)["Max."] %>% round(2)` years; median: `r summary(d3_46$age)["Median"] %>% round(2)`y) each assessed a single target character on 20 mental capacities. To make the study appropriate for children in this age range, participants assessed a subset of the 40 mental capacities employed in Study 2, chosen to represent the three "conceptual units" revealed by Studies 1-2 (_BODY_, _HEART_, and _MIND_) and to cover a similar range of mental capacities as Studies 1-2. As in Study 2, participants responded on a 3-point scale ("no," coded as 0; "kinda," coded as 0.5, "yes," coded as 1). This study employed the "diverse characters" variant of the general approach, with participants randomly or pseudo-randomly assigned to assess either one of the following 9 characters: an elephant, a goat, a mouse, a bird, a beetle, a teddy bear, a doll, a robot, or a computer. (See Chapter II for detailed methods.)
+With regard to identifying developmental changes in conceptual units, the goals of Study 3 were two-fold. 
+
+First, I aimed to extend the findings with 7- to 9-year-old children in Study 2 by expanding the list of the target characters to include not only the two "edge cases" from Study 2 (a beetle and a robot), but a also a wider range of animate beings (a bird, a goat, and an elephant) and inanimate objects (a computer, a teddy bear, and a doll)—in other words, employing the "diverse characters" (rather than "edge case") variance of the overall approach. In Study 1, these two approaches yielded very similar pictures of the conceptual units available to adults (see also Weisman et al., 2017). I reasoned that if this three-part conceptual structure is stable and robust by the age of 7-9 years, it should manifest among 7- to 9-year-old children under the same range of conditions that it does among adults. 
+
+The second goal was to assess the earlier development of conceptual structure in a group of younger children. I targeted 4- to 6-year-old children for our younger age group because this has been identified as a period of dramatic development in several relevant domains. Many studies have documented shifts in children's abilities to take others' perspectives, represent false beliefs, and integrate representations of intentions and outcomes in evaluating moral responsibility (for reveiws, see Flavell, 1999; Wellman, 2015). The preschool years have also been the focus of a rich tradition of work on lay biology and the animate-inanimate distinction extending back nearly a century (e.g., Carey, 1985; R. Gelman, Spelke, & Meck, 1983; Medin, Waxman, Woodring, & Washinawatok, 2010; Piaget, 1929; for a review, see S. Gelman & Opfer, 2002). All of these accounts make the case that becoming a sophisticated reasoner—and particularly a sophisticated social reasoner—requires substantial refinement of one's representations of others' experiences, beliefs, desires, and needs. Might these refinements include changes to the structure of children's concepts of mental life? 
+
+In Study 3, `r nrow(d3_ad_wide)` US adults, `r nrow(d3_79_wide)` "older" children (`r summary(d3_79$age)["Min."] %>% round(2)`-`r summary(d3_79$age)["Max."] %>% round(2)` years; median: `r summary(d3_79$age)["Median"] %>% round(2)`y), and `r nrow(d3_46_wide)` "younger" children (`r summary(d3_46$age)["Min."] %>% round(2)`-`r summary(d3_46$age)["Max."] %>% round(2)` years; median: `r summary(d3_46$age)["Median"] %>% round(2)`y) each assessed a single target character on 20 mental capacities. Participants were randomly or pseudo-randomly assigned to assess either one of the following 9 characters: an elephant, a goat, a mouse, a bird, a beetle, a teddy bear, a doll, a robot, or a computer. To make the study appropriate for children as young as 4 years of age, participants assessed a subset of the 40 mental capacities employed in Study 2, chosen to represent the three "conceptual units" revealed by Studies 1-2 (_BODY_, _HEART_, and _MIND_) and to cover a similar range of mental capacities as Studies 1-2. As in Study 2, participants responded on a 3-point scale ("no," coded as 0; "kinda," coded as 0.5, "yes," coded as 1). (See Chapter II for detailed methods.)
 
 ## Special notes on data processing and analysis
 
@@ -516,7 +522,7 @@ loadings_summarize_fun(efa_bic_d3_ad) %>%
   mutate_at(vars(-factor), funs(round(., 2)))
 ```
 
-Two of our three protocols for determining how many factors to retain (parallel analysis and the factor retention criteria employed in our original publication of Study 1; Weisman et al., 2017) suggested retaining three factors, while the third (minimizing BIC) suggested retaining four factors; see Table 3.1. However, much as in Studies 1a-1d, three of the four factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d3_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth factor accounted for only `r efa_bic_d3_ad$Vaccounted["Proportion Explained", "F4"] %>% round(2) * 100`% of the shared variance, was the dominant factor for only one of the 40 mental capacities included in this study (`r top_n_domCap(efa_bic_d3_ad, n = 1, "F4", abs_pos = "abs")`), and had moderately small factor loadings for all capacities (absolute loadings all $<$ `r efa_bic_d3_ad %>% loadings_fun() %>% filter(capacity != "feel happy", factor == "F4") %>% summarise(max_abs = max(abs(loading))) %>% as.numeric() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will again focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 4-factor solution).
+Two of the three protocols for determining how many factors to retain (parallel analysis and the factor retention criteria employed in the original publication of Study 1; Weisman et al., 2017) suggested retaining three factors, while the third (minimizing BIC) suggested retaining four factors; see Table 3.1. However, much as in Studies 1a-1d, three of the four factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d3_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth factor accounted for only `r efa_bic_d3_ad$Vaccounted["Proportion Explained", "F4"] %>% round(2) * 100`% of the shared variance, was the dominant factor for only one of the 40 mental capacities included in this study (`r top_n_domCap(efa_bic_d3_ad, n = 1, "F4", abs_pos = "abs")`), and had moderately small factor loadings for all capacities (absolute loadings all $<$ `r efa_bic_d3_ad %>% loadings_fun() %>% filter(capacity != "feel happy", factor == "F4") %>% summarise(max_abs = max(abs(loading))) %>% as.numeric() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will again focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 4-factor solution).
 
 #### What are these conceptual units?
 
@@ -528,7 +534,7 @@ The third factor corresponded primarily to the perceptual-cognitive abilities th
 
 See Figure 3.1 for all factor loadings.
 
-In sum, as in Study 1 and the three-factor solution for Study 2, the conceptual structure revealed by this analysis among adults was characterized by a three-way distinction between _BODY_, _HEART_, and _MIND_. This suggests that our modified child-friendly paradigm was valid: Using a shorter list of items and a wider range of target characters elicited the same intuitive ontology of mental life, among US adults, that was revealed in Study 1 and in Weisman et al.'s (2017) previous work. 
+In sum, as in Study 1 and the three-factor solution for Study 2, the conceptual structure revealed by this analysis among adults was characterized by a three-way distinction between _BODY_, _HEART_, and _MIND_. This suggests that the modified child-friendly paradigm developed for Study 3 was valid: Using a shorter list of items and a wider range of target characters elicited the same intuitive ontology of mental life, among US adults, that was revealed in Study 1 and in Weisman et al.'s (2017) previous work. 
 
 ### Older children (7-9y)
 
@@ -565,7 +571,7 @@ The third factor corresponded primarily to perceptual-cognitive abilities. An an
 
 See Figure 3.1 for all factor loadings. (Note that to ease comparison across studies I have plotted these factors in the same order for all studies: _BODY_, _HEART_, and _MIND_.)
 
-We consider this to be a close conceptual replication of our Study 1 findings, suggesting that by the age of 7-9 years, this three-part conceptual structure is stable and robust to a range of experimental conditions.
+I consider this to be a close conceptual replication of Study 1, suggesting that by the age of 7-9 years, this three-part conceptual structure is stable and robust to a range of experimental conditions.
 
 ### Younger children (4-6y)
 
@@ -605,13 +611,13 @@ loadings_summarize_fun(efa_wdm_d3_46) %>%
   mutate_at(vars(-factor), funs(round(., 2)))
 ```
 
-Each of our three factor retention protocols suggested a different number of factors to retain; see Table 3.1.
+Each of the three factor retention protocols suggested a different number of factors to retain; see Table 3.1.
 
 Minimizing BIC analysis suggested retaining a single factor—in other words, suggested that there was no evidence for more than one latent construct.  
 
 Parallel analysis suggested retaining two factors. Each of these factors accounted for a substantial amount of the shared variance, was the dominant factor for several mental capacities, and had strong factor loadings for some subset of mental capacities.
 
-The retention criteria employed in our original publication of Study 1; Weisman et al., 2017) suggested retaining three factors. Again, each of these factors accounted for a substantial amount of the shared variance, was the dominant factor for several mental capacities, and had strong factor loadings for some subset of mental capacities.
+The retention criteria employed in the original publication of Study 1; Weisman et al., 2017) suggested retaining three factors. Again, each of these factors accounted for a substantial amount of the shared variance, was the dominant factor for several mental capacities, and had strong factor loadings for some subset of mental capacities.
 
 Given all this, I will present and interpret both 2- and 3-factor solutions (but see [XX APPENDIX?] for the null, 1-factor solution suggested by minimizing BIC).
 
@@ -633,7 +639,7 @@ The second factor corresponded primarily to perceptual-cognitive abilities, as w
 
 See Figure 3.1 for all factor loadings.
 
-In relation to the _BODY_-_HEART-_MIND_ structure found among older children and adults, we would describe this two-factor structure as being anchored by a contrast between the cognitive capacities of the _MIND_ vs. a set of warmer, more visercal experiences that constitute a more integrated representation of _BODY-HEART_.
+In relation to the _BODY_-_HEART-_MIND_ structure found among older children and adults, I would describe this two-factor structure as being anchored by a contrast between the cognitive capacities of the _MIND_ vs. a set of warmer, more visercal experiences that constitute a more integrated representation of _BODY-HEART_.
 
 ##### 3-factor solution
 
@@ -653,13 +659,13 @@ The third factor corresponded primarily to social-emotional abilities, with part
 
 See Figure 3.1 for all factor loadings.
 
-We would describe this conceptual structure as reminiscent of the _BODY_-_HEART_-_MIND_ structure found among older children and adults, but not as fully "adult-like." In particular, in this structure, the physiological sensations associated with the _BODY_ among older children and adults are not as clearly differentiated from the emotional experiences associated with the _HEART_. Indeed, it it not clear that _BODY_ vs. _HEART_ is the most salient distinction among the first and third factors in this solution: A cleaner description of these factors might be negatively-valenced experiences vs. positively-valenced experiences. 
+I would describe this conceptual structure as reminiscent of the _BODY_-_HEART_-_MIND_ structure found among older children and adults, but not as fully "adult-like." In particular, in this structure, the physiological sensations associated with the _BODY_ among older children and adults are not as clearly differentiated from the emotional experiences associated with the _HEART_. Indeed, it it not clear that _BODY_ vs. _HEART_ is the most salient distinction among the first and third factors in this solution: A cleaner description of these factors might be negatively-valenced experiences vs. positively-valenced experiences. 
 
 ## Discussion
 
 Study 3 suggests that the three-part conceptual structure—anchored by _BODY_, _HEART_, and _MIND_—is reliable and robust among 7- to 9-year-old US children. As with adults in Study 1 (see also Weisman et al., 2017), the capacities that "hang together" in older children's reasoning when target characaters are perceived to vary in mental capacity profiles appear to be highly similiar to those that "hang together" when participants disagree about the mental lives of controversial "edge cases" in social reasoning (Study 2).
 
-Meanwhile, this study suggests that this conceptual structure undergoes substantial changes between early and middle childhood. Like older children and adults, 4- to 6-year-old children’s responses were characterized by strong correlations among a suite of perceptual and cognitive capacities that we have labeled _MIND_. This highlights one aspect of conceptual structure that seems to be relatively stable from early childhood onward. 
+Meanwhile, this study suggests that this conceptual structure undergoes substantial changes between early and middle childhood. Like older children and adults, 4- to 6-year-old children’s responses were characterized by strong correlations among a suite of perceptual and cognitive capacities that I have labeled _MIND_. This highlights one aspect of conceptual structure that seems to be relatively stable from early childhood onward. 
 
 However, in contrast to the clear distinction between physiological abilities and social-emotional abilities that characterized mental capacity attributions among older children and adults, younger children’s responses suggest that they perceived physiological and social-emotional abilities to be more closely integrated and the line between them to be more blurred.
 
@@ -719,19 +725,21 @@ efa_wdm_d3_46_lowload
 
 Even in the 3-factor solution suggested by Weisman et al.'s (2017) original factor retention protocol, the distinction between physiological and social-emotional abilities was somewhat blurred. While the first factor, which I have labeled _BODY\*_, was highly congruent with adults' _BODY_ factor (cosine similarity: `r cong_efa_wdm_d3_ad_46["F1", "F1"]`), it was also the dominant factor for two social-emotional items (`r ital_by_cap_fun(efa_wdm_d3_46_domCap$capacity[efa_wdm_d3_46_domCap$factor == "F1" & efa_wdm_d3_46_domCap$adult_factor == "HEART"])`). And while the third factor, which I have labeled _HEART\*_, was highly congruent with adults' _HEART_ factor (cosine similarity: `r cong_efa_wdm_d3_ad_46["F3", "F2"]`), there were several social-emotional items that failed to load strongly on it (loadings $\leq$ 0.40: `r ital_by_cap_fun(efa_wdm_d3_46_lowload$capacity[efa_wdm_d3_46_lowload$factor == "F3" & efa_wdm_d3_46_lowload$adult_factor == "HEART"])`). Stepping back, it is not clear that "physiological vs. social-emotional" is the best way to characterize the differences between these two factors. In fact, given that the strongest-loading items for _BODY\*_ were negatively valenced (`r gsub("and ", "", top_n_domCap(efa_wdm_d3_46, 3, "F1", "abs"))`) while the strongest-loading items for _HEART\*_ were positively valenced (`r gsub("and ", "", top_n_domCap(efa_wdm_d3_46, 3, "F3", "abs"))`), it seems plausible that the more salient distinction among this age group may have been positive vs. negative valence, rather than _BODY_ vs. _HEART_. The salience on negative vs. positive experiences among younger children is consistent with recent work on the development of emotion concepts, which suggests that emotion representations are dominanted by a single dimension of valence in early to middle childhood, before unfolding into a two-dimensional space characterized by valence and arousal over the course of later childhood and adolesence (Nook et al., 2017).
 
-Finally, the very fact that different approaches to factor retention yielded different results is further evidence that, although we observed some evidence for a nascent distinction between _BODY_ and _HEART_ among 4- to 6-year-old children, this distinction was not as robust as it appeared to be among older children or adults.
+Finally, the very fact that different approaches to factor retention yielded different results is further evidence that, although there is some evidence for a nascent distinction between _BODY_ and _HEART_ among 4- to 6-year-old children, this distinction was not as robust as it appeared to be among older children or adults.
 
 # Study 4: A focus on early childhood (4-5y)
 
 One major limitation of Studies 2-3 was that the study protocol involved a rather advanced set of mental state vocabulary terms, including a variety of complex mental capacities (e.g., guilt, pride, awareness, depth perception) and using somewhat complicated syntax for some items (e.g., _sense whether something is close by or far away_, _figure out how to do things_). For 4- to 6-year-old children, in particular, some of the mental capacity items might have been outside of the range of the words they normally hear in discussions of mental states—let alone the words they normally use themselves. In addition, younger children may have found some aspects of the experimental paradigm distracting (e.g., being seated in front of the experimenter's laptop computer without being allowed to use it themselves) or difficult (e.g., using a three-point scale with minimal visual scaffolding; see SOM for an analysis of scale use across age groups).
 
-Thus, in the final study, I focused on 4- to 5-year-old children, using a simpler set of mental capacities and a modified version of the experimental paradigm (validated among adults) with the aim of getting a clearer picture of conceptual structure and mental capacity attributions at this earlier point in development.
+With these considerations in mind, in Study 4 I focused on 4- to 5-year-old children, using a simpler set of mental capacities and a streamlined version of the experimental paradigm, with the aim of getting a clearer picture of conceptual structure and mental capacity attributions at this earlier point in development.
 
 In Study 4, `r nrow(d4_ad_wide)/2` US adults and `r nrow(d4_46_wide)/2` US children between the ages of `r summary(d4_46$age)["Min."] %>% round(2)`-`r summary(d4_46$age)["Max."] %>% round(2)` years (median: `r summary(d4_46$age)["Median"] %>% round(2)`y) each assessed two target characters on 18 mental capacities. To make the study appropriate for children in this age range, this study employed a new set of 18 mental capacities (some but not all of which were used in Studies 1-3). In addition, participants were presented with a more child-friendly visual representation of the 3-point response scale ("no," coded as 0; "kinda," coded as 0.5, "yes," coded as 1). This study employed the "edge case" variant of the general approach, with participants assessing both a beetle or a robot in sequence (with order counterbalanced across participants). (See Chapter II for detailed methods.)
 
 As briefly described in Chapter II, the 18 mental capacities employed in Study 4 were selected from a larger pilot study in which 3- to 5-year-old children were asked to complete stories that began with each of these mental capacities as a premise (e.g., "Let's imagine a person who _loves someone_. What happens next?"; "Now let's pretend that someone _remembers something_. What happens next?") and were judged on the appropriateness of their story completion. 
 
 Among the items that emerged from this pilot study as reasonable candidates for inclusion in Study 4, I selected items to represented the three "conceptual units" revealed by Studies 1-3 (_BODY_, _HEART_, and _MIND_). The goal here was to create a conservative test of developmental differences between younger and older children in the "conceptual units" observed in Study 3, by constructing materials that should maximize the chances of observing the same (or similar) conceptual units among young children as were observed among older children and adults in Studies 1-3. If 4- to 5-year-old children in fact have access to conceptual units similar to _BODY_, _HEART_, and _MIND_, the mental capacities (and generally child-friend protocol) of Study 4 should provide the best chances of surfaces this conceptual structure. Conversely, if Study 4 reveals differences in conceptual structure despite these modifications, and despite "stacking the odds" against developmental differences in the selction of mental capacities, this provides stronger evidence for conceptual change in the number and/or kind of conceptual units available to children at different points in development.
+
+The final set of _BODY_ items included _feel hungry_, _get thirsty_, _feel sick_, _feel tired_, _get scared_, and _smell things_. _HEART_ items included _love someone_, _hate someone_, _feel happy_, _get sad_, _feel sorry_, and _get lonely_. _MIND_ items included _see_, _hear_, _think_, _remember things_, _know stuff_, and _figure things out_ (see also Table 2.1 in Chapter II). I ensured that each category included a variety of phrasings (e.g., "_feel_ hungry" vs. "_get_ thirsty"; "remember _things_" vs. "know _stuff_") and valences when appropriate (e.g., happiness vs. sadness); when possible, I aimed to have these aspects of phrasing vary orthogonally with categories, such that "get" and "feel" appeared roughly equally often among the _BODY_ and _HEART_ items, and "things" appeared equally often among the _BODY_ and _MIND_ items.
 
 ## Special notes on data processing and analysis
 
@@ -765,7 +773,7 @@ The third factor corresponded primarily to perceptual-cognitive abilities (_MIND
 
 See Figure 3.1 for all factor loadings.
 
-In sum, as in Studies 1-3, the conceptual structure revealed by this analysis among adults was characterized by a three-way distinction between _BODY_, _HEART_, and _MIND_. This suggests that our modified preschooler-friendly paradigm was valid: Using simpler vocabulary and a within-subjects approach to taget characters elicited the same intuitive ontology of mental life, among US adults, that was revealed in Studies 1-3. 
+In sum, as in Studies 1-3, the conceptual structure revealed by this analysis among adults was characterized by a three-way distinction between _BODY_, _HEART_, and _MIND_. This suggests that the modified preschooler-friendly paradigm was valid: Using simpler vocabulary and a within-subjects approach to taget characters elicited the same intuitive ontology of mental life, among US adults, that was revealed in Studies 1-3. 
 
 ### Children (4-5y)
 
@@ -802,7 +810,7 @@ loadings_summarize_fun(efa_wdm_d4_46) %>%
   mutate_at(vars(-factor), funs(round(., 2)))
 ```
 
-Each of our three factor retention protocols suggested a different number of factors to retain; see Table 3.1.
+Each of the three factor retention protocols suggested a different number of factors to retain; see Table 3.1.
 
 As among children in this age group in Study 3, minimizing BIC suggested retaining a single factor—in other words, suggested that there was no evidence for more than one latent construct.  
 
@@ -818,29 +826,122 @@ __BOOKMARK__
 
 ##### 3-factor solution
 
+```{r}
+cong_efa_par_d4_ad_46 <- fa.congruence(efa_par_d4_46$loadings,
+                                       efa_wdm_d4_ad$loadings)
+cong_efa_par_d4_ad_46
+```
+
+First, I will examine the 3-factor solution suggested by parallel analysis.  Importantly, this is also the number of factors retained among US adults and older children in this study.
+
+After rotation, the first factor encompassed both physiological sensations and emotions. An analysis of factor congruence indicated that this factor was most similar to adults' _BODY_ factor (`r cong_report_fun(df_ad = efa_par_d4_ad, df_ch = efa_par_d4_46, factor = "F1", factor_names_ad = c("_BODY_", "_HEART_", "_MIND_"))`). It was the dominant factor for such items as `r top_n_domCap(efa_par_d4_46, 4, "F1", "pos")`, and accounted for `r round(efa_par_d4_46$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated two-factor solution. 
+
+The second factor corresponded primarily to perceptual-cognitive abilities. An analysis of factor congruence confirmed that this factor was most similar to adults' _MIND_ factor (`r cong_report_fun(df_ad = efa_par_d4_ad, df_ch = efa_par_d4_46, factor = "F2", factor_names_ad = c("_BODY_", "_HEART_", "_MIND_"))`). It was the dominant factor for such items as `r top_n_domCap(efa_par_d4_46, 4, "F2", "pos")`, and accounted for `r round(efa_par_d4_46$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+
+The third factor corresponded primarily to social-emotional abilities. An analysis of factor congruence confirmed that this factor was most similar to adults' _HEART_ factor (`r cong_report_fun(df_ad = efa_par_d4_ad, df_ch = efa_par_d4_46, factor = "F3", factor_names_ad = c("_BODY_", "_HEART_", "_MIND_"))`). It was the dominant factor for such items as `r top_n_domCap(efa_par_d4_46, 4, "F3", "pos")`, and accounted for `r round(efa_par_d4_46$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+
+See Figure 3.1 for all factor loadings.
+
+I would describe this conceptual structure as strongly reminiscent of the _BODY_-_HEART_-_MIND_ structure found among older children and adults. 
+
+__CHECK BACK WITH MORE DATA!__
+
 ##### 4-factor solution
+
+```{r}
+cong_efa_wdm_d4_ad_46 <- fa.congruence(efa_wdm_d4_46$loadings,
+                                       efa_wdm_d4_ad$loadings)
+cong_efa_wdm_d4_ad_46
+```
+
+I will now turn to the 4-factor solution suggested by the factor retention criteria employed in the original publication of Study 1 (Weisman et al.'s, 2017).
+
+After rotation, the first factor corresponded primarily to perceptual-cognitive abilities, as well as some positive social-emotional abilities (e.g., _love someone_, _feel happy_). An analysis of factor congruence indicated that this factor was most similar to adults' _MIND_ factor (`r cong_report_fun(df_ad = efa_wdm_d4_ad, df_ch = efa_wdm_d4_46, factor = "F1", factor_names_ad = c("_BODY_", "_HEART_", "_MIND_"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d4_46, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d4_46$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+
+The second factor corresponded primarily to physiological sensations, with an exceptionall strong factor loading for _feel sick_. An analysis of factor congruence confirmed that this factor was most similar to adults' _BODY_ factor (`r cong_report_fun(df_ad = efa_wdm_d4_ad, df_ch = efa_wdm_d4_46, factor = "F2", factor_names_ad = c("_BODY_", "_HEART_", "_MIND_"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d4_46, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d4_46$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+
+The third factor also corresponded primarily to phyiological sensations, as well as some perceptual abilties (e.g., _hear_, _see_). An analysis of factor congruence indicated that this factor was most similar to adults' _BODY_ factor (`r cong_report_fun(df_ad = efa_wdm_d4_ad, df_ch = efa_wdm_d4_46, factor = "F3", factor_names_ad = c("_BODY_", "_HEART_", "_MIND_"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d4_46, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d4_46$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution. (See Figure 5, Panel B, for all factor loadings.)
+
+The fourth factor corresponded primarily to social-emotional abilities, particularly negative emotions. An analysis of factor congruence indicated that this factor was most similar to adults' _HEART_ factor (`r cong_report_fun(df_ad = efa_wdm_d4_ad, df_ch = efa_wdm_d4_46, factor = "F4", factor_names_ad = c("_BODY_", "_HEART_", "_MIND_"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d4_46, 4, "F4", "pos")`, and accounted for `r round(efa_wdm_d4_46$Vaccounted["Proportion Explained", "F4"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+
+See Figure 3.1 for all factor loadings.
+
+I would summarize the four-factor solution as a variant on the three-factor solutions common to Studies 1a-1d (and surfaced by the other two factor retention protocols for this study), again characterized by distinct constructs of _HEART_ and _MIND_ but demonstrating a further differention of what I've referred to as _BODY_ into sub-categories that are not easy to label or describe.
+
+__CHECK BACK WITH MORE DATA!__
 
 ## Discussion
 
+Study 4 provides further evidence that the conceptual structure underlying mental capacity attributions undergoes substantial changes between early and middle childhood. Using a paradigm that was better tailored for this age group and that featured vocabulary items expressly designed to pick out (adult) notions of _BODY_, _HEART_, and _MIND_ in a balanced way (6 items per factor), Study 4 did provide some indications that this conceptual structure may be more mature in the early preschool years than Study 2 would suggest. However, even in this modified paradigm, tehre are several indications that this three-part conceptual structure is not fully in place by 4-5y.
+
+```{r}
+efa_par_d4_46_modload <- loadings_fun(efa_par_d4_46, "long") %>% 
+  filter(loading >= 0.30) %>%
+  arrange(factor, desc(loading)) %>%
+  group_by(capacity) %>%
+  mutate(adult_factor = case_when(
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F1", "pos")) == T ~ "BODY",
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F2", "pos")) == T ~ "HEART",
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F3", "pos")) == T ~ "MIND",
+    TRUE ~ "no dominant factor")) %>%
+  ungroup()
+efa_par_d4_46_modload
+```
+
+First, the similarities. As with the 4- to 6-year-old children Study 3, 4- to 5-year-old children’s responses in Study 4 were characterized by strong correlations among a suite of perceptual and (particularly) cognitive capacities that I have labeled _MIND_. This suite of _MIND_ abilities was robust to analysis choices and emerged clearly in both Studies 2 and 3, bolstering my earlier claim that this is one aspect of conceptual structure that may be relatively stable from early in childhood. 
+
+More broadly, the three-factor solution suggested by parallel analysis includes recognizable _BODY_ and _MIND_ factors as well as a nascent _HEART\*_ factor, on which most of the social-emotional items loaded moderately strongly (loadings $\geq$ 0.30: `r ital_by_cap_fun(efa_par_d4_46_modload$capacity[efa_par_d4_46_modload$adult_factor == "HEART" & efa_par_d4_46_modload$factor == "F3"])`). This is a substantially more adult-like conceptual structure than was observed among 4- to 6-year-old children in Study 3.
+
+```{r}
+efa_par_d4_46_lowload <- loadings_fun(efa_par_d4_46, "long") %>% 
+  filter(loading < 0.30) %>%
+  arrange(factor, desc(loading)) %>%
+  group_by(capacity) %>%
+  mutate(adult_factor = case_when(
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F1", "pos")) == T ~ "BODY",
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F2", "pos")) == T ~ "HEART",
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F3", "pos")) == T ~ "MIND",
+    TRUE ~ "no dominant factor")) %>%
+  ungroup()
+efa_par_d4_46_lowload
+```
+
+```{r}
+efa_par_d4_46_domCap <- loadings_fun(efa_par_d4_46, "long") %>% 
+  arrange(desc(loading)) %>%
+  group_by(capacity) %>%
+  top_n(1, loading) %>%
+  mutate(adult_factor = case_when(
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F1", "pos")) == T ~ "BODY",
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F2", "pos")) == T ~ "HEART",
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F3", "pos")) == T ~ "MIND",
+    TRUE ~ "no dominant factor")) %>%
+  ungroup() %>%
+  arrange(factor, desc(loading))
+efa_par_d4_46_domCap
+```
+
+However, as in Study 3, the very fact that different approaches to factor retention yielded different results is further evidence that, although there is some evidence for a nascent _BODY_-_HEART_-_MIND_ framework among 4- to 6-year-old children, this framework was not robust among preschool-age children. 
+
+This appears to be particularly true with regard to their understanding of social-emotional abilities (_HEART_). Echoing the results of Study 3, children’s responses suggest that they may not consider the social-emotional abilities that constitute what I have called _HEART_ among adults to hang together as one, clearly distinct component of mental life. Even in the more adult-like, three-factor solution, two of the six social-emotional items did _not_ loading strongly on the ostensive _HEART\*_ factor (loadings $\leq$ 0.30: `r ital_by_cap_fun(efa_par_d4_46_lowload$capacity[efa_par_d4_46_lowload$adult_factor == "HEART" & efa_par_d4_46_lowload$factor == "F3"])`); and four of the six social-emotional items loaded moderately strongly on the _MIND_ factor (loadings $\geq$ 0.30: `r ital_by_cap_fun(efa_par_d4_46_modload$capacity[efa_par_d4_46_modload$adult_factor == "HEART" & efa_par_d4_46_modload$factor == "F2"])`). Indeed, _MIND_ was the _dominant_ factor for two social-emotional items in this three-factor solution (`r ital_by_cap_fun(efa_par_d4_46_domCap$capacity[efa_par_d4_46_domCap$factor == "F2" & efa_par_d4_46_domCap$adult_factor == "HEART"])`). None of these observations were true among adults.
 
 # General discussion of conceptual units
 
+__ADD DESCRIPTION OF STUDY 1__
+
+In three large-scale studies (total _N_=`r nrow(d2_79_wide) + nrow(d3_79_wide) + nrow(d3_46_wide) + nrow(d4_46_wide)/2` children and `r nrow(d2_ad_wide) + nrow(d3_ad_wide) + nrow(d4_ad_wide)/2` adults), I set out to expore the development of US children's conceptual representations of mental life between 4-9y of age. These studies suggest that these representations undergo substantial development over the course of early and middle childhood—in two distinct senses. 
+
+First, analyses of the correlational structure of children's mental capacity attributions (via exploratory factor analysis) suggested changes in ontological _structure_. Between early childhood (4-6 years; Studies 3-4) and middle childhood (7-9 years; Studies 2-3), children's sense of which mental capacities "go together" seems to unfold into a higher-dimensional space, characterized by stronger differentiation of the social-emotional abilities that I have called _HEART_ from the physiological sensations of the _BODY_ and the perceptual-cognitive abilities of the _MIND_. 
 
 # Chapter conclusion
 
-
-
-
-
-
-
-
-# SCRAPS
-
-
-
-
-
-Scraps:
-- [FOR TRANSITION FROM STUDY 2 TO STUDY 3]: As demonstrated in Study 1, among adults the "edge case" and "diverse characters" variants of the general approach have yielded very similar pictures of conceptual representations (see also XX CITE Weisman et al., 2017). If this three-part conceptual structure is stable and robust by the age of 7-9 years, it should manifest among 7- to 9-year-old children under the same range of conditions that it does among adults. Thus, in Study 3...
-- [FOR TRANSITION FROM STUDY 3 to STUDY 4]: For the final set of questions, I aimed to select six clear examples of physiological sensations (_BODY_), social-emotional abilities (_HEART_), and perceptual-cognitive capacities (_MIND_), according to Studies 1-2 and Weisman et al.'s (2017) original studies with US adults. We reasoned that if these carefully selected examples of _BODY_, _HEART_, and _MIND_ still elicited differences in correlational structures between 4- to 5-year-old children and adults, this would be particularly strong evidence of age-related changes in conceptual structure. The final set of _BODY_ items included _feel hungry_, _get thirsty_, _feel sick_, _feel tired_, _get scared_, and _smell things_. _HEART_ items included _love someone_, _hate someone_, _feel happy_, _get sad_, _feel sorry_, and _get lonely_. _MIND_ items included _see_, _hear_, _think_, _remember things_, _know stuff_, and _figure things out_. We ensured that each category included a variety of phrasings (e.g., "_feel_ hungry" vs. "_get_ thirsty"; "remember _things_" vs. "know _stuff_") and valences when appropriate (e.g., happiness vs. sadness); when possible, we aimed to have these aspects of phrasing vary orthogonally with categories, such that "get" and "feel" appeared roughly equally often among the _BODY_ and _HEART_ items, and "things" appeared equally often among the _BODY_ and _MIND_ items. 
+XX
