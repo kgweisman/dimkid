@@ -222,23 +222,17 @@ table3.1
 
 #### What are these conceptual units?
 
+```{r}
+factor_names_efa_wdm_d1a_ad <- c("BODY", "HEART", "MIND")
+```
+
 After rotation, the first factor corresponded primarily to physiological sensations related to biological needs—a suite of capacities that I will refer to as BODY (a label employed in the original reporting of this study; Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1a_ad, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d1a_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
 The second factor corresponded primarily to capacities for self- and other-relevant emotions—a suite of capacities that I will refer to as HEART (as in Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1a_ad, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d1a_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
 
 The third factor corresponded primarily to perceptual-cognitive abilities to detect and use information about the environment—a suite of capacities that I will refer to as MIND (as in Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1a_ad, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d1a_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
 
-See Figure 3.1 for all factor loadings. 
-
-```{r}
-# INSERT FIGURE 3.1 HERE
-# include in caption: To ease comparison across studies I have plotted these factors in the same order for all studies: BODY, HEART, and MIND.
-```
-
-```{r}
-plot_efa_wdm_d1a_ad <- heatmap_fun(efa_wdm_d1a_ad, 
-                                   factor_names = c("BODY", "HEART", "MIND"))
-```
+See Figure 3.1 for all factor loadings.
 
 ### Study 1b
 
@@ -293,7 +287,6 @@ Given all this, I will again focus the remainder of my analyses on the 3-factor 
 factor_names_efa_wdm_d1b_ad <- c("BODY", "HEART", "MIND")
 ```
 
-
 After rotation, the first factor corresponded primarily to the physiological sensations that I labeled BODY in Study 1a (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1b_ad, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d1b_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
 The second factor corresponded primarily to the social-emotional abilities that I labeled HEART in Study 1a (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1b_ad, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d1b_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
@@ -328,6 +321,10 @@ loadings_summarize_fun(efa_bic_d1c_ad) %>%
 Two of the three protocols for determining how many factors to retain (parallel analysis and the factor retention criteria reported in the original publication of Studies 1c-1d; Weisman et al., 2017) suggested retaining three factors, while the third (minimizing BIC) suggested retaining five factors; see Table 3.1. However, much as in Studies 1a and 1b, three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d1c_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth factor accounted for only `r efa_bic_d1c_ad$Vaccounted["Proportion Explained", "F4"] %>% round(2) * 100`% of the shared variance, was not the dominant factor for any of the 40 mental capacities included in this study, with small factor loadings for all capacities (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1c_ad) %>% filter(factor == "F4"))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will again focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 4-factor solution).
 
 #### What are these conceptual units?
+
+```{r}
+factor_names_efa_wdm_d1c_ad <- c("BODY", "HEART", "MIND")
+```
 
 After rotation, the first factor corresponded primarily to the physiological sensations that I labeled BODY in Studies 1a and 1b (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1c_ad, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d1c_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
@@ -386,6 +383,10 @@ Given all this, I will once more focus the remainder of my analyses on the 3-fac
 
 #### What are these conceptual units?
 
+```{r}
+factor_names_efa_wdm_d1d_ad <- c("BODY", "HEART", "MIND")
+```
+
 After rotation, the first factor corresponded primarily to the physiological sensations that I labeled BODY in Studies 1a-1c (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1d_ad, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d1d_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
 The second factor corresponded primarily to the social-emotional abilities that I labeled HEART in Studies 1a-1c (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1d_ad, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d1d_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
@@ -394,8 +395,39 @@ The third factor corresponded primarily to the perceptual-cognitive abilities th
 
 See Figure 3.1 for all factor loadings.
 
+```{r}
+plot_efa_wdm_d1a_ad <- heatmap_fun(efa_wdm_d1a_ad, 
+                                   factor_names_efa_wdm_d1a_ad) +
+  labs(title = "Study 1a", subtitle = "3-factor solution") +
+  theme(legend.position = "none")
+plot_efa_wdm_d1b_ad <- heatmap_fun(efa_wdm_d1b_ad, 
+                                   factor_names_efa_wdm_d1b_ad) +
+  labs(title = "Study 1b", subtitle = "3-factor solution") +
+  theme(legend.position = "none")
+plot_efa_wdm_d1c_ad <- heatmap_fun(efa_wdm_d1c_ad, 
+                                   factor_names_efa_wdm_d1c_ad) +
+  labs(title = "Study 1c", subtitle = "3-factor solution") +
+  theme(legend.position = "none")
+plot_efa_wdm_d1d_ad <- heatmap_fun(efa_wdm_d1d_ad, 
+                                   factor_names_efa_wdm_d1d_ad) +
+  labs(title = "Study 1d", subtitle = "3-factor solution")
+```
+
+```{r}
+figure3.1 <- plot_grid(plot_efa_wdm_d1a_ad, plot_efa_wdm_d1b_ad,
+                       plot_efa_wdm_d1c_ad, plot_efa_wdm_d1d_ad,
+                       labels = "AUTO", ncol = 4, rel_widths = c(1, 1, 1, 1.2))
+
+figure3.1_cap <- add_sub(figure3.1, str_wrap("Figure 3.1: Factor loadings from exploratory factor analyses of Studies 1a-1d (see also Weisman et al., 2017). (A-B) In Studies 1a and 1b, US adults assessed one of two 'edge case' characters (a beetle or a robot). (C) In Study 1c, US adults assess both of these 'edge cases' side by side (with left-right position counterbalanced across participants). (D) In Study 1d, US adults assessed one of 21 diverse target characters. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 9, fig.asp = 0.6}
+ggdraw(figure3.1_cap)
+```
+
 ## Discussion
 
+__XX ADD DESCRIPTION__
 
 # Study 2: Conceptual change between middle childhood (7-9y) and adulthood
 
@@ -432,6 +464,10 @@ Two of the three protocols for determining how many factors to retain (minimizin
 
 ##### 3-factor solution
 
+```{r}
+factor_names_efa_wdm_d2_ad <- c("HEART", "BODY", "MIND")
+```
+
 First, I will examine the 3-factor solution suggested by minimizing BIC and by the factor retention criteria employed in the original publication of Study 1 (Weisman et al.'s, 2017). Importantly, this is the number of factors retained among US adults in all four of the samples included in Study 1.
 
 After rotation, the first factor corresponded primarily to the social-emotional abilities that I labeled HEART in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d2_ad, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d2_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
@@ -440,11 +476,16 @@ The second factor corresponded primarily to the physiological sensations that I 
 
 The third factor corresponded primarily to the perceptual-cognitive abilities that I referred to as MIND in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d2_ad, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d2_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
 
-See Figure 3.1 for all factor loadings. (Note that to ease comparison across studies I have plotted these factors in the same order for all studies: BODY, HEART, and MIND.)
+See Figure 3.2 for all factor loadings.
 
 In sum, as in Study 1, this three-factor solution was characterized by a distinction between BODY, HEART, and MIND. This suggests that the child-friendly paradigm developed for Study 2 was valid: Using reworded items and a three-point response scale elicited the same intuitive ontology of mental life, among adults, that has been revealed by more complex, "adult-friendly" experimental paradigms. 
 
 ##### 4-factor solution
+
+```{r}
+factor_names_efa_par_d2_ad <- c("BODY", "HEART", 
+                                "MIND (cognition)", "MIND (perception)")
+```
 
 In the four-factor solution suggested by parallel analysis, after rotation, the first factor corresponded primarily to the physiological sensations that I labeled BODY in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_par_d2_ad, 4, "F1", "pos")`, and accounted for `r round(efa_par_d2_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
@@ -454,7 +495,7 @@ The third factor corresponded primarily to the more "cognitive" of the perceptua
 
 The fourth factor corresponded primarily to the more "perceptual" of the perceptual-cognitive abilities that I referred to as MIND in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_par_d2_ad, 4, "F4", "pos")`, and accounted for `r round(efa_par_d2_ad$Vaccounted["Proportion Explained", "F4"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
 
-See Figure 3.1 for all factor loadings.
+See Figure 3.2 for all factor loadings.
 
 I would summarize the four-factor solution as a slight variant on the three-factor solutions common to Studies 1a-1d (and surfaced by the other two factor retention protocols for this study), again characterized by distinct constructs of BODY and HEART but demonstrating a further differention of what I've referred to as MIND into cognitive abilities vs. perceptual abilities.
 
@@ -482,15 +523,42 @@ cong_efa_wdm_d2_ad_79 <- fa.congruence(efa_wdm_d2_79$loadings,
 cong_efa_wdm_d2_ad_79
 ```
 
-After rotation, the first factor corresponded primarily to social-emotional abilities. An analysis of factor congruence with the three-factor solution among adults confirmed that this factor was most similar to adults' HEART factor (`r cong_report_fun(df_ad = efa_wdm_d2_ad, df_ch = efa_wdm_d2_79, factor = "F1", factor_names_ad = c("HEART", "BODY", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d2_79, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d2_79$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+```{r}
+factor_names_efa_wdm_d2_79 <- c("HEART", "BODY", "MIND")
+```
 
-The second factor corresponded primarily to physiological sensations. An analysis of factor congruence confirmed that this factor was most similar to adults' BODY factor (`r cong_report_fun(df_ad = efa_wdm_d2_ad, df_ch = efa_wdm_d2_79, factor = "F2", factor_names_ad = c("HEART", "BODY", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d2_79, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d2_79$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+After rotation, the first factor corresponded primarily to social-emotional abilities. An analysis of factor congruence with the three-factor solution among adults confirmed that this factor was most similar to adults' HEART factor (`r cong_report_fun(df_ad = efa_wdm_d2_ad, df_ch = efa_wdm_d2_79, factor = "F1", factor_names_ad = factor_names_efa_wdm_d2_ad)`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d2_79, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d2_79$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
-The third factor corresponded primarily to perceptual-cognitive abilities. An analysis of factor congruence confirmed that this factor was most similar to adults' MIND factor (`r cong_report_fun(df_ad = efa_wdm_d2_ad, df_ch = efa_wdm_d2_79, factor = "F3", factor_names_ad = c("HEART", "BODY", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d2_79, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d2_79$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
+The second factor corresponded primarily to physiological sensations. An analysis of factor congruence confirmed that this factor was most similar to adults' BODY factor (`r cong_report_fun(df_ad = efa_wdm_d2_ad, df_ch = efa_wdm_d2_79, factor = "F2", factor_names_ad = factor_names_efa_wdm_d2_ad)`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d2_79, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d2_79$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
 
-See Figure 3.1 for all factor loadings. (Note that to ease comparison across studies I have plotted these factors in the same order for all studies: BODY, HEART, and MIND.)
+The third factor corresponded primarily to perceptual-cognitive abilities. An analysis of factor congruence confirmed that this factor was most similar to adults' MIND factor (`r cong_report_fun(df_ad = efa_wdm_d2_ad, df_ch = efa_wdm_d2_79, factor = "F3", factor_names_ad = factor_names_efa_wdm_d2_ad)`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d2_79, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d2_79$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
+
+See Figure 3.2 for all factor loadings.
 
 In sum, like adults in Study 1, and like the 3-factor summary of adults in the current study, 7- to 9-year-old children's mental capacity attributions were dominated by a three-way distinction between physiological, social-emotional, and perceptual-cognitive abilities—i.e., BODY, HEART, and MIND.
+
+```{r}
+plot_efa_wdm_d2_ad <- heatmap_fun(efa_wdm_d2_ad, factor_names_efa_wdm_d2_ad) +
+  labs(title = "Adults", subtitle = "3-factor solution") +
+  theme(legend.position = "none")
+plot_efa_par_d2_ad <- heatmap_fun(efa_par_d2_ad, factor_names_efa_par_d2_ad) +
+  labs(title = "Adults", subtitle = "4-factor solution") +
+  theme(legend.position = "none")
+plot_efa_wdm_d2_79 <- heatmap_fun(efa_wdm_d2_79, factor_names_efa_wdm_d2_79) +
+  labs(title = "Children, 7-9y", subtitle = "3-factor solution")
+```
+
+```{r}
+figure3.2 <- plot_grid(plot_efa_wdm_d2_ad, plot_efa_par_d2_ad,
+                       plot_efa_wdm_d2_79,
+                       labels = "AUTO", ncol = 3, rel_widths = c(1, 1.2, 1.2))
+
+figure3.2_cap <- add_sub(figure3.2, str_wrap("Figure 3.2: Factor loadings from exploratory factor analyses of Study 2, in which participants assessed one of two 'edge case' characters (a beetle or a robot). (A) Results for US adults, retaining 3 factors (as suggested by minimizing BIC and by the original factor retention criteria reported in Weisman et al., 2017). (B) Results for US adults, retaining 4 factors (as suggested by parallel analysis). (C) Results for US children ages 7-9y. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 9, fig.asp = 0.6}
+ggdraw(figure3.2_cap)
+```
 
 ## Discussion
 
@@ -536,13 +604,17 @@ Two of the three protocols for determining how many factors to retain (parallel 
 
 #### What are these conceptual units?
 
+```{r}
+factor_names_efa_wdm_d3_ad <- c("BODY", "HEART", "MIND")
+```
+
 After rotation, the first factor corresponded primarily to the physiological sensations that I labeled BODY in Studies 1-2 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_ad, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d3_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
 The second factor corresponded primarily to the social-emotional abilities that I labeled HEART in Studies 1-2 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_ad, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d3_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
 
 The third factor corresponded primarily to the perceptual-cognitive abilities that I referred to as MIND in Studies 1-2 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_ad, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d3_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
 
-See Figure 3.1 for all factor loadings.
+See Figure 3.3 for all factor loadings.
 
 In sum, as in Study 1 and the three-factor solution for Study 2, the conceptual structure revealed by this analysis among adults was characterized by a three-way distinction between BODY, HEART, and MIND. This suggests that the modified child-friendly paradigm developed for Study 3 was valid: Using a shorter list of items and a wider range of target characters elicited the same intuitive ontology of mental life, among US adults, that was revealed in Study 1 and in Weisman et al.'s (2017) previous work. 
 
@@ -573,13 +645,17 @@ cong_efa_wdm_d3_ad_79 <- fa.congruence(efa_wdm_d3_79$loadings,
 cong_efa_wdm_d3_ad_79
 ```
 
+```{r}
+factor_names_efa_wdm_d3_79 <- c("BODY", "HEART", "MIND")
+```
+
 After rotation, the first factor corresponded primarily to physiological sensations. An analysis of factor congruence confirmed that this factor was most similar to adults' BODY factor (`r cong_report_fun(df_ad = efa_wdm_d3_ad, df_ch = efa_wdm_d3_79, factor = "F1", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_79, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d3_79$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
 The second factor corresponded primarily to social-emotional abilities. An analysis of factor congruence confirmed that this factor was most similar to adults' HEART factor (`r cong_report_fun(df_ad = efa_wdm_d3_ad, df_ch = efa_wdm_d3_79, factor = "F2", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_79, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d3_79$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
 
 The third factor corresponded primarily to perceptual-cognitive abilities. An analysis of factor congruence confirmed that this factor was most similar to adults' MIND factor (`r cong_report_fun(df_ad = efa_wdm_d3_ad, df_ch = efa_wdm_d3_79, factor = "F3", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_79, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d3_79$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
-See Figure 3.1 for all factor loadings. (Note that to ease comparison across studies I have plotted these factors in the same order for all studies: BODY, HEART, and MIND.)
+See Figure 3.3 for all factor loadings. (Note that to ease comparison across studies I have plotted these factors in the same order for all studies: BODY, HEART, and MIND.)
 
 I consider this to be a close conceptual replication of Study 1, suggesting that by the age of 7-9 years, this three-part conceptual structure is stable and robust to a range of experimental conditions.
 
@@ -641,13 +717,17 @@ cong_efa_par_d3_ad_46 <- fa.congruence(efa_par_d3_46$loadings,
 cong_efa_par_d3_ad_46
 ```
 
+```{r}
+factor_names_efa_par_d3_46 <- c("BODY-HEART", "MIND")
+```
+
 First, I will examine the 2-factor solution suggested by parallel analysis. 
 
 In the rotated two-factor solution suggested by parallel analysis, the first factor encompassed both physiological sensations and emotions. An analysis of factor congruence indicated that this factor was most similar to adults' BODY factor, but was also quite similar to adults' HEART factor (`r cong_report_fun(df_ad = efa_par_d3_ad, df_ch = efa_par_d3_46, factor = "F1", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_par_d3_46, 4, "F1", "pos")`, and accounted for `r round(efa_par_d3_46$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated two-factor solution. 
 
 The second factor corresponded primarily to perceptual-cognitive abilities, as well as one complex negative emotion (_feel guilty_). An analysis of factor congruence confirmed that this factor was most similar to adults' MIND factor (`r cong_report_fun(df_ad = efa_par_d3_ad, df_ch = efa_par_d3_46, factor = "F2", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_par_d3_46, 4, "F2", "pos")`, and accounted for `r round(efa_par_d3_46$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
-See Figure 3.1 for all factor loadings.
+See Figure 3.3 for all factor loadings.
 
 In relation to the BODY-HEART-MIND structure found among older children and adults, I would describe this two-factor structure as being anchored by a contrast between the cognitive capacities of the MIND vs. a set of warmer, more visercal experiences that constitute a more integrated representation of BODY-HEART.
 
@@ -659,6 +739,10 @@ cong_efa_wdm_d3_ad_46 <- fa.congruence(efa_wdm_d3_46$loadings,
 cong_efa_wdm_d3_ad_46
 ```
 
+```{r}
+factor_names_efa_wdm_d3_46 <- c("BODY*", "MIND", "HEART*")
+```
+
 I will now turn to the 3-factor solution suggested by the factor retention criteria employed in the original publication of Study 1 (Weisman et al.'s, 2017). Importantly, this is also the number of factors retained among US adults and older children in this study.
 
 After rotation, the first factor corresponded primarily to physiological sensations, as well as some positive emotions. An analysis of factor congruence indicated that this factor was most similar to adults' BODY factor, but was also quite similar to adults' HEART factor (`r cong_report_fun(df_ad = efa_wdm_d3_ad, df_ch = efa_wdm_d3_46, factor = "F1", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_46, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d3_46$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
@@ -667,9 +751,35 @@ The second factor corresponded primarily to perceptual-cognitive abilities, as w
 
 The third factor corresponded primarily to social-emotional abilities, with particularly strong loadings for positive emotions. An analysis of factor congruence indicated that this factor was most similar to adults' HEART factor, but also quite similar to adults' BODY factor (`r cong_report_fun(df_ad = efa_wdm_d3_ad, df_ch = efa_wdm_d3_46, factor = "F3", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_46, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d3_46$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution. (See Figure 5, Panel B, for all factor loadings.)
 
-See Figure 3.1 for all factor loadings.
+See Figure 3.3 for all factor loadings.
 
 I would describe this conceptual structure as reminiscent of the BODY-HEART-MIND structure found among older children and adults, but not as fully "adult-like." In particular, in this structure, the physiological sensations associated with the BODY among older children and adults are not as clearly differentiated from the emotional experiences associated with the HEART. Indeed, it it not clear that BODY vs. HEART is the most salient distinction among the first and third factors in this solution: A cleaner description of these factors might be negatively-valenced experiences vs. positively-valenced experiences. 
+
+```{r}
+plot_efa_wdm_d3_ad <- heatmap_fun(efa_wdm_d3_ad, factor_names_efa_wdm_d3_ad) +
+  labs(title = "Adults", subtitle = "3-factor solution") +
+  theme(legend.position = "none")
+plot_efa_wdm_d3_79 <- heatmap_fun(efa_wdm_d3_79, factor_names_efa_wdm_d3_79) +
+  labs(title = "Older children, 7-9y", subtitle = "3-factor solution") +
+  theme(legend.position = "none")
+plot_efa_wdm_d3_46 <- heatmap_fun(efa_wdm_d3_46, factor_names_efa_wdm_d3_46) +
+  labs(title = "Younger children, 4-6y", subtitle = "3-factor solution") +
+  theme(legend.position = "none")
+plot_efa_par_d3_46 <- heatmap_fun(efa_par_d3_46, factor_names_efa_par_d3_46) +
+  labs(title = "Younger children, 4-6y", subtitle = "2-factor solution")
+```
+
+```{r}
+figure3.3 <- plot_grid(plot_efa_wdm_d3_ad, plot_efa_wdm_d3_79,
+                       plot_efa_wdm_d3_46, plot_efa_par_d3_46,
+                       labels = "AUTO", ncol = 4, rel_widths = c(1, 1, 1, 1))
+
+figure3.3_cap <- add_sub(figure3.3, str_wrap("Figure 3.3: Factor loadings from exploratory factor analyses of Study 3, in which participants assessed one of nine diverse target characters. (A) Results for US adults. (B) Results for US children ages 7-9y. (C) Results for US children ages 4-6y, retaining three factors (as suggested by the original factor retention criteria reported in Weisman et al., 2017). (D) Results for US children ages 4-6y, retaining two factors (as suggested parallel analysis). In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 9, fig.asp = 0.6}
+ggdraw(figure3.3_cap)
+```
 
 ## Discussion
 
@@ -733,7 +843,7 @@ efa_wdm_d3_46_lowload <- loadings_fun(efa_wdm_d3_46, "long") %>%
 efa_wdm_d3_46_lowload
 ```
 
-Even in the 3-factor solution suggested by Weisman et al.'s (2017) original factor retention protocol, the distinction between physiological and social-emotional abilities was somewhat blurred. While the first factor, which I have labeled BODY\*, was highly congruent with adults' BODY factor (cosine similarity: `r cong_efa_wdm_d3_ad_46["F1", "F1"]`), it was also the dominant factor for two social-emotional items (`r ital_by_cap_fun(efa_wdm_d3_46_domCap$capacity[efa_wdm_d3_46_domCap$factor == "F1" & efa_wdm_d3_46_domCap$adult_factor == "HEART"])`). And while the third factor, which I have labeled HEART\*, was highly congruent with adults' HEART factor (cosine similarity: `r cong_efa_wdm_d3_ad_46["F3", "F2"]`), there were several social-emotional items that failed to load strongly on it (loadings $\leq$ 0.40: `r ital_by_cap_fun(efa_wdm_d3_46_lowload$capacity[efa_wdm_d3_46_lowload$factor == "F3" & efa_wdm_d3_46_lowload$adult_factor == "HEART"])`). Stepping back, it is not clear that "physiological vs. social-emotional" is the best way to characterize the differences between these two factors. In fact, given that the strongest-loading items for BODY\* were negatively valenced (`r gsub("and ", "", top_n_domCap(efa_wdm_d3_46, 3, "F1", "abs"))`) while the strongest-loading items for HEART\* were positively valenced (`r gsub("and ", "", top_n_domCap(efa_wdm_d3_46, 3, "F3", "abs"))`), it seems plausible that the more salient distinction among this age group may have been positive vs. negative valence, rather than BODY vs. HEART. The salience on negative vs. positive experiences among younger children is consistent with recent work on the development of emotion concepts, which suggests that emotion representations are dominanted by a single dimension of valence in early to middle childhood, before unfolding into a two-dimensional space characterized by valence and arousal over the course of later childhood and adolesence (Nook et al., 2017).
+Even in the 3-factor solution suggested by the original factor retention criteria reported in Weisman et al. (2017), the distinction between physiological and social-emotional abilities was somewhat blurred. While the first factor, which I have labeled BODY\*, was highly congruent with adults' BODY factor (cosine similarity: `r cong_efa_wdm_d3_ad_46["F1", "F1"]`), it was also the dominant factor for two social-emotional items (`r ital_by_cap_fun(efa_wdm_d3_46_domCap$capacity[efa_wdm_d3_46_domCap$factor == "F1" & efa_wdm_d3_46_domCap$adult_factor == "HEART"])`). And while the third factor, which I have labeled HEART\*, was highly congruent with adults' HEART factor (cosine similarity: `r cong_efa_wdm_d3_ad_46["F3", "F2"]`), there were several social-emotional items that failed to load strongly on it (loadings $\leq$ 0.40: `r ital_by_cap_fun(efa_wdm_d3_46_lowload$capacity[efa_wdm_d3_46_lowload$factor == "F3" & efa_wdm_d3_46_lowload$adult_factor == "HEART"])`). Stepping back, it is not clear that "physiological vs. social-emotional" is the best way to characterize the differences between these two factors. In fact, given that the strongest-loading items for BODY\* were negatively valenced (`r gsub("and ", "", top_n_domCap(efa_wdm_d3_46, 3, "F1", "abs"))`) while the strongest-loading items for HEART\* were positively valenced (`r gsub("and ", "", top_n_domCap(efa_wdm_d3_46, 3, "F3", "abs"))`), it seems plausible that the more salient distinction among this age group may have been positive vs. negative valence, rather than BODY vs. HEART. The salience on negative vs. positive experiences among younger children is consistent with recent work on the development of emotion concepts, which suggests that emotion representations are dominanted by a single dimension of valence in early to middle childhood, before unfolding into a two-dimensional space characterized by valence and arousal over the course of later childhood and adolesence (Nook et al., 2017).
 
 Finally, the very fact that different approaches to factor retention yielded different results is further evidence that, although there is some evidence for a nascent distinction between BODY and HEART among 4- to 6-year-old children, this distinction was not as robust as it appeared to be among older children or adults.
 
@@ -775,13 +885,17 @@ All three protocols for determining how many factors to retain suggested retaini
 
 #### What are these conceptual units?
 
+```{r}
+factor_names_efa_wdm_d4_ad <- c("BODY", "HEART", "MIND")
+```
+
 After rotation, the first factor corresponded primarily to the physiological sensations (BODY). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d4_ad, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d4_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
 The second factor corresponded primarily to social-emotional abilities (HEART). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d4_ad, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d4_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
 
 The third factor corresponded primarily to perceptual-cognitive abilities (MIND). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d4_ad, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d4_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
 
-See Figure 3.1 for all factor loadings.
+See Figure 3.4 for all factor loadings.
 
 In sum, as in Studies 1-3, the conceptual structure revealed by this analysis among adults was characterized by a three-way distinction between BODY, HEART, and MIND. This suggests that the modified preschooler-friendly paradigm was valid: Using simpler vocabulary and a within-subjects approach to taget characters elicited the same intuitive ontology of mental life, among US adults, that was revealed in Studies 1-3. 
 
@@ -832,8 +946,6 @@ Given all this, I will present and interpret both 3- and 4-factor solutions (but
 
 #### What are these conceptual units?
 
-__BOOKMARK__
-
 ##### 3-factor solution
 
 ```{r}
@@ -842,15 +954,19 @@ cong_efa_par_d4_ad_46 <- fa.congruence(efa_par_d4_46$loadings,
 cong_efa_par_d4_ad_46
 ```
 
+```{r}
+factor_names_efa_par_d4_46 <- c("BODY", "HEART", "MIND")
+```
+
 First, I will examine the 3-factor solution suggested by parallel analysis.  Importantly, this is also the number of factors retained among US adults and older children in this study.
 
-After rotation, the first factor encompassed both physiological sensations and emotions. An analysis of factor congruence indicated that this factor was most similar to adults' BODY factor (`r cong_report_fun(df_ad = efa_par_d4_ad, df_ch = efa_par_d4_46, factor = "F1", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_par_d4_46, 4, "F1", "pos")`, and accounted for `r round(efa_par_d4_46$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated two-factor solution. 
+After rotation, the first factor corresponded primarily to physiological sensations. An analysis of factor congruence indicated that this factor was most similar to adults' BODY factor (`r cong_report_fun(df_ad = efa_par_d4_ad, df_ch = efa_par_d4_46, factor = "F1", factor_names_ad = factor_names_efa_wdm_d4_ad)`). It was the dominant factor for such items as `r top_n_domCap(efa_par_d4_46, 4, "F1", "pos")`, and accounted for `r round(efa_par_d4_46$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated two-factor solution. 
 
-The second factor corresponded primarily to perceptual-cognitive abilities. An analysis of factor congruence confirmed that this factor was most similar to adults' MIND factor (`r cong_report_fun(df_ad = efa_par_d4_ad, df_ch = efa_par_d4_46, factor = "F2", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_par_d4_46, 4, "F2", "pos")`, and accounted for `r round(efa_par_d4_46$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+The second factor corresponded primarily to perceptual-cognitive abilities. An analysis of factor congruence confirmed that this factor was most similar to adults' MIND factor (`r cong_report_fun(df_ad = efa_par_d4_ad, df_ch = efa_par_d4_46, factor = "F2", factor_names_ad = factor_names_efa_wdm_d4_ad)`). It was the dominant factor for such items as `r top_n_domCap(efa_par_d4_46, 4, "F2", "pos")`, and accounted for `r round(efa_par_d4_46$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
-The third factor corresponded primarily to social-emotional abilities. An analysis of factor congruence confirmed that this factor was most similar to adults' HEART factor (`r cong_report_fun(df_ad = efa_par_d4_ad, df_ch = efa_par_d4_46, factor = "F3", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_par_d4_46, 4, "F3", "pos")`, and accounted for `r round(efa_par_d4_46$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+The third factor corresponded primarily to social-emotional abilities. An analysis of factor congruence confirmed that this factor was most similar to adults' HEART factor (`r cong_report_fun(df_ad = efa_par_d4_ad, df_ch = efa_par_d4_46, factor = "F3", factor_names_ad = factor_names_efa_wdm_d4_ad)`). It was the dominant factor for such items as `r top_n_domCap(efa_par_d4_46, 4, "F3", "pos")`, and accounted for `r round(efa_par_d4_46$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
-See Figure 3.1 for all factor loadings.
+See Figure 3.4 for all factor loadings.
 
 I would describe this conceptual structure as strongly reminiscent of the BODY-HEART-MIND structure found among older children and adults. 
 
@@ -864,21 +980,50 @@ cong_efa_wdm_d4_ad_46 <- fa.congruence(efa_wdm_d4_46$loadings,
 cong_efa_wdm_d4_ad_46
 ```
 
+```{r}
+factor_names_efa_wdm_d4_46 <- c("MIND*", "BODY (nausea)", 
+                                "BODY (other)", "HEART*")
+```
+
 I will now turn to the 4-factor solution suggested by the factor retention criteria employed in the original publication of Study 1 (Weisman et al.'s, 2017).
 
-After rotation, the first factor corresponded primarily to perceptual-cognitive abilities, as well as some positive social-emotional abilities (e.g., _love someone_, _feel happy_). An analysis of factor congruence indicated that this factor was most similar to adults' MIND factor (`r cong_report_fun(df_ad = efa_wdm_d4_ad, df_ch = efa_wdm_d4_46, factor = "F1", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d4_46, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d4_46$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+After rotation, the first factor corresponded primarily to perceptual-cognitive abilities, as well as some positive social-emotional abilities (e.g., _love someone_, _feel happy_). An analysis of factor congruence indicated that this factor was most similar to adults' MIND factor (`r cong_report_fun(df_ad = efa_wdm_d4_ad, df_ch = efa_wdm_d4_46, factor = "F1", factor_names_ad = factor_names_efa_wdm_d4_ad)`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d4_46, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d4_46$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
 
-The second factor corresponded primarily to physiological sensations, with an exceptionall strong factor loading for _feel sick_. An analysis of factor congruence confirmed that this factor was most similar to adults' BODY factor (`r cong_report_fun(df_ad = efa_wdm_d4_ad, df_ch = efa_wdm_d4_46, factor = "F2", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d4_46, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d4_46$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+The second factor corresponded primarily to physiological sensations, with an exceptionall strong factor loading for _feel sick_. An analysis of factor congruence confirmed that this factor was most similar to adults' BODY factor (`r cong_report_fun(df_ad = efa_wdm_d4_ad, df_ch = efa_wdm_d4_46, factor = "F2", factor_names_ad = factor_names_efa_wdm_d4_ad)`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d4_46, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d4_46$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
 
-The third factor also corresponded primarily to phyiological sensations, as well as some perceptual abilties (e.g., _hear_, _see_). An analysis of factor congruence indicated that this factor was most similar to adults' BODY factor (`r cong_report_fun(df_ad = efa_wdm_d4_ad, df_ch = efa_wdm_d4_46, factor = "F3", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d4_46, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d4_46$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution. (See Figure 5, Panel B, for all factor loadings.)
+The third factor also corresponded primarily to phyiological sensations, as well as some perceptual abilties (e.g., _hear_, _see_). An analysis of factor congruence indicated that this factor was most similar to adults' BODY factor (`r cong_report_fun(df_ad = efa_wdm_d4_ad, df_ch = efa_wdm_d4_46, factor = "F3", factor_names_ad = factor_names_efa_wdm_d4_ad)`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d4_46, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d4_46$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution. (See Figure 5, Panel B, for all factor loadings.)
 
-The fourth factor corresponded primarily to social-emotional abilities, particularly negative emotions. An analysis of factor congruence indicated that this factor was most similar to adults' HEART factor (`r cong_report_fun(df_ad = efa_wdm_d4_ad, df_ch = efa_wdm_d4_46, factor = "F4", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d4_46, 4, "F4", "pos")`, and accounted for `r round(efa_wdm_d4_46$Vaccounted["Proportion Explained", "F4"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+The fourth factor corresponded primarily to social-emotional abilities, particularly negative emotions. An analysis of factor congruence indicated that this factor was most similar to adults' HEART factor (`r cong_report_fun(df_ad = efa_wdm_d4_ad, df_ch = efa_wdm_d4_46, factor = "F4", factor_names_ad = factor_names_efa_wdm_d4_ad)`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d4_46, 4, "F4", "pos")`, and accounted for `r round(efa_wdm_d4_46$Vaccounted["Proportion Explained", "F4"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
-See Figure 3.1 for all factor loadings.
+See Figure 3.4 for all factor loadings.
 
 I would summarize the four-factor solution as a variant on the three-factor solutions common to Studies 1a-1d (and surfaced by the other two factor retention protocols for this study), again characterized by distinct constructs of HEART and MIND but demonstrating a further differention of what I've referred to as BODY into sub-categories that are not easy to label or describe.
 
 __CHECK BACK WITH MORE DATA!__
+
+
+```{r}
+plot_efa_wdm_d4_ad <- heatmap_fun(efa_wdm_d4_ad, factor_names_efa_wdm_d4_ad) +
+  labs(title = "Adults", subtitle = "3-factor solution") +
+  theme(legend.position = "none")
+plot_efa_par_d4_46 <- heatmap_fun(efa_par_d4_46, factor_names_efa_par_d4_46) +
+  labs(title = "Younger children, 4-6y", subtitle = "3-factor solution") +
+  theme(legend.position = "none")
+plot_efa_wdm_d4_46 <- heatmap_fun(efa_wdm_d4_46, factor_names_efa_wdm_d4_46) +
+  labs(title = "Younger children, 4-6y", subtitle = "4-factor solution")
+```
+
+```{r}
+figure3.4 <- plot_grid(plot_efa_wdm_d4_ad, plot_efa_par_d4_46,
+                       plot_efa_wdm_d4_46,
+                       labels = "AUTO", ncol = 3, rel_widths = c(1, 1, 1.4))
+
+figure3.4_cap <- add_sub(figure3.4, str_wrap("Figure 3.4: Factor loadings from exploratory factor analyses of Study 4, in which participants assessed two 'edge case' target characters (a beetle and a robot), one after another (with order counterbalanced across participants). (A) Results for US adults. (B) Results for US children ages 4-5y, retaining three factors (as suggested by parallel analysis). (C) Results for US children ages 4-5y, retaining four factors (as suggested by the original factor retention criteria reported in Weisman et al., 2017). In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 9, fig.asp = 0.6}
+ggdraw(figure3.4_cap)
+```
 
 ## Discussion
 
@@ -946,7 +1091,7 @@ This appears to be particularly true with regard to their understanding of socia
 
 # General discussion of conceptual units
 
-__ADD DESCRIPTION OF STUDY 1__
+__XX ADD DESCRIPTION OF STUDY 1__
 
 In three large-scale studies (total _N_=`r nrow(d2_79_wide) + nrow(d3_79_wide) + nrow(d3_46_wide) + nrow(d4_46_wide)/2` children and `r nrow(d2_ad_wide) + nrow(d3_ad_wide) + nrow(d4_ad_wide)/2` adults), I set out to expore the development of US children's conceptual representations of mental life between 4-9y of age. These studies suggest that these representations undergo substantial development over the course of early and middle childhood—in two distinct senses. 
 
