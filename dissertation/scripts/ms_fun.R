@@ -86,6 +86,32 @@ loadings_summarize_fun <- function(efa, abs = TRUE){
   return(loadings)
 }
 
+# function for writing up factor congruence
+cong_report_fun <- function(df_ad, df_ch, factor, 
+                            factor_names_ad = c("Factor 1", "Factor 2", 
+                                                "Factor 3")){
+  cong <- fa.congruence(df_ch$loadings, df_ad$loadings, digits = 4)
+  cong <- cong[factor,]
+  names(cong) <- factor_names_ad
+  
+  max_factor <- which(cong == max(cong)) %>% names()
+  mid_factor <- which(cong != max(cong) & cong != min(cong)) %>% names()
+  min_factor <- which(cong == min(cong)) %>% names()
+  
+  max_val <- cong[max_factor] %>% as.numeric() %>% 
+    round(2) %>% format(nsmall = 2)
+  mid_val <- cong[mid_factor] %>% as.numeric() %>%
+    round(2) %>% format(nsmall = 2)
+  min_val <- cong[min_factor] %>% as.numeric() %>%
+    round(2) %>% format(nsmall = 2)
+  
+  string <- paste0("cosine similarity with ", max_factor, ": ", max_val, 
+                   "; with ", mid_factor, ": ", mid_val,
+                   "; with ", min_factor, ": ", min_val)
+  
+  return(string)
+}
+
 # function for getting write-up of brms model results
 write_b_95CI_fun <- function(model, param, round_n = 2){
   fixef <- fixef(model) %>% round(round_n) %>% format(nsmall = round_n)
