@@ -169,6 +169,8 @@ reten_report_bystudy
 
 In Study 1a, `r nrow(d1a_ad_wide)` US adults each assessed a single target character on 40 mental capacities. This study employed the "edge case" variant of the general approach, with participants randomly assigned to assess either a beetle or a robot. (See Chapter II and Weisman et al., 2017, for detailed methods.)
 
+#### How many conceptual units?
+
 ```{r}
 reten_report["Study 1a",]
 ```
@@ -218,9 +220,26 @@ table3.1 <- reten_report %>%
 table3.1
 ```
 
+#### What are these conceptual units?
+
+After rotation, the first factor corresponded primarily to physiological sensations related to biological needs—a suite of capacities that I will refer to as _BODY_ (a label we employed in our original reporting of this study; Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1a_ad, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d1a_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+
+The second factor corresponded primarily to capacities for self- and other-relevant emotions—a suite of capacities that I will refer to as _HEART_ (as in Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1a_ad, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d1a_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+
+The third factor corresponded primarily to perceptual-cognitive abilities to detect and use information about the environment—a suite of capacities that I will refer to as _MIND_ (as in Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1a_ad, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d1a_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
+
+See Figure 3.1 for all factor loadings. 
+
+```{r}
+# INSERT FIGURE 3.1 HERE
+# include in caption: To ease comparison across studies I have plotted these factors in the same order for all studies: _BODY_, _HEART_, and _MIND_.
+```
+
 ### Study 1b
 
 Study 1b was a direct replication of Study 1a: `r nrow(d1b_ad_wide)` US adults each assessed a single target character (either a beetle or a robot) on 40 mental capacities. (See Chapter II and Weisman et al., 2017, for detailed methods.)
+
+#### How many conceptual units?
 
 ```{r}
 reten_report["Study 1b",]
@@ -263,10 +282,21 @@ Likewise, minimizing BIC analysis suggested retaining five factors, but three of
 
 Given all this, I will again focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 4- and 5-factor solutions).
 
+#### What are these conceptual units?
+
+After rotation, the first factor corresponded primarily to the physiological sensations that I labeled _BODY_ in Study 1a (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1b_ad, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d1b_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+
+The second factor corresponded primarily to the social-emotional abilities that I labeled _HEART_ in Study 1a (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1b_ad, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d1b_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+
+The third factor corresponded primarily to the perceptual-cognitive abilities that I referred to as _MIND_ in Study 1a (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1b_ad, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d1b_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
+
+See Figure 3.1 for all factor loadings.
 
 ### Study 1c
 
 In Study 1c, `r nrow(d1c_ad_wide)/2` US adults each assessed two target characters on 40 mental capacities. Like Studies 1a and 1b, this study employed the "edge case" variant of the general approach; but in this study, all participants assessed both of these target characters side by side (with left-right position counterbalaned across participants). (See Chapter II and Weisman et al., 2017, for detailed methods.)
+
+#### How many conceptual units?
 
 ```{r}
 reten_report["Study 1c",]
@@ -287,9 +317,21 @@ loadings_summarize_fun(efa_bic_d1c_ad) %>%
 
 Two of our three protocols for determining how many factors to retain (parallel analysis and the factor retention criteria reported in our original publication of Studies 1c-1d; Weisman et al., 2017) suggested retaining three factors, while the third (minimizing BIC) suggested retaining five factors; see Table 3.1. However, much as in Studies 1a and 1b, three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d1c_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth factor accounted for only `r efa_bic_d1c_ad$Vaccounted["Proportion Explained", "F4"] %>% round(2) * 100`% of the shared variance, was not the dominant factor for any of the 40 mental capacities included in this study, with small factor loadings for all capacities (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1c_ad) %>% filter(factor == "F4"))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will again focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 4-factor solution).
 
+#### What are these conceptual units?
+
+After rotation, the first factor corresponded primarily to the physiological sensations that I labeled _BODY_ in Studies 1a and 1b (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1c_ad, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d1c_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+
+The second factor corresponded primarily to the social-emotional abilities that I labeled _HEART_ in Studies 1a and 1b (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1c_ad, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d1c_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+
+The third factor corresponded primarily to the perceptual-cognitive abilities that I referred to as _MIND_ in Studies 1a and 1b (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1c_ad, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d1c_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
+
+See Figure 3.1 for all factor loadings.
+
 ### Study 1d
 
 In Study 1d, `r nrow(d1d_ad_wide)` US adults each assessed a single target character on 40 mental capacities. Unlike Studies 1a-1c, this study employed the "many characters" variant of the general approach, in which participants were randomly assigned to assess one of the following 21 target characters: an adult, a child, an infant, a person in a persistent vegetative state, a fetus, a chimpanzee, an elephant, a dolphin, a bear, a dog, a goat, a mouse, a frog, a blue jay, a fish, a beetle, a microbe, a robot, a computer, a car, or a stapler. (See Chapter II and Weisman et al., 2017, for detailed methods.)
+
+#### How many conceptual units?
 
 ```{r}
 reten_report["Study 1d",]
@@ -332,6 +374,16 @@ Likewise, minimizing BIC analysis suggested retaining five factors, but three of
 
 Given all this, I will once more focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 4- and 5-factor solutions).
 
+#### What are these conceptual units?
+
+After rotation, the first factor corresponded primarily to the physiological sensations that I labeled _BODY_ in Studies 1a-1c (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1d_ad, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d1d_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+
+The second factor corresponded primarily to the social-emotional abilities that I labeled _HEART_ in Studies 1a-1c (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1d_ad, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d1d_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+
+The third factor corresponded primarily to the perceptual-cognitive abilities that I referred to as _MIND_ in Studies 1a-1c (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d1d_ad, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d1d_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
+
+See Figure 3.1 for all factor loadings.
+
 ## Discussion
 
 
@@ -344,6 +396,8 @@ In Study 2, `r nrow(d2_ad_wide)` US adults and `r nrow(d2_79_wide)` US children 
 ## Results
 
 ### Adults
+
+#### How many conceptual units?
 
 ```{r}
 reten_report["Study 2: Adults",]
@@ -364,11 +418,35 @@ loadings_summarize_fun(efa_par_d2_ad) %>%
 
 Two of our three protocols for determining how many factors to retain (minimizing BIC and the factor retention criteria employed in our original publication of Study 1; Weisman et al., 2017) suggested retaining three factors, while the third (parallel analysis) suggested retaining four factors; see Table 3.1. Unlike in Studies 1a-1d, in which factors beyond the first three uniformly accounted for very small amounts of the shared variance, were not the dominant factor for any mental capacities, and tended to have small factor loadings for all mental capacities, none of these considerations clearly rules out the fourth factor suggested by parallel analysis. Given this, I will present and interpret both 3- and 4-factor solutions.
 
-#### 3-factor solution
+#### What are these conceptual units?
 
-#### 4-factor solution
+##### 3-factor solution
+
+First, I will examine the 3-factor solution suggested by minimizing BIC and by the factor retention criteria employed in the original publication of Study 1 (Weisman et al.'s, 2017). Importantly, this is the number of factors retained among US adults in all four of the samples included in Study 1.
+
+After rotation, the first factor corresponded primarily to the social-emotional abilities that I labeled _HEART_ in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d2_ad, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d2_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+
+The second factor corresponded primarily to the physiological sensations that I labeled _BODY_ in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d2_ad, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d2_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+
+The third factor corresponded primarily to the perceptual-cognitive abilities that I referred to as _MIND_ in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d2_ad, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d2_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
+
+See Figure 3.1 for all factor loadings. (Note that to ease comparison across studies I have plotted these factors in the same order for all studies: _BODY_, _HEART_, and _MIND_.)
+
+##### 4-factor solution
+
+In the four-factor solution suggested by parallel analysis, after rotation, the first factor corresponded primarily to the physiological sensations that I labeled _BODY_ in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_par_d2_ad, 4, "F1", "pos")`, and accounted for `r round(efa_par_d2_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+
+The second factor corresponded primarily to the social-emotional abilities that I labeled _HEART_ in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_par_d2_ad, 4, "F2", "pos")`, and accounted for `r round(efa_par_d2_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+
+The third factor corresponded primarily to the more "cognitive" of the so-called "perceptual-cognitive" abilities that I referred to as _MIND_ in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_par_d2_ad, 4, "F3", "pos")`, and accounted for `r round(efa_par_d2_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
+
+The fourth factor corresponded primarily to the more "perceptual" of the so-called "perceptual-cognitive" abilities that I referred to as _MIND_ in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_par_d2_ad, 4, "F4", "pos")`, and accounted for `r round(efa_par_d2_ad$Vaccounted["Proportion Explained", "F4"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
+
+See Figure 3.1 for all factor loadings.
 
 ### Children (7-9y)
+
+#### How many conceptual units?
 
 ```{r}
 reten_report["Study 2: Children",]
@@ -382,18 +460,32 @@ efa_wdm_d2_79 <- fa_fun(d2_79_wide_i, reten_report["Study 2: Children", "wdm"])
 
 All three protocols for determining how many factors to retain suggested retaining three factors; see Table 3.1.
 
+#### What are these conceptual units?
+
+As in the three-factor solution for the adult sample, after rotation the first factor corresponded primarily to the social-emotional abilities that I labeled _HEART_ in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d2_79, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d2_79$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+
+The second factor corresponded primarily to the physiological sensations that I labeled _BODY_ in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d2_79, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d2_79$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+
+The third factor corresponded primarily to the perceptual-cognitive abilities that I referred to as _MIND_ in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d2_79, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d2_79$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
+
+See Figure 3.1 for all factor loadings. (Note that to ease comparison across studies I have plotted these factors in the same order for all studies: _BODY_, _HEART_, and _MIND_.)
+
+__ADD CONGRUENCE! look at ms file for templates__
+
 ## Discussion
 
 
 # Study 3: Conceptual change over early and middle childhood (4-9y)
 
-In Study 3, `r nrow(d3_ad_wide)` US adults, `r nrow(d3_79_wide)` "older" children (`r summary(d3_79$age)["Min."] %>% round(2)`-`r summary(d3_79$age)["Max."] %>% round(2)` years; median: `r summary(d3_79$age)["Median"] %>% round(2)`y), and `r nrow(d3_46_wide)` "younger" children (`r summary(d3_46$age)["Min."] %>% round(2)`-`r summary(d3_46$age)["Max."] %>% round(2)` years; median: `r summary(d3_46$age)["Median"] %>% round(2)`y) each assessed a single target character on 20 mental capacities. To make the study appropriate for children in this age range, participants assessed a subset of the 40 mental capacities employed in Study 2, chosen to represent the three "conceptual units" revealed by Studies 1-2 (BODY, HEART, and MIND) and to cover a similar range of mental capacities as Studies 1-2. As in Study 2, participants responded on a 3-point scale ("no," coded as 0; "kinda," coded as 0.5, "yes," coded as 1). This study employed the "diverse characters" variant of the general approach, with participants randomly or pseudo-randomly assigned to assess either one of the following 9 characters: an elephant, a goat, a mouse, a bird, a beetle, a teddy bear, a doll, a robot, or a computer. (See Chapter II for detailed methods.)
+In Study 3, `r nrow(d3_ad_wide)` US adults, `r nrow(d3_79_wide)` "older" children (`r summary(d3_79$age)["Min."] %>% round(2)`-`r summary(d3_79$age)["Max."] %>% round(2)` years; median: `r summary(d3_79$age)["Median"] %>% round(2)`y), and `r nrow(d3_46_wide)` "younger" children (`r summary(d3_46$age)["Min."] %>% round(2)`-`r summary(d3_46$age)["Max."] %>% round(2)` years; median: `r summary(d3_46$age)["Median"] %>% round(2)`y) each assessed a single target character on 20 mental capacities. To make the study appropriate for children in this age range, participants assessed a subset of the 40 mental capacities employed in Study 2, chosen to represent the three "conceptual units" revealed by Studies 1-2 (_BODY_, _HEART_, and _MIND_) and to cover a similar range of mental capacities as Studies 1-2. As in Study 2, participants responded on a 3-point scale ("no," coded as 0; "kinda," coded as 0.5, "yes," coded as 1). This study employed the "diverse characters" variant of the general approach, with participants randomly or pseudo-randomly assigned to assess either one of the following 9 characters: an elephant, a goat, a mouse, a bird, a beetle, a teddy bear, a doll, a robot, or a computer. (See Chapter II for detailed methods.)
 
 ## Special notes on data processing and analysis
 
 ## Results
 
 ### Adults
+
+#### How many conceptual units?
 
 ```{r}
 reten_report["Study 3: Adults",]
@@ -414,7 +506,19 @@ loadings_summarize_fun(efa_bic_d3_ad) %>%
 
 Two of our three protocols for determining how many factors to retain (parallel analysis and the factor retention criteria employed in our original publication of Study 1; Weisman et al., 2017) suggested retaining three factors, while the third (minimizing BIC) suggested retaining four factors; see Table 3.1. However, much as in Studies 1a-1d, three of the four factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d3_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth factor accounted for only `r efa_bic_d3_ad$Vaccounted["Proportion Explained", "F4"] %>% round(2) * 100`% of the shared variance, was the dominant factor for only one of the 40 mental capacities included in this study (`r top_n_domCap(efa_bic_d3_ad, n = 1, "F4", abs_pos = "abs")`), and had moderately small factor loadings for all capacities (absolute loadings all $<$ `r efa_bic_d3_ad %>% loadings_fun() %>% filter(capacity != "feel happy", factor == "F4") %>% summarise(max_abs = max(abs(loading))) %>% as.numeric() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will again focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 4-factor solution).
 
+#### What are these conceptual units?
+
+After rotation, the first factor corresponded primarily to the physiological sensations that I labeled _BODY_ in Studies 1-2 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_ad, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d3_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+
+The second factor corresponded primarily to the social-emotional abilities that I labeled _HEART_ in Studies 1-2 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_ad, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d3_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+
+The third factor corresponded primarily to the perceptual-cognitive abilities that I referred to as _MIND_ in Studies 1-2 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_ad, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d3_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
+
+See Figure 3.1 for all factor loadings.
+
 ### Older children (7-9y)
+
+#### How many conceptual units?
 
 ```{r}
 reten_report["Study 3: Older children",]
@@ -431,7 +535,21 @@ efa_wdm_d3_79 <- fa_fun(d3_79_wide_i,
 
 As was the case among this age group in Study 2, all three protocols for determining how many factors to retain suggested retaining three factors; see Table 3.1.
 
+#### What are these conceptual units?
+
+As in the adult sample, after rotation the first factor corresponded primarily to the physiological sensations that I labeled _BODY_ in Studies 1-2 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_79, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d3_79$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+
+The second factor corresponded primarily to the social-emotional abilities that I labeled _HEART_ in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_79, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d3_79$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+
+The third factor corresponded primarily to the perceptual-cognitive abilities that I referred to as _MIND_ in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_79, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d3_79$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
+
+See Figure 3.1 for all factor loadings.
+
+__ADD CONGRUENCE! look at ms file for templates__
+
 ### Younger children (4-6y)
+
+#### How many conceptual units?
 
 ```{r}
 reten_report["Study 3: Younger children",]
@@ -477,9 +595,33 @@ The retention criteria employed in our original publication of Study 1; Weisman 
 
 Given all this, I will present and interpret both 2- and 3-factor solutions (but see [XX APPENDIX?] for the null, 1-factor solution suggested by minimizing BIC).
 
-#### 2-factor solution
+#### What are these conceptual units?
 
-#### 3-factor solution
+##### 2-factor solution
+
+First, I will examine the 2-factor solution suggested by parallel analysis. After rotation the first factor corresponded to a combination of physiological sensations (_BODY_) and social-emotional abilties (_HEART_). It was the dominant factor for such items as `r top_n_domCap(efa_par_d3_46, 4, "F1", "pos")`, and accounted for `r round(efa_par_d3_46$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+
+The second factor corresponded primarily to perceptual-cognitive abilities (_MIND_). It was the dominant factor for such items as `r top_n_domCap(efa_par_d3_46, 4, "F2", "pos")`, and accounted for `r round(efa_par_d3_46$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+
+__ADD CONGRUENCE! look at ms file for templates__
+
+See Figure 3.1 for all factor loadings.
+
+##### 3-factor solution
+
+Now I will examine the 3-factor solution suggested by the factor retention criteria employed in the original publication of Study 1 (Weisman et al.'s, 2017). Importantly, this is also the number of factors retained among US adults and older children in this study.
+
+__BOOKMARK__
+
+After rotation, the first factor corresponded primarily to XX. It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_46, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d3_46$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+
+The second factor corresponded primarily to XX. It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_46, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d3_46$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+
+The third factor corresponded primarily to XX. It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_46, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d3_46$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
+
+See Figure 3.1 for all factor loadings. (Note that to ease comparison across studies I have plotted these factors in the same order for all studies: _BODY_, _HEART_, and _MIND_.)
+
+__ADD CONGRUENCE! look at ms file for templates__
 
 ## Discussion
 
@@ -490,7 +632,7 @@ In Study 4, `r nrow(d4_ad_wide)/2` US adults and `r nrow(d4_46_wide)/2` US child
 
 As briefly described in Chapter II, the 18 mental capacities employed in Study 4 were selected from a larger pilot study in which 3- to 5-year-old children were asked to complete stories that began with each of these mental capacities as a premise (e.g., "Let's imagine a person who _loves someone_. What happens next?"; "Now let's pretend that someone _remembers something_. What happens next?") and were judged on the appropriateness of their story completion. 
 
-Among the items that emerged from this pilot study as reasonable candidates for inclusion in Study 4, I selected items to represented the three "conceptual units" revealed by Studies 1-3 (BODY, HEART, and MIND). The goal here was to create a conservative test of developmental differences between younger and older children in the "conceptual units" observed in Study 3, by constructing materials that should maximize the chances of observing the same (or similar) conceptual units among young children as were observed among older children and adults in Studies 1-3. If 4- to 5-year-old children in fact have access to conceptual units similar to BODY, HEART, and MIND, the mental capacities (and generally child-friend protocol) of Study 4 should provide the best chances of surfaces this conceptual structure. Conversely, if Study 4 reveals differences in conceptual structure despite these modifications, and despite "stacking the odds" against developmental differences in the selction of mental capacities, this provides stronger evidence for conceptual change in the number and/or kind of conceptual units available to children at different points in development.
+Among the items that emerged from this pilot study as reasonable candidates for inclusion in Study 4, I selected items to represented the three "conceptual units" revealed by Studies 1-3 (_BODY_, _HEART_, and _MIND_). The goal here was to create a conservative test of developmental differences between younger and older children in the "conceptual units" observed in Study 3, by constructing materials that should maximize the chances of observing the same (or similar) conceptual units among young children as were observed among older children and adults in Studies 1-3. If 4- to 5-year-old children in fact have access to conceptual units similar to _BODY_, _HEART_, and _MIND_, the mental capacities (and generally child-friend protocol) of Study 4 should provide the best chances of surfaces this conceptual structure. Conversely, if Study 4 reveals differences in conceptual structure despite these modifications, and despite "stacking the odds" against developmental differences in the selction of mental capacities, this provides stronger evidence for conceptual change in the number and/or kind of conceptual units available to children at different points in development.
 
 ## Special notes on data processing and analysis
 
@@ -499,6 +641,8 @@ In Study 4, participants assessed two target characaters side by side (in contra
 ## Results
 
 ### Adults
+
+#### How many conceptual units?
 
 ```{r}
 reten_report["Study 4: Adults",]
@@ -512,7 +656,11 @@ efa_wdm_d4_ad <- fa_fun(d4_ad_wide_i, reten_report["Study 4: Adults", "wdm"])
 
 All three protocols for determining how many factors to retain suggested retaining three factors; see Table 3.1.
 
+#### What are these conceptual units?
+
 ### Children (4-5y)
+
+#### How many conceptual units?
 
 ```{r}
 reten_report["Study 4: Children",]
@@ -555,9 +703,11 @@ The retention criteria used in Weisman et al. (2017) suggested retaining three f
 
 Given all this, I will present and interpret both 3- and 4-factor solutions (but see [XX APPENDIX?] for the null, 1-factor solution suggested by minimizing BIC).
 
-#### 3-factor solution
+#### What are these conceptual units?
 
-#### 4-factor solution
+##### 3-factor solution
+
+##### 4-factor solution
 
 ## Discussion
 
