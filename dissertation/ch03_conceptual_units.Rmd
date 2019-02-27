@@ -30,6 +30,7 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 
 ```{r}
 # supporting functions
+source("./scripts/efa_param.R")
 source("./scripts/max_factors_efa.R")
 source("./scripts/reten_fun.R")
 source("./scripts/plot_fun.R")
@@ -68,29 +69,7 @@ In other words, my goal in the current chapter is to uncover a set of latent con
 In the remainder of this chapter, I report EFAs for each age group included in each of the current studies (Studies 1-4). Conducting an EFA requires making a variety of analysis choices, including how to handle missing data, what kind of correlations to use, the choice of factoring algorithm, how to determine the number of factors to retain, the choice of rotation method (if any), and the method for calculating factor scores. In the analysis code for this chapter I have included easy short-cuts for the interest reader to explore different options for each of these parameters. Here, I have set all of these parameters to be constant across EFAs of different samples so as to maximize comparability across studies:
 
 ```{r}
-# what correlation to use
-chosen_cor <- "cor" # REPORTED
-# chosen_cor <- "poly" # alternative option
-
-# what rotation to use
-chosen_rot <- "varimax" # REPORTED
-# chosen_rot <- "oblimin" # alternative option
-
-# what factoring method to use
-chosen_fm <- "minres" # REPORTED (minimum residuals)
-# chosen_fm <- "ols" # ordinary least squares using empirical first derivative
-# chosen_fm <- "wls" # weighted least squares
-# chosen_fm <- "gls" # generalized weighted least squares
-# chosen_fm <- "pa" # principal factors
-# chosen_fm <- "ml" # maximum likelihood
-# chosen_fm <- "minchi" # minimize ss-weighted chisq
-# chosen_fm <- "minrank" # minimum rank
-# chosen_fm <- "old.min" # minres < April 2017
-# chosen_fm <- "alpha" # alpha fa (Kaiser & Coffey, 1965)
-
-# what scoring method to use
-chosen_scores <- "tenBerge" # REPORTED
-# chosen_scores <- "regression" # alternative option
+# see "./scripts/efa_param.R" for parameter setting
 ```
 
 ```{r}
@@ -107,7 +86,7 @@ for(i in list(d1a_ad_wide, d1b_ad_wide, d1c_ad_wide, d1d_ad_wide,
 - _Correlation type_: I conduct analyses over Pearson correlations among mental capacity attributions, using pairwise complete observations. In principle, polychoric correlations are better suited to handle responses on the three-point scales employed in Studies 2-4; however, in my experience with these data, conducting EFAs with polychoric correlations instead of Pearson correlations tends to generate errors further down the analysis pipeline (e.g., generating correlation matrices that are not positive definite) and appears to be somewhat vulnerable to over-fitting (e.g., suggesting retaining many factors that each accounted for only a very small amount of the shared variance).
 - _Factoring algorithm_: I use ordinary least squares to find the minimum residual solution, which is robust to a variety of ways that matrices can be "badly behaved" (see Revelle, 2018). While this dissertation does not include a systematic exploration of all of the factoring algorithms available when conducting EFA, in my casual explorations of the various algorithms available I have yet to observe any substantial differences to the number of factors retained or to the resulting solutions that would change the interpretations offered here.
 - _Factor retention protocol_: I examine the results of three factor retention protocols: (1) Parallel Analysis, which compares the observed correlation structure to the correlation structure arising from random datasets of the same size; (2) Minimizing the Bayesian Information Criterion (BIC), which is one method of optimizing both goodness of fit and parsimony; and (3) The factor retention protocol reported in the original publication of Study 1 (Weisman et al., 2017), which specifies extracting the maximal number of factors according to an analysis of degrees of freedom and retaining factors that meet all three of the following criteria: (a) have eigenvalues $>$ 1.00, (b) individually account for $>$ 5% of the shared variance before rotation, and (c) are the "dominant" factor (the factor with the strongest absolute factor loading) for at least 1 mental capacity after rotation. For each study, my interpretation of how best to characterize the dataset (i.e., how many factors I observed) is determined by the degree of consensus among these three protocols and by the interpretability of the retained factors under each protocol (e.g., the percent of shared variance explained by each factor, the strength of factor loadings for each factor, and my subjective assessment of the ease with which I can identify the "latent construct" captured by each factor). See Table 3.1 for the results of all factor retention protocols for all studies and samples.
-- _Rotation_: To maximize interpretability factors, I present varimax-rotated solutions, which constrain all factors to be orthogonal. (For solutions using oblique ["oblimin"] rotations, which allow for correlated factors, [XX SEE APPENDIX?].)
+- _Rotation_: To maximize interpretability, I present varimax-rotated solutions, in which factors are constrained to be orthogonal (i.e., inter-factor correlations are constrained to be 0). (For solutions using "oblimin" rotations, in which factors are allowed to correlate, [XX SEE APPENDIX?].)
 - _Factor scores_: I use the method developed by ten Berge, Krijnen, Wansbeek, & Shapiro (1999) to calculate factor scores, as suggested by Revelle (2018). (I include this parameter here for completeness; this chapter does not include any analyses of factor scores.)
 
 To conduct these EFAs, I use the "psych" package for R (Revelle, 2018).
@@ -121,9 +100,9 @@ __NOTE TO SELF: CHECK SAMPLE SIZES AGAINST PNAS PAPER. EXCLUSION CRITERIA??__
 
 ## Special notes on data processing and analysis
 
-As noted in Chapter II, in the original analysis of these datasets responses were recoded to run from -3 to +3 before analyses (Weisman et al., 2017); in this dissertation, I maintain the 0-6 coding for comparability to Studies 2-4.
+As noted in Chapter II, in the original analysis of Studies 1a-1d responses were recoded to run from -3 to +3 before analyses (Weisman et al., 2017); in this dissertation, I maintain the 0-6 coding for comparability to Studies 2-4. 
 
-In Study 1c, participants assessed two target characaters side by side (in contrast to Studies 1a, 1b, and 1d, in which each participant assessed just one target character). In the current analyses, I treat each participant's assessments of each target character as a separate set of observations (as if they came from different participants), in effect doubling the sample size for these studies (but ignoring the within-subject design). ([XX SEE APPENDIX?] for separate EFAs of the participants' responses to the first target character that they were assigned to rate vs. the second character.)
+Finally, on Study 1c, participants assessed two target characaters side by side (in contrast to Studies 1a, 1b, and 1d, in which each participant assessed just one target character). In the current analyses (as in the original publication of these results; Weisman et al., 2017), I treat each participant's assessments of each target character as a separate set of observations (as if they came from different participants), in effect doubling the sample size for these studies (but ignoring the within-subject design). ([XX SEE APPENDIX?] for separate EFAs of the participants' responses to the first target character that they were assigned to rate vs. the second character.)
 
 ## Results
 
@@ -192,7 +171,9 @@ loadings_summarize_fun(efa_bic_d1a_ad) %>%
   mutate_at(vars(-factor), funs(round(., 2)))
 ```
 
-Two of the three protocols for determining how many factors to retain (parallel analysis and the factor retention criteria reported in the original publication of Studies 1a-1d; Weisman et al., 2017) suggested retaining three factors, while the third (minimizing BIC) suggested retaining five factors; see Table 3.1. However, three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d1a_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth and fifth factors each accounted for $<$ `r efa_bic_d1a_ad$Vaccounted["Proportion Explained", c("F4", "F5")] %>% max() %>% ceiling_dec(2) * 100`% of the shared variance, and neither was the dominant factor for any of the 40 mental capacities included in this study. Indeed, factor loadings for these two factors were all quite small (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1a_ad) %>% filter(factor %in% c("F4", "F5")))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 5-factor solution).
+Two of the three protocols for determining how many factors to retain (parallel analysis and the factor retention criteria reported in the original publication of Studies 1a-1d; Weisman et al., 2017) suggested retaining three factors, while the third (minimizing BIC) suggested retaining five factors; see Table 3.1. 
+
+However, three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors suggested by the other protocols, and even in the 5-factor solution these three factors together accounted for fully `r efa_bic_d1a_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth and fifth factors each accounted for $<$ `r efa_bic_d1a_ad$Vaccounted["Proportion Explained", c("F4", "F5")] %>% max() %>% ceiling_dec(2) * 100`% of the shared variance, and neither was the dominant factor for any of the 40 mental capacities included in this study. Indeed, factor loadings for these two factors were all quite small (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1a_ad) %>% filter(factor %in% c("F4", "F5")))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 5-factor solution).
 
 ```{r}
 table3.1 <- reten_report %>%

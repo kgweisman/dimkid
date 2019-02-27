@@ -30,6 +30,7 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 
 ```{r}
 # supporting functions
+source("./scripts/efa_param.R")
 source("./scripts/max_factors_efa.R")
 source("./scripts/reten_fun.R")
 source("./scripts/plot_fun.R")
@@ -47,31 +48,6 @@ source("./scripts/data_s4_ad.R")
 source("./scripts/data_s4_46.R")
 ```
 
-```{r}
-# what correlation to use
-chosen_cor <- "cor" # REPORTED
-# chosen_cor <- "poly" # alternative option
-
-# what rotation to use
-chosen_rot <- "varimax" # REPORTED
-# chosen_rot <- "oblimin" # alternative option
-
-# what factoring method to use
-chosen_fm <- "minres" # REPORTED (minimum residuals)
-# chosen_fm <- "ols" # ordinary least squares using empirical first derivative
-# chosen_fm <- "wls" # weighted least squares
-# chosen_fm <- "gls" # generalized weighted least squares
-# chosen_fm <- "pa" # principal factors
-# chosen_fm <- "ml" # maximum likelihood
-# chosen_fm <- "minchi" # minimize ss-weighted chisq
-# chosen_fm <- "minrank" # minimum rank
-# chosen_fm <- "old.min" # minres < April 2017
-# chosen_fm <- "alpha" # alpha fa (Kaiser & Coffey, 1965)
-
-# what scoring method to use
-chosen_scores <- "tenBerge" # REPORTED
-# chosen_scores <- "regression" # alternative option
-```
 
 # Chapter overview
 
