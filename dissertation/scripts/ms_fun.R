@@ -1,3 +1,6 @@
+# make sure to load libraries
+library(ggrepel)
+
 # 'ceiling' and 'floor' functions for n decimal places
 # from https://stackoverflow.com/questions/35807523/r-decimal-ceiling
 floor_dec <- function(x, level=1){round(x - 5*10^(-level-1), level)}
@@ -119,6 +122,16 @@ cong_report_fun <- function(efa_ad, efa_ch, factor,
                    "; with ", min_factor, ": ", min_val)
   
   return(string)
+}
+
+# function for getting % shared variance explained
+vac_fun <- function(efa, factor_names, which_stat = "Proportion Explained"){
+  efa$Vaccounted %>%
+    data.frame() %>%
+    rownames_to_column("stat") %>%
+    filter(stat == which_stat) %>%
+    gather(factor, value, -stat) %>%
+    mutate(factor = factor(factor, labels = factor_names))
 }
 
 # function for getting write-up of brms model results

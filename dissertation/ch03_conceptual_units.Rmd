@@ -1114,6 +1114,116 @@ table3.2 <- cong_report %>%
 table3.2
 ```
 
+```{r}
+vexp_report <- bind_rows(
+  # study 1
+  vac_fun(efa_wdm_d1a_ad, factor_names_efa_wdm_d1a_ad) %>%
+    mutate(order = 1, study = "Study 1a",
+           sample = "1a", solution = "3-factor"),
+  vac_fun(efa_wdm_d1b_ad, factor_names_efa_wdm_d1b_ad) %>%
+    mutate(order = 1, study = "Study 1b",
+           sample = "1b", solution = "3-factor"),
+  vac_fun(efa_wdm_d1c_ad, factor_names_efa_wdm_d1c_ad) %>%
+    mutate(order = 1, study = "Study 1c",
+           sample = "1c", solution = "3-factor"),
+  vac_fun(efa_wdm_d1d_ad, factor_names_efa_wdm_d1d_ad) %>%
+    mutate(order = 1, study = "Study 1d",
+           sample = "1d", solution = "3-factor"),
+  # study 2
+  vac_fun(efa_wdm_d2_ad, factor_names_efa_wdm_d2_ad) %>%
+    mutate(order = 1, study = "Study 2",
+           sample = "adults", solution = "3-factor"),
+  vac_fun(efa_par_d2_ad, factor_names_efa_par_d2_ad) %>%
+    mutate(order = 2, study = "Study 2",
+           sample = "adults", solution = "4-factor"),
+  vac_fun(efa_wdm_d2_79, factor_names_efa_wdm_d2_79) %>%
+    mutate(order = 3, study = "Study 2",
+           sample = "7-9y", solution = "3-factor"),
+  # study 3
+  vac_fun(efa_wdm_d3_ad, factor_names_efa_wdm_d3_ad) %>%
+    mutate(order = 1, study = "Study 3",
+           sample = "adults", solution = "3-factor"),
+  vac_fun(efa_wdm_d3_79, factor_names_efa_wdm_d3_79) %>%
+    mutate(order = 3, study = "Study 3",
+           sample = "7-9y", solution = "3-factor"),
+  vac_fun(efa_wdm_d3_46, factor_names_efa_wdm_d3_46) %>%
+    mutate(order = 5, study = "Study 3",
+           sample = "4-6y", solution = "3-factor"),
+  vac_fun(efa_par_d3_46, factor_names_efa_par_d3_46) %>%
+    mutate(order = 4, study = "Study 3",
+           sample = "4-6y", solution = "2-factor"),
+  # study 4
+  vac_fun(efa_wdm_d4_ad, factor_names_efa_wdm_d4_ad) %>%
+    mutate(order = 1, study = "Study 4",
+           sample = "adults", solution = "3-factor"),
+  vac_fun(efa_par_d4_46, factor_names_efa_par_d4_46) %>%
+    mutate(order = 5, study = "Study 4",
+           sample = "4-5y", solution = "3-factor"),
+  vac_fun(efa_wdm_d4_46, factor_names_efa_wdm_d4_46) %>%
+    mutate(order = 6, study = "Study 4",
+           sample = "4-5y", solution = "4-factor")) %>%
+  # all studies
+  mutate(ur_factor = case_when(factor == "BODY-HEART" ~ "BODY-HEART",
+                               grepl("BODY", factor) ~ "BODY",
+                               grepl("HEART", factor) ~ "HEART",
+                               grepl("MIND", factor) ~ "MIND"),
+         ur_factor = factor(ur_factor, 
+                            levels = c("BODY", "BODY-HEART", 
+                                       "HEART", "MIND")),
+         ur_factor_pos = recode(ur_factor,
+                                "BODY" = 1, "BODY-HEART" = 1.5,
+                                "HEART" = 2, "MIND" = 3),
+         age_group = case_when(
+           sample %in% c("adults", "1a", "1b", "1c", "1d") ~ "Adults",
+           sample == "7-9y" ~ "Children, 7-9y",
+           sample %in% c("4-6y", "4-5y") ~ "Children, 4-6y"),
+         age_group = factor(age_group,
+                            levels = c("Adults", "Children, 7-9y",
+                                       "Children, 4-6y")))
+```
+
+```{r}
+pos <- position_jitter(width = 0.1, seed = 2)
+
+figure3.5 <- vexp_report %>%
+  mutate(solution = paste0(solution, " solution"),
+         lab = case_when(
+           (solution == "4-factor solution") & 
+             ((study == "Study 2" & ur_factor == "MIND") | 
+                (study == "Study 4" & ur_factor == "BODY")) ~ 
+             factor,
+           ur_factor == "BODY-HEART" ~ factor,
+           TRUE ~ NA_character_)) %>%
+  arrange(study, sample, ur_factor, factor) %>%
+  ggplot(aes(x = ur_factor_pos, y = value, color = study)) +
+  facet_grid(solution ~ age_group, scales = "free_y") +
+  geom_hline(data = data.frame(solution = c("2-factor solution",
+                                            "3-factor solution",
+                                            "4-factor solution"),
+                               equal = c(1/2, 1/3, 1/4)),
+             aes(x = NULL, y = NULL, color = NULL, yintercept = equal),
+             size = 0.25, lty = 2, show.legend = F) +
+  geom_path(aes(group = study), position = pos, alpha = 0.5, show.legend = F) +
+  geom_point(position = pos, show.legend = T) +
+  geom_text_repel(aes(label = lab), size = 3, show.legend = F,
+                  position = pos, box.padding = 0.35, na.rm = T,
+                  segment.alpha = 0.5) +
+  scale_colour_brewer(palette = "Dark2", direction = -1) +
+  scale_x_continuous(breaks = 1:3, labels = c("BODY", "HEART", "MIND"),
+                     minor_breaks = NULL) +
+  scale_y_continuous(breaks = seq(0, 1, 0.1), 
+                     labels = scales::percent_format(accuracy = 1)) +
+  labs(title = "Size of factors across studies, age groups, and EFA solutions",
+       x = "Factor", y = "Shared variance explained", color = "Study") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+
+figure3.5_cap <- add_sub(figure3.5, str_wrap("Figure 3.5: Shared variance explained by all factors across all age groups for all studies, for each of the exploratory factor analysis (EFA) solutions interpreted in the main text. By definition, the total shared variance explained for each solution equals 100%. The relative percent of shared variance explained within a single EFA solution provides one way of assessing the relative 'size' of each of the factors in that solution. Dotted lines indicate the expected value of shared variance explained if all of the factors for a given solution were of equal size.", 60), x = 0, hjust = 0)
+```
+
+```{r figure3.5, include = T, fig.width = 3, fig.asp = 1.2}
+ggdraw(figure3.5_cap)
+```
+
 ## Discussion
 
 Study 4 provides further evidence that the conceptual structure underlying mental capacity attributions undergoes substantial changes between early and middle childhood. Using a paradigm that was better tailored for this age group and that featured vocabulary items expressly designed to pick out (adult) notions of BODY, HEART, and MIND in a balanced way (6 items per factor), Study 4 did provide some indications that this conceptual structure may be more mature in the early preschool years than Study 2 would suggest. However, even in this modified paradigm, tehre are several indications that this three-part conceptual structure is not fully in place by 4-5y.
@@ -1194,8 +1304,8 @@ __XX ADD CHAPTER CONCLUSION__
 
 # TO DO LIST
 
-- make factor congruence figure/table?
 - read through
-- consider discussion of "size" of factors
+- add references to table3.2
+- add discussion of "size" of factors (refer to figure3.5)
 - write chapter conclusion
 
