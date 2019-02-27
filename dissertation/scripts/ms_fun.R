@@ -86,11 +86,20 @@ loadings_summarize_fun <- function(efa, abs = TRUE){
   return(loadings)
 }
 
+# function for making factor congruence tables
+cong_table_fun <- function(efa_ad, efa_ch, 
+                           factor_names_ad = c("Factor 1", "Factor 2", 
+                                               "Factor 3")){
+  cong <- fa.congruence(efa_ch$loadings, efa_ad$loadings)
+  colnames(cong) <- factor_names_ad
+  return(cong)
+}
+
 # function for writing up factor congruence
-cong_report_fun <- function(df_ad, df_ch, factor, 
+cong_report_fun <- function(efa_ad, efa_ch, factor, 
                             factor_names_ad = c("Factor 1", "Factor 2", 
                                                 "Factor 3")){
-  cong <- fa.congruence(df_ch$loadings, df_ad$loadings, digits = 4)
+  cong <- fa.congruence(efa_ch$loadings, efa_ad$loadings, digits = 4)
   cong <- cong[factor,]
   names(cong) <- factor_names_ad
   
