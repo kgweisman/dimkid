@@ -78,10 +78,15 @@ chosen_scores <- "tenBerge" # REPORTED
 In this chapter, I focus on the third of my three key questions about the development of representations of mental life introduced in Chapter I: _How do people of different ages deploy their conceptual representations of mental life to reason about specific entities in the world?_ As in Chapters III-IV, to address this question I draw on data from all of the current studies (Studies 1-4); for details about the methods of these studies, see Chapter II. The goal of this chapter is to provide "snapshots" of mental capacity attributions to various target characters in early childhood, middle childhood, and adulthood, and to explore in finer-grained detail changes in children's beliefs about the mental lives of these characters between 4-9y of age, with particular attention to children's assessment of animate vs. inanimate beings.
 
 
-# General analysis plan: Documenting the application or deployment of conceptual representations
+# General analysis plan
+
+## High-level overview
 
 In analyzing these datasets with an eye toward documenting the application or deployment of the conceptual representations described in Chapters III-IV, the basic insight is that the attribution of specific mental capacities to specific target characters provides evidence of how conceptual representations of mental life are deployed in everyday social cognition. In Chapter II, I illustrated this with the following example: If participants who assess the mental capacities of Characters 1, 2, and 3 share one general pattern of mental capacity attributions, and participants who assess the mental capacities of Characters 4, 5, and 6 share another pattern, this provides some evidence that conceptual representations of mental life might play a role in structuring representations of (and interactions with) different classes of beings in the world. Here I will translate this general intuition into a specific analysis plan to be applied to each of these datasets in turn. 
 
+## Details of analyses
+
+XX
 
 # Study 1: An adult endpoint
 
