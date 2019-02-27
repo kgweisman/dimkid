@@ -15,7 +15,8 @@ heatmap_fun <- function(efa, factor_names = NA){
     data.frame() %>%
     rownames_to_column("capacity") %>%
     gather(factor, loading, -capacity) %>%
-    mutate(factor = as.character(factor(factor, labels = factor_names)))
+    mutate(factor = as.character(factor(factor, labels = factor_names)),
+           factor = factor(factor, levels = factor_names))
   
   # get fa.sort() order
   order <- loadings %>%
@@ -33,15 +34,17 @@ heatmap_fun <- function(efa, factor_names = NA){
     filter(stat == "Proportion Explained") %>%
     select(-stat) %>%
     gather(factor, var) %>%
-    mutate(factor = as.character(factor(factor, labels = factor_names))) %>%
+    mutate(factor = as.character(factor(factor, labels = factor_names)),
+           factor = factor(factor, levels = factor_names)) %>%
     mutate(var = paste0(factor, "\n(", round(var, 2)*100, "% var.)"))
   
   # make plot
   plot <- ggplot(loadings %>% 
                    left_join(order) %>%
                    left_join(shared_var) %>%
-                   mutate(capacity = gsub("_", " ", capacity)),
-                 aes(x = var, 
+                   mutate(capacity = gsub("_", " ", capacity),
+                          factor = factor(factor, levels = factor_names)),
+                 aes(x = reorder(var, as.numeric(factor)), 
                      y = reorder(capacity, order), 
                      fill = loading, 
                      label = format(round(loading, 2), nsmall = 2))) +

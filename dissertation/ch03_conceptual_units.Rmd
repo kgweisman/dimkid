@@ -181,33 +181,38 @@ loadings_summarize_fun(efa_bic_d1a_ad) %>%
 
 Two of the three protocols for determining how many factors to retain (parallel analysis and the factor retention criteria reported in the original publication of Studies 1a-1d; Weisman et al., 2017) suggested retaining three factors, while the third (minimizing BIC) suggested retaining five factors; see Table 3.1. 
 
-However, three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors suggested by the other protocols, and even in the 5-factor solution these three factors together accounted for fully `r efa_bic_d1a_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth and fifth factors each accounted for $<$ `r efa_bic_d1a_ad$Vaccounted["Proportion Explained", c("F4", "F5")] %>% max() %>% ceiling_dec(2) * 100`% of the shared variance, and neither was the dominant factor for any of the 40 mental capacities included in this study. Indeed, factor loadings for these two factors were all quite small (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1a_ad) %>% filter(factor %in% c("F4", "F5")))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will limit my interpretations to the 3-factor solution (but see [XX APPENDIX?] for the 5-factor solution).
+However, three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors suggested by the other protocols, and even in the 5-factor solution these three factors together accounted for fully `r efa_bic_d1a_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth and fifth factors each accounted for $<$ `r efa_bic_d1a_ad$Vaccounted["Proportion Explained", c("F4", "F5")] %>% max() %>% ceiling_dec(2) * 100`% of the shared variance, and neither was the dominant factor for any of the 40 mental capacities included in this study. Indeed, factor loadings for these two factors were all quite weak (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1a_ad) %>% filter(factor %in% c("F4", "F5")))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will limit my interpretations to the 3-factor solution (but see [XX APPENDIX?] for the 5-factor solution).
 
 __BOOKMARK__
 
 ```{r}
 table3.1 <- reten_report %>%
   rownames_to_column("study") %>%
-  full_join(reten_report_bystudy) %>%
-  # column_to_rownames("study") %>%
-  mutate(mean = round(mean, 2),
-         study = gsub("Study ", "", study),
+  # full_join(reten_report_bystudy) %>%
+  # mutate(mean = round(mean, 2)) %>%
+  mutate(`Focus of interpretation` = c(rep("3-factor solution", 4), 
+                                       "3- and 4-factor solutions",
+                                       rep("3-factor solution", 3),
+                                       "2- and 3-factor solutions",
+                                       "3-factor solution",
+                                       "3- and 4-factor solutions")) %>%
+  mutate(study = gsub("Study ", "", study),
          study = gsub(".\\: ", "", study)) %>%
   rename(` ` = study, 
-         `parallel analysis` = par,
-         `minimizing BIC` = bic,
-         `Weisman et al. (2017)` = wdm,
-         `min.` = min,
-         `max.` = max) %>%
-  kable(format = "html", #align = c("l", rep("r", 3)),
-        caption = "Table 3.1: Number of factors suggested by three factor retention protocols: Parallel Analysis, Minimizing BIC, and the preset factor retention criteria specified in Weisman et al. (2017). Results are grouped by study and age group.") %>%  
+         `Parallel analysis` = par,
+         `Minimizing BIC` = bic,
+         `Weisman et al. (2017)` = wdm) %>%
+         # `min.` = min,
+         # `max.` = max) %>%
+  kable(format = "html", 
+        caption = "Table 3.1: Number of factors suggested by three factor retention protocols: Parallel analysis, minimizing BIC, and the factor retention criteria specified in Weisman et al. (2017). Results are grouped by study and age group. The final column gives the focus of my interpretation in Chapter III; see Appendix A for additional solutions not reported in this chapter.") %>%  
   kable_styling() %>%
   group_rows("Study 1: An adult endpoint", 1, 4) %>%
   group_rows("Study 2: Conceptual change between middle childhood (7-9y) and adulthood", 5, 6) %>%
   group_rows("Study 3: Conceptual change over early and middle childhood (4-9y)", 7, 9) %>%
   group_rows("Study 4: A focus on early childhood (4-5y)", 10, 11) %>%
-  add_header_above(c(" " = 1, "Protocol alternatives" = 3, 
-                     "Summary of suggestions" = 4)) %>%
+  # add_header_above(c(" " = 1, "Protocol alternatives" = 3, 
+  #                    "Summary of suggestions" = 4)) %>%
   column_spec(4, border_right = T)
 ```
 
@@ -280,7 +285,7 @@ The retention criteria used in the original reporting of this study (Weisman et 
 
 Parallel analysis suggested retaining four factors. However, three of the five factors suggested by parallel analysis were qualitatively very similar to the three factors reported below, and together accounted for `r efa_par_d1b_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth factor accounted for only `r efa_par_d1b_ad$Vaccounted["Proportion Explained", "F4"] %>% round(2) * 100`% of the shared variance, and was not the dominant factor for any of the 40 mental capacities included in this study, with small loadings for all capacities (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_par_d1b_ad) %>% filter(factor == "F4"))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). 
 
-Likewise, minimizing BIC analysis suggested retaining five factors, but three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d1b_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth and fifth factors each accounted for $<$ `r efa_bic_d1b_ad$Vaccounted["Proportion Explained", c("F4", "F5")] %>% max() %>% ceiling_dec(2) * 100`% of the shared variance, and neither was the dominant factor for any of the 40 mental capacities included in this study. Indeed, factor loadings for these two factors were all quite small (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1b_ad) %>% filter(factor %in% c("F4", "F5")))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). 
+Likewise, minimizing BIC analysis suggested retaining five factors, but three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d1b_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth and fifth factors each accounted for $<$ `r efa_bic_d1b_ad$Vaccounted["Proportion Explained", c("F4", "F5")] %>% max() %>% ceiling_dec(2) * 100`% of the shared variance, and neither was the dominant factor for any of the 40 mental capacities included in this study. Indeed, factor loadings for these two factors were all quite weak (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1b_ad) %>% filter(factor %in% c("F4", "F5")))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). 
 
 Given all this, I will again focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 4- and 5-factor solutions).
 
@@ -396,7 +401,7 @@ The retention criteria used in the original reporting of this study (Weisman et 
 
 Parallel analysis suggested retaining four factors. However, three of the five factors suggested by parallel analysis were qualitatively very similar to the three factors reported below, and together accounted for `r efa_par_d1d_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth factor accounted for only `r efa_par_d1d_ad$Vaccounted["Proportion Explained", "F4"] %>% round(2) * 100`% of the shared variance, and was not the dominant factor for any of the 40 mental capacities included in this study, with small loadings for all capacities (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_par_d1d_ad) %>% filter(factor == "F4"))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). 
 
-Likewise, minimizing BIC analysis suggested retaining five factors, but three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d1d_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth and fifth factors each accounted for $<$ `r efa_bic_d1d_ad$Vaccounted["Proportion Explained", c("F4", "F5")] %>% max() %>% ceiling_dec(2) * 100`% of the shared variance, and neither was the dominant factor for any of the 40 mental capacities included in this study. Indeed, factor loadings for these two factors were all quite small (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1d_ad) %>% filter(factor %in% c("F4", "F5")))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). 
+Likewise, minimizing BIC analysis suggested retaining five factors, but three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d1d_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth and fifth factors each accounted for $<$ `r efa_bic_d1d_ad$Vaccounted["Proportion Explained", c("F4", "F5")] %>% max() %>% ceiling_dec(2) * 100`% of the shared variance, and neither was the dominant factor for any of the 40 mental capacities included in this study. Indeed, factor loadings for these two factors were all quite weak (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1d_ad) %>% filter(factor %in% c("F4", "F5")))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). 
 
 Given all this, I will once more focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 4- and 5-factor solutions).
 
