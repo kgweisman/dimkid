@@ -162,6 +162,14 @@ reten_report["Study 1a",]
 efa_par_d1a_ad <- fa_fun(d1a_ad_wide_i, reten_report["Study 1a", "par"])
 efa_bic_d1a_ad <- fa_fun(d1a_ad_wide_i, reten_report["Study 1a", "bic"])
 efa_wdm_d1a_ad <- fa_fun(d1a_ad_wide_i, reten_report["Study 1a", "wdm"])
+
+saveRDS(efa_par_d1a_ad, file = "./efas/efa_par_d1a_ad")
+saveRDS(efa_bic_d1a_ad, file = "./efas/efa_bic_d1a_ad")
+saveRDS(efa_wdm_d1a_ad, file = "./efas/efa_wdm_d1a_ad")
+
+# efa_par_d1a_ad <- readRDS(file = "./efas/efa_par_d1a_ad")
+# efa_bic_d1a_ad <- readRDS(file = "./efas/efa_bic_d1a_ad")
+# efa_wdm_d1a_ad <- readRDS(file = "./efas/efa_wdm_d1a_ad")
 ```
 
 ```{r}
@@ -173,7 +181,9 @@ loadings_summarize_fun(efa_bic_d1a_ad) %>%
 
 Two of the three protocols for determining how many factors to retain (parallel analysis and the factor retention criteria reported in the original publication of Studies 1a-1d; Weisman et al., 2017) suggested retaining three factors, while the third (minimizing BIC) suggested retaining five factors; see Table 3.1. 
 
-However, three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors suggested by the other protocols, and even in the 5-factor solution these three factors together accounted for fully `r efa_bic_d1a_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth and fifth factors each accounted for $<$ `r efa_bic_d1a_ad$Vaccounted["Proportion Explained", c("F4", "F5")] %>% max() %>% ceiling_dec(2) * 100`% of the shared variance, and neither was the dominant factor for any of the 40 mental capacities included in this study. Indeed, factor loadings for these two factors were all quite small (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1a_ad) %>% filter(factor %in% c("F4", "F5")))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 5-factor solution).
+However, three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors suggested by the other protocols, and even in the 5-factor solution these three factors together accounted for fully `r efa_bic_d1a_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth and fifth factors each accounted for $<$ `r efa_bic_d1a_ad$Vaccounted["Proportion Explained", c("F4", "F5")] %>% max() %>% ceiling_dec(2) * 100`% of the shared variance, and neither was the dominant factor for any of the 40 mental capacities included in this study. Indeed, factor loadings for these two factors were all quite small (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1a_ad) %>% filter(factor %in% c("F4", "F5")))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will limit my interpretations to the 3-factor solution (but see [XX APPENDIX?] for the 5-factor solution).
+
+__BOOKMARK__
 
 ```{r}
 table3.1 <- reten_report %>%
@@ -233,6 +243,14 @@ reten_report["Study 1b",]
 efa_par_d1b_ad <- fa_fun(d1b_ad_wide_i, reten_report["Study 1b", "par"])
 efa_bic_d1b_ad <- fa_fun(d1b_ad_wide_i, reten_report["Study 1b", "bic"])
 efa_wdm_d1b_ad <- fa_fun(d1b_ad_wide_i, reten_report["Study 1b", "wdm"])
+
+saveRDS(efa_par_d1b_ad, file = "./efas/efa_par_d1b_ad")
+saveRDS(efa_bic_d1b_ad, file = "./efas/efa_bic_d1b_ad")
+saveRDS(efa_wdm_d1b_ad, file = "./efas/efa_wdm_d1b_ad")
+
+# efa_par_d1b_ad <- readRDS(file = "./efas/efa_par_d1b_ad")
+# efa_bic_d1b_ad <- readRDS(file = "./efas/efa_bic_d1b_ad")
+# efa_wdm_d1b_ad <- readRDS(file = "./efas/efa_wdm_d1b_ad")
 ```
 
 ```{r}
@@ -294,6 +312,14 @@ reten_report["Study 1c",]
 efa_par_d1c_ad <- fa_fun(d1c_ad_wide_i, reten_report["Study 1c", "par"])
 efa_bic_d1c_ad <- fa_fun(d1c_ad_wide_i, reten_report["Study 1c", "bic"])
 efa_wdm_d1c_ad <- fa_fun(d1c_ad_wide_i, reten_report["Study 1c", "wdm"])
+
+saveRDS(efa_par_d1c_ad, file = "./efas/efa_par_d1c_ad")
+saveRDS(efa_bic_d1c_ad, file = "./efas/efa_bic_d1c_ad")
+saveRDS(efa_wdm_d1c_ad, file = "./efas/efa_wdm_d1c_ad")
+
+# efa_par_d1c_ad <- readRDS(file = "./efas/efa_par_d1c_ad")
+# efa_bic_d1c_ad <- readRDS(file = "./efas/efa_bic_d1c_ad")
+# efa_wdm_d1c_ad <- readRDS(file = "./efas/efa_wdm_d1c_ad")
 ```
 
 ```{r}
@@ -333,6 +359,14 @@ reten_report["Study 1d",]
 efa_par_d1d_ad <- fa_fun(d1d_ad_wide_i, reten_report["Study 1d", "par"])
 efa_bic_d1d_ad <- fa_fun(d1d_ad_wide_i, reten_report["Study 1d", "bic"])
 efa_wdm_d1d_ad <- fa_fun(d1d_ad_wide_i, reten_report["Study 1d", "wdm"])
+
+saveRDS(efa_par_d1d_ad, file = "./efas/efa_par_d1d_ad")
+saveRDS(efa_bic_d1d_ad, file = "./efas/efa_bic_d1d_ad")
+saveRDS(efa_wdm_d1d_ad, file = "./efas/efa_wdm_d1d_ad")
+
+# efa_par_d1d_ad <- readRDS(file = "./efas/efa_par_d1d_ad")
+# efa_bic_d1d_ad <- readRDS(file = "./efas/efa_bic_d1d_ad")
+# efa_wdm_d1d_ad <- readRDS(file = "./efas/efa_wdm_d1d_ad")
 ```
 
 ```{r}
@@ -434,6 +468,14 @@ reten_report["Study 2: Adults",]
 efa_par_d2_ad <- fa_fun(d2_ad_wide_i, reten_report["Study 2: Adults", "par"])
 efa_bic_d2_ad <- fa_fun(d2_ad_wide_i, reten_report["Study 2: Adults", "bic"])
 efa_wdm_d2_ad <- fa_fun(d2_ad_wide_i, reten_report["Study 2: Adults", "wdm"])
+
+saveRDS(efa_par_d2_ad, file = "./efas/efa_par_d2_ad")
+saveRDS(efa_bic_d2_ad, file = "./efas/efa_bic_d2_ad")
+saveRDS(efa_wdm_d2_ad, file = "./efas/efa_wdm_d2_ad")
+
+# efa_par_d2_ad <- readRDS(file = "./efas/efa_par_d2_ad")
+# efa_bic_d2_ad <- readRDS(file = "./efas/efa_bic_d2_ad")
+# efa_wdm_d2_ad <- readRDS(file = "./efas/efa_wdm_d2_ad")
 ```
 
 ```{r}
@@ -496,6 +538,14 @@ reten_report["Study 2: Children",]
 efa_par_d2_79 <- fa_fun(d2_79_wide_i, reten_report["Study 2: Children", "par"])
 efa_bic_d2_79 <- fa_fun(d2_79_wide_i, reten_report["Study 2: Children", "bic"])
 efa_wdm_d2_79 <- fa_fun(d2_79_wide_i, reten_report["Study 2: Children", "wdm"])
+
+saveRDS(efa_par_d2_79, file = "./efas/efa_par_d2_79")
+saveRDS(efa_bic_d2_79, file = "./efas/efa_bic_d2_79")
+saveRDS(efa_wdm_d2_79, file = "./efas/efa_wdm_d2_79")
+
+# efa_par_d2_79 <- readRDS(file = "./efas/efa_par_d2_79")
+# efa_bic_d2_79 <- readRDS(file = "./efas/efa_bic_d2_79")
+# efa_wdm_d2_79 <- readRDS(file = "./efas/efa_wdm_d2_79")
 ```
 
 All three protocols for determining how many factors to retain suggested retaining three factors; see Table 3.1.
@@ -577,6 +627,14 @@ reten_report["Study 3: Adults",]
 efa_par_d3_ad <- fa_fun(d3_ad_wide_i, reten_report["Study 3: Adults", "par"])
 efa_bic_d3_ad <- fa_fun(d3_ad_wide_i, reten_report["Study 3: Adults", "bic"])
 efa_wdm_d3_ad <- fa_fun(d3_ad_wide_i, reten_report["Study 3: Adults", "wdm"])
+
+saveRDS(efa_par_d3_ad, file = "./efas/efa_par_d3_ad")
+saveRDS(efa_bic_d3_ad, file = "./efas/efa_bic_d3_ad")
+saveRDS(efa_wdm_d3_ad, file = "./efas/efa_wdm_d3_ad")
+
+# efa_par_d3_ad <- readRDS(file = "./efas/efa_par_d3_ad")
+# efa_bic_d3_ad <- readRDS(file = "./efas/efa_bic_d3_ad")
+# efa_wdm_d3_ad <- readRDS(file = "./efas/efa_wdm_d3_ad")
 ```
 
 ```{r}
@@ -619,6 +677,14 @@ efa_bic_d3_79 <- fa_fun(d3_79_wide_i,
                         reten_report["Study 3: Older children", "bic"])
 efa_wdm_d3_79 <- fa_fun(d3_79_wide_i, 
                         reten_report["Study 3: Older children", "wdm"])
+
+saveRDS(efa_par_d3_79, file = "./efas/efa_par_d3_79")
+saveRDS(efa_bic_d3_79, file = "./efas/efa_bic_d3_79")
+saveRDS(efa_wdm_d3_79, file = "./efas/efa_wdm_d3_79")
+
+# efa_par_d3_79 <- readRDS(file = "./efas/efa_par_d3_79")
+# efa_bic_d3_79 <- readRDS(file = "./efas/efa_bic_d3_79")
+# efa_wdm_d3_79 <- readRDS(file = "./efas/efa_wdm_d3_79")
 ```
 
 As was the case among this age group in Study 2, all three protocols for determining how many factors to retain suggested retaining three factors; see Table 3.1.
@@ -661,6 +727,14 @@ efa_bic_d3_46 <- fa_fun(d3_46_wide_i,
                         reten_report["Study 3: Younger children", "bic"])
 efa_wdm_d3_46 <- fa_fun(d3_46_wide_i, 
                         reten_report["Study 3: Younger children", "wdm"])
+
+saveRDS(efa_par_d3_46, file = "./efas/efa_par_d3_46")
+saveRDS(efa_bic_d3_46, file = "./efas/efa_bic_d3_46")
+saveRDS(efa_wdm_d3_46, file = "./efas/efa_wdm_d3_46")
+
+# efa_par_d3_46 <- readRDS(file = "./efas/efa_par_d3_46")
+# efa_bic_d3_46 <- readRDS(file = "./efas/efa_bic_d3_46")
+# efa_wdm_d3_46 <- readRDS(file = "./efas/efa_wdm_d3_46")
 ```
 
 ```{r}
@@ -868,6 +942,14 @@ reten_report["Study 4: Adults",]
 efa_par_d4_ad <- fa_fun(d4_ad_wide_i, reten_report["Study 4: Adults", "par"])
 efa_bic_d4_ad <- fa_fun(d4_ad_wide_i, reten_report["Study 4: Adults", "bic"])
 efa_wdm_d4_ad <- fa_fun(d4_ad_wide_i, reten_report["Study 4: Adults", "wdm"])
+
+saveRDS(efa_par_d4_ad, file = "./efas/efa_par_d4_ad")
+saveRDS(efa_bic_d4_ad, file = "./efas/efa_bic_d4_ad")
+saveRDS(efa_wdm_d4_ad, file = "./efas/efa_wdm_d4_ad")
+
+# efa_par_d4_ad <- readRDS(file = "./efas/efa_par_d4_ad")
+# efa_bic_d4_ad <- readRDS(file = "./efas/efa_bic_d4_ad")
+# efa_wdm_d4_ad <- readRDS(file = "./efas/efa_wdm_d4_ad")
 ```
 
 All three protocols for determining how many factors to retain suggested retaining three factors; see Table 3.1.
@@ -900,6 +982,14 @@ reten_report["Study 4: Children",]
 efa_par_d4_46 <- fa_fun(d4_46_wide_i, reten_report["Study 4: Children", "par"])
 efa_bic_d4_46 <- fa_fun(d4_46_wide_i, reten_report["Study 4: Children", "bic"])
 efa_wdm_d4_46 <- fa_fun(d4_46_wide_i, reten_report["Study 4: Children", "wdm"])
+
+saveRDS(efa_par_d4_46, file = "./efas/efa_par_d4_46")
+saveRDS(efa_bic_d4_46, file = "./efas/efa_bic_d4_46")
+saveRDS(efa_wdm_d4_46, file = "./efas/efa_wdm_d4_46")
+
+# efa_par_d4_46 <- readRDS(file = "./efas/efa_par_d4_46")
+# efa_bic_d4_46 <- readRDS(file = "./efas/efa_bic_d4_46")
+# efa_wdm_d4_46 <- readRDS(file = "./efas/efa_wdm_d4_46")
 ```
 
 ```{r}
@@ -1285,6 +1375,9 @@ First, analyses of the correlational structure of children's mental capacity att
 # Chapter conclusion
 
 __XX ADD CHAPTER CONCLUSION__
+
+
+
 
 
 # TO DO LIST
