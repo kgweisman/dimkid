@@ -28,22 +28,12 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 #     toc_float: yes
 ```
 
-
 ```{r}
-library(tidyverse)
-library(psych)
-library(langcog) # source: https://github.com/langcog/langcog-package
-# library(lme4)
-library(brms)
-library(stringi)
-library(cowplot)
-library(kableExtra)
+# packages
+source("./scripts/libraries.R")
 
-theme_set(theme_bw())
-```
-
-```{r}
 # supporting functions
+source("./scripts/efa_param.R")
 source("./scripts/max_factors_efa.R")
 source("./scripts/reten_fun.R")
 source("./scripts/plot_fun.R")
@@ -59,23 +49,6 @@ source("./scripts/data_s3_79.R")
 source("./scripts/data_s3_46.R")
 source("./scripts/data_s4_ad.R")
 source("./scripts/data_s4_46.R")
-```
-
-```{r}
-# what correlation to use
-chosen_cor <- "cor" # reported
-# chosen_cor <- "poly" # alternative option
-
-# what rotation to use
-chosen_rot <- "varimax" # reported
-# chosen_rot <- "oblimin" # alternative option
-
-# what factoring method to use
-chosen_fm <- "minres" # reported (see alternative options in ?fa)
-
-# what scoring method to use
-chosen_scores <- "tenBerge" # reported
-# chosen_scores <- "regression" # alternative option
 ```
 
 

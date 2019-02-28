@@ -29,6 +29,9 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 ```
 
 ```{r}
+# packages
+source("./scripts/libraries.R")
+
 # supporting functions
 source("./scripts/efa_param.R")
 source("./scripts/max_factors_efa.R")
@@ -49,6 +52,7 @@ source("./scripts/data_s4_46.R")
 ```
 
 ```{r}
+# load in EFAs from Chapter II
 # study 1
 efa_par_d1a_ad <- readRDS(file = "./efas/efa_par_d1a_ad")
 efa_bic_d1a_ad <- readRDS(file = "./efas/efa_bic_d1a_ad")
