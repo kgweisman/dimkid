@@ -1,0 +1,218 @@
+---
+title: "Appendix B: Additional EFA solutions"
+output:
+  html_notebook:
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+always_allow_html: yes
+---
+
+```{r global_options, include = F}
+knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
+                      include = F, echo = F)
+```
+
+```{r}
+# # for knitting to .docx
+# output:
+#   word_document:
+#     reference_docx: "./word-styles-reference.docx"
+# always_allow_html: yes
+   
+# # for knitting to .nb.html 
+# output:
+#   html_notebook:
+#     toc: yes
+#     toc_depth: 4
+#     toc_float: yes
+```
+
+```{r}
+# supporting functions
+source("./scripts/efa_param.R")
+source("./scripts/max_factors_efa.R")
+source("./scripts/reten_fun.R")
+source("./scripts/plot_fun.R")
+source("./scripts/efa_fun.R")
+source("./scripts/ms_fun.R")
+
+# data scripts
+source("./scripts/data_s1.R")
+source("./scripts/data_s2_ad.R")
+source("./scripts/data_s2_79.R")
+source("./scripts/data_s3_ad.R")
+source("./scripts/data_s3_79.R")
+source("./scripts/data_s3_46.R")
+source("./scripts/data_s4_ad.R")
+source("./scripts/data_s4_46.R")
+```
+
+```{r}
+# study 1
+efa_par_d1a_ad <- readRDS(file = "./efas/efa_par_d1a_ad")
+efa_bic_d1a_ad <- readRDS(file = "./efas/efa_bic_d1a_ad")
+efa_wdm_d1a_ad <- readRDS(file = "./efas/efa_wdm_d1a_ad")
+
+efa_par_d1b_ad <- readRDS(file = "./efas/efa_par_d1b_ad")
+efa_bic_d1b_ad <- readRDS(file = "./efas/efa_bic_d1b_ad")
+efa_wdm_d1b_ad <- readRDS(file = "./efas/efa_wdm_d1b_ad")
+
+efa_par_d1c_ad <- readRDS(file = "./efas/efa_par_d1c_ad")
+efa_bic_d1c_ad <- readRDS(file = "./efas/efa_bic_d1c_ad")
+efa_wdm_d1c_ad <- readRDS(file = "./efas/efa_wdm_d1c_ad")
+
+efa_par_d1d_ad <- readRDS(file = "./efas/efa_par_d1d_ad")
+efa_bic_d1d_ad <- readRDS(file = "./efas/efa_bic_d1d_ad")
+efa_wdm_d1d_ad <- readRDS(file = "./efas/efa_wdm_d1d_ad")
+
+# study 2
+efa_par_d2_ad <- readRDS(file = "./efas/efa_par_d2_ad")
+efa_bic_d2_ad <- readRDS(file = "./efas/efa_bic_d2_ad")
+efa_wdm_d2_ad <- readRDS(file = "./efas/efa_wdm_d2_ad")
+
+efa_par_d2_79 <- readRDS(file = "./efas/efa_par_d2_79")
+efa_bic_d2_79 <- readRDS(file = "./efas/efa_bic_d2_79")
+efa_wdm_d2_79 <- readRDS(file = "./efas/efa_wdm_d2_79")
+
+# study 3
+efa_par_d3_ad <- readRDS(file = "./efas/efa_par_d3_ad")
+efa_bic_d3_ad <- readRDS(file = "./efas/efa_bic_d3_ad")
+efa_wdm_d3_ad <- readRDS(file = "./efas/efa_wdm_d3_ad")
+
+efa_par_d3_79 <- readRDS(file = "./efas/efa_par_d3_79")
+efa_bic_d3_79 <- readRDS(file = "./efas/efa_bic_d3_79")
+efa_wdm_d3_79 <- readRDS(file = "./efas/efa_wdm_d3_79")
+
+efa_par_d3_46 <- readRDS(file = "./efas/efa_par_d3_46")
+efa_bic_d3_46 <- readRDS(file = "./efas/efa_bic_d3_46")
+efa_wdm_d3_46 <- readRDS(file = "./efas/efa_wdm_d3_46")
+
+# study 4
+efa_par_d4_ad <- readRDS(file = "./efas/efa_par_d4_ad")
+efa_bic_d4_ad <- readRDS(file = "./efas/efa_bic_d4_ad")
+efa_wdm_d4_ad <- readRDS(file = "./efas/efa_wdm_d4_ad")
+
+efa_par_d4_46 <- readRDS(file = "./efas/efa_par_d4_46")
+efa_bic_d4_46 <- readRDS(file = "./efas/efa_bic_d4_46")
+efa_wdm_d4_46 <- readRDS(file = "./efas/efa_wdm_d4_46")
+```
+
+# Additional exploratory factor analyses (EFAs)
+
+In Chapter III, I focused my interpretation on a subset of the EFA solutions suggested by the three factor retention protocols, excluding those solutions in which additional factors were redundant with the 3-factor (BODY-HEART-MIND) solution. These additional factors tend to explain very little of the shared variance; tend not to be the dominant factor (the factor with the strongest absolute factor loading) for many, if any, mental capacities; and tend to have very weak factor loadings. I include them here for completeness.
+
+## Study 1
+
+The factor retention criteria employed in Weisman et al. (2017) suggested retaining 3 factors for all of the studies included in Study 1; see Chapter III. In contrast, parallel analysis suggested retaining 4 factors (instead of 3) for Studies 1b and 1d; minimizing BIC suggested retaining 4 factors (instead of 3) for Study 1c, and 5 factors (instead of 3) for Studies 1a, 1b, and 1d. See Figure B.1.
+
+```{r}
+# study 1a
+plot_efa_bic_d1a_ad <- heatmap_fun(efa_bic_d1a_ad, 
+                                   c("BODY", "HEART", "MIND", 
+                                     "Factor 4", "Factor 5")) +
+  labs(title = "Study 1a", subtitle = "5-factor solution") +
+  theme(legend.position = "none")
+
+# study 1b
+plot_efa_par_d1b_ad <- heatmap_fun(efa_par_d1b_ad, 
+                                   c("BODY", "HEART", "MIND", "Factor 4")) +
+  labs(title = "Study 1b", subtitle = "4-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_bic_d1b_ad <- heatmap_fun(efa_bic_d1b_ad, 
+                                   c("BODY", "HEART", "MIND", 
+                                     "Factor 4", "Factor 5")) +
+  labs(title = "Study 1b", subtitle = "5-factor solution") # +
+  # theme(legend.position = "none")
+
+# study 1c
+plot_efa_bic_d1c_ad <- heatmap_fun(efa_bic_d1c_ad, 
+                                   c("BODY", "HEART", "MIND", "Factor 4")) +
+  labs(title = "Study 1c", subtitle = "4-factor solution") +
+  theme(legend.position = "none")
+
+# study 1d
+plot_efa_par_d1d_ad <- heatmap_fun(efa_par_d1d_ad, 
+                                   c("BODY", "HEART", "MIND", "Factor 4")) +
+  labs(title = "Study 1d", subtitle = "4-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_bic_d1d_ad <- heatmap_fun(efa_bic_d1d_ad, 
+                                   c("BODY", "HEART", "MIND", 
+                                     "Factor 4", "Factor 5")) +
+  labs(title = "Study 1d", subtitle = "5-factor solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.1 <- plot_grid(plot_efa_bic_d1a_ad, 
+                       plot_efa_par_d1b_ad, plot_efa_bic_d1b_ad, 
+                       plot_efa_bic_d1c_ad,
+                       plot_efa_par_d1d_ad, plot_efa_bic_d1d_ad,
+                       labels = "AUTO", ncol = 3, rel_widths = c(1, 1, 1.2))
+
+figureA.1_cap <- add_sub(figureA.1, str_wrap("Figure B.1: Factor loadings from additional exploratory factor analyses of Study 1, not reported in Chapter III. All results are from US adult samples; see Chapter II for methods. (A) Study 1a, solution suggested by minimizing BIC. (B) Study 1b, solution suggested by parallel analysis. (C) Study 1b, solution suggested by minimizing BIC. (D) Study 1c, solution suggested by minimizing BIC. (E) Study 1d, solution suggested by parallel analysis. (F) Study 1d, solution suggested by minimizing BIC. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 200), x = 0, hjust = 0)
+```
+
+```{r figureA.1, include = T, fig.width = 9, fig.asp = 1}
+ggdraw(figureA.1_cap)
+```
+
+## Study 2
+
+All of the EFA solutions suggested by the three factor retention protocols are reported in full in Chapter III.
+
+## Study 3
+
+The factor retention criteria employed in Weisman et al. (2017) suggested retaining 3 factors for all of the age groups included in Study 3; see Chapter III. In contrast, parallel analysis suggested retaining 2 factors (instead of 3) for younger children; and minimizing BIC suggested retaining 4 factors (instead of 3) for adults, and 1 factor (i.e., a "null" solution) for younger children (ages 4-6y). See Figure B.2.
+
+```{r}
+# study 3
+plot_efa_bic_d3_ad <- heatmap_fun(efa_bic_d3_ad, 
+                                   c("BODY", "HEART", "MIND", "Factor 4")) +
+  labs(title = "Study 3: Adults", subtitle = "5-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_bic_d3_46 <- heatmap_fun(efa_bic_d3_46, ) +
+  labs(title = "Study 3: Younger children, 4-6y", 
+       subtitle = "1-factor (null) solution") #+
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.2 <- plot_grid(plot_efa_bic_d3_ad, plot_efa_bic_d3_46,
+                       labels = "AUTO", ncol = 2, rel_widths = c(1, 1))
+
+figureA.2_cap <- add_sub(figureA.2, str_wrap("Figure B.2: Factor loadings from additional exploratory factor analyses of Study 3, not reported in Chapter III. See Chapter II for methods. (A) Adults, solution suggested by minimizing BIC. (B) Younger children (4-6y), 'null' solution suggested by minimizing BIC. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 115), x = 0, hjust = 0)
+```
+
+```{r figureA.2, include = T, fig.width = 5, fig.asp = 1}
+ggdraw(figureA.2_cap)
+```
+
+## Study 4
+
+All of the EFA solutions suggested by the three factor retention protocols are reported in full in Chapter III, with the exception of the 1-factor ("null") solution suggested by minimizing BIC for younger children (4-5y). See Figure B.3.
+
+```{r}
+# study 4
+plot_efa_bic_d4_46 <- heatmap_fun(efa_bic_d4_46, ) +
+  labs(title = "Study 4: Younger children, 4-5y", 
+       subtitle = "1-factor (null) solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.3 <- plot_efa_bic_d4_46
+
+figureA.3_cap <- add_sub(figureA.3, str_wrap("Figure B.3: Factor loadings from the 'null' solution suggested by minimizing BIC for younger children (4-5y) in Study 4. See Chapter II for methods, and Chapter III for other EFA solutions for this study. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 30), x = 0, hjust = 0)
+```
+
+```{r figureA.3, include = T, fig.width = 2, fig.asp = 1.8}
+ggdraw(figureA.3_cap)
+```
+
+
+
+
