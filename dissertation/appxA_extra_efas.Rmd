@@ -316,6 +316,8 @@ reten_report_oblimin
 
 Different factor retention protocols suggested retaining between 3-5 factors for Studies 1a-1d. Here, I report 3-, 4-, and 5-factor solutions for all of these studies. When these factors seem similar to the BODY, HEART, and MIND factors presented in Chapter III, I have labeled them accordingly
 
+### EFA solutions
+
 ```{r}
 efa_3_d1a_ad_oblimin <- fa_fun(d1a_ad_wide_i, 3)
 efa_3_d1b_ad_oblimin <- fa_fun(d1b_ad_wide_i, 3)
@@ -442,6 +444,105 @@ figureA.5_cap <- add_sub(figureA.5, str_wrap("Figure A.5: Factor loadings from e
 ```{r figureA.5, include = T, fig.width = 16, fig.asp = 1.4}
 ggdraw(figureA.5_cap)
 ```
+
+### Inter-factor correlations
+
+```{r}
+IFcor_study1 <- bind_rows(
+  # 3-factor solutions
+  IFcor_fun(efa_3_d1a_ad_oblimin, factor_names_efa_3_d1a_ad_oblimin) %>%
+    mutate(study = "Study 1a", solution = "3-factor solution"),
+  IFcor_fun(efa_3_d1b_ad_oblimin, factor_names_efa_3_d1b_ad_oblimin) %>%
+    mutate(study = "Study 1b", solution = "3-factor solution"),
+  IFcor_fun(efa_3_d1c_ad_oblimin, factor_names_efa_3_d1c_ad_oblimin) %>%
+    mutate(study = "Study 1c", solution = "3-factor solution"),
+  IFcor_fun(efa_3_d1d_ad_oblimin, factor_names_efa_3_d1d_ad_oblimin) %>%
+    mutate(study = "Study 1d", solution = "3-factor solution"),
+
+  # 4-factor solutions
+  IFcor_fun(efa_4_d1a_ad_oblimin, factor_names_efa_4_d1a_ad_oblimin) %>%
+    mutate(study = "Study 1a", solution = "4-factor solution"),
+  IFcor_fun(efa_4_d1b_ad_oblimin, factor_names_efa_4_d1b_ad_oblimin) %>%
+    mutate(study = "Study 1b", solution = "4-factor solution"),
+  IFcor_fun(efa_4_d1c_ad_oblimin, factor_names_efa_4_d1c_ad_oblimin) %>%
+    mutate(study = "Study 1c", solution = "4-factor solution"),
+  IFcor_fun(efa_4_d1d_ad_oblimin, factor_names_efa_4_d1d_ad_oblimin) %>%
+    mutate(study = "Study 1d", solution = "4-factor solution"),
+
+  # 5-factor solutions
+  IFcor_fun(efa_5_d1a_ad_oblimin, factor_names_efa_5_d1a_ad_oblimin) %>%
+    mutate(study = "Study 1a", solution = "5-factor solution"),
+  IFcor_fun(efa_5_d1b_ad_oblimin, factor_names_efa_5_d1b_ad_oblimin) %>%
+    mutate(study = "Study 1b", solution = "5-factor solution"),
+  IFcor_fun(efa_5_d1c_ad_oblimin, factor_names_efa_5_d1c_ad_oblimin) %>%
+    mutate(study = "Study 1c", solution = "5-factor solution"),
+  IFcor_fun(efa_5_d1d_ad_oblimin, factor_names_efa_5_d1d_ad_oblimin) %>%
+    mutate(study = "Study 1d", solution = "5-factor solution")) %>%
+  
+  # all studies
+  filter(factor1 != factor2) %>%
+  distinct() %>%
+  mutate(ur_factor1 = case_when(factor1 == "BODY-HEART" ~ "BODY-HEART",
+                                grepl("BODY", factor1) ~ "BODY",
+                                grepl("HEART", factor1) ~ "HEART",
+                                grepl("MIND", factor1) ~ "MIND"),
+         ur_factor1 = factor(ur_factor1,
+                             levels = c("BODY", "BODY-HEART", 
+                                        "HEART", "MIND")),
+         ur_factor1_pos = recode(ur_factor1,
+                                 "BODY" = 1, "BODY-HEART" = 1.5,
+                                 "HEART" = 2, "MIND" = 3)) %>%
+  mutate(ur_factor2 = case_when(factor2 == "BODY-HEART" ~ "BODY-HEART",
+                                grepl("BODY", factor2) ~ "BODY",
+                                grepl("HEART", factor2) ~ "HEART",
+                                grepl("MIND", factor2) ~ "MIND"),
+         ur_factor2 = factor(ur_factor2,
+                             levels = c("BODY", "BODY-HEART", 
+                                        "HEART", "MIND")),
+         ur_factor2_pos = recode(ur_factor2,
+                                 "BODY" = 1, "BODY-HEART" = 1.5,
+                                 "HEART" = 2, "MIND" = 3)) %>%
+  select(study, solution, ur_factor1_pos, ur_factor1, factor1, 
+         ur_factor2_pos, ur_factor2, factor2, cor) %>%
+  arrange(study, solution, ur_factor1_pos, ur_factor2_pos)
+
+IFcor_study1
+```
+
+```{r}
+pos <- position_jitter(width = 0.1, seed = 2)
+
+IFcor_study1 %>%
+  # mutate(lab = case_when(
+  #   (solution == "4-factor solution") &
+  #     ((study == "Study 2" & ur_factor == "MIND") |
+  #        (study == "Study 4" & ur_factor == "BODY")) ~
+  #     factor,
+  #   ur_factor == "BODY-HEART" ~ factor,
+  #   TRUE ~ NA_character_)) %>%
+  # arrange(study, sample, ur_factor1, ur_factor2, factor1, factor2) %>%
+  ggplot(aes(x = interaction(ur_factor1, ur_factor2), y = cor, color = study)) +
+  facet_grid(solution ~ ., scales = "free_y") +
+  # geom_hline(data = data.frame(solution = c("2-factor solution",
+  #                                           "3-factor solution",
+  #                                           "4-factor solution"),
+  #                              equal = c(1/2, 1/3, 1/4)),
+  #            aes(x = NULL, y = NULL, color = NULL, yintercept = equal),
+  #            size = 0.25, lty = 2, show.legend = F) +
+  # geom_path(aes(group = study), position = pos, alpha = 0.5, show.legend = F) +
+  geom_point(position = pos, show.legend = T) +
+  # geom_text_repel(aes(label = lab), size = 3, show.legend = F,
+  #                 position = pos, box.padding = 0.35, na.rm = T,
+  #                 segment.alpha = 0.5) +
+  scale_colour_brewer(palette = "Dark2", direction = -1) +
+  # scale_y_continuous(breaks = seq(0, 1, 0.1), 
+  #                    labels = scales::percent_format(accuracy = 1)) +
+  labs(title = "Inter-factor correlations across studies, age groups, and EFA solutions",
+       x = "Factors", y = "Correlation", color = "Study") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+
 
 ## Study 2
 

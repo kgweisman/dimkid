@@ -143,6 +143,22 @@ write_b_95CI_fun <- function(model, param, round_n = 2){
   return(text)
 }
 
+# function for getting inter-factor correlations
+IFcor_fun <- function(efa, factor_names = NA){
+  
+  # get factor names
+  if(is.na(factor_names)){
+    factor_names <- paste("Factor", 1:efa$factors)
+  }
+  
+  # get correlations in longform
+  efa$Phi %>%
+    data.frame() %>%
+    rownames_to_column("factor1") %>%
+    gather(factor2, cor, -factor1) %>%
+    mutate_at(vars(factor1, factor2), funs(factor(., labels = factor_names)))
+}
+
 # functions for plotting
 binomial_smooth <- function(...) {
   geom_smooth(method = "glm", method.args = list(family = "binomial"), ...)
