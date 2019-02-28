@@ -152,11 +152,20 @@ IFcor_fun <- function(efa, factor_names = NA){
   }
   
   # get correlations in longform
-  efa$Phi %>%
+  d0 <- efa$Phi
+  d0[lower.tri(d0, diag = T)] <- NA
+  
+  d1 <- d0 %>%
     data.frame() %>%
     rownames_to_column("factor1") %>%
     gather(factor2, cor, -factor1) %>%
     mutate_at(vars(factor1, factor2), funs(factor(., labels = factor_names)))
+  
+  d2 <- d1 %>%
+    filter(!is.na(cor)) %>%
+    arrange(factor1, factor2)
+
+  return(d2)
 }
 
 # functions for plotting
