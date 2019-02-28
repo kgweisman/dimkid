@@ -287,7 +287,7 @@ Parallel analysis suggested retaining four factors. However, three of the five f
 
 Likewise, minimizing BIC analysis suggested retaining five factors, but three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d1b_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth and fifth factors each accounted for $<$ `r efa_bic_d1b_ad$Vaccounted["Proportion Explained", c("F4", "F5")] %>% max() %>% ceiling_dec(2) * 100`% of the shared variance, and neither was the dominant factor for any of the 40 mental capacities included in this study. Indeed, factor loadings for these two factors were all quite weak (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1b_ad) %>% filter(factor %in% c("F4", "F5")))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). 
 
-Given all this, I will again focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 4- and 5-factor solutions).
+Given all this, I will again focus the remainder of my analyses on the 3-factor solution; see Appendix A for the 4- and 5-factor solutions.
 
 #### What are these conceptual units?
 
@@ -334,7 +334,7 @@ loadings_summarize_fun(efa_bic_d1c_ad) %>%
   mutate_at(vars(-factor), funs(round(., 2)))
 ```
 
-Two of the three protocols for determining how many factors to retain (parallel analysis and the factor retention criteria reported in the original publication of Studies 1c-1d; Weisman et al., 2017) suggested retaining three factors, while the third (minimizing BIC) suggested retaining five factors; see Table 3.1. However, much as in Studies 1a and 1b, three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d1c_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth factor accounted for only `r efa_bic_d1c_ad$Vaccounted["Proportion Explained", "F4"] %>% round(2) * 100`% of the shared variance, was not the dominant factor for any of the 40 mental capacities included in this study, with small factor loadings for all capacities (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1c_ad) %>% filter(factor == "F4"))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will again focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 4-factor solution).
+Two of the three protocols for determining how many factors to retain (parallel analysis and the factor retention criteria reported in the original publication of Studies 1c-1d; Weisman et al., 2017) suggested retaining three factors, while the third (minimizing BIC) suggested retaining five factors; see Table 3.1. However, much as in Studies 1a and 1b, three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d1c_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth factor accounted for only `r efa_bic_d1c_ad$Vaccounted["Proportion Explained", "F4"] %>% round(2) * 100`% of the shared variance, was not the dominant factor for any of the 40 mental capacities included in this study, with small factor loadings for all capacities (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1c_ad) %>% filter(factor == "F4"))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will again focus the remainder of my analyses on the 3-factor solution; see Appendix A for the 4-factor solution.
 
 #### What are these conceptual units?
 
@@ -403,7 +403,7 @@ Parallel analysis suggested retaining four factors. However, three of the five f
 
 Likewise, minimizing BIC analysis suggested retaining five factors, but three of the five factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d1d_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth and fifth factors each accounted for $<$ `r efa_bic_d1d_ad$Vaccounted["Proportion Explained", c("F4", "F5")] %>% max() %>% ceiling_dec(2) * 100`% of the shared variance, and neither was the dominant factor for any of the 40 mental capacities included in this study. Indeed, factor loadings for these two factors were all quite weak (absolute loadings all $<$ `r data.frame(loadings_summarize_fun(efa_bic_d1d_ad) %>% filter(factor %in% c("F4", "F5")))$max_abs %>% max() %>% ceiling_dec(2) %>% format(nsmall = 2)`). 
 
-Given all this, I will once more focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 4- and 5-factor solutions).
+Given all this, I will once more focus the remainder of my analyses on the 3-factor solution; see Appendix A for the 4- and 5-factor solutions.
 
 #### What are these conceptual units?
 
@@ -649,7 +649,7 @@ loadings_summarize_fun(efa_bic_d3_ad) %>%
   mutate_at(vars(-factor), funs(round(., 2)))
 ```
 
-Two of the three protocols for determining how many factors to retain (parallel analysis and the factor retention criteria employed in the original publication of Study 1; Weisman et al., 2017) suggested retaining three factors, while the third (minimizing BIC) suggested retaining four factors; see Table 3.1. However, much as in Studies 1a-1d, three of the four factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d3_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth factor accounted for only `r efa_bic_d3_ad$Vaccounted["Proportion Explained", "F4"] %>% round(2) * 100`% of the shared variance, was the dominant factor for only one of the 40 mental capacities included in this study (`r top_n_domCap(efa_bic_d3_ad, n = 1, "F4", abs_pos = "abs")`), and had moderately small factor loadings for all capacities (absolute loadings all $<$ `r efa_bic_d3_ad %>% loadings_fun() %>% filter(capacity != "feel happy", factor == "F4") %>% summarise(max_abs = max(abs(loading))) %>% as.numeric() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will again focus the remainder of my analyses on the 3-factor solution (but see [XX APPENDIX?] for the 4-factor solution).
+Two of the three protocols for determining how many factors to retain (parallel analysis and the factor retention criteria employed in the original publication of Study 1; Weisman et al., 2017) suggested retaining three factors, while the third (minimizing BIC) suggested retaining four factors; see Table 3.1. However, much as in Studies 1a-1d, three of the four factors suggested by minimizing BIC were qualitatively very similar to the three factors reported below, and together accounted for `r efa_bic_d3_ad$Vaccounted["Cumulative Proportion", "F3"] %>% round(2) * 100`% of the shared variance. The fourth factor accounted for only `r efa_bic_d3_ad$Vaccounted["Proportion Explained", "F4"] %>% round(2) * 100`% of the shared variance, was the dominant factor for only one of the 40 mental capacities included in this study (`r top_n_domCap(efa_bic_d3_ad, n = 1, "F4", abs_pos = "abs")`), and had moderately small factor loadings for all capacities (absolute loadings all $<$ `r efa_bic_d3_ad %>% loadings_fun() %>% filter(capacity != "feel happy", factor == "F4") %>% summarise(max_abs = max(abs(loading))) %>% as.numeric() %>% ceiling_dec(2) %>% format(nsmall = 2)`). Given all this, I will again focus the remainder of my analyses on the 3-factor solution; see Appendix A for the 4-factor solution.
 
 #### What are these conceptual units?
 
@@ -771,7 +771,7 @@ Parallel analysis suggested retaining two factors. Each of these factors account
 
 The retention criteria employed in the original publication of Study 1; Weisman et al., 2017) suggested retaining three factors. Again, each of these factors accounted for a substantial amount of the shared variance, was the dominant factor for several mental capacities, and had strong factor loadings for some subset of mental capacities.
 
-Given all this, I will present and interpret both 2- and 3-factor solutions (but see [XX APPENDIX?] for the null, 1-factor solution suggested by minimizing BIC).
+Given all this, I will present and interpret both 2- and 3-factor solutions; see Appendix A for the null, 1-factor solution suggested by minimizing BIC.
 
 #### What are these conceptual units?
 
@@ -1026,7 +1026,7 @@ Parallel suggested retaining three factors. Each of these factors accounted for 
 
 The retention criteria used in Weisman et al. (2017) suggested retaining three factors. Again, each of these factors accounted for a substantial amount of the shared variance, was the dominant factor for several mental capacities, and had at least moderately strong factor loadings for some subset of mental capacities.
 
-Given all this, I will present and interpret both 3- and 4-factor solutions (but see [XX APPENDIX?] for the null, 1-factor solution suggested by minimizing BIC).
+Given all this, I will present and interpret both 3- and 4-factor solutions; see Appendix A for the null, 1-factor solution suggested by minimizing BIC.
 
 #### What are these conceptual units?
 
