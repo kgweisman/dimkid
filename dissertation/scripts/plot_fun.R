@@ -10,13 +10,26 @@ heatmap_fun <- function(efa, factor_names = NA){
     factor_names <- paste("Factor", 1:efa$factors)
   }
   
+  # put factors in a standard order when applicable
+  body_factors <- factor_names[grepl("BODY", factor_names)]
+  
+  leftovers <- factor_names[!factor_names %in% body_factors]
+  heart_factors <- leftovers[grepl("HEART", leftovers)]
+  
+  leftovers <- leftovers[!leftovers %in% heart_factors]
+  mind_factors <- leftovers[grepl("MIND", leftovers)]
+  
+  other_factors <- leftovers[!leftovers %in% mind_factors]
+  
+  factor_levels <- c(body_factors, heart_factors, mind_factors, other_factors)
+  
   # get factor loadings
   loadings <- efa$loadings[] %>%
     data.frame() %>%
     rownames_to_column("capacity") %>%
     gather(factor, loading, -capacity) %>%
     mutate(factor = as.character(factor(factor, labels = factor_names)),
-           factor = factor(factor, levels = factor_names))
+           factor = factor(factor, levels = factor_levels))
   
   # get fa.sort() order
   order <- loadings %>%
@@ -35,7 +48,7 @@ heatmap_fun <- function(efa, factor_names = NA){
     select(-stat) %>%
     gather(factor, var) %>%
     mutate(factor = as.character(factor(factor, labels = factor_names)),
-           factor = factor(factor, levels = factor_names)) %>%
+           factor = factor(factor, levels = factor_levels)) %>%
     mutate(var = paste0(factor, "\n(", round(var, 2)*100, "% var.)"))
   
   # make plot
@@ -43,7 +56,7 @@ heatmap_fun <- function(efa, factor_names = NA){
                    left_join(order) %>%
                    left_join(shared_var) %>%
                    mutate(capacity = gsub("_", " ", capacity),
-                          factor = factor(factor, levels = factor_names)),
+                          factor = factor(factor, levels = factor_levels)),
                  aes(x = reorder(var, as.numeric(factor)), 
                      y = reorder(capacity, order), 
                      fill = loading, 
