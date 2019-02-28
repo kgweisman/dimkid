@@ -102,13 +102,191 @@ efa_bic_d4_46 <- readRDS(file = "./efas/efa_bic_d4_46")
 efa_wdm_d4_46 <- readRDS(file = "./efas/efa_wdm_d4_46")
 ```
 
-# Additional exploratory factor analyses (EFAs)
+# Appendix overview
+
+In this appendix, I report additional exploratory factor analysis (EFA) results that were excluded from the main text of Chapter III, including: (a) unrotated versions of all of the EFA solutions reported in Chapter III; (b) oblimin-transformed (rather than varimax-rotated) versions of all of the EFA solutions reported in Chapter III; (c) additional varimax-rotated EFA solutions not reported in full in Chapter III because I deemd to be redundant with the reported solutions; and (d) EFA solutions for participants in Studies 1c and 4, broken out by which target character a participant assessed first vs. second.
+
+
+# Unrotated solutions
+
+Throughout this dissertation, beginning in Chapter III, I have reported EFA solutions after applying varimax rotation. This rotation, which maximizes the sum of the variances of the squared factor loadings, is intended to make factors more interpretable by producing "simple structure" (Thurstone, 1949). Here, for completeness, I present unrotated EFA solutions for all of the EFAs reported in Chapter III.
+
+```{r}
+# reset EFA parameters to default, then set chosen rotation to none
+source("./scripts/efa_param.R")
+chosen_rot <- "none"
+```
+
+## Study 1
+
+```{r}
+efa_3_d1a_ad_unrot <- fa_fun(d1a_ad_wide_i, 3)
+efa_3_d1b_ad_unrot <- fa_fun(d1b_ad_wide_i, 3)
+efa_3_d1c_ad_unrot <- fa_fun(d1c_ad_wide_i, 3)
+efa_3_d1d_ad_unrot <- fa_fun(d1d_ad_wide_i, 3)
+```
+
+```{r}
+# study 1a
+plot_efa_3_d1a_ad_unrot <- heatmap_fun(efa_3_d1a_ad_unrot) +
+  labs(title = "Study 1a", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+# study 1b
+plot_efa_3_d1b_ad_unrot <- heatmap_fun(efa_3_d1b_ad_unrot) +
+  labs(title = "Study 1b", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+# study 1c
+plot_efa_3_d1c_ad_unrot <- heatmap_fun(efa_3_d1c_ad_unrot) +
+  labs(title = "Study 1c", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+# study 1d
+plot_efa_3_d1d_ad_unrot <- heatmap_fun(efa_3_d1d_ad_unrot) +
+  labs(title = "Study 1d", subtitle = "Unrotated 3-factor solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.1 <- plot_grid(plot_efa_3_d1a_ad_unrot, plot_efa_3_d1b_ad_unrot, 
+                       plot_efa_3_d1c_ad_unrot, plot_efa_3_d1d_ad_unrot,
+                       labels = "AUTO", ncol = 4, rel_widths = c(1, 1, 1, 1.2))
+
+figureA.1_cap <- add_sub(figureA.1, str_wrap("Figure A.1: Factor loadings from exploratory factor analyses of Study 1 (as reported in Chapter III), before rotation. All results are from US adult samples; see Chapter II for methods. (A) Study 1a. (B) Study 1b. (C) Study 1c. (D) Study 1d. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r figureA.1, include = T, fig.width = 9, fig.asp = 0.6}
+ggdraw(figureA.1_cap)
+```
+
+## Study 2
+
+```{r}
+efa_3_d2_ad_unrot <- fa_fun(d2_ad_wide_i, 3)
+efa_4_d2_ad_unrot <- fa_fun(d2_ad_wide_i, 4)
+efa_3_d2_79_unrot <- fa_fun(d2_79_wide_i, 3)
+```
+
+```{r}
+# adults
+plot_efa_3_d2_ad_unrot <- heatmap_fun(efa_3_d2_ad_unrot) +
+  labs(title = "Adults", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_4_d2_ad_unrot <- heatmap_fun(efa_4_d2_ad_unrot) +
+  labs(title = "Adults", subtitle = "Unrotated 4-factor solution") +
+  theme(legend.position = "none")
+
+# children
+plot_efa_3_d2_79_unrot <- heatmap_fun(efa_3_d2_79_unrot) +
+  labs(title = "Chidlren, 7-9y", subtitle = "Unrotated 3-factor solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.2 <- plot_grid(plot_efa_3_d2_ad_unrot, plot_efa_4_d2_ad_unrot, 
+                       plot_efa_3_d2_79_unrot, 
+                       labels = "AUTO", ncol = 3, rel_widths = c(1, 1.2, 1.2))
+
+figureA.2_cap <- add_sub(figureA.2, str_wrap("Figure A.2: Factor loadings from exploratory factor analyses of Study 2 (as reported in Chapter III), before rotation. (A) Results for US adults, retaining three factors. (B) Results for US adults, retaining four factors. (C) Results for US children ages 7-9y. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r figureA.2, include = T, fig.width = 9, fig.asp = 0.6}
+ggdraw(figureA.2_cap)
+```
+
+## Study 3
+
+```{r}
+efa_3_d3_ad_unrot <- fa_fun(d3_ad_wide_i, 3)
+efa_3_d3_79_unrot <- fa_fun(d3_79_wide_i, 3)
+efa_2_d3_46_unrot <- fa_fun(d3_46_wide_i, 2)
+efa_3_d3_46_unrot <- fa_fun(d3_46_wide_i, 3)
+```
+
+```{r}
+# adults
+plot_efa_3_d3_ad_unrot <- heatmap_fun(efa_3_d3_ad_unrot) +
+  labs(title = "Adults", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+# older children
+plot_efa_3_d3_79_unrot <- heatmap_fun(efa_3_d3_79_unrot) +
+  labs(title = "Older children, 7-9y", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+# younger children
+plot_efa_3_d3_46_unrot <- heatmap_fun(efa_3_d3_46_unrot) +
+  labs(title = "Younger children, 4-6y", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_2_d3_46_unrot <- heatmap_fun(efa_2_d3_46_unrot) +
+  labs(title = "Younger children, 4-6y", subtitle = "Unrotated 2-factor solution") +
+  theme(legend.position = "none")
+```
+
+```{r}
+figureA.3 <- plot_grid(plot_efa_3_d3_ad_unrot, plot_efa_3_d3_79_unrot,
+                       plot_efa_3_d3_46_unrot, plot_efa_2_d3_46_unrot,
+                       labels = "AUTO", ncol = 4, rel_widths = c(1, 1, 1, 1))
+
+figureA.3_cap <- add_sub(figureA.3, str_wrap("Figure A.3: Factor loadings from exploratory factor analyses of Study 3 (as reported in Chapter III), before rotation. (A) Results for US adults. (B) Results for US children ages 7-9y. (C) Results for US children ages 4-6y, retaining three factors. (D) Results for US children ages 4-6y, retaining two factors. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r figureA.3, include = T, fig.width = 9, fig.asp = 0.6}
+ggdraw(figureA.3_cap)
+```
+
+## Study 4
+
+```{r}
+efa_3_d4_ad_unrot <- fa_fun(d4_ad_wide_i, 3)
+efa_3_d4_46_unrot <- fa_fun(d4_46_wide_i, 3)
+efa_4_d4_46_unrot <- fa_fun(d4_46_wide_i, 4)
+```
+
+```{r}
+# adults
+plot_efa_3_d4_ad_unrot <- heatmap_fun(efa_3_d4_ad_unrot) +
+  labs(title = "Adults", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+# younger children
+plot_efa_3_d4_46_unrot <- heatmap_fun(efa_3_d4_46_unrot) +
+  labs(title = "Children, 4-5y", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_4_d4_46_unrot <- heatmap_fun(efa_4_d4_46_unrot) +
+  labs(title = "Children, 4-5y", subtitle = "Unrotated 4-factor solution") +
+  theme(legend.position = "none")
+```
+
+```{r}
+figureA.4 <- plot_grid(plot_efa_3_d4_ad_unrot, plot_efa_3_d4_46_unrot, 
+                       plot_efa_4_d4_46_unrot,
+                       labels = "AUTO", ncol = 3, rel_widths = c(1, 1, 1.4))
+
+figureA.4_cap <- add_sub(figureA.4, str_wrap("Figure A.4: Factor loadings from exploratory factor analyses of Study 4 (as reported in Chapter III), before rotation. (A) Results for US adults. (B) Results for US children ages 4-5y, retaining three factors. (C) Results for US children ages 4-5y, retaining four factors. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r figureA.4, include = T, fig.width = 9, fig.asp = 0.6}
+ggdraw(figureA.4_cap)
+```
+
+```{r}
+# reset EFA parameters to default
+source("./scripts/efa_param.R")
+```
+
+
+# Varimax-rotated solutions previously deemed redundant
 
 In Chapter III, I focused my interpretation on a subset of the EFA solutions suggested by the three factor retention protocols, excluding those solutions in which additional factors were redundant with the 3-factor (BODY-HEART-MIND) solution. These additional factors tend to explain very little of the shared variance; tend not to be the dominant factor (the factor with the strongest absolute factor loading) for many, if any, mental capacities; and tend to have very weak factor loadings. I include them here for completeness.
 
 ## Study 1
 
-The factor retention criteria employed in Weisman et al. (2017) suggested retaining 3 factors for all of the studies included in Study 1; see Chapter III. In contrast, parallel analysis suggested retaining 4 factors (instead of 3) for Studies 1b and 1d; minimizing BIC suggested retaining 4 factors (instead of 3) for Study 1c, and 5 factors (instead of 3) for Studies 1a, 1b, and 1d. See Figure A.1.
+The factor retention criteria employed in Weisman et al. (2017) suggested retaining 3 factors for all of the studies included in Study 1; see Chapter III. In contrast, parallel analysis suggested retaining 4 factors (instead of 3) for Studies 1b and 1d; minimizing BIC suggested retaining 4 factors (instead of 3) for Study 1c, and 5 factors (instead of 3) for Studies 1a, 1b, and 1d. See Figure A.5.
 
 ```{r}
 # study 1a
@@ -150,17 +328,17 @@ plot_efa_bic_d1d_ad <- heatmap_fun(efa_bic_d1d_ad,
 ```
 
 ```{r}
-figureA.1 <- plot_grid(plot_efa_bic_d1a_ad, 
+figureA.5 <- plot_grid(plot_efa_bic_d1a_ad, 
                        plot_efa_par_d1b_ad, plot_efa_bic_d1b_ad, 
                        plot_efa_bic_d1c_ad,
                        plot_efa_par_d1d_ad, plot_efa_bic_d1d_ad,
                        labels = "AUTO", ncol = 3, rel_widths = c(1, 1, 1.2))
 
-figureA.1_cap <- add_sub(figureA.1, str_wrap("Figure A.1: Factor loadings from additional exploratory factor analyses of Study 1, not reported in Chapter III. All results are from US adult samples; see Chapter II for methods. (A) Study 1a, solution suggested by minimizing BIC. (B) Study 1b, solution suggested by parallel analysis. (C) Study 1b, solution suggested by minimizing BIC. (D) Study 1c, solution suggested by minimizing BIC. (E) Study 1d, solution suggested by parallel analysis. (F) Study 1d, solution suggested by minimizing BIC. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 200), x = 0, hjust = 0)
+figureA.5_cap <- add_sub(figureA.5, str_wrap("Figure A.5: Factor loadings from additional exploratory factor analyses of Study 1, not reported in Chapter III. All results are from US adult samples; see Chapter II for methods. (A) Study 1a, solution suggested by minimizing BIC. (B) Study 1b, solution suggested by parallel analysis. (C) Study 1b, solution suggested by minimizing BIC. (D) Study 1c, solution suggested by minimizing BIC. (E) Study 1d, solution suggested by parallel analysis. (F) Study 1d, solution suggested by minimizing BIC. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 200), x = 0, hjust = 0)
 ```
 
-```{r figureA.1, include = T, fig.width = 9, fig.asp = 1}
-ggdraw(figureA.1_cap)
+```{r figureA.5, include = T, fig.width = 9, fig.asp = 1}
+ggdraw(figureA.5_cap)
 ```
 
 ## Study 2
@@ -169,7 +347,7 @@ All of the EFA solutions suggested by the three factor retention protocols are r
 
 ## Study 3
 
-The factor retention criteria employed in Weisman et al. (2017) suggested retaining 3 factors for all of the age groups included in Study 3; see Chapter III. In contrast, parallel analysis suggested retaining 2 factors (instead of 3) for younger children; and minimizing BIC suggested retaining 4 factors (instead of 3) for adults, and 1 factor (i.e., a "null" solution) for younger children (ages 4-6y). See Figure A.2.
+The factor retention criteria employed in Weisman et al. (2017) suggested retaining 3 factors for all of the age groups included in Study 3; see Chapter III. In contrast, parallel analysis suggested retaining 2 factors (instead of 3) for younger children; and minimizing BIC suggested retaining 4 factors (instead of 3) for adults, and 1 factor (i.e., a "null" solution) for younger children (ages 4-6y). See Figure A.6.
 
 ```{r}
 # study 3
@@ -185,19 +363,19 @@ plot_efa_bic_d3_46 <- heatmap_fun(efa_bic_d3_46, ) +
 ```
 
 ```{r}
-figureA.2 <- plot_grid(plot_efa_bic_d3_ad, plot_efa_bic_d3_46,
+figureA.6 <- plot_grid(plot_efa_bic_d3_ad, plot_efa_bic_d3_46,
                        labels = "AUTO", ncol = 2, rel_widths = c(1, 1))
 
-figureA.2_cap <- add_sub(figureA.2, str_wrap("Figure A.2: Factor loadings from additional exploratory factor analyses of Study 3, not reported in Chapter III. See Chapter II for methods. (A) Adults, solution suggested by minimizing BIC. (B) Younger children (4-6y), 'null' solution suggested by minimizing BIC. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 115), x = 0, hjust = 0)
+figureA.6_cap <- add_sub(figureA.6, str_wrap("Figure A.6: Factor loadings from additional exploratory factor analyses of Study 3, not reported in Chapter III. See Chapter II for methods. (A) Adults, solution suggested by minimizing BIC. (B) Younger children (4-6y), 'null' solution suggested by minimizing BIC. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 115), x = 0, hjust = 0)
 ```
 
-```{r figureA.2, include = T, fig.width = 5, fig.asp = 1}
-ggdraw(figureA.2_cap)
+```{r figureA.6, include = T, fig.width = 5, fig.asp = 1}
+ggdraw(figureA.6_cap)
 ```
 
 ## Study 4
 
-All of the EFA solutions suggested by the three factor retention protocols are reported in full in Chapter III, with the exception of the 1-factor ("null") solution suggested by minimizing BIC for younger children (4-5y). See Figure A.3.
+All of the EFA solutions suggested by the three factor retention protocols are reported in full in Chapter III, with the exception of the 1-factor ("null") solution suggested by minimizing BIC for younger children (4-5y). See Figure A.7.
 
 ```{r}
 # study 4
@@ -208,13 +386,13 @@ plot_efa_bic_d4_46 <- heatmap_fun(efa_bic_d4_46, ) +
 ```
 
 ```{r}
-figureA.3 <- plot_efa_bic_d4_46
+figureA.7 <- plot_efa_bic_d4_46
 
-figureA.3_cap <- add_sub(figureA.3, str_wrap("Figure A.3: Factor loadings from the 'null' solution suggested by minimizing BIC for younger children (4-5y) in Study 4. See Chapter II for methods, and Chapter III for other EFA solutions for this study. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 30), x = 0, hjust = 0)
+figureA.7_cap <- add_sub(figureA.7, str_wrap("Figure A.7: Factor loadings from the 'null' solution suggested by minimizing BIC for younger children (4-5y) in Study 4. See Chapter II for methods, and Chapter III for other EFA solutions for this study. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 30), x = 0, hjust = 0)
 ```
 
-```{r figureA.3, include = T, fig.width = 2, fig.asp = 1.8}
-ggdraw(figureA.3_cap)
+```{r figureA.7, include = T, fig.width = 2, fig.asp = 1.8}
+ggdraw(figureA.7_cap)
 ```
 
 
