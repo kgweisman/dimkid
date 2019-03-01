@@ -114,9 +114,9 @@ I use the method developed by ten Berge, Krijnen, Wansbeek, & Shapiro (1999) to 
 
 # Study 1: An adult endpoint
 
-An in-depth analysis and discussion of the conceptual units available to US adults in Studies 1a-1d is provided in the original publication of these studies (Weisman et al., 2017). Here I present these analyses anew, with slight tweaks to the analysis pipeline to maximize comparability to Studies 2-4—namely, examining multiple factor retention protocols (rather than only one), and recoding the response scale used in these studies to begin at 0 (rather than being centered at 0). 
+In the context of this dissertation, Study 1 serves the role of describing a developmental endpoint for conceptual representations of mental life. In this chapter, I focus on what these studies can reveal about the fundamental components of this representation: What are the conceptual units available to US adults in reasoning about the mental lives of various beings in the world?
 
-The results of Study 1 serve as the backdrop for the extended anaysis of conceptual development in this domain that is the focus of this dissertation.
+An in-depth analysis and discussion of these results is provided in the original publication of these studies (Weisman et al., 2017). Here I present these analyses anew, with slight tweaks to the analysis pipeline to maximize comparability to Studies 2-4—namely, examining multiple factor retention protocols (rather than only one), and recoding the response scale used in these studies to begin at 0 (rather than being centered at 0). 
 
 ## Special notes on data processing and analysis
 
@@ -467,16 +467,16 @@ ggdraw(figure3.1_cap)
 
 ## Discussion
 
-The general pattern that emerged from Studies 1a-1d is clear and appears to be highly reliable: In four large-scale studies, US adults' mental capacity attributions were anchored by a three-way distinction between the physiological sensations of the BODY, the social-emotional abilities of the HEART, and the perceptual-cognitive abilities of the MIND. Given the range of mental capacities included in each study, a number of additional or alternative factors could have emerged (including "experience" or "agency," as in Gray et al.'s 2007 work on mind perception). Nonetheless, a common set of factors—i.e., a stable set of "conceptual units"—emerged across independent analyses of four studies, whether participants judged a single "edge case" target character in isolation (Studies 1a and 1b), compared two "edge cases" that highlighted a contrast in biological animacy (Study 1c), or evaluated a diverse range of target characters, from inert objects to canonical social partners (Study 1d).
+The general pattern that emerged from Studies 1a-1d is clear and appears to be highly reliable: In four large-scale studies, US adults' mental capacity attributions were anchored by a three-way distinction between the physiological sensations of the BODY, the social-emotional abilities of the HEART, and the perceptual-cognitive abilities of the MIND. Given the range of mental capacities included in each study, a number of additional or alternative factors could have emerged (including "experience" or "agency," as in Gray et al.'s 2007 work on mind perception). Nonetheless, a common set of factors—i.e., a stable set of "conceptual units"—emerged across independent analyses of four studies, whether participants judged a single "edge case" target character in isolation (Studies 1a and 1b), compared two "edge cases" that highlighted a contrast in biological animacy (Study 1c), or evaluated a diverse range of target characters, from inert objects to canonical social partners (Study 1d).For an extended discussion of these results, see Weisman et al. (2017). 
 
-For an extended discussion of these results, see Weisman et al. (2017).
+Studies 1a-1d provide a clear developmental endpoint for this aspect of conceptual representations of mental life: As a group, US adults appear to have access to three fundamental conceptual units—BODY, HEART, and MIND—when reasoning about the mental lives of various beings in the world. Studies 2-4 were designed to explore the developmental trajectory that leads up to this endpoint: How do US children come to represent mental life in this way?
 
 
 # Study 2: Conceptual change between middle childhood (7-9y) and adulthood
 
-In Study 2, `r nrow(d2_ad_wide)` US adults and `r nrow(d2_79_wide)` US children between the ages of `r summary(d2_79$age)["Min."] %>% round(2)`-`r summary(d2_79$age)["Max."] %>% round(2)` years (median: `r summary(d2_79$age)["Median"] %>% round(2)`y) each assessed a single target character on 40 mental capacities. To make the study appropriate for children in this age range, the wording of some the 40 mental capacities employed in Study 1 was modified to use more age-appropriate vocabulary, and participants responded on a 3-point scale ("no," coded as 0; "kinda," coded as 0.5, "yes," coded as 1). This study employed the "edge case" variant of the general approach, with participants randomly assigned to assess either a beetle or a robot. (See Chapter II for detailed methods.)
+Study 2 provides a first glimpse of the emergence of conceptual representations of mental life prior to adulthood. In this chapter, I focus on the fundamental components of this representation: What are the conceptual units available to US children in reasoning about the mental lives of various beings in the world, and how do they compare to those available to US adults (as revealed in Study 1)?
 
-## Special notes on data processing and analysis
+Pursuing this question with children required developing an age-appropriate experimental paradigm. In particular, the wording of some of the 40 mental capacities employed in Study 1 was modified to use more age-appropriate vocabulary, and participants responded on a 3-point, rather than a 7-point, scale ("no," coded as 0; "kinda," coded as 0.5, "yes," coded as 1). Study 2 employed the "edge case" variant of the general approach, with participants randomly assigned to assess either a beetle or a robot. As in Studies 1a, 1b, and 1d, in Study 2 each participant assessed a single target character on all 40 mental capacities. To validate the modified paradigm (i.e., to assess whether this paradigm produced similar results to Study 1), and to provide a direct comparison for child participants, participants included a sample of `r nrow(d2_ad_wide)` US adults. As an initial foray into exploring development in this domain, the child sample consisted of `r nrow(d2_79_wide)` US children between the ages of `r summary(d2_79$age)["Min."] %>% round(2)`-`r summary(d2_79$age)["Max."] %>% round(2)` years (median: `r summary(d2_79$age)["Median"] %>% round(2)`y). (See Chapter II for detailed methods.)
 
 ## Results
 
@@ -519,7 +519,7 @@ Two of the three protocols for determining how many factors to retain (minimizin
 factor_names_efa_wdm_d2_ad <- c("HEART", "BODY", "MIND")
 ```
 
-First, I will examine the 3-factor solution suggested by minimizing BIC and by the factor retention criteria employed in the original publication of Study 1 (Weisman et al.'s, 2017). Importantly, this is the number of factors retained among US adults in all four of the samples included in Study 1.
+First, I will examine the 3-factor solution suggested by minimizing BIC and by the factor retention criteria employed in the original publication of Study 1 (Weisman et al.'s, 2017). Importantly, this is the number of factors retained among US adults in all of my previous studies with US adults (Studies 1a-1d).
 
 After rotation, the first factor corresponded primarily to the social-emotional abilities that I labeled HEART in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d2_ad, 4, "F1", "pos")`, and accounted for `r round(efa_wdm_d2_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
@@ -529,8 +529,6 @@ The third factor corresponded primarily to the perceptual-cognitive abilities th
 
 See Figure 3.2 for all factor loadings.
 
-In sum, as in Study 1, this three-factor solution was characterized by a distinction between BODY, HEART, and MIND. This suggests that the child-friendly paradigm developed for Study 2 was valid: Using reworded items and a three-point response scale elicited the same intuitive ontology of mental life, among adults, that has been revealed by more complex, "adult-friendly" experimental paradigms. 
-
 ##### 4-factor solution
 
 ```{r}
@@ -538,17 +536,21 @@ factor_names_efa_par_d2_ad <- c("BODY", "HEART",
                                 "MIND (cognition)", "MIND (perception)")
 ```
 
-In the four-factor solution suggested by parallel analysis, after rotation, the first factor corresponded primarily to the physiological sensations that I labeled BODY in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_par_d2_ad, 4, "F1", "pos")`, and accounted for `r round(efa_par_d2_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated three-factor solution.
+In the four-factor solution suggested by parallel analysis, after rotation, the first factor corresponded primarily to physiological sensations (BODY). It was the dominant factor for such items as `r top_n_domCap(efa_par_d2_ad, 4, "F1", "pos")`, and accounted for `r round(efa_par_d2_ad$Vaccounted["Proportion Explained", "F1"], 2) * 100`% of the shared variance in the rotated four-factor solution.
 
-The second factor corresponded primarily to the social-emotional abilities that I labeled HEART in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_par_d2_ad, 4, "F2", "pos")`, and accounted for `r round(efa_par_d2_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
+The second factor corresponded primarily to the social-emotional abilities (HEART). It was the dominant factor for such items as `r top_n_domCap(efa_par_d2_ad, 4, "F2", "pos")`, and accounted for `r round(efa_par_d2_ad$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated four-factor solution. 
 
-The third factor corresponded primarily to the more "cognitive" of the perceptual-cognitive abilities that I referred to as MIND in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_par_d2_ad, 4, "F3", "pos")`, and accounted for `r round(efa_par_d2_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
+The third factor corresponded primarily to the more "cognitive" and "agentic" of the perceptual-cognitive abilities that I have been referring to as MIND. It was the dominant factor for such items as `r top_n_domCap(efa_par_d2_ad, 4, "F3", "pos")`, and accounted for `r round(efa_par_d2_ad$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated four-factor solution.  
 
-The fourth factor corresponded primarily to the more "perceptual" of the perceptual-cognitive abilities that I referred to as MIND in Study 1 (see also Weisman et al., 2017). It was the dominant factor for such items as `r top_n_domCap(efa_par_d2_ad, 4, "F4", "pos")`, and accounted for `r round(efa_par_d2_ad$Vaccounted["Proportion Explained", "F4"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
+The fourth factor corresponded primarily to the more "perceptual" of the perceptual-cognitive abilities that I have been referring to as MIND. It was the dominant factor for such items as `r top_n_domCap(efa_par_d2_ad, 4, "F4", "pos")`, and accounted for `r round(efa_par_d2_ad$Vaccounted["Proportion Explained", "F4"], 2) * 100`% of the shared variance in the rotated four-factor solution.  
 
 See Figure 3.2 for all factor loadings.
 
-I would summarize the four-factor solution as a slight variant on the three-factor solutions common to Studies 1a-1d (and surfaced by the other two factor retention protocols for this study), again characterized by distinct constructs of BODY and HEART but demonstrating a further differention of what I've referred to as MIND into cognitive abilities vs. perceptual abilities.
+##### Interim discussion
+
+Two of the three factor retention protocols suggested a three-factor solution, which was characterized by a distinction between BODY, HEART, and MIND. This three-factor structure is highly similar to the three-factor structures revealed by Studies 1a-1d, suggesting that the child-friendly paradigm developed for Study 2 was valid: Providing adult participants with more "child-friendly" items to assess using a three-point (rather than seven-point) response scale elicited the same conceptual units that have been revealed by more complex, "adult-friendly" experimental paradigms. 
+
+Meanwhile, I would summarize the four-factor solution suggested by parallel analysis as a slight variant on this three-factor solution—again characterized by distinct constructs of BODY and HEART but including a further differention of the suite of mental capacities I have referred to as MIND into cognitive/agentic abilities (e.g., thinking, choosing, reasoning, planning) vs. perceptual abilities (e.g., hearing, seeing, sensing). Reanalyzing Studies 1a-1d using different EFA parameters (in particular, retaining more factors and examining an oblique transformation of EFA solutions rather than an orthogonal rotation) provides some converging evidence for this cognitive/agentic vs. perception distinction in the correlation structure of US adults' mental capacity attributions; see Appendix A. However, this distinction does not appear to be robust enough to emerge reliably across studies and analysis decisions in the kinds of experimental paradigms employed in this dissertation.
 
 ### Children (7-9y)
 
@@ -593,7 +595,7 @@ The second factor corresponded primarily to physiological sensations. An analysi
 
 The third factor corresponded primarily to perceptual-cognitive abilities. An analysis of factor congruence confirmed that this factor was most similar to adults' MIND factor (`r cong_report_fun(efa_ad = efa_wdm_d2_ad, efa_ch = efa_wdm_d2_79, factor = "F3", factor_names_ad = factor_names_efa_wdm_d2_ad)`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d2_79, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d2_79$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.  
 
-See Figure 3.2 for all factor loadings.
+See Figure 3.2 for all factor loadings, and Table 3.2 for cosine similarities between child and adult factors.
 
 In sum, like adults in Study 1, and like the 3-factor summary of adults in the current study, 7- to 9-year-old children's mental capacity attributions were dominated by a three-way distinction between physiological, social-emotional, and perceptual-cognitive abilities—i.e., BODY, HEART, and MIND.
 
@@ -622,7 +624,7 @@ ggdraw(figure3.2_cap)
 
 ## Discussion
 
-Exploratory factor analyses suggested that by midddle childhood (7-9y), the conceptual structure underlying US children's attributions of mental life is very similar to that of US adults, anchored by suites of mental capacities related to BODY (physiological sensations), HEART (social-emotional abilities), and MIND (perceptual-cognitive abilities). In principle, a number of additional or alternative latent factors could have emerged from the factor analysis of children's responses. For example, children might have distinguished primarily between internal experience and external action (Gray et al., 2007), or they might have demonstrated finer-grained groupings of mental capacities based on phrasing, rote knowledge, etc. Instead, the latent conceptual structure underlying children's responses appears to be very similar to that of adults, both in this study and in Weisman et al.'s (2017) previous work. In other words, any dramatic developmental changes to this conceptual structure likely occur prior to the age of 7 years.
+Exploratory factor analyses suggested that by midddle childhood (7-9y), the conceptual structure underlying US children's attributions of mental life is very similar to that of US adults, anchored by suites of mental capacities related to BODY (physiological sensations), HEART (social-emotional abilities), and MIND (perceptual-cognitive abilities). In principle, a number of additional or alternative latent factors could have emerged from the factor analysis of children's responses. For example, children might have distinguished primarily between internal "experience" and external action or "agency" (Gray et al., 2007), or they might have demonstrated finer-grained groupings of mental capacities based on phrasing, rote knowledge, etc. Instead, the latent conceptual structure underlying children's responses appears to be very similar to that of adults, both in this study and in Weisman et al.'s (2017) previous work. In other words, any dramatic developmental changes to this conceptual structure likely occur prior to the age of 7 years.
 
 
 # Study 3: Conceptual change over early and middle childhood (4-9y)
@@ -734,7 +736,7 @@ The second factor corresponded primarily to social-emotional abilities. An analy
 
 The third factor corresponded primarily to perceptual-cognitive abilities. An analysis of factor congruence confirmed that this factor was most similar to adults' MIND factor (`r cong_report_fun(efa_ad = efa_wdm_d3_ad, efa_ch = efa_wdm_d3_79, factor = "F3", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_79, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d3_79$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
-See Figure 3.3 for all factor loadings. (Note that to ease comparison across studies I have plotted these factors in the same order for all studies: BODY, HEART, and MIND.)
+See Figure 3.3 for all factor loadings, and Table 3.2 for cosine similarities between child and adult factors.
 
 I consider this to be a close conceptual replication of Study 1, suggesting that by the age of 7-9 years, this three-part conceptual structure is stable and robust to a range of experimental conditions.
 
@@ -815,7 +817,7 @@ In the rotated two-factor solution suggested by parallel analysis, the first fac
 
 The second factor corresponded primarily to perceptual-cognitive abilities, as well as one complex negative emotion (_feel guilty_). An analysis of factor congruence confirmed that this factor was most similar to adults' MIND factor (`r cong_report_fun(efa_ad = efa_par_d3_ad, efa_ch = efa_par_d3_46, factor = "F2", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_par_d3_46, 4, "F2", "pos")`, and accounted for `r round(efa_par_d3_46$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
-See Figure 3.3 for all factor loadings.
+See Figure 3.3 for all factor loadings, and Table 3.2 for cosine similarities between child and adult factors.
 
 In relation to the BODY-HEART-MIND structure found among older children and adults, I would describe this two-factor structure as being anchored by a contrast between the cognitive capacities of the MIND vs. a set of warmer, more visercal experiences that constitute a more integrated representation of BODY-HEART.
 
@@ -838,9 +840,9 @@ After rotation, the first factor corresponded primarily to physiological sensati
 
 The second factor corresponded primarily to perceptual-cognitive abilities, as well as one complex negative emotion (_feel guilty_). An analysis of factor congruence confirmed that this factor was most similar to adults' MIND factor (`r cong_report_fun(efa_ad = efa_wdm_d3_ad, efa_ch = efa_wdm_d3_46, factor = "F2", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_46, 4, "F2", "pos")`, and accounted for `r round(efa_wdm_d3_46$Vaccounted["Proportion Explained", "F2"], 2) * 100`% of the shared variance in the rotated three-factor solution. 
 
-The third factor corresponded primarily to social-emotional abilities, with particularly strong loadings for positive emotions. An analysis of factor congruence indicated that this factor was most similar to adults' HEART factor, but also quite similar to adults' BODY factor (`r cong_report_fun(efa_ad = efa_wdm_d3_ad, efa_ch = efa_wdm_d3_46, factor = "F3", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_46, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d3_46$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution. (See Figure 5, Panel B, for all factor loadings.)
+The third factor corresponded primarily to social-emotional abilities, with particularly strong loadings for positive emotions. An analysis of factor congruence indicated that this factor was most similar to adults' HEART factor, but also quite similar to adults' BODY factor (`r cong_report_fun(efa_ad = efa_wdm_d3_ad, efa_ch = efa_wdm_d3_46, factor = "F3", factor_names_ad = c("BODY", "HEART", "MIND"))`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d3_46, 4, "F3", "pos")`, and accounted for `r round(efa_wdm_d3_46$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
-See Figure 3.3 for all factor loadings.
+See Figure 3.3 for all factor loadings, and Table 3.2 for cosine similarities between child and adult factors.
 
 I would describe this conceptual structure as reminiscent of the BODY-HEART-MIND structure found among older children and adults, but not as fully "adult-like." In particular, in this structure, the physiological sensations associated with the BODY among older children and adults are not as clearly differentiated from the emotional experiences associated with the HEART. Indeed, it it not clear that BODY vs. HEART is the most salient distinction among the first and third factors in this solution: A cleaner description of these factors might be negatively-valenced experiences vs. positively-valenced experiences. 
 
@@ -1072,7 +1074,7 @@ The second factor corresponded primarily to perceptual-cognitive abilities. An a
 
 The third factor corresponded primarily to social-emotional abilities. An analysis of factor congruence confirmed that this factor was most similar to adults' HEART factor (`r cong_report_fun(efa_ad = efa_par_d4_ad, efa_ch = efa_par_d4_46, factor = "F3", factor_names_ad = factor_names_efa_wdm_d4_ad)`). It was the dominant factor for such items as `r top_n_domCap(efa_par_d4_46, 4, "F3", "pos")`, and accounted for `r round(efa_par_d4_46$Vaccounted["Proportion Explained", "F3"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
-See Figure 3.4 for all factor loadings.
+See Figure 3.4 for all factor loadings, and Table 3.2 for cosine similarities between child and adult factors.
 
 I would describe this conceptual structure as strongly reminiscent of the BODY-HEART-MIND structure found among older children and adults. 
 
@@ -1102,7 +1104,7 @@ The third factor also corresponded primarily to phyiological sensations, as well
 
 The fourth factor corresponded primarily to social-emotional abilities, particularly negative emotions. An analysis of factor congruence indicated that this factor was most similar to adults' HEART factor (`r cong_report_fun(efa_ad = efa_wdm_d4_ad, efa_ch = efa_wdm_d4_46, factor = "F4", factor_names_ad = factor_names_efa_wdm_d4_ad)`). It was the dominant factor for such items as `r top_n_domCap(efa_wdm_d4_46, 4, "F4", "pos")`, and accounted for `r round(efa_wdm_d4_46$Vaccounted["Proportion Explained", "F4"], 2) * 100`% of the shared variance in the rotated three-factor solution.
 
-See Figure 3.4 for all factor loadings.
+See Figure 3.4 for all factor loadings, and Table 3.2 for cosine similarities between child and adult factors.
 
 I would summarize the four-factor solution as a variant on the three-factor solutions common to Studies 1a-1d (and surfaced by the other two factor retention protocols for this study), again characterized by distinct constructs of HEART and MIND but demonstrating a further differention of what I've referred to as BODY into sub-categories that are not easy to label or describe.
 
