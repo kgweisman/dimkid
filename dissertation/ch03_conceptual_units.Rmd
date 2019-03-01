@@ -1212,6 +1212,78 @@ table3.2 <- cong_report %>%
 table3.2
 ```
 
+## Discussion
+
+Using a paradigm that was better tailored for young children and that featured vocabulary items expressly designed to pick out (adult) notions of BODY, HEART, and MIND in a balanced way (6 items per factor), Study 4 provided some indications that the conceptual units available to young children may be more "adult-like" than Study 3 would suggest. However, even in this modified paradigm, there are several indications that this three-part conceptual structure is not "mature" by 4-5y.
+
+```{r}
+efa_par_d4_46_modload <- loadings_fun(efa_par_d4_46, "long") %>% 
+  filter(loading >= 0.40) %>%
+  arrange(factor, desc(loading)) %>%
+  group_by(capacity) %>%
+  mutate(adult_factor = case_when(
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F1", "pos")) == T ~ "BODY",
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F2", "pos")) == T ~ "HEART",
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F3", "pos")) == T ~ "MIND",
+    TRUE ~ "no dominant factor")) %>%
+  ungroup()
+efa_par_d4_46_modload
+```
+
+First, the similarities. As with the younger (4- to 6-year-old) children in Study 3, 4- to 5-year-old children’s responses in Study 4 were characterized by strong correlations among a suite of perceptual and cognitive capacities that I have been referring to as MIND. This suite of MIND abilities was relatively robust to analysis choices and emerged clearly in both Studies 2 and 3, bolstering my earlier claim that this is one aspect of conceptual structure that may be relatively stable from early in childhood. 
+
+Study 4 suggests that these similarities may extend even further. The three-factor solution suggested by parallel analysis includes recognizable BODY and MIND factors as well as a nascent HEART\* factor, on which half of the mental capacities that were designated as HEART items a priori loaded moderately strongly (loadings $\geq$ 0.40: `r ital_by_cap_fun(efa_par_d4_46_modload$capacity[efa_par_d4_46_modload$adult_factor == "HEART" & efa_par_d4_46_modload$factor == "F3"])`). (The four-factor solution includes a very similar HEART-like factor; see Figure 3.4.) This is a substantially more adult-like conceptual structure than was observed among 4- to 6-year-old children in Study 3.
+
+```{r}
+efa_par_d4_46_lowload <- loadings_fun(efa_par_d4_46, "long") %>% 
+  filter(loading < 0.30) %>%
+  arrange(factor, desc(loading)) %>%
+  group_by(capacity) %>%
+  mutate(adult_factor = case_when(
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F1", "pos")) == T ~ "BODY",
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F2", "pos")) == T ~ "HEART",
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F3", "pos")) == T ~ "MIND",
+    TRUE ~ "no dominant factor")) %>%
+  ungroup()
+efa_par_d4_46_lowload
+```
+
+```{r}
+efa_par_d4_46_domCap <- loadings_fun(efa_par_d4_46, "long") %>% 
+  arrange(desc(loading)) %>%
+  group_by(capacity) %>%
+  top_n(1, loading) %>%
+  mutate(adult_factor = case_when(
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F1", "pos")) == T ~ "BODY",
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F2", "pos")) == T ~ "HEART",
+    grepl(capacity, 
+          top_n_domCap(efa_par_d4_ad, 18, "F3", "pos")) == T ~ "MIND",
+    TRUE ~ "no dominant factor")) %>%
+  ungroup() %>%
+  arrange(factor, desc(loading))
+efa_par_d4_46_domCap
+```
+
+However, as in Study 3, the very fact that different approaches to factor retention yielded different results is further evidence that this BODY-HEART-MIND framework is not exactly "robust" among preschool-age children. 
+
+This appears to be particularly true with regard to their understanding of social-emotional abilities (HEART). Echoing the results of Study 3, children’s responses suggest that they may not consider the social-emotional abilities that constitute what I have called HEART among adults to hang together as one, clearly distinct component of mental life. Even in the more adult-like, three-factor solution suggested by parallel analysis, two of the six designated HEART items did _not_ loading strongly on the ostensive HEART\* factor (loadings $\leq$ 0.30: `r ital_by_cap_fun(efa_par_d4_46_lowload$capacity[efa_par_d4_46_lowload$adult_factor == "HEART" & efa_par_d4_46_lowload$factor == "F3"])`); and four of the six designated HEART items loaded moderately strongly on the MIND factor (loadings $\geq$ 0.30: `r ital_by_cap_fun(efa_par_d4_46_modload$capacity[efa_par_d4_46_modload$adult_factor == "HEART" & efa_par_d4_46_modload$factor == "F2"])`). Indeed, MIND was the _dominant_ factor for two of the six designated HEART items in this solution (`r ital_by_cap_fun(efa_par_d4_46_domCap$capacity[efa_par_d4_46_domCap$factor == "F2" & efa_par_d4_46_domCap$adult_factor == "HEART"])`). These general observations also hold (and in some cases, are more pronounced) in the four-factor solution suggested by Weisman et al.'s (2017) original factor retention protocol. Notably, none of these observations were true among adults.
+
+__BOOKMARK__
+
+[Meanwhile, BODY: split in 2 in the 4-factor solution!]
+[In sum, probably more adult-like than I said in Study 3, but not fully "mature."]
+
+
+## Comparing the "size" of conceptual units across Studies 1-4
+
 ```{r}
 vexp_report <- bind_rows(
   # study 1
@@ -1321,70 +1393,6 @@ figure3.5_cap <- add_sub(figure3.5, str_wrap("Figure 3.5: Shared variance explai
 ```{r figure3.5, include = T, fig.width = 4, fig.asp = 1.2}
 ggdraw(figure3.5_cap)
 ```
-
-## Discussion
-
-Study 4 provides further evidence that the conceptual structure underlying mental capacity attributions undergoes substantial changes between early and middle childhood. Using a paradigm that was better tailored for this age group and that featured vocabulary items expressly designed to pick out (adult) notions of BODY, HEART, and MIND in a balanced way (6 items per factor), Study 4 did provide some indications that this conceptual structure may be more mature in the early preschool years than Study 2 would suggest. However, even in this modified paradigm, tehre are several indications that this three-part conceptual structure is not fully in place by 4-5y.
-
-```{r}
-efa_par_d4_46_modload <- loadings_fun(efa_par_d4_46, "long") %>% 
-  filter(loading >= 0.30) %>%
-  arrange(factor, desc(loading)) %>%
-  group_by(capacity) %>%
-  mutate(adult_factor = case_when(
-    grepl(capacity, 
-          top_n_domCap(efa_par_d4_ad, 18, "F1", "pos")) == T ~ "BODY",
-    grepl(capacity, 
-          top_n_domCap(efa_par_d4_ad, 18, "F2", "pos")) == T ~ "HEART",
-    grepl(capacity, 
-          top_n_domCap(efa_par_d4_ad, 18, "F3", "pos")) == T ~ "MIND",
-    TRUE ~ "no dominant factor")) %>%
-  ungroup()
-efa_par_d4_46_modload
-```
-
-First, the similarities. As with the 4- to 6-year-old children Study 3, 4- to 5-year-old children’s responses in Study 4 were characterized by strong correlations among a suite of perceptual and (particularly) cognitive capacities that I have labeled MIND. This suite of MIND abilities was robust to analysis choices and emerged clearly in both Studies 2 and 3, bolstering my earlier claim that this is one aspect of conceptual structure that may be relatively stable from early in childhood. 
-
-More broadly, the three-factor solution suggested by parallel analysis includes recognizable BODY and MIND factors as well as a nascent HEART\* factor, on which most of the social-emotional items loaded moderately strongly (loadings $\geq$ 0.30: `r ital_by_cap_fun(efa_par_d4_46_modload$capacity[efa_par_d4_46_modload$adult_factor == "HEART" & efa_par_d4_46_modload$factor == "F3"])`). This is a substantially more adult-like conceptual structure than was observed among 4- to 6-year-old children in Study 3.
-
-```{r}
-efa_par_d4_46_lowload <- loadings_fun(efa_par_d4_46, "long") %>% 
-  filter(loading < 0.30) %>%
-  arrange(factor, desc(loading)) %>%
-  group_by(capacity) %>%
-  mutate(adult_factor = case_when(
-    grepl(capacity, 
-          top_n_domCap(efa_par_d4_ad, 18, "F1", "pos")) == T ~ "BODY",
-    grepl(capacity, 
-          top_n_domCap(efa_par_d4_ad, 18, "F2", "pos")) == T ~ "HEART",
-    grepl(capacity, 
-          top_n_domCap(efa_par_d4_ad, 18, "F3", "pos")) == T ~ "MIND",
-    TRUE ~ "no dominant factor")) %>%
-  ungroup()
-efa_par_d4_46_lowload
-```
-
-```{r}
-efa_par_d4_46_domCap <- loadings_fun(efa_par_d4_46, "long") %>% 
-  arrange(desc(loading)) %>%
-  group_by(capacity) %>%
-  top_n(1, loading) %>%
-  mutate(adult_factor = case_when(
-    grepl(capacity, 
-          top_n_domCap(efa_par_d4_ad, 18, "F1", "pos")) == T ~ "BODY",
-    grepl(capacity, 
-          top_n_domCap(efa_par_d4_ad, 18, "F2", "pos")) == T ~ "HEART",
-    grepl(capacity, 
-          top_n_domCap(efa_par_d4_ad, 18, "F3", "pos")) == T ~ "MIND",
-    TRUE ~ "no dominant factor")) %>%
-  ungroup() %>%
-  arrange(factor, desc(loading))
-efa_par_d4_46_domCap
-```
-
-However, as in Study 3, the very fact that different approaches to factor retention yielded different results is further evidence that, although there is some evidence for a nascent BODY-HEART-MIND framework among 4- to 6-year-old children, this framework was not robust among preschool-age children. 
-
-This appears to be particularly true with regard to their understanding of social-emotional abilities (HEART). Echoing the results of Study 3, children’s responses suggest that they may not consider the social-emotional abilities that constitute what I have called HEART among adults to hang together as one, clearly distinct component of mental life. Even in the more adult-like, three-factor solution, two of the six social-emotional items did _not_ loading strongly on the ostensive HEART\* factor (loadings $\leq$ 0.30: `r ital_by_cap_fun(efa_par_d4_46_lowload$capacity[efa_par_d4_46_lowload$adult_factor == "HEART" & efa_par_d4_46_lowload$factor == "F3"])`); and four of the six social-emotional items loaded moderately strongly on the MIND factor (loadings $\geq$ 0.30: `r ital_by_cap_fun(efa_par_d4_46_modload$capacity[efa_par_d4_46_modload$adult_factor == "HEART" & efa_par_d4_46_modload$factor == "F2"])`). Indeed, MIND was the _dominant_ factor for two social-emotional items in this three-factor solution (`r ital_by_cap_fun(efa_par_d4_46_domCap$capacity[efa_par_d4_46_domCap$factor == "F2" & efa_par_d4_46_domCap$adult_factor == "HEART"])`). None of these observations were true among adults.
 
 
 # General discussion of conceptual units
