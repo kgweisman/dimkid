@@ -934,7 +934,7 @@ The final set of BODY items included _feel hungry_, _get thirsty_, _feel sick_, 
 
 ## Special notes on data processing and analysis
 
-In Study 4, participants assessed two target characaters side by side (in contrast to Studies 1a, 1b, 1d, 2, and 3, in which each participant assessed just one target character). In the current analyses, I treat each participant's assessments of each target character as a separate set of observations (as if they came from different participants), in effect doubling the sample size for these studies (but ignoring the within-subject design). ([XX SEE APPENDIX?] for separate EFAs of the participants' responses to the first target character that they were assigned to rate vs. the second character.)
+In Study 4, participants assessed two target characaters side by side (in contrast to Studies 1a, 1b, 1d, 2, and 3, in which each participant assessed just one target character). In the current analyses, I treat each participant's assessments of each target character as a separate set of observations (as if they came from different participants), in effect doubling the sample size for these studies (but ignoring the within-subject design).
 
 ## Results
 

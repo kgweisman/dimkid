@@ -104,7 +104,7 @@ efa_wdm_d4_46 <- readRDS(file = "./efas/efa_wdm_d4_46")
 
 # Appendix overview
 
-In this appendix, I report additional exploratory factor analysis (EFA) results that were excluded from the main text of Chapter III, including: (a) unrotated versions of all of the EFA solutions reported in Chapter III; (b) oblimin-transformed (rather than varimax-rotated) versions of all of the EFA solutions reported in Chapter III; (c) additional varimax-rotated EFA solutions not reported in full in Chapter III because I deemd to be redundant with the reported solutions; and (d) EFA solutions for participants in Studies 1c and 4, broken out by which target character a participant assessed first vs. second.
+In this appendix, I report additional exploratory factor analysis (EFA) results that were excluded from the main text of Chapter III, including: (a) unrotated versions of all of the EFA solutions reported in Chapter III; (b) oblimin-transformed (rather than varimax-rotated) versions of all of the EFA solutions reported in Chapter III; and (c) additional varimax-rotated EFA solutions not reported in full in Chapter III because I deemd to be redundant with the reported solutions.
 
 
 # Unrotated solutions
@@ -956,7 +956,5 @@ figureA.15_cap <- add_sub(figureA.15, str_wrap("Figure A.15: Factor loadings fro
 ```{r figureA.15, include = T, fig.width = 2, fig.asp = 1.8}
 ggdraw(figureA.15_cap)
 ```
-
-
 
 
