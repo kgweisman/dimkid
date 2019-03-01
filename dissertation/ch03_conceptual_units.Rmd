@@ -1394,4 +1394,5 @@ __XX ADD CHAPTER CONCLUSION__
 - add references to table3.2
 - add discussion of "size" of factors (refer to figure3.5)
 - write chapter conclusion
+- reconsider additions to appendix A: left-right position (study 1c), first-second (study 4), beetle-robot (studies 1a-1c, study 2, study 4)
 
