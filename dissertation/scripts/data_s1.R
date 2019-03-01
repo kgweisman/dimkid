@@ -1,7 +1,23 @@
 # STUDY 1a: ADULTS -----
 # read in & tidy data
 d1a_ad <- read.csv("./anonymized_data/bodyheartmind_study1a.csv") %>%
-  filter(CATCH == 1) %>% # attention check
+  mutate(finished_mod = ifelse(is.na(CATCH), 0,
+                               ifelse(finished == 1, 1,
+                                      0.5))) %>%
+  filter(CATCH == 1, # exclude Ps who fail catch trials 
+         finished_mod != 0) %>% # exclude Ps who did not complete task
+  mutate(yob_correct = as.numeric(
+    ifelse(as.numeric(as.character(yob)) > 1900 &
+             as.numeric(as.character(yob)) < 2000,
+           as.numeric(as.character(yob)), NA)), # correct formatting in yob
+    age_approx = 2016 - yob_correct) %>% # calculate approximate age
+  filter(age_approx >= 18) %>% # exclude Ps who are younger than 18 years
+  mutate(yob_correct = as.numeric(
+    ifelse(as.numeric(as.character(yob)) > 1900 &
+             as.numeric(as.character(yob)) < 2000,
+           as.numeric(as.character(yob)), NA)), # correct formatting in yob
+    age_approx = 2016 - yob_correct) %>% # calculate approximate age
+  filter(age_approx >= 18) %>% # exclude Ps who are younger than 18 years
   select(subid, condition, happy:pride) %>%
   rename(character = condition) %>%
   mutate(study = "Study 1a: Adults",
@@ -75,7 +91,17 @@ d1a_ad_wide_i <- d1a_ad_wide %>%
 # STUDY 1b: ADULTS -----
 # read in & tidy data
 d1b_ad <- read.csv("./anonymized_data/bodyheartmind_study1b.csv") %>%
-  filter(CATCH == 1) %>% # attention check
+  mutate(finished_mod = ifelse(is.na(CATCH), 0,
+                               ifelse(finished == 1, 1,
+                                      0.5))) %>%
+  filter(CATCH == 1, # exclude Ps who fail catch trials 
+         finished_mod != 0) %>% # exclude Ps who did not complete task
+  mutate(yob_correct = as.numeric(
+    ifelse(as.numeric(as.character(yob)) > 1900 &
+             as.numeric(as.character(yob)) < 2000,
+           as.numeric(as.character(yob)), NA)), # correct formatting in yob
+    age_approx = 2016 - yob_correct) %>% # calculate approximate age
+  filter(age_approx >= 18) %>% # exclude Ps who are younger than 18 years
   select(subid, condition, happy:pride) %>%
   rename(character = condition) %>%
   mutate(study = "Study 1b: Adults",
@@ -149,7 +175,19 @@ d1b_ad_wide_i <- d1b_ad_wide %>%
 # STUDY 1c: ADULTS -----
 # read in & tidy data
 d1c_ad_0 <- read.csv("./anonymized_data/bodyheartmind_study1c.csv") %>%
-  filter(CATCH..characterL == 5, CATCH..characterR == 5) %>% # attention check
+  mutate(finished_mod = ifelse((is.na(CATCH..characterL) | 
+                                  is.na(CATCH..characterR)), 0,
+                               ifelse(finished == 1, 1,
+                                      0.5))) %>%
+  filter(CATCH..characterL == 5, 
+         CATCH..characterR == 5, # exclude Ps who fail catch trials 
+         finished_mod != 0) %>% # exclude Ps who did not complete task
+  mutate(yob_correct = as.numeric(
+    ifelse(as.numeric(as.character(yob)) > 1900 &
+             as.numeric(as.character(yob)) < 2000,
+           as.numeric(as.character(yob)), NA)), # correct formatting in yob
+    age_approx = 2016 - yob_correct) %>% # calculate approximate age
+  filter(age_approx >= 18) %>% # exclude Ps who are younger than 18 years
   select(subid, ends_with("characterL"), ends_with("characterR"),
          -starts_with("CATCH")) %>%
   mutate(study = "Study 1c: Adults",
@@ -278,7 +316,17 @@ d1c_ad_wide_i <- d1c_ad_wide %>%
 # STUDY 1d: ADULTS -----
 # read in & tidy data
 d1d_ad <- read.csv("./anonymized_data/bodyheartmind_study1d.csv") %>%
-  filter(CATCH == 1) %>% # attention check
+  mutate(finished_mod = ifelse(is.na(CATCH), 0,
+                               ifelse(finished == 1, 1,
+                                      0.5))) %>%
+  filter(CATCH == 1, # exclude Ps who fail catch trials 
+         finished_mod != 0) %>% # exclude Ps who did not complete task
+  mutate(yob_correct = as.numeric(
+    ifelse(as.numeric(as.character(yob)) > 1900 &
+             as.numeric(as.character(yob)) < 2000,
+           as.numeric(as.character(yob)), NA)), # correct formatting in yob
+    age_approx = 2016 - yob_correct) %>% # calculate approximate age
+  filter(age_approx >= 18) %>% # exclude Ps who are younger than 18 years
   select(subid, condition, happy:pride) %>%
   rename(character = condition) %>%
   mutate(study = "Study 1d: Adults",
