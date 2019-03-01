@@ -848,7 +848,7 @@ In Chapter III, I focused my interpretation on a subset of the EFA solutions sug
 
 ## Study 1
 
-The factor retention criteria employed in Weisman et al. (2017) suggested retaining 3 factors for all of the studies included in Study 1; see Chapter III. In contrast, parallel analysis suggested retaining 4 factors (instead of 3) for Studies 1b and 1d; minimizing BIC suggested retaining 4 factors (instead of 3) for Study 1c, and 5 factors (instead of 3) for Studies 1a, 1b, and 1d. See Figure A.9.
+The factor retention criteria employed in Weisman et al. (2017) suggested retaining 3 factors for all of the studies included in Study 1; see Chapter III. In contrast, parallel analysis suggested retaining 4 factors (instead of 3) for Studies 1b and 1d; minimizing BIC suggested retaining 4 factors (instead of 3) for Study 1c, and 5 factors (instead of 3) for Studies 1a, 1b, and 1d. See Figure A.13.
 
 ```{r}
 # study 1a
@@ -890,17 +890,17 @@ plot_efa_bic_d1d_ad <- heatmap_fun(efa_bic_d1d_ad,
 ```
 
 ```{r}
-figureA.xx7 <- plot_grid(plot_efa_bic_d1a_ad, 
+figureA.13 <- plot_grid(plot_efa_bic_d1a_ad, 
                        plot_efa_par_d1b_ad, plot_efa_bic_d1b_ad, 
                        plot_efa_bic_d1c_ad,
                        plot_efa_par_d1d_ad, plot_efa_bic_d1d_ad,
                        labels = "AUTO", ncol = 3, rel_widths = c(1, 1, 1.2))
 
-figureA.xx7_cap <- add_sub(figureA.xx7, str_wrap("Figure A.9: Factor loadings from additional exploratory factor analyses of Study 1, not reported in Chapter III. All results are from US adult samples; see Chapter II for methods. (A) Study 1a, solution suggested by minimizing BIC. (B) Study 1b, solution suggested by parallel analysis. (C) Study 1b, solution suggested by minimizing BIC. (D) Study 1c, solution suggested by minimizing BIC. (E) Study 1d, solution suggested by parallel analysis. (F) Study 1d, solution suggested by minimizing BIC. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 200), x = 0, hjust = 0)
+figureA.13_cap <- add_sub(figureA.13, str_wrap("Figure A.13: Factor loadings from additional exploratory factor analyses of Study 1, not reported in Chapter III. All results are from US adult samples; see Chapter II for methods. (A) Study 1a, solution suggested by minimizing BIC. (B) Study 1b, solution suggested by parallel analysis. (C) Study 1b, solution suggested by minimizing BIC. (D) Study 1c, solution suggested by minimizing BIC. (E) Study 1d, solution suggested by parallel analysis. (F) Study 1d, solution suggested by minimizing BIC. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 200), x = 0, hjust = 0)
 ```
 
-```{r figureA.xx7, include = T, fig.width = 9, fig.asp = 1}
-ggdraw(figureA.xx7_cap)
+```{r figureA.13, include = T, fig.width = 9, fig.asp = 1}
+ggdraw(figureA.13_cap)
 ```
 
 ## Study 2
@@ -909,7 +909,7 @@ All of the EFA solutions suggested by the three factor retention protocols are r
 
 ## Study 3
 
-The factor retention criteria employed in Weisman et al. (2017) suggested retaining 3 factors for all of the age groups included in Study 3; see Chapter III. In contrast, parallel analysis suggested retaining 2 factors (instead of 3) for younger children; and minimizing BIC suggested retaining 4 factors (instead of 3) for adults, and 1 factor (i.e., a "null" solution) for younger children (ages 4-6y). See Figure A.10.
+The factor retention criteria employed in Weisman et al. (2017) suggested retaining 3 factors for all of the age groups included in Study 3; see Chapter III. In contrast, parallel analysis suggested retaining 2 factors (instead of 3) for younger children; and minimizing BIC suggested retaining 4 factors (instead of 3) for adults, and 1 factor (i.e., a "null" solution) for younger children (ages 4-6y). See Figure A.14.
 
 ```{r}
 # study 3
@@ -925,19 +925,19 @@ plot_efa_bic_d3_46 <- heatmap_fun(efa_bic_d3_46, ) +
 ```
 
 ```{r}
-figureA.xx8 <- plot_grid(plot_efa_bic_d3_ad, plot_efa_bic_d3_46,
+figureA.14 <- plot_grid(plot_efa_bic_d3_ad, plot_efa_bic_d3_46,
                        labels = "AUTO", ncol = 2, rel_widths = c(1, 1))
 
-figureA.xx8_cap <- add_sub(figureA.xx8, str_wrap("Figure A.10: Factor loadings from additional exploratory factor analyses of Study 3, not reported in Chapter III. See Chapter II for methods. (A) Adults, solution suggested by minimizing BIC. (B) Younger children (4-6y), 'null' solution suggested by minimizing BIC. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 115), x = 0, hjust = 0)
+figureA.14_cap <- add_sub(figureA.14, str_wrap("Figure A.14: Factor loadings from additional exploratory factor analyses of Study 3, not reported in Chapter III. See Chapter II for methods. (A) Adults, solution suggested by minimizing BIC. (B) Younger children (4-6y), 'null' solution suggested by minimizing BIC. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 115), x = 0, hjust = 0)
 ```
 
-```{r figureA.xx8, include = T, fig.width = 5, fig.asp = 1}
-ggdraw(figureA.xx8_cap)
+```{r figureA.14, include = T, fig.width = 5, fig.asp = 1}
+ggdraw(figureA.14_cap)
 ```
 
 ## Study 4
 
-All of the EFA solutions suggested by the three factor retention protocols are reported in full in Chapter III, with the exception of the 1-factor ("null") solution suggested by minimizing BIC for younger children (4-5y). See Figure A.11.
+All of the EFA solutions suggested by the three factor retention protocols are reported in full in Chapter III, with the exception of the 1-factor ("null") solution suggested by minimizing BIC for younger children (4-5y). See Figure A.15.
 
 ```{r}
 # study 4
@@ -948,13 +948,13 @@ plot_efa_bic_d4_46 <- heatmap_fun(efa_bic_d4_46, ) +
 ```
 
 ```{r}
-figureA.xx9 <- plot_efa_bic_d4_46
+figureA.15 <- plot_efa_bic_d4_46
 
-figureA.xx9_cap <- add_sub(figureA.xx9, str_wrap("Figure A.11: Factor loadings from the 'null' solution suggested by minimizing BIC for younger children (4-5y) in Study 4. See Chapter II for methods, and Chapter III for other EFA solutions for this study. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 30), x = 0, hjust = 0)
+figureA.15_cap <- add_sub(figureA.15, str_wrap("Figure A.15: Factor loadings from the 'null' solution suggested by minimizing BIC for younger children (4-5y) in Study 4. See Chapter II for methods, and Chapter III for other EFA solutions for this study. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 30), x = 0, hjust = 0)
 ```
 
-```{r figureA.xx9, include = T, fig.width = 2, fig.asp = 1.8}
-ggdraw(figureA.xx9_cap)
+```{r figureA.15, include = T, fig.width = 2, fig.asp = 1.8}
+ggdraw(figureA.15_cap)
 ```
 
 
