@@ -524,7 +524,7 @@ figureA.6 <- plot_grid(IFcor_efa_3_d1a_ad_oblimin, IFcor_efa_3_d1b_ad_oblimin,
                         IFcor_efa_5_d1c_ad_oblimin, IFcor_efa_5_d1d_ad_oblimin,
                         labels = "AUTO", ncol = 4, rel_widths = c(1, 1, 1, 1.2))
 
-figureA.6_cap <- add_sub(figureA.6, str_wrap("Figure A.5: Inter-factor correlations from exploratory factor analyses of Study 1 after oblimin transformation. All results are from US adult samples; see Chapter II for methods. (A) Study 1a. (B) Study 1b. (C) Study 1c. (D) Study 1d. Factors have been labeled with the labels 'BODY,' 'HEART,' and 'MIND,' when applicable, to facilitate comparison across studies.", 190), x = 0, hjust = 0)
+figureA.6_cap <- add_sub(figureA.6, str_wrap("Figure A.6: Inter-factor correlations from exploratory factor analyses of Study 1 after oblimin transformation. All results are from US adult samples; see Chapter II for methods. (A) Study 1a. (B) Study 1b. (C) Study 1c. (D) Study 1d. Factors have been labeled with the labels 'BODY,' 'HEART,' and 'MIND,' when applicable, to facilitate comparison across studies.", 190), x = 0, hjust = 0)
 ```
 
 ```{r figureA.6, include = T, fig.width = 8, fig.asp = 0.8}
@@ -535,7 +535,7 @@ ggdraw(figureA.6_cap)
 
 ### EFA solutions
 
-Different factor retention protocols suggested retaining either 4 or 5 factors for adults Study 2; all protocols suggested retaining 3 factors for children (ages 7-9y). Here, I report 3-, and 4-factor solutions for adults and the 3-factor solutiom for children. When these factors seem similar to the BODY, HEART, and MIND factors presented in Chapter III, I have labeled them accordingly.
+Different factor retention protocols suggested retaining either 3 or 4 factors for adults in Study 2; all protocols suggested retaining 3 factors for children (ages 7-9y). Here, I report 3-, and 4-factor solutions for adults and the 3-factor solution for children. When these factors seem similar to the BODY, HEART, and MIND factors presented in Chapter III, I have labeled them accordingly.
 
 ```{r}
 efa_3_d2_ad_oblimin <- fa_fun(d2_ad_wide_i, 3)
@@ -611,11 +611,234 @@ figureA.8 <- plot_grid(IFcor_efa_3_d2_ad_oblimin, IFcor_efa_4_d2_ad_oblimin,
                         IFcor_efa_3_d2_79_oblimin,
                         labels = "AUTO", ncol = 3, rel_widths = c(1, 1, 1.2))
 
-figureA.8_cap <- add_sub(figureA.8, str_wrap("Figure A.5: Inter-factor correlations from exploratory factor analyses of Study 2 after oblimin transformation. See Chapter II for methods. (A) US adults, 3-factor solution. (B) US adults, 4-factor solution. (C) US children ages 7-9y. Factors have been labeled with the labels 'BODY,' 'HEART,' and 'MIND,' when applicable, to facilitate comparison across studies.", 140), x = 0, hjust = 0)
+figureA.8_cap <- add_sub(figureA.8, str_wrap("Figure A.8: Inter-factor correlations from exploratory factor analyses of Study 2 after oblimin transformation. See Chapter II for methods. (A) US adults, 3-factor solution. (B) US adults, 4-factor solution. (C) US children ages 7-9y. Factors have been labeled with the labels 'BODY,' 'HEART,' and 'MIND,' when applicable, to facilitate comparison across studies.", 140), x = 0, hjust = 0)
 ```
 
 ```{r figureA.8, include = T, fig.width = 6, fig.asp = 0.4}
 ggdraw(figureA.8_cap)
+```
+
+
+## Study 3
+
+### EFA solutions
+
+Various factor retention protocols suggested retaining either 3 or 4 factors for adults in Study 3; 3 factors for older children (ages 7-9y); and either 1, 3, or 4 factors for younger children (ages 4-6y). Here, I report 3-, and 4-factor solutions for adults, the 3-factor solution for older children, and the 1-, 3-, and 4-factor solutions for younger children. When these factors seem similar to the BODY, HEART, and MIND factors presented in Chapter III, I have labeled them accordingly.
+
+```{r}
+efa_3_d3_ad_oblimin <- fa_fun(d3_ad_wide_i, 3)
+efa_4_d3_ad_oblimin <- fa_fun(d3_ad_wide_i, 4)
+efa_3_d3_79_oblimin <- fa_fun(d3_79_wide_i, 3)
+efa_3_d3_46_oblimin <- fa_fun(d3_46_wide_i, 3)
+efa_2_d3_46_oblimin <- fa_fun(d3_46_wide_i, 2)
+efa_1_d3_46_oblimin <- fa_fun(d3_46_wide_i, 1)
+```
+
+```{r}
+factor_names_efa_3_d3_ad_oblimin <- c("BODY", "HEART", "MIND")
+factor_names_efa_4_d3_ad_oblimin <- c("BODY", "MIND", "HEART (social)", 
+                                      "HEART (basic)")
+factor_names_efa_3_d3_79_oblimin <- c("BODY", "HEART", "MIND")
+factor_names_efa_3_d3_46_oblimin <- c("BODY-HEART (negative)", "BODY-HEART (positive)", 
+                                      "MIND")
+factor_names_efa_2_d3_46_oblimin <- c("BODY-HEART", "MIND")
+factor_names_efa_1_d3_46_oblimin <- c("NA")
+```
+
+```{r}
+plot_efa_3_d3_ad_oblimin <- heatmap_fun(
+  efa_3_d3_ad_oblimin, factor_names = factor_names_efa_3_d3_ad_oblimin) +
+  labs(title = "Study 3, Adults", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_4_d3_ad_oblimin <- heatmap_fun(
+  efa_4_d3_ad_oblimin, factor_names = factor_names_efa_4_d3_ad_oblimin) +
+  labs(title = "Study 3, Adults", 
+       subtitle = "Oblimin-transformed 4-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_3_d3_79_oblimin <- heatmap_fun(
+  efa_3_d3_79_oblimin, factor_names = factor_names_efa_3_d3_79_oblimin) +
+  labs(title = "Study 3, Older children (7-9y)", 
+       subtitle = "Oblimin-transformed 3-factor solution") # +
+  # theme(legend.position = "none")
+
+plot_efa_3_d3_46_oblimin <- heatmap_fun(
+  efa_3_d3_46_oblimin, factor_names = factor_names_efa_3_d3_46_oblimin) +
+  labs(title = "Study 3, Younger children (4-6y)", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_2_d3_46_oblimin <- heatmap_fun(
+  efa_2_d3_46_oblimin, factor_names = factor_names_efa_2_d3_46_oblimin) +
+  labs(title = "Study 3, Younger children (4-6y)", 
+       subtitle = "Oblimin-transformed 2-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_1_d3_46_oblimin <- heatmap_fun(
+  efa_1_d3_46_oblimin, factor_names = factor_names_efa_1_d3_46_oblimin) +
+  labs(title = "Study 3, Younger children (4-6y)", 
+       subtitle = "Oblimin-transformed 1-factor (null) solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.9 <- plot_grid(plot_efa_3_d3_ad_oblimin, plot_efa_4_d3_ad_oblimin,
+                       plot_efa_3_d3_79_oblimin, plot_efa_3_d3_46_oblimin,
+                       plot_efa_2_d3_46_oblimin, plot_efa_1_d3_46_oblimin,
+                       labels = "AUTO", ncol = 3, rel_widths = c(1, 1, 1.2))
+
+figureA.9_cap <- add_sub(figureA.9, str_wrap("Figure A.9: Factor loadings from exploratory factor analyses of Study 3 after oblimin transformation. See Chapter II for methods. (A) US adults, 3-factor solution. (B) US adults, 4-factor solution. (C) US children ages 7-9y. (D) US children ages 4-6y, 3-factor solution. (E) US children ages 4-6y, 2-factor solution. (F) US children ages 4-6y, 1-factor (null) solution. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r figureA.9, include = T, fig.width = 9, fig.asp = 1}
+ggdraw(figureA.9_cap)
+```
+
+### Inter-factor correlations
+
+Here I present inter-factor correlations for all of the above EFA solutions for Study 3 (with the exception of the 1-factor null solution for younger children). 
+
+```{r}
+IFcor_efa_3_d3_ad_oblimin <- IFcor_plot_fun(
+  efa_3_d3_ad_oblimin, factor_names = factor_names_efa_3_d3_ad_oblimin) +
+  labs(title = "Study 3, Adults", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_4_d3_ad_oblimin <- IFcor_plot_fun(
+  efa_4_d3_ad_oblimin, factor_names = factor_names_efa_4_d3_ad_oblimin) +
+  labs(title = "Study 3, Adults", 
+       subtitle = "Oblimin-transformed 4-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_3_d3_79_oblimin <- IFcor_plot_fun(
+  efa_3_d3_79_oblimin, factor_names = factor_names_efa_3_d3_79_oblimin) +
+  labs(title = "Study 3, Older children (7-9y)", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_3_d3_46_oblimin <- IFcor_plot_fun(
+  efa_3_d3_46_oblimin, factor_names = factor_names_efa_3_d3_46_oblimin) +
+  labs(title = "Study 3, Younger children (4-6y)", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_2_d3_46_oblimin <- IFcor_plot_fun(
+  efa_2_d3_46_oblimin, factor_names = factor_names_efa_2_d3_46_oblimin) +
+  labs(title = "Study 3, Younger children (4-6y)", 
+       subtitle = "Oblimin-transformed 2-factor solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.10 <- plot_grid(IFcor_efa_3_d3_ad_oblimin, IFcor_efa_4_d3_ad_oblimin,
+                        IFcor_efa_3_d3_79_oblimin, IFcor_efa_3_d3_46_oblimin,
+                        IFcor_efa_2_d3_46_oblimin,
+                        labels = "AUTO", ncol = 5, rel_widths = c(1, 1, 1, 1, 1))
+
+figureA.10_cap <- add_sub(figureA.10, str_wrap("Figure A.10: Inter-factor correlations from exploratory factor analyses of Study 3 after oblimin transformation. See Chapter II for methods. (A) US adults, 3-factor solution. (B) US adults, 4-factor solution. (C) US children ages 7-9y. (D) US children ages 4-6y, 3-factor solution. (E) US children ages 4-6y, 2-factor solution. Factors have been labeled with the labels 'BODY,' 'HEART,' and 'MIND,' when applicable, to facilitate comparison across studies.", 230), x = 0, hjust = 0)
+```
+
+```{r figureA.10, include = T, fig.width = 10, fig.asp = 0.25}
+ggdraw(figureA.10_cap)
+```
+
+
+## Study 4
+
+### EFA solutions
+
+All factor retention protocols suggested retaining 3 factors for adults in Study 4; different protocols suggested retaining either either 1, 3, or 4 factors for children (ages 4-5y). Here, I report the 3-factor solution for adults, and the 1-, 3-, and 4-factor solutions for children. When these factors seem similar to the BODY, HEART, and MIND factors presented in Chapter III, I have labeled them accordingly.
+
+```{r}
+efa_3_d4_ad_oblimin <- fa_fun(d4_ad_wide_i, 3)
+efa_3_d4_46_oblimin <- fa_fun(d4_46_wide_i, 3)
+efa_4_d4_46_oblimin <- fa_fun(d4_46_wide_i, 4)
+efa_1_d4_46_oblimin <- fa_fun(d4_46_wide_i, 1)
+```
+
+```{r}
+factor_names_efa_3_d4_ad_oblimin <- c("BODY", "HEART", "MIND")
+factor_names_efa_3_d4_46_oblimin <- c("BODY", "MIND-HEART", "HEART (negative)")
+factor_names_efa_4_d4_46_oblimin <- c("MIND-HEART", "BODY", "BODY (nausea)",
+                                      "HEART (negative)")
+factor_names_efa_1_d4_46_oblimin <- c("NA")
+```
+
+```{r}
+plot_efa_3_d4_ad_oblimin <- heatmap_fun(
+  efa_3_d4_ad_oblimin, factor_names = factor_names_efa_3_d4_ad_oblimin) +
+  labs(title = "Study 4, Adults", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_3_d4_46_oblimin <- heatmap_fun(
+  efa_3_d4_46_oblimin, factor_names = factor_names_efa_3_d4_46_oblimin) +
+  labs(title = "Study 4, Children (4-6y)", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_4_d4_46_oblimin <- heatmap_fun(
+  efa_4_d4_46_oblimin, factor_names = factor_names_efa_4_d4_46_oblimin) +
+  labs(title = "Study 4, Children (4-5y)", 
+       subtitle = "Oblimin-transformed 4-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_1_d4_46_oblimin <- heatmap_fun(
+  efa_1_d4_46_oblimin, factor_names = factor_names_efa_1_d4_46_oblimin) +
+  labs(title = "Study 4, Children (4-5y)", 
+       subtitle = "Oblimin-transformed 1-factor (null) solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.11 <- plot_grid(plot_efa_3_d4_ad_oblimin, plot_efa_3_d4_46_oblimin,
+                       plot_efa_4_d4_46_oblimin, plot_efa_1_d4_46_oblimin,
+                       labels = "AUTO", ncol = 4, rel_widths = c(1, 1, 1, 1))
+
+figureA.11_cap <- add_sub(figureA.11, str_wrap("Figure A.11: Factor loadings from exploratory factor analyses of Study 4 after oblimin transformation. See Chapter II for methods. (A) US adults. (B) US children ages 4-5y, 3-factor solution. (C) US children ages 4-5y, 4-factor solution. (D) US children ages 4-5y, 1-factor (null) solution. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r figureA.11, include = T, fig.width = 9, fig.asp = 0.6}
+ggdraw(figureA.11_cap)
+```
+
+### Inter-factor correlations
+
+Here I present inter-factor correlations for all of the above EFA solutions for Study 4 (with the exception of the 1-factor null solution for children). 
+
+```{r}
+IFcor_efa_3_d4_ad_oblimin <- IFcor_plot_fun(
+  efa_3_d4_ad_oblimin, factor_names = factor_names_efa_3_d4_ad_oblimin) +
+  labs(title = "Study 4, Adults", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_3_d4_46_oblimin <- IFcor_plot_fun(
+  efa_3_d4_46_oblimin, factor_names = factor_names_efa_3_d4_46_oblimin) +
+  labs(title = "Study 4, Children (4-5y)", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_4_d4_46_oblimin <- IFcor_plot_fun(
+  efa_4_d4_46_oblimin, factor_names = factor_names_efa_4_d4_46_oblimin) +
+  labs(title = "Study 4, Children (4-5y)", 
+       subtitle = "Oblimin-transformed 4-factor solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.12 <- plot_grid(IFcor_efa_3_d4_ad_oblimin, IFcor_efa_3_d4_46_oblimin,
+                        IFcor_efa_4_d4_46_oblimin,
+                        labels = "AUTO", ncol = 3, rel_widths = c(1, 1, 1.2))
+
+figureA.12_cap <- add_sub(figureA.12, str_wrap("Figure A.12: Inter-factor correlations from exploratory factor analyses of Study 4 after oblimin transformation. See Chapter II for methods. (A) US adults. (B) US children ages 4-5y, 3-factor solution. (C) US children ages 4-5y, 3-factor solution. Factors have been labeled with the labels 'BODY,' 'HEART,' and 'MIND,' when applicable, to facilitate comparison across studies.", 140), x = 0, hjust = 0)
+```
+
+```{r figureA.12, include = T, fig.width = 6, fig.asp = 0.4}
+ggdraw(figureA.12_cap)
 ```
 
 

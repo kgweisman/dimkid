@@ -181,6 +181,10 @@ IFcor_plot_fun <- function(efa, factor_names = NA, remove_dup = F){
               funs(gsub(".vs.", " vs ", .))) %>%
     mutate_at(vars(factor1, factor2), 
               funs(gsub("Factor\\.", "Factor ", .))) %>%
+    mutate_at(vars(factor1, factor2), 
+              funs(gsub("BODY.HEART", "BODY-HEART ", .))) %>%
+    mutate_at(vars(factor1, factor2), 
+              funs(gsub("MIND.HEART", "MIND-HEART ", .))) %>%
     mutate_at(vars(factor1, factor2),
               funs(gsub("\\.\\.", " (", .))) %>%
     mutate_at(vars(factor1, factor2),
