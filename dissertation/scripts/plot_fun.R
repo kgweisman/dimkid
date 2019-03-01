@@ -49,15 +49,28 @@ heatmap_fun <- function(efa, factor_names = NA){
     gather(factor, var) %>%
     mutate(factor = as.character(factor(factor, labels = factor_names)),
            factor = factor(factor, levels = factor_levels)) %>%
-    mutate(var = paste0(factor, "\n(", round(var, 2)*100, "% var.)"))
+    mutate(var_shared = paste0(factor, "\n", round(var, 2)*100, "% shared var.,"))
+  
+  # get percent total variance explained
+  total_var <- efa$Vaccounted %>%
+    data.frame() %>%
+    rownames_to_column("stat") %>%
+    filter(stat == "Proportion Var") %>%
+    select(-stat) %>%
+    gather(factor, var) %>%
+    mutate(factor = as.character(factor(factor, labels = factor_names)),
+           factor = factor(factor, levels = factor_levels)) %>%
+    mutate(var_total = paste0(round(var, 2)*100, "% total var."))
   
   # make plot
   plot <- ggplot(loadings %>% 
                    left_join(order) %>%
-                   left_join(shared_var) %>%
+                   left_join(shared_var %>% select(-var)) %>%
+                   left_join(total_var %>% select(-var)) %>%
                    mutate(capacity = gsub("_", " ", capacity),
-                          factor = factor(factor, levels = factor_levels)),
-                 aes(x = reorder(var, as.numeric(factor)), 
+                          factor = factor(factor, levels = factor_levels),
+                          xlab = paste(var_shared, var_total, sep = "\n")),
+                 aes(x = reorder(xlab, as.numeric(factor)), 
                      y = reorder(capacity, order), 
                      fill = loading, 
                      label = format(round(loading, 2), nsmall = 2))) +
