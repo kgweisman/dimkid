@@ -1360,8 +1360,14 @@ In addition, Study 4 provides new evidence that young children's understanding o
 
 # Comparing the "size" of conceptual units across Studies 1-4
 
+In the previous sections in this chapter, I described EFA results for Studies 1-4 and offered both qualitative comparisons of the "meaning" of the conceptual units revealed by these analyses and quantitative assessments of the similarity of conceptual units across different age groups within each study (see Table 3.2). In this final section, I explore one additional aspect of these analyses: the "size" of the conceptual units identified in each sample. In each set of results, I have included two ways of gauging size: by assessing the proportion of _shared_ variance explained by a factor, and by assessing the proportion of _total_ variance explained by a factor. Here I discuss these indices of factor size in more detail and compare the size of these factors across samples. 
+
+## Proportion of shared variance explained
+
+For each EFA solution, the shared variance explained by all of the retained factors is, by definition, 100%. The proportion of this shared variance explained by a single factor can be calculated by dividing the sum of squared loadings for that factor by the sum of the sum of squared loadings for all factors. This allows the researcher to gauge the relative "size" of each of the factors retained in that solution. For example, in a three-factor solution, if all factors were of equal size, each would account for 33% of the shared variance; if one factor instead accounted for 50% of the shared variance and the others each accounted for 25%, this would provide some evidence that the first factor is in some sense larger or more important than the other two factors.
+
 ```{r}
-vexp_report <- bind_rows(
+var_shared_report <- bind_rows(
   # study 1
   vac_fun(efa_wdm_d1a_ad, factor_names_efa_wdm_d1a_ad) %>%
     mutate(order = 1, study = "Study 1a",
@@ -1431,7 +1437,7 @@ vexp_report <- bind_rows(
 ```{r}
 pos <- position_jitter(width = 0.1, seed = 2)
 
-figure3.5 <- vexp_report %>%
+plot_var_shared <- var_shared_report %>%
   mutate(solution = paste0(solution, " solution"),
          lab = case_when(
            (solution == "4-factor solution") & 
@@ -1459,24 +1465,167 @@ figure3.5 <- vexp_report %>%
                      minor_breaks = NULL) +
   scale_y_continuous(breaks = seq(0, 1, 0.1), 
                      labels = scales::percent_format(accuracy = 1)) +
-  labs(title = "Size of factors across studies, age groups, and EFA solutions",
-       x = "Factor", y = "Shared variance explained", color = "Study") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
-
-figure3.5_cap <- add_sub(figure3.5, str_wrap("Figure 3.5: Shared variance explained by all factors across all age groups for all studies, for each of the exploratory factor analysis (EFA) solutions interpreted in the main text. By definition, the total shared variance explained for each solution equals 100%. The relative percent of shared variance explained within a single EFA solution provides one way of assessing the relative 'size' of each of the factors in that solution. Dotted lines indicate the expected value of shared variance explained if all of the factors for a given solution were of equal size.", 60), x = 0, hjust = 0)
+  labs(title = "Proportion of shared variance explained",
+       x = "Factor", y = "Shared variance explained", color = "Study") #+
+  # theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 ```
 
-```{r figure3.5, include = T, fig.width = 4, fig.asp = 1.2}
-ggdraw(figure3.5_cap)
-```
+Among adults (Figure 3.5, panel A, left column), a clear pattern emerged in the relative size of these factors as indexed by the proportion of shared variance explained: In all eight of the EFA solutions included in this chapter, adults' BODY and HEART factors explained a disproportionately large amount of the shared variance (more than would be expected if all factors were equal in size), and their MIND factor explained a disproportionaltely small amount of the shared variance (less than would be expected if al factors were equal in size). In most of these solutions, it appears that the BODY factor explained slightly more of the shared variance than the HEART factor, but these differences were generally quite small. This suggests that the conceptual units I have referred to as BODY and HEART may play especially large roles in US adults' representations of mental life, at least in the way they use these representations to distinguish among different kinds of beings in the world.
 
-In the previous sections in this chapter, I described EFA results for Studies 1-4 and offered both qualitative comparisons of the "meaning" of the conceptual units revealed by these analyses and quantitative assessments of the similarity of conceptual units across different age groups within each study (see Table 3.2). In this final section, I explore one additional aspect of these analyses: the "size" of the conceptual units identified in each sample, as indexed by the percent of shared variance explained by each of the latent factors identified by EFA.
+Among 7- to 9-year-old children (Figure 3.5, panel A, middle column), a similar pattern was observed in Study 3 (orange), with children's BODY and HEART factors explaining more of the shared variance than their MIND factor. However, in Study 2 (purple), children's HEART factor explained nearly twice as much of the variance as either of the other factors. This raises the possibility that the conceptual unit I have called HEART looms especially large in the representations of children in this age range—but further studies would be required to determine whether this phenomenon is reliable and the circumstances under which is most or less likely to manifest.
 
-For each EFA solution, the shared variance explained by all of the retained factors is, by definition, 100%. The proportion of this shared variance explained by a single factor can be calculated by dividing the sum of squared loadings for that factor by the sum of the sum of squared loadings for all factors. This allows the researcher to gauge the relative "size" of each of the factors retained in that solution. For example, in a three-factor solution, if all factors were of equal size, each would account for 33% of the shared variance; if one factor instead accounted for 50% of the shared variance and the others each accounted for 25%, this would provide some evidence that the first factor is in some sense larger or more important than the other two factors.
+__BOOKMARK: ADD DISUCSSION OF YOUNGER CHILDREN__
+
+## Proportion of total variance explained
 
 A researcher might also be interested in the proportion of total variance in all the measured variables explained by a particular factor, or by all of the retained factors in combination. The total variance in the measure variables accounted for by all of the retained factors can be estimated by taking the mean communality across all variables (where "communality" is a measure of the degree to which a given variable is correlated with all other variables, indexed by the sum of the squared loadings of that variable on each of the retained factors). The proportion of this total variance accounted for by a single factor can be calculated by diving the sum of squared loadings for that factor across all variables by the total number of measured variables.
 
-__BOOKMARK__
+```{r}
+var_total_report <- bind_rows(
+  # study 1
+  vac_fun(efa_wdm_d1a_ad, factor_names_efa_wdm_d1a_ad, 
+          which_stat = "Proportion Var") %>%
+    mutate(order = 1, study = "Study 1a",
+           sample = "1a", solution = "3-factor"),
+  vac_fun(efa_wdm_d1b_ad, factor_names_efa_wdm_d1b_ad, 
+          which_stat = "Proportion Var") %>%
+    mutate(order = 1, study = "Study 1b",
+           sample = "1b", solution = "3-factor"),
+  vac_fun(efa_wdm_d1c_ad, factor_names_efa_wdm_d1c_ad, 
+          which_stat = "Proportion Var") %>%
+    mutate(order = 1, study = "Study 1c",
+           sample = "1c", solution = "3-factor"),
+  vac_fun(efa_wdm_d1d_ad, factor_names_efa_wdm_d1d_ad, 
+          which_stat = "Proportion Var") %>%
+    mutate(order = 1, study = "Study 1d",
+           sample = "1d", solution = "3-factor"),
+  # study 2
+  vac_fun(efa_wdm_d2_ad, factor_names_efa_wdm_d2_ad, 
+          which_stat = "Proportion Var") %>%
+    mutate(order = 1, study = "Study 2",
+           sample = "adults", solution = "3-factor"),
+  vac_fun(efa_par_d2_ad, factor_names_efa_par_d2_ad, 
+          which_stat = "Proportion Var") %>%
+    mutate(order = 2, study = "Study 2",
+           sample = "adults", solution = "4-factor"),
+  vac_fun(efa_wdm_d2_79, factor_names_efa_wdm_d2_79, 
+          which_stat = "Proportion Var") %>%
+    mutate(order = 3, study = "Study 2",
+           sample = "7-9y", solution = "3-factor"),
+  # study 3
+  vac_fun(efa_wdm_d3_ad, factor_names_efa_wdm_d3_ad, 
+          which_stat = "Proportion Var") %>%
+    mutate(order = 1, study = "Study 3",
+           sample = "adults", solution = "3-factor"),
+  vac_fun(efa_wdm_d3_79, factor_names_efa_wdm_d3_79, 
+          which_stat = "Proportion Var") %>%
+    mutate(order = 3, study = "Study 3",
+           sample = "7-9y", solution = "3-factor"),
+  vac_fun(efa_wdm_d3_46, factor_names_efa_wdm_d3_46, 
+          which_stat = "Proportion Var") %>%
+    mutate(order = 5, study = "Study 3",
+           sample = "4-6y", solution = "3-factor"),
+  vac_fun(efa_par_d3_46, factor_names_efa_par_d3_46, 
+          which_stat = "Proportion Var") %>%
+    mutate(order = 4, study = "Study 3",
+           sample = "4-6y", solution = "2-factor"),
+  # study 4
+  vac_fun(efa_wdm_d4_ad, factor_names_efa_wdm_d4_ad, 
+          which_stat = "Proportion Var") %>%
+    mutate(order = 1, study = "Study 4",
+           sample = "adults", solution = "3-factor"),
+  vac_fun(efa_par_d4_46, factor_names_efa_par_d4_46, 
+          which_stat = "Proportion Var") %>%
+    mutate(order = 5, study = "Study 4",
+           sample = "4-5y", solution = "3-factor"),
+  vac_fun(efa_wdm_d4_46, factor_names_efa_wdm_d4_46, 
+          which_stat = "Proportion Var") %>%
+    mutate(order = 6, study = "Study 4",
+           sample = "4-5y", solution = "4-factor")) %>%
+  # all studies
+  mutate(ur_factor = case_when(factor == "BODY-HEART" ~ "BODY-HEART",
+                               grepl("BODY", factor) ~ "BODY",
+                               grepl("HEART", factor) ~ "HEART",
+                               grepl("MIND", factor) ~ "MIND"),
+         ur_factor = factor(ur_factor, 
+                            levels = c("BODY", "BODY-HEART", 
+                                       "HEART", "MIND")),
+         ur_factor_pos = recode(ur_factor,
+                                "BODY" = 1, "BODY-HEART" = 1.5,
+                                "HEART" = 2, "MIND" = 3),
+         age_group = case_when(
+           sample %in% c("adults", "1a", "1b", "1c", "1d") ~ "Adults",
+           sample == "7-9y" ~ "Children, 7-9y",
+           sample %in% c("4-6y", "4-5y") ~ "Children, 4-6y"),
+         age_group = factor(age_group,
+                            levels = c("Adults", "Children, 7-9y",
+                                       "Children, 4-6y")))
+```
+
+```{r}
+var_total_sum <- var_total_report %>%
+  group_by(study, sample, age_group, solution) %>%
+  summarise(value = sum(value)) %>%
+  ungroup() %>%
+  mutate(ur_factor = "Total\n(all factors)",
+         ur_factor_pos = 4)
+```
+
+```{r}
+pos <- position_jitter(width = 0.1, seed = 2)
+
+plot_var_total <- var_total_report %>%
+  mutate(solution = paste0(solution, " solution"),
+         lab = case_when(
+           (solution == "4-factor solution") & 
+             ((study == "Study 2" & ur_factor == "MIND") | 
+                (study == "Study 4" & ur_factor == "BODY")) ~ 
+             factor,
+           ur_factor == "BODY-HEART" ~ factor,
+           TRUE ~ NA_character_)) %>%
+  arrange(study, sample, ur_factor, factor) %>%
+  ggplot(aes(x = ur_factor_pos, y = value, color = study)) +
+  facet_grid(solution ~ age_group) +
+  geom_path(aes(group = study), position = pos, alpha = 0.5, show.legend = F) +
+  geom_point(position = pos, show.legend = T) +
+  geom_text_repel(aes(label = lab), size = 3, show.legend = F,
+                  position = pos, box.padding = 0.35, na.rm = T,
+                  segment.alpha = 0.5) +
+  geom_jitter(data = var_total_sum %>% 
+                mutate(solution = paste0(solution, " solution")),
+              position = pos, shape = 18, size = 4, show.legend = F) +
+  geom_text_repel(data = var_total_sum %>%
+                    mutate(solution = paste0(solution, " solution")),
+                  aes(label = paste0(round(value, 2)*100, "%")), 
+                  size = 3, show.legend = F,
+                  position = pos, box.padding = 0.35, na.rm = T,
+                  segment.alpha = 0.5) +
+  scale_colour_brewer(palette = "Dark2", direction = -1) +
+  scale_x_continuous(breaks = 1:4, 
+                     labels = c("BODY", "HEART", "MIND", "Sum"),
+                     minor_breaks = NULL) +
+  scale_y_continuous(breaks = seq(0, 1, 0.1), minor_breaks = NULL, 
+                     # limits = c(0, max(var_total_report$value)),
+                     limits = c(0, 1),
+                     labels = scales::percent_format(accuracy = 1)) +
+  labs(title = "Proportion of total variance explained",
+       x = "Factor", y = "Total variance explained", color = "Study") #+
+  # theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+```{r}
+figure3.5 <- plot_grid(plot_var_shared + theme(legend.position = "none"), 
+                       plot_var_total, ncol = 2, rel_widths = c(1, 1.2), 
+                       labels = "AUTO")
+
+figure3.5_cap <- add_sub(figure3.5, str_wrap("Figure 3.5: Estimates of the 'size' of factors in each of the EFA solutions reported in this chapter, organized by study, age group, and solution. (A) Proportion of shared variance explained by each factor, for each solution. By definition, the total shared variance explained for each solution equals 100%. The relative percent of shared variance explained within a single EFA solution provides one way of assessing the relative 'size' of each of the factors in that solution. Dotted lines indicate the expected value of shared variance explained if all of the factors for a given solution were of equal size. (B) Proportion of total variance explained by each factor, and by the combination of all factors ('Sum'), for each solution.", 190), x = 0, hjust = 0)
+```
+
+```{r figure3.5, include = T, fig.width = 8, fig.asp = 0.5}
+ggdraw(figure3.5_cap)
+```
+
+__BOOKMARK: ADD DISCUSSION__
 
 
 # General discussion of conceptual units
