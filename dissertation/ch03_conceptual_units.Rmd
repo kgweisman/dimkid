@@ -1362,93 +1362,7 @@ In addition, Study 4 provides new evidence that young children's understanding o
 
 # Comparing the "size" of conceptual units across Studies 1-4
 
-In the previous sections in this chapter, I described EFA results for Studies 1-4 and offered both qualitative comparisons of the "meaning" of the conceptual units revealed by these analyses and quantitative assessments of the similarity of conceptual units across different age groups within each study (see Table 3.2). In this final section, I explore one additional aspect of these analyses: the "size" of the conceptual units identified in each sample. In each set of results, I have included two ways of gauging size: by assessing the proportion of _shared_ variance explained by a factor, and by assessing the proportion of _total_ variance explained by a factor. Here I discuss these indices of factor size in more detail and compare the size of these factors across samples. 
-
-## Proportion of shared variance explained
-
-For each EFA solution, the shared variance explained by all of the retained factors is, by definition, 100%. The proportion of this shared variance explained by a single factor can be calculated by dividing the sum of squared loadings for that factor by the sum of the sum of squared loadings for all factors. This allows the researcher to gauge the relative "size" of each of the factors retained in that solution. For example, in a three-factor solution, if all factors were of equal size, each would account for 33% of the shared variance; if one factor instead accounted for 50% of the shared variance and the others each accounted for 25%, this would provide some evidence that the first factor is in some sense larger or more important than the other two factors.
-
-```{r}
-var_shared_report <- bind_rows(
-  # study 1
-  vac_fun(efa_wdm_d1a_ad, factor_names_efa_wdm_d1a_ad) %>%
-    mutate(order = 1, study = "Study 1a",
-           sample = "1a", solution = "3-factor"),
-  vac_fun(efa_wdm_d1b_ad, factor_names_efa_wdm_d1b_ad) %>%
-    mutate(order = 1, study = "Study 1b",
-           sample = "1b", solution = "3-factor"),
-  vac_fun(efa_wdm_d1c_ad, factor_names_efa_wdm_d1c_ad) %>%
-    mutate(order = 1, study = "Study 1c",
-           sample = "1c", solution = "3-factor"),
-  vac_fun(efa_wdm_d1d_ad, factor_names_efa_wdm_d1d_ad) %>%
-    mutate(order = 1, study = "Study 1d",
-           sample = "1d", solution = "3-factor"),
-  # study 2
-  vac_fun(efa_wdm_d2_ad, factor_names_efa_wdm_d2_ad) %>%
-    mutate(order = 1, study = "Study 2",
-           sample = "adults", solution = "3-factor"),
-  vac_fun(efa_par_d2_ad, factor_names_efa_par_d2_ad) %>%
-    mutate(order = 2, study = "Study 2",
-           sample = "adults", solution = "4-factor"),
-  vac_fun(efa_wdm_d2_79, factor_names_efa_wdm_d2_79) %>%
-    mutate(order = 3, study = "Study 2",
-           sample = "7-9y", solution = "3-factor"),
-  # study 3
-  vac_fun(efa_wdm_d3_ad, factor_names_efa_wdm_d3_ad) %>%
-    mutate(order = 1, study = "Study 3",
-           sample = "adults", solution = "3-factor"),
-  vac_fun(efa_wdm_d3_79, factor_names_efa_wdm_d3_79) %>%
-    mutate(order = 3, study = "Study 3",
-           sample = "7-9y", solution = "3-factor"),
-  vac_fun(efa_wdm_d3_46, factor_names_efa_wdm_d3_46) %>%
-    mutate(order = 5, study = "Study 3",
-           sample = "4-6y", solution = "3-factor"),
-  vac_fun(efa_par_d3_46, factor_names_efa_par_d3_46) %>%
-    mutate(order = 4, study = "Study 3",
-           sample = "4-6y", solution = "2-factor"),
-  # study 4
-  vac_fun(efa_wdm_d4_ad, factor_names_efa_wdm_d4_ad) %>%
-    mutate(order = 1, study = "Study 4",
-           sample = "adults", solution = "3-factor"),
-  vac_fun(efa_par_d4_46, factor_names_efa_par_d4_46) %>%
-    mutate(order = 5, study = "Study 4",
-           sample = "4-5y", solution = "3-factor"),
-  vac_fun(efa_wdm_d4_46, factor_names_efa_wdm_d4_46) %>%
-    mutate(order = 6, study = "Study 4",
-           sample = "4-5y", solution = "4-factor")) %>%
-  # all studies
-  mutate(ur_factor = case_when(factor == "BODY-HEART" ~ "BODY-HEART",
-                               grepl("BODY", factor) ~ "BODY",
-                               grepl("HEART", factor) ~ "HEART",
-                               grepl("MIND", factor) ~ "MIND"),
-         ur_factor = factor(ur_factor, 
-                            levels = c("BODY", "BODY-HEART", 
-                                       "HEART", "MIND")),
-         ur_factor_pos = recode(ur_factor,
-                                "BODY" = 1, "BODY-HEART" = 1.5,
-                                "HEART" = 2, "MIND" = 3),
-         age_group = case_when(
-           sample %in% c("adults", "1a", "1b", "1c", "1d") ~ "Adults",
-           sample == "7-9y" ~ "Children, 7-9y",
-           sample %in% c("4-6y", "4-5y") ~ "Children, 4-6y"),
-         age_group = factor(age_group,
-                            levels = c("Adults", "Children, 7-9y",
-                                       "Children, 4-6y")))
-```
-
-Among adults (Figure 3.5, panel A, left column), a clear pattern emerged in the relative size of these factors as indexed by the proportion of shared variance explained: In all eight of the EFA solutions included in this chapter, adults' BODY and HEART factors explained a disproportionately large amount of the shared variance (more than would be expected if all factors were equal in size), and their MIND factor explained a disproportionaltely small amount of the shared variance (less than would be expected if al factors were equal in size). In most of these solutions, it appears that the BODY factor explained slightly more of the shared variance than the HEART factor, but these differences were generally quite small. This suggests that the conceptual units I have referred to as BODY and HEART may play especially large roles in US adults' representations of mental life, at least in the way they use these representations to distinguish among different kinds of beings in the world.
-
-Among 7- to 9-year-old children (Figure 3.5, panel A, middle column), a similar pattern was observed in Study 3 (orange), with children's BODY and HEART factors explaining more of the shared variance than their MIND factor. However, in Study 2 (purple), children's HEART factor explained nearly twice as much of the variance as either of the other factors. This raises the possibility that the conceptual unit I have called HEART looms especially large in the representations of children in this age range—but further studies would be required to determine whether this phenomenon is reliable and the circumstances under which is most or less likely to manifest.
-
-Among 4- to 6-year-old children (Study 3) and 4- to 5-year-old children (Study 4; Figure 3.5, panel A, right column), the BODY-like factors explained disproportionately large amounts of the shared variance. This holds true across all solutions for both studies (when combining the two BODY-like factors in the four-factor solution) and was particularly pronounced in the two-factor solution for Study 3 (orange, top row), in which younger children's BODY-HEART factor explains nearly twice as much of the shared variance as their MIND factor (perhaps a harbinger of an impending split between BODY and HEART as young children's conceptual representations become more like the older children and adults around them). The proportion of shared variance explained by younger children's HEART-like factors in the three-factor solutions for Studies 3 and 4 (middle row) appears to have been somewhat smaller than it was among older children and adults, particularly in Study 4 (turquoise), while the proportion explained by the more MIND-like factors appears to have been roughly comparable to that of adults in all studies. 
-
-Taken together, these observations are generally consistent with the possibility that the conceptual unit that I have called MIND may be relatively mature by the preschool years, not only in its content (the perceptual-cognitive abilities that are closely associated with this conceptual unit) but also in its size. By contrast, I would interpret these patterns as providing further indication of an ongoing negotiation of the physiological (BODY) and social-emotion (HEART) domains during early childhood.
-
-__BOOKMARK: ADD DISUCSSION OF YOUNGER CHILDREN__
-
-## Proportion of total variance explained
-
-A researcher might also be interested in the proportion of total variance in all the measured variables explained by a particular factor, or by all of the retained factors in combination. The total variance in the measure variables accounted for by all of the retained factors can be estimated by taking the mean communality across all variables (where "communality" is a measure of the degree to which a given variable is correlated with all other variables, indexed by the sum of the squared loadings of that variable on each of the retained factors). The proportion of this total variance accounted for by a single factor can be calculated by diving the sum of squared loadings for that factor across all variables by the total number of measured variables.
+In the previous sections in this chapter, I described EFA results for Studies 1-4 and offered both qualitative comparisons of the "meaning" of the conceptual units revealed by these analyses and quantitative assessments of the similarity of conceptual units across different age groups within each study (see Table 3.2). In this final section, I explore one additional aspect of these analyses: the "size" of the conceptual units identified in each sample. In each set of results, I have included three ways of gauging size: (a) by assessing the _total_ variance in mental capacity attributions explained by the factors in combination; (b) by assessing the proportion of total variance explained by each factor, and (c) by assessing the proportion of the _shared_ variance explained by each factor. Here I discuss these indices of factor size in more detail and compare the size of these factors across samples. 
 
 ```{r}
 var_total_report <- bind_rows(
@@ -1541,7 +1455,104 @@ var_total_sum <- var_total_report %>%
          ur_factor_pos = 4)
 ```
 
-__BOOKMARK: ADD DISCUSSION__
+```{r}
+var_shared_report <- bind_rows(
+  # study 1
+  vac_fun(efa_wdm_d1a_ad, factor_names_efa_wdm_d1a_ad) %>%
+    mutate(order = 1, study = "Study 1a",
+           sample = "1a", solution = "3-factor"),
+  vac_fun(efa_wdm_d1b_ad, factor_names_efa_wdm_d1b_ad) %>%
+    mutate(order = 1, study = "Study 1b",
+           sample = "1b", solution = "3-factor"),
+  vac_fun(efa_wdm_d1c_ad, factor_names_efa_wdm_d1c_ad) %>%
+    mutate(order = 1, study = "Study 1c",
+           sample = "1c", solution = "3-factor"),
+  vac_fun(efa_wdm_d1d_ad, factor_names_efa_wdm_d1d_ad) %>%
+    mutate(order = 1, study = "Study 1d",
+           sample = "1d", solution = "3-factor"),
+  # study 2
+  vac_fun(efa_wdm_d2_ad, factor_names_efa_wdm_d2_ad) %>%
+    mutate(order = 1, study = "Study 2",
+           sample = "adults", solution = "3-factor"),
+  vac_fun(efa_par_d2_ad, factor_names_efa_par_d2_ad) %>%
+    mutate(order = 2, study = "Study 2",
+           sample = "adults", solution = "4-factor"),
+  vac_fun(efa_wdm_d2_79, factor_names_efa_wdm_d2_79) %>%
+    mutate(order = 3, study = "Study 2",
+           sample = "7-9y", solution = "3-factor"),
+  # study 3
+  vac_fun(efa_wdm_d3_ad, factor_names_efa_wdm_d3_ad) %>%
+    mutate(order = 1, study = "Study 3",
+           sample = "adults", solution = "3-factor"),
+  vac_fun(efa_wdm_d3_79, factor_names_efa_wdm_d3_79) %>%
+    mutate(order = 3, study = "Study 3",
+           sample = "7-9y", solution = "3-factor"),
+  vac_fun(efa_wdm_d3_46, factor_names_efa_wdm_d3_46) %>%
+    mutate(order = 5, study = "Study 3",
+           sample = "4-6y", solution = "3-factor"),
+  vac_fun(efa_par_d3_46, factor_names_efa_par_d3_46) %>%
+    mutate(order = 4, study = "Study 3",
+           sample = "4-6y", solution = "2-factor"),
+  # study 4
+  vac_fun(efa_wdm_d4_ad, factor_names_efa_wdm_d4_ad) %>%
+    mutate(order = 1, study = "Study 4",
+           sample = "adults", solution = "3-factor"),
+  vac_fun(efa_par_d4_46, factor_names_efa_par_d4_46) %>%
+    mutate(order = 5, study = "Study 4",
+           sample = "4-5y", solution = "3-factor"),
+  vac_fun(efa_wdm_d4_46, factor_names_efa_wdm_d4_46) %>%
+    mutate(order = 6, study = "Study 4",
+           sample = "4-5y", solution = "4-factor")) %>%
+  # all studies
+  mutate(ur_factor = case_when(factor == "BODY-HEART" ~ "BODY-HEART",
+                               grepl("BODY", factor) ~ "BODY",
+                               grepl("HEART", factor) ~ "HEART",
+                               grepl("MIND", factor) ~ "MIND"),
+         ur_factor = factor(ur_factor, 
+                            levels = c("BODY", "BODY-HEART", 
+                                       "HEART", "MIND")),
+         ur_factor_pos = recode(ur_factor,
+                                "BODY" = 1, "BODY-HEART" = 1.5,
+                                "HEART" = 2, "MIND" = 3),
+         age_group = case_when(
+           sample %in% c("adults", "1a", "1b", "1c", "1d") ~ "Adults",
+           sample == "7-9y" ~ "Children, 7-9y",
+           sample %in% c("4-6y", "4-5y") ~ "Children, 4-6y"),
+         age_group = factor(age_group,
+                            levels = c("Adults", "Children, 7-9y",
+                                       "Children, 4-6y")))
+```
+
+## Total variance explained: How "big" is the set of conceptual units identified?
+
+For each EFA solution, the _total variance_ in the measured variables explained by all of the retained factors in combination can be estimated by taking the mean communality across all variables (where "communality" is a measure of the degree to which a given variable is correlated with all other variables, indexed by the sum of the squared loadings of that variable on each of the retained factors). This could range, in theory, from 0-100%, and provides an indication of how well the "conceptual units" identified by EFA account for the observed correlations among mental capacity attributions in a particular sample—which in turn might be taken as a gauge of the size of the set of conceptual units identified by this analysis.
+
+The total variance explained by each of the EFA solutions discussed in this chapter is illustrated in Figure 3.5, panel C.
+
+__BOOKMARK ADD DISCUSSION__.
+
+## Proportion of variance explained by each factor: How "big" is a particular conceptual unit?
+
+A researcher might also be interested in assess the size of a single conceptual unit, either in the absolute or in relation to the other conceptual units identified by that EFA solution. 
+
+The _proportion of total variance_ in all the measured variables explained by a particular factor can be calculated by diving the sum of squared loadings for that factor across all variables by the total number of measured variables. (The _total variance_ for a given EFA solution, discussed in the previous section, is the sum of these proportions across all factors in that solution.) This could range, in theory, from 0% up to the total variance explained by all factors in that solution, and provides an indication of the absolute size of the particualr conceptual unit in question. The proportion of total variance explained by each factor, for each EFA solution discussed in this chapter, is illustrated in Figure 3.5, panel B.
+
+Another approach to estimating the size of each factor is to examine the _proportion of shared variance_ explained by each factor (relative to the other factors in that EFA solution). For a given solution, the "shared variance" explained by the combination of all of the factors in that solution is, by definition, 100%. The proportion of this "shared variance" explained by a single factor can be calculated by dividing the sum of squared loadings for that factor by the sum of the sum of squared loadings for all factors in a given solution. For example, in a three-factor solution, if all factors were of equal size, each would account for 33% of the shared variance; if one factor instead accounted for 50% of the shared variance and the others each accounted for 25%, this would provide some evidence that the first factor is in some sense larger or more important than the other two factors. 
+
+In my view, this is the most useful way to estimate and compare the size of conceptual units across the various studies and age groups presented in this chapter, because it allows me to compare the sizes of similar conceptual units (e.g., factors that I have labeled BODY) that I have identified in different age groups or in studies using different experimental paradigms, even though these age groups or studies might vary in the _total variance_ explained by their respective EFA solutions (which would, in turn, impose different constraints on how much of this total variance each factor could explain, in theory). For example, in Study 4, the three-factor solution for adults explained `r var_total_sum %>% filter(study == "Study 4", sample == "adults", solution == "3-factor") %>% select(value) %>% as.numeric() %>% round(2)*100`% of the total variance, which places a relatively high "ceiling" on the proportion of total variance coudl be explained by a single factor; in comparison, the three-factor solution for children explained `r var_total_sum %>% filter(study == "Study 4", sample == "4-5y", solution == "3-factor") %>% select(value) %>% as.numeric() %>% round(2)*100`% of the total variance, placing a much lower "ceiling" on the proportion of total variance could be explained by a single factor. While it is interesting to note that the BODY-like factors in these solutions explained `r var_total_report %>% filter(study == "Study 4", sample == "adults", solution == "3-factor", ur_factor == "BODY") %>% select(value) %>% as.numeric() %>% round(2)*100`% of the total variance in adults' responses and only `r var_total_report %>% filter(study == "Study 4", sample == "4-5y", solution == "3-factor", ur_factor == "BODY") %>% select(value) %>% as.numeric() %>% round(2)*100`% of the total variance in children's responses (Figure 3.5, panel B), it is in my view more illuminating that in both solutions the BODY-like factor accounting for a similar proportion of the _shared_ variance (among adults: `var_shared_report %>% filter(study == "Study 4", sample == "adults", solution == "3-factor", ur_factor == "BODY") %>% select(value) %>% as.numeric() %>% round(2)*100`%; among children: `var_shared_report %>% filter(study == "Study 4", sample == "4-5y", solution == "3-factor", ur_factor == "BODY") %>% select(value) %>% as.numeric() %>% round(2)*100`%).
+
+while the three-factor solution for The proportion of shared variance explained by each factor, for each EFA solution discussed in this chapter, is illustrated in Figure 3.5, panel A.
+
+Among adults (Figure 3.5, panels A and B, left column), a clear pattern emerged in the relative size of these factors as indexed by the proportion of variance explained (shared or total): In all eight of the EFA solutions included in this chapter, adults' BODY and HEART factors explained a disproportionately large amount of the variance (more than would be expected if all factors were equal in size; see panel A), and their MIND factor explained a disproportionately small amount (less than would be expected if al factors were equal in size). In most of these solutions, the BODY factor explained slightly more variance than the HEART factor, but these differences were generally quite small. This suggests that the conceptual units I have referred to as BODY and HEART may play especially large roles in US adults' representations of mental life, at least in the way they use these representations to distinguish among different kinds of beings in the world.
+
+Among 7- to 9-year-old children (Figure 3.5, panels A and B, middle column), a similar pattern was observed in Study 3 (orange), with children's BODY and HEART factors explaining more variance than their MIND factor. However, in Study 2 (purple), children's HEART factor explained nearly twice as much of the variance as either of the other factors. This raises the possibility that the conceptual unit I have called HEART looms especially large in the representations of children in this age range—perhaps because it has emerged relatively recently as a distinct unit in its own right. Further studies would be required to determine whether this phenomenon is reliable and the circumstances under which is most or less likely to manifest.
+
+Among 4- to 6-year-old children (Study 3) and 4- to 5-year-old children (Study 4; Figure 3.5, panels A and B, right column), the BODY-like factors explained disproportionately large amounts of variance. This holds true across all solutions for both studies (when combining the two BODY-like factors in the four-factor solution) and was particularly pronounced in the two-factor solution for Study 3 (orange, top row), in which younger children's BODY-HEART factor was nearly twice the 'size' of their MIND factor—perhaps a harbinger of an impending split between BODY and HEART as young children's conceptual representations become more like the older children and adults around them. The variance explained by younger children's HEART-like factors in the three-factor solutions for Studies 3 and 4 (middle row) appears to have been somewhat smaller than it was among older children and adults, particularly in Study 4 (turquoise), while the variance explained by the more MIND-like factors appears to have been roughly comparable to that of adults in all studies. 
+
+Taken together, these observations are generally consistent with the possibility that the conceptual unit that I have called MIND may be relatively mature by the preschool years, not only in its content (the perceptual-cognitive abilities that are closely associated with this conceptual unit) but also in its size. By contrast, I would interpret these patterns as providing further indication of an ongoing negotiation of the physiological (BODY) and social-emotion (HEART) domains during early childhood, and perhaps extending into middle childhood.
+
+
+__BOOKMARK: ADD DISCUSSION OF TOTAL VARIANCE EXPLAINED__
 
 ```{r}
 pos <- position_jitter(width = 0.1, seed = 2)
@@ -1624,9 +1635,8 @@ plot_var_total <- var_total_report %>%
                      # limits = c(0, 1),
                      labels = scales::percent_format(accuracy = 1)) +
   labs(title = "Proportion of total variance explained by each factor",
-       x = "Factor", y = "Total variance explained", color = "Study") +
-  theme(# axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
-        legend.position = "none")
+       x = "Factor", y = "Total variance explained", color = "Study") # +
+  # theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)
 ```
 
 ```{r}
@@ -1679,9 +1689,9 @@ figure3.5 <- plot_grid(plot_var_shared + theme(legend.position = "none"),
                        labels = "AUTO")
 
 figure3.5_cap <- add_sub(figure3.5, str_wrap(paste0(
-  "Figure 3.5: Estimates of the 'size' of factors in each of the EFA solutions reported in this chapter, organized by study, age group, and solution. Note that the '4- to 6-year old' children in Study 4 were significantly younger (mean age: ", 
+  "Figure 3.5: Estimates of the 'size' of factors in each of the EFA solutions reported in this chapter, organized by study, age group, and solution. Note that children in the '4-6y' age range were significantly younger in Study 4 (mean age: ", 
   format(round(t_age_46$estimate[2], 2), nsmall = 2), 
-  "y) than thse in Study 3 (mean age: ", 
+  "y) than in Study 3 (mean age: ", 
   format(round(t_age_46$estimate[1], 2), nsmall = 2), 
   "y; Welch's t(", 
   format(round(t_age_46$parameter, 2), nsmall = 2),
@@ -1690,18 +1700,18 @@ figure3.5_cap <- add_sub(figure3.5, str_wrap(paste0(
   ", p ",
   ifelse(t_age_46$p.value < 0.001, "< 0.001",
          paste0("= ", format(round(t_age_46$p.value, 3), nsmall = 3))),
-  "); '7- to 9-year-old children' in Studies 2 (mean age: ",
+  "); children in the '7-9y' age range did not differ significantly in age across Studies 2 (mean age: ",
   format(round(t_age_79$estimate[1], 2), nsmall = 2), 
   "y) and 3 (mean age: ",
   format(round(t_age_79$estimate[2], 2), nsmall = 2), 
-  "y) did not different significantly in age (Welch's t(",
+  "y; Welch's t(",
   format(round(t_age_79$parameter, 2), nsmall = 2),
   ") = ",
   format(round(t_age_79$statistic, 2), nsmall = 2), 
   ", p ",
   ifelse(t_age_79$p.value < 0.001, "< 0.001",
          paste0("= ", format(round(t_age_79$p.value, 3), nsmall = 3))),
-  "). (A) Proportion of shared variance explained by each factor, for each solution. By definition, the total shared variance explained for each solution equals 100%. Dotted lines indicate the expected value of shared variance explained if all of the factors for a given solution were of equal size. (B) Proportion of total variance explained by each factor, for each solution (theoretical range: 0-100%). (C) Proportion of total variance explained by the combination of all factors, for each solution (theoretical range: 0-100%)."), 210), x = 0, hjust = 0)
+  "). (A) Proportion of shared variance explained by each factor, for each solution. By definition, the total shared variance explained for each solution equals 100%. Dotted lines indicate the expected value of shared variance explained if all of the factors for a given solution were of equal size. (B) Proportion of total variance explained by each factor, for each solution. The relative size of factors within a solution is maintained across Panels A and B; in addition, Panel B indicates the absolute size of these factors. (C) Proportion of total variance explained by the combination of all factors, for each solution (theoretical range: 0-100%)."), 210), x = 0, hjust = 0)
 ```
 
 ```{r figure3.5, include = T, fig.width = 9, fig.asp = 0.4}
