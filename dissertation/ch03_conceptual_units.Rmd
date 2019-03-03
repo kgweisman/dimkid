@@ -29,6 +29,8 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 ```
 
 ```{r}
+set.seed(12345)
+
 # packages
 source("./scripts/libraries.R")
 
@@ -1434,45 +1436,13 @@ var_shared_report <- bind_rows(
                                        "Children, 4-6y")))
 ```
 
-```{r}
-pos <- position_jitter(width = 0.1, seed = 2)
-
-plot_var_shared <- var_shared_report %>%
-  mutate(solution = paste0(solution, " solution"),
-         lab = case_when(
-           (solution == "4-factor solution") & 
-             ((study == "Study 2" & ur_factor == "MIND") | 
-                (study == "Study 4" & ur_factor == "BODY")) ~ 
-             factor,
-           ur_factor == "BODY-HEART" ~ factor,
-           TRUE ~ NA_character_)) %>%
-  arrange(study, sample, ur_factor, factor) %>%
-  ggplot(aes(x = ur_factor_pos, y = value, color = study)) +
-  facet_grid(solution ~ age_group, scales = "free_y") +
-  geom_hline(data = data.frame(solution = c("2-factor solution",
-                                            "3-factor solution",
-                                            "4-factor solution"),
-                               equal = c(1/2, 1/3, 1/4)),
-             aes(x = NULL, y = NULL, color = NULL, yintercept = equal),
-             size = 0.25, lty = 2, show.legend = F) +
-  geom_path(aes(group = study), position = pos, alpha = 0.5, show.legend = F) +
-  geom_point(position = pos, show.legend = T) +
-  geom_text_repel(aes(label = lab), size = 3, show.legend = F,
-                  position = pos, box.padding = 0.35, na.rm = T,
-                  segment.alpha = 0.5) +
-  scale_colour_brewer(palette = "Dark2", direction = -1) +
-  scale_x_continuous(breaks = 1:3, labels = c("BODY", "HEART", "MIND"),
-                     minor_breaks = NULL) +
-  scale_y_continuous(breaks = seq(0, 1, 0.1), 
-                     labels = scales::percent_format(accuracy = 1)) +
-  labs(title = "Proportion of shared variance explained",
-       x = "Factor", y = "Shared variance explained", color = "Study") #+
-  # theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
-```
-
 Among adults (Figure 3.5, panel A, left column), a clear pattern emerged in the relative size of these factors as indexed by the proportion of shared variance explained: In all eight of the EFA solutions included in this chapter, adults' BODY and HEART factors explained a disproportionately large amount of the shared variance (more than would be expected if all factors were equal in size), and their MIND factor explained a disproportionaltely small amount of the shared variance (less than would be expected if al factors were equal in size). In most of these solutions, it appears that the BODY factor explained slightly more of the shared variance than the HEART factor, but these differences were generally quite small. This suggests that the conceptual units I have referred to as BODY and HEART may play especially large roles in US adults' representations of mental life, at least in the way they use these representations to distinguish among different kinds of beings in the world.
 
 Among 7- to 9-year-old children (Figure 3.5, panel A, middle column), a similar pattern was observed in Study 3 (orange), with children's BODY and HEART factors explaining more of the shared variance than their MIND factor. However, in Study 2 (purple), children's HEART factor explained nearly twice as much of the variance as either of the other factors. This raises the possibility that the conceptual unit I have called HEART looms especially large in the representations of children in this age range—but further studies would be required to determine whether this phenomenon is reliable and the circumstances under which is most or less likely to manifest.
+
+Among 4- to 6-year-old children (Study 3) and 4- to 5-year-old children (Study 4; Figure 3.5, panel A, right column), the BODY-like factors explained disproportionately large amounts of the shared variance. This holds true across all solutions for both studies (when combining the two BODY-like factors in the four-factor solution) and was particularly pronounced in the two-factor solution for Study 3 (orange, top row), in which younger children's BODY-HEART factor explains nearly twice as much of the shared variance as their MIND factor (perhaps a harbinger of an impending split between BODY and HEART as young children's conceptual representations become more like the older children and adults around them). The proportion of shared variance explained by younger children's HEART-like factors in the three-factor solutions for Studies 3 and 4 (middle row) appears to have been somewhat smaller than it was among older children and adults, particularly in Study 4 (turquoise), while the proportion explained by the more MIND-like factors appears to have been roughly comparable to that of adults in all studies. 
+
+Taken together, these observations are generally consistent with the possibility that the conceptual unit that I have called MIND may be relatively mature by the preschool years, not only in its content (the perceptual-cognitive abilities that are closely associated with this conceptual unit) but also in its size. By contrast, I would interpret these patterns as providing further indication of an ongoing negotiation of the physiological (BODY) and social-emotion (HEART) domains during early childhood.
 
 __BOOKMARK: ADD DISUCSSION OF YOUNGER CHILDREN__
 
@@ -1567,13 +1537,58 @@ var_total_sum <- var_total_report %>%
   group_by(study, sample, age_group, solution) %>%
   summarise(value = sum(value)) %>%
   ungroup() %>%
-  mutate(ur_factor = "Total\n(all factors)",
+  mutate(ur_factor = "All factors",
          ur_factor_pos = 4)
 ```
+
+__BOOKMARK: ADD DISCUSSION__
 
 ```{r}
 pos <- position_jitter(width = 0.1, seed = 2)
 
+plot_var_shared <- var_shared_report %>%
+  mutate(solution = paste0(solution, " solution"),
+         lab = case_when(
+           (solution == "4-factor solution") & 
+             ((study == "Study 2" & ur_factor == "MIND") | 
+                (study == "Study 4" & ur_factor == "BODY")) ~ 
+             factor,
+           ur_factor == "BODY-HEART" ~ factor,
+           TRUE ~ NA_character_),
+         design = case_when(
+           study %in% c("Study 1a", "Study 1b", "Study 2") ~ "edge case (between-Ss)",
+           study %in% c("Study 1c", "Study 4") ~ "edge case (within-Ss)",
+           study %in% c("Study 1d", "Study 3") ~ "diverse characters (between-Ss)"),
+         design = factor(design, 
+                         levels = c("edge case (between-Ss)",
+                                    "edge case (within-Ss)",
+                                    "diverse characters (between-Ss)"))) %>%
+  arrange(study, sample, ur_factor, factor) %>%
+  ggplot(aes(x = ur_factor_pos, y = value, color = study, shape = design)) +
+  facet_grid(solution ~ age_group, scales = "free_y") +
+  geom_hline(data = data.frame(solution = c("2-factor solution",
+                                            "3-factor solution",
+                                            "4-factor solution"),
+                               equal = c(1/2, 1/3, 1/4)),
+             aes(x = NULL, y = NULL, color = NULL, yintercept = equal),
+             size = 0.25, lty = 2, show.legend = F) +
+  geom_path(aes(group = study), position = pos, alpha = 0.5, show.legend = F) +
+  geom_point(position = pos, show.legend = T, size = 2) +
+  geom_text_repel(aes(label = lab), size = 3, show.legend = F,
+                  position = pos, box.padding = 0.35, na.rm = T,
+                  segment.alpha = 0.5) +
+  scale_colour_brewer(palette = "Dark2", direction = -1) +
+  scale_shape_manual(values = c(19, 15, 17)) +
+  scale_x_continuous(breaks = 1:3, labels = c("BODY", "HEART", "MIND"),
+                     minor_breaks = NULL) +
+  scale_y_continuous(breaks = seq(0, 1, 0.1), 
+                     labels = scales::percent_format(accuracy = 1)) +
+  labs(title = "Proportion of shared variance explained by each factor",
+       x = "Factor", y = "Shared variance explained", color = "Study") #+
+  # theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+```{r}
 plot_var_total <- var_total_report %>%
   mutate(solution = paste0(solution, " solution"),
          lab = case_when(
@@ -1582,50 +1597,116 @@ plot_var_total <- var_total_report %>%
                 (study == "Study 4" & ur_factor == "BODY")) ~ 
              factor,
            ur_factor == "BODY-HEART" ~ factor,
-           TRUE ~ NA_character_)) %>%
+           TRUE ~ NA_character_),
+         design = case_when(
+           study %in% c("Study 1a", "Study 1b", "Study 2") ~ "edge case (between-Ss)",
+           study %in% c("Study 1c", "Study 4") ~ "edge case (within-Ss)",
+           study %in% c("Study 1d", "Study 3") ~ "diverse characters (between-Ss)"),
+         design = factor(design, 
+                         levels = c("edge case (between-Ss)",
+                                    "edge case (within-Ss)",
+                                    "diverse characters (between-Ss)"))) %>%
   arrange(study, sample, ur_factor, factor) %>%
-  ggplot(aes(x = ur_factor_pos, y = value, color = study)) +
+  ggplot(aes(x = ur_factor_pos, y = value, color = study, shape = design)) +
   facet_grid(solution ~ age_group) +
   geom_path(aes(group = study), position = pos, alpha = 0.5, show.legend = F) +
-  geom_point(position = pos, show.legend = T) +
+  geom_point(position = pos, show.legend = T, size = 2) +
   geom_text_repel(aes(label = lab), size = 3, show.legend = F,
                   position = pos, box.padding = 0.35, na.rm = T,
                   segment.alpha = 0.5) +
-  geom_jitter(data = var_total_sum %>% 
-                mutate(solution = paste0(solution, " solution")),
-              position = pos, shape = 18, size = 4, show.legend = F) +
-  geom_text_repel(data = var_total_sum %>%
-                    mutate(solution = paste0(solution, " solution")),
-                  aes(label = paste0(round(value, 2)*100, "%")), 
-                  size = 3, show.legend = F,
-                  position = pos, box.padding = 0.35, na.rm = T,
-                  segment.alpha = 0.5) +
   scale_colour_brewer(palette = "Dark2", direction = -1) +
+  scale_shape_manual(values = c(19, 15, 17)) +
   scale_x_continuous(breaks = 1:4, 
-                     labels = c("BODY", "HEART", "MIND", "Sum"),
+                     labels = c("BODY", "HEART", "MIND", "All factors"),
                      minor_breaks = NULL) +
+  scale_y_continuous(breaks = seq(0, 1, 0.1), minor_breaks = NULL, 
+                     limits = c(0, max(var_total_report$value)),
+                     # limits = c(0, 1),
+                     labels = scales::percent_format(accuracy = 1)) +
+  labs(title = "Proportion of total variance explained by each factor",
+       x = "Factor", y = "Total variance explained", color = "Study") +
+  theme(# axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        legend.position = "none")
+```
+
+```{r}
+plot_var_total_sum <- var_total_sum %>%
+  mutate(solution = paste0(solution, " solution"),
+         design = case_when(
+           study %in% c("Study 1a", "Study 1b", "Study 2") ~ "edge case (between-Ss)",
+           study %in% c("Study 1c", "Study 4") ~ "edge case (within-Ss)",
+           study %in% c("Study 1d", "Study 3") ~ "diverse characters (between-Ss)"),
+         design = factor(design, 
+                         levels = c("edge case (between-Ss)",
+                                    "edge case (within-Ss)",
+                                    "diverse characters (between-Ss)"))) %>%
+  ggplot(aes(x = ur_factor, y = value, color = study, shape = design)) +
+  facet_grid(solution ~ age_group, scales = "free_x", space = "free_x") +
+  geom_point(position = position_dodge(width = 1), show.legend = T, size = 2) +
+  scale_colour_brewer(palette = "Dark2", direction = -1) +
+  scale_shape_manual(values = c(19, 15, 17)) +
   scale_y_continuous(breaks = seq(0, 1, 0.1), minor_breaks = NULL, 
                      # limits = c(0, max(var_total_report$value)),
                      limits = c(0, 1),
                      labels = scales::percent_format(accuracy = 1)) +
-  labs(title = "Proportion of total variance explained",
-       x = "Factor", y = "Total variance explained", color = "Study") #+
-  # theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+  labs(title = "Total variance explained by all factors",
+       x = "Factor", y = "Total variance explained", color = "Study", 
+       shape = "Variant of experimental approach")
+```
+
+```{r}
+t_age_79 <- t.test(age ~ study,
+                   data = d2_79 %>% distinct(study, subid, age) %>%
+                     full_join(d3_79 %>% distinct(study, subid, age)) %>%
+                     distinct())
+
+t_age_46 <- t.test(age ~ study,
+                   data = d3_46 %>% distinct(study, subid, age) %>%
+                     full_join(d4_46 %>% distinct(study, subid, age)) %>%
+                     distinct())
+
+cat("Older children:\n")
+t_age_79
+
+cat("Younger children:\n")
+t_age_46
 ```
 
 ```{r}
 figure3.5 <- plot_grid(plot_var_shared + theme(legend.position = "none"), 
-                       plot_var_total, ncol = 2, rel_widths = c(1, 1.2), 
+                       plot_var_total + theme(legend.position = "none"), 
+                       plot_var_total_sum, ncol = 3, rel_widths = c(1, 1, 1.1), 
                        labels = "AUTO")
 
-figure3.5_cap <- add_sub(figure3.5, str_wrap("Figure 3.5: Estimates of the 'size' of factors in each of the EFA solutions reported in this chapter, organized by study, age group, and solution. (A) Proportion of shared variance explained by each factor, for each solution. By definition, the total shared variance explained for each solution equals 100%. The relative percent of shared variance explained within a single EFA solution provides one way of assessing the relative 'size' of each of the factors in that solution. Dotted lines indicate the expected value of shared variance explained if all of the factors for a given solution were of equal size. (B) Proportion of total variance explained by each factor, and by the combination of all factors ('Sum'), for each solution.", 190), x = 0, hjust = 0)
+figure3.5_cap <- add_sub(figure3.5, str_wrap(paste0(
+  "Figure 3.5: Estimates of the 'size' of factors in each of the EFA solutions reported in this chapter, organized by study, age group, and solution. Note that the '4- to 6-year old' children in Study 4 were significantly younger (mean age: ", 
+  format(round(t_age_46$estimate[2], 2), nsmall = 2), 
+  "y) than thse in Study 3 (mean age: ", 
+  format(round(t_age_46$estimate[1], 2), nsmall = 2), 
+  "y; Welch's t(", 
+  format(round(t_age_46$parameter, 2), nsmall = 2),
+  ") = ", 
+  format(round(t_age_46$statistic, 2), nsmall = 2), 
+  ", p ",
+  ifelse(t_age_46$p.value < 0.001, "< 0.001",
+         paste0("= ", format(round(t_age_46$p.value, 3), nsmall = 3))),
+  "); '7- to 9-year-old children' in Studies 2 (mean age: ",
+  format(round(t_age_79$estimate[1], 2), nsmall = 2), 
+  "y) and 3 (mean age: ",
+  format(round(t_age_79$estimate[2], 2), nsmall = 2), 
+  "y) did not different significantly in age (Welch's t(",
+  format(round(t_age_79$parameter, 2), nsmall = 2),
+  ") = ",
+  format(round(t_age_79$statistic, 2), nsmall = 2), 
+  ", p ",
+  ifelse(t_age_79$p.value < 0.001, "< 0.001",
+         paste0("= ", format(round(t_age_79$p.value, 3), nsmall = 3))),
+  "). (A) Proportion of shared variance explained by each factor, for each solution. By definition, the total shared variance explained for each solution equals 100%. Dotted lines indicate the expected value of shared variance explained if all of the factors for a given solution were of equal size. (B) Proportion of total variance explained by each factor, for each solution (theoretical range: 0-100%). (C) Proportion of total variance explained by the combination of all factors, for each solution (theoretical range: 0-100%)."), 210), x = 0, hjust = 0)
 ```
 
-```{r figure3.5, include = T, fig.width = 8, fig.asp = 0.5}
+```{r figure3.5, include = T, fig.width = 9, fig.asp = 0.4}
 ggdraw(figure3.5_cap)
 ```
-
-__BOOKMARK: ADD DISCUSSION__
 
 
 # General discussion of conceptual units
