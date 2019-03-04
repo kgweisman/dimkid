@@ -1,8 +1,10 @@
 ---
 title: "Chapter II: Overview of methods"
 output:
-  word_document:
-    reference_docx: "./word-styles-reference.docx"
+  html_notebook:
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
 always_allow_html: yes
 ---
 
