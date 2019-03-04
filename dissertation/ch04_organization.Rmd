@@ -147,7 +147,7 @@ In Study 4, `r nrow(d4_ad_wide)/2` US adults and `r nrow(d4_46_wide)/2` US child
 ## Discussion
 
 
-# General discussion of the hierarchical organization conceptual units
+# General discussion
 
 
 # Chapter conclusion
