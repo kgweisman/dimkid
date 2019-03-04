@@ -36,7 +36,7 @@ source("./scripts/_SETUP.R")
 
 # Chapter overview
 
-In this chapter, I focus on the third of my three key questions about the development of representations of mental life introduced in Chapter I: _How do people of different ages deploy their conceptual representations of mental life to reason about specific entities in the world?_ As in Chapters III-IV, to address this question I draw on data from all of the current studies (Studies 1-4); for details about the methods of these studies, see Chapter II. The goal of this chapter is to provide "snapshots" of mental capacity attributions to various target characters in early childhood, middle childhood, and adulthood, and to explore in finer-grained detail changes in children's beliefs about the mental lives of these characters between 4-9y of age, with particular attention to children's assessment of animate vs. inanimate beings.
+In this chapter, I focus on the third of my three key questions about the development of representations of mental life: _How do people of different ages deploy their conceptual representations of mental life to reason about specific entities in the world?_ As in Chapters III-IV, to address this question I draw on data from all of the current studies (Studies 1-4); for details about the methods of these studies, see Chapter II. The goal of this chapter is to provide "snapshots" of mental capacity attributions to various target characters in early childhood, middle childhood, and adulthood, and to explore in finer-grained detail changes in children's beliefs about the mental lives of these characters between 4-9y of age, with particular attention to children's assessment of animate vs. inanimate beings.
 
 
 # General analysis plan
