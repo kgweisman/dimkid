@@ -862,13 +862,12 @@ plot_efa_bic_d1a_ad <- heatmap_fun(efa_bic_d1a_ad,
 
 # study 1b
 plot_efa_par_d1b_ad <- heatmap_fun(efa_par_d1b_ad, 
-                                   c("BODY", "HEART", "MIND", "Factor 4")) +
+                                   c("BODY", "HEART", "MIND")) +
   labs(title = "Study 1b", subtitle = "4-factor solution") +
   theme(legend.position = "none")
 
 plot_efa_bic_d1b_ad <- heatmap_fun(efa_bic_d1b_ad, 
-                                   c("BODY", "HEART", "MIND", 
-                                     "Factor 4", "Factor 5")) +
+                                   c("BODY", "HEART", "MIND", "Factor 4")) +
   labs(title = "Study 1b", subtitle = "5-factor solution") # +
   # theme(legend.position = "none")
 
@@ -920,7 +919,7 @@ plot_efa_bic_d3_ad <- heatmap_fun(efa_bic_d3_ad,
   labs(title = "Study 3: Adults", subtitle = "5-factor solution") +
   theme(legend.position = "none")
 
-plot_efa_bic_d3_46 <- heatmap_fun(efa_bic_d3_46, ) +
+plot_efa_bic_d3_46 <- heatmap_fun(efa_bic_d3_46) +
   labs(title = "Study 3: Younger children, 4-6y", 
        subtitle = "1-factor (null) solution") #+
   # theme(legend.position = "none")
@@ -943,7 +942,7 @@ All of the EFA solutions suggested by the three factor retention protocols are r
 
 ```{r}
 # study 4
-plot_efa_bic_d4_46 <- heatmap_fun(efa_bic_d4_46, ) +
+plot_efa_bic_d4_46 <- heatmap_fun(efa_bic_d4_46) +
   labs(title = "Study 4: Younger children, 4-5y", 
        subtitle = "1-factor (null) solution") # +
   # theme(legend.position = "none")
@@ -959,4 +958,12 @@ figureA.15_cap <- add_sub(figureA.15, str_wrap("Figure A.15: Factor loadings fro
 ggdraw(figureA.15_cap)
 ```
 
+
+# TO DO LIST
+
+- reconsider additions to appendix A: 
+    - left-right position (study 1c)
+    - first-second (study 4)
+    - beetle-robot (studies 1a-1c, study 2, study 4)
+    - analysis of scale use across age groups
 
