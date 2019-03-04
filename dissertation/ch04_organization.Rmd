@@ -36,14 +36,18 @@ source("./scripts/_SETUP.R")
 
 # Chapter overview
 
-In this chapter, I focus on the second of my three key questions about the development of representations of mental life introduced in Chapter I: _How are these conceptual units organized in relation to each other, and how does this organization change over development?_ As in Chapter III, to address this question I draw on data from all of the current studies (Studies 1-4); for details about the methods of these studies, see Chapter II. The goal of this chapter is to provide "snapshots" of the organization of conceptual units in early childhood, middle childhood, and adulthood.
+In this chapter, I focus on the second of my three key questions about the development of representations of mental life: _How are the conceptual units that anchor representations of mental life organized in relation to each other, and how does this organization change over development?_ As in Chapter III, to address this question I draw on data from all of the current studies (Studies 1-4); for details about the methods of these studies, see Chapter II. The goal of this chapter is to provide "snapshots" of the organization of conceptual units in early childhood, middle childhood, and adulthood.
 
 
 # General analysis plan
 
 ## High-level overview
 
-In analyzing these datasets with an eye toward assessing the hierarchical organization of the "conceptual units" identified in Chapter III, the basic insight is that asymmetries in mental capacity attributions hint at the relationships among these conceptual units (e.g., which conceptual units might be more basic or fundamental, which conceptual units are considered prerequisites for others). In Chapter II, I illustrated this with the following example: If many participants endorse capacities associated with Conceptual Unit A without endorsing capacities associated with Conceptual Unit B, but very few participants endorse capacities do the reverse (endorsing capcaities associated with Conceptual Unit B but not Conceptual Unit A), this provides some evidence that Conceptual Unit A is more basic or fundamental than Conceptual Unit B, or that Conceptual Unit A is a prerequiste for Conceptual Unit B. Here I will translate this general intuition into a specific analysis plan to be applied to each of these datasets in turn. 
+My goal in this chapter is to examine the relationships among the "conceptual units" identified in Chapter III. How does a participant's assessment of one conceptual unit for a particular target character (e.g., the degree to which he or she indicates that a beetle is capable of the physiological sensations of the BODY) affect that participant's assessments of other conceptual units for that target character (e.g., his or her assessment of the beetle's capaciteis in the domains of HEART or MIND)?
+
+I focus in particular on the possibility that the mental capacity attributions documented by the studies included in this dissertation—re-analyzed as indicators of the broader "conceptual units" identified in Chapter III—might shed light on the _hierarchical organization_ of these conceptual units, i.e., which conceptual units might be more basic or fundamental vs. more complex, and whether any of these conceptual units might or might not be considered to depend on the presence of others. In Chapter II, I illustrated this with the following example: If many participants endorse capacities associated with Conceptual Unit A without endorsing capacities associated with Conceptual Unit B, but very few participants do the reverse (endorsing capacities associated with Conceptual Unit B but not Conceptual Unit A), this provides some evidence that Conceptual Unit A is more basic or fundamental than Conceptual Unit B, or that Conceptual Unit B somehow depends on (perhaps requires) Conceptual Unit A. 
+
+Here I will translate this general interest in the relationships among conceptual units, as well as the specific intuition about how to detect the kinds of asymmetries that would be the signature of hierarchical relationships, into a specific analysis plan to be applied to each of these datasets in turn. 
 
 ## Details of analyses
 
@@ -132,4 +136,8 @@ In Study 4, `r nrow(d4_ad_wide)/2` US adults and `r nrow(d4_46_wide)/2` US child
 
 # Chapter conclusion
 
+In this chapter, I explored a second aspect of conceptual representations of mental life among US children and adults: The relationships among conceptual units. Studies 2-4 are consistent with the following theory: XX. 
 
+As in Chapter III, I urge the reader to remember that this is not the only possible interpretation of the pattern of results presented here; additional studies—in particular, studies designed to test the hypothesis that XX— could provide converging evidence or could challenge this theoretical interpretation. Instead, the primary role of the re-analysis discussed here has been to inspire the hypothesis stated in the previous paragraph and to the foundation for future tests of this hypothesis, in turn refining a general theory of this aspect of conceptual development.  
+
+In the next chapter, I apply the same exploratory spirit to the third and final aspect of conceptual representations of mental life: the application or deployment of these conceptual units in reasoning about various kinds of beings.
