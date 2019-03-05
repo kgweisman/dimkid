@@ -33,6 +33,57 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 source("./scripts/_SETUP.R")
 ```
 
+```{r}
+# load in EFAs from Chapter II
+# study 1
+efa_par_d1a_ad <- readRDS(file = "./efas/efa_par_d1a_ad")
+efa_bic_d1a_ad <- readRDS(file = "./efas/efa_bic_d1a_ad")
+efa_wdm_d1a_ad <- readRDS(file = "./efas/efa_wdm_d1a_ad")
+
+efa_par_d1b_ad <- readRDS(file = "./efas/efa_par_d1b_ad")
+efa_bic_d1b_ad <- readRDS(file = "./efas/efa_bic_d1b_ad")
+efa_wdm_d1b_ad <- readRDS(file = "./efas/efa_wdm_d1b_ad")
+
+efa_par_d1c_ad <- readRDS(file = "./efas/efa_par_d1c_ad")
+efa_bic_d1c_ad <- readRDS(file = "./efas/efa_bic_d1c_ad")
+efa_wdm_d1c_ad <- readRDS(file = "./efas/efa_wdm_d1c_ad")
+
+efa_par_d1d_ad <- readRDS(file = "./efas/efa_par_d1d_ad")
+efa_bic_d1d_ad <- readRDS(file = "./efas/efa_bic_d1d_ad")
+efa_wdm_d1d_ad <- readRDS(file = "./efas/efa_wdm_d1d_ad")
+
+# study 2
+efa_par_d2_ad <- readRDS(file = "./efas/efa_par_d2_ad")
+efa_bic_d2_ad <- readRDS(file = "./efas/efa_bic_d2_ad")
+efa_wdm_d2_ad <- readRDS(file = "./efas/efa_wdm_d2_ad")
+
+efa_par_d2_79 <- readRDS(file = "./efas/efa_par_d2_79")
+efa_bic_d2_79 <- readRDS(file = "./efas/efa_bic_d2_79")
+efa_wdm_d2_79 <- readRDS(file = "./efas/efa_wdm_d2_79")
+
+# study 3
+efa_par_d3_ad <- readRDS(file = "./efas/efa_par_d3_ad")
+efa_bic_d3_ad <- readRDS(file = "./efas/efa_bic_d3_ad")
+efa_wdm_d3_ad <- readRDS(file = "./efas/efa_wdm_d3_ad")
+
+efa_par_d3_79 <- readRDS(file = "./efas/efa_par_d3_79")
+efa_bic_d3_79 <- readRDS(file = "./efas/efa_bic_d3_79")
+efa_wdm_d3_79 <- readRDS(file = "./efas/efa_wdm_d3_79")
+
+efa_par_d3_46 <- readRDS(file = "./efas/efa_par_d3_46")
+efa_bic_d3_46 <- readRDS(file = "./efas/efa_bic_d3_46")
+efa_wdm_d3_46 <- readRDS(file = "./efas/efa_wdm_d3_46")
+
+# study 4
+efa_par_d4_ad <- readRDS(file = "./efas/efa_par_d4_ad")
+efa_bic_d4_ad <- readRDS(file = "./efas/efa_bic_d4_ad")
+efa_wdm_d4_ad <- readRDS(file = "./efas/efa_wdm_d4_ad")
+
+efa_par_d4_46 <- readRDS(file = "./efas/efa_par_d4_46")
+efa_bic_d4_46 <- readRDS(file = "./efas/efa_bic_d4_46")
+efa_wdm_d4_46 <- readRDS(file = "./efas/efa_wdm_d4_46")
+```
+
 
 # Chapter overview
 
@@ -71,8 +122,11 @@ For "younger" children, this means examining multiple sets of conceptual units f
 
 The reader should note that this is far from the only way to approach "scoring" participants on these conceptual units. In particular, I could have examined factor scores—summaries of each factor (conceptual unit) based on a participant's responses to all mental capacities and the relationships between all mental capacities and all factors included in that EFA solution—rather than constructing "scales" in the way I have just outlined. However, much like _z_-scores, factor scores indicate where a participant falls in relation to other participants in the sample, and do not provide the kind of absolute score that is key to my goal in this chapter, which is to analyze relationships among factors in terms of the extent to which individual participants indicated that target characters "possessed" the conceptual units BODY, HEART, and MIND. [XX APPENDIX B?]
 
-Even within the "scale" approach described in this section, there are many parameters of this analysis that I could have set differently. For example, I could have considered absolute factor loadings rather than raw factor loadings, which would allow for mental capacities that loaded especially strongly _negatively_ on a particular factor to contribute (negatively) to scores on that conceptual unit; I could have omitted the step of making the scales for all factors within a single EFA sotluion equal length; I could have chosen to use only the top 4, 5, 6 (or more) mental capacities across all EFA solutions; or I could have implemented absolute thresholds for how strongly a mental capacity must load on a factor in order to count toward the score for that conceptual unit, or absolute limits on the degree to which a mental capacity can "cross-load" on non-dominant factors and still count toward the score for any one conceptual unit. [XX APPENDIX B?] However, these kinds of details differ quite dramatically across studies and age groups. For example, in some samples there are no strong negative factor loadings, and in others there are; if I considered absolute loadings rather than raw loadings, I could end up comparing scores from a "bipolar" scale in one sample to scores from a "unipolar" scales in another sample, making the comparison more difficult to interpret. Likewise, some EFA solutions tended to feature generally weaker factor loadings than others; if I were to impose absolute thresholds for the strength of factor loadings, I could end up comparing scores from scales of wildly different lengths across samples. In my view, the analysis decisions outlined above maximize comparability across studies and age groups—the primary goal of this chapter.
+Even within the "scale" approach described in this section, there are many parameters of this analysis that I could have set differently. For example, I could have considered absolute factor loadings rather than raw factor loadings, which would allow for mental capacities that loaded especially strongly _negatively_ on a particular factor to contribute (negatively) to scores on that conceptual unit; I could have omitted the step of making the scales for all factors within a single EFA sotluion equal length; I could have chosen to use only the top 4, 5, 6 (or more) mental capacities across all EFA solutions; or I could have implemented absolute thresholds for how strongly a mental capacity must load on a factor in order to count toward the score for that conceptual unit, or absolute limits on the degree to which a mental capacity can "cross-load" on non-dominant factors and still count toward the score for any one conceptual unit. [XX APPENDIX B?] However, these kinds of details differ quite dramatically across studies and age groups. For example, in some samples there are no strong negative factor loadings, and in others there are; if I considered absolute loadings rather than raw loadings, I could end up comparing scores from a "bipolar" scale in one sample to scores from a "unipolar" scales in another sample, making the comparison more difficult to interpret. Likewise, some EFA solutions tended to feature generally weaker factor loadings than others; if I were to impose absolute thresholds for the strength of factor loadings, I could end up comparing scores from scales of wildly different lengths across samples. In my view, the analysis decisions outlined above maximize comparability across studies and age groups—the primary goal of this chapter. (Note, however, that in the analysis code for this chapter I have included easy short cuts for the interested reader to explore different options for each of these parameters.)
 
+```{r}
+# see "./scripts/org_param.R" for parameter setting
+```
 
 ### Visualizing relationships
 

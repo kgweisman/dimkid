@@ -1,7 +1,7 @@
-# custom functions for efa
+# FUNCTIONS FOR EFA (identifying conceptual units)
 
 # general custom efa function
-fa_fun <- function(df, n){
+fa_fun <- function(df, n){ # params set in org_param.R
   efa <- fa(df, nfactors = n, missing = T, impute = "median",
             cor = chosen_cor, rotate = chosen_rot,
             fm = chosen_fm, scores = chosen_scores)

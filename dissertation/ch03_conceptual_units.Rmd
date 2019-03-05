@@ -51,7 +51,7 @@ In other words, my goal in the current chapter is to uncover a set of latent con
 
 ## Details of analyses
 
-In the remainder of this chapter, I report EFAs for each age group included in each of the current studies (Studies 1-4). Conducting an EFA requires making a variety of analysis choices, including how to handle missing data, what kind of correlations to use, the choice of factoring algorithm, how to determine the number of factors to retain, the choice of rotation method (if any), and the method for calculating factor scores. In the analysis code for this chapter I have included easy short cuts for the interest reader to explore different options for each of these parameters. Here, I have set all of these parameters to be constant across EFAs of different samples so as to maximize comparability across studies. To conduct these EFAs, I use the "psych" package for R (Revelle, 2018).
+In the remainder of this chapter, I report EFAs for each age group included in each of the current studies (Studies 1-4). Conducting an EFA requires making a variety of analysis choices, including how to handle missing data, what kind of correlations to use, the choice of factoring algorithm, how to determine the number of factors to retain, the choice of rotation method (if any), and the method for calculating factor scores. In the analysis code for this chapter I have included easy short cuts for the interested reader to explore different options for each of these parameters. Here, I have set all of these parameters to be constant across EFAs of different samples so as to maximize comparability across studies. To conduct these EFAs, I use the "psych" package for R (Revelle, 2018).
 
 ```{r}
 # see "./scripts/efa_param.R" for parameter setting

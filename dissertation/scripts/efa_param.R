@@ -1,3 +1,5 @@
+# PARAMETERS FOR EFA
+
 # what correlation to use
 chosen_cor <- "cor" # pearson - REPORTED
 # chosen_cor <- "poly" # polychoric

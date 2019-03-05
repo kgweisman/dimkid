@@ -1,6 +1,4 @@
-library(tidyverse)
-library(psych)
-library(langcog)
+# FUNCTIONS FOR PLOTTING
 
 # function for generating heatmap of factor loadings
 heatmap_fun <- function(efa, factor_names = NA){

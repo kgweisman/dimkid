@@ -9,6 +9,8 @@ source("./scripts/libraries.R")
 # supporting functions
 source("./scripts/efa_param.R")
 source("./scripts/efa_fun.R")
+source("./scripts/org_param.R")
+source("./scripts/org_fun.R")
 source("./scripts/ms_fun.R")
 source("./scripts/plot_fun.R")
 
