@@ -82,6 +82,43 @@ efa_wdm_d4_ad <- readRDS(file = "./efas/efa_wdm_d4_ad")
 efa_par_d4_46 <- readRDS(file = "./efas/efa_par_d4_46")
 efa_bic_d4_46 <- readRDS(file = "./efas/efa_bic_d4_46")
 efa_wdm_d4_46 <- readRDS(file = "./efas/efa_wdm_d4_46")
+
+# load in factor names from Chapter II
+# study 1
+factor_names_efa_wdm_d1a_ad <- readRDS( 
+        file = "./factor_names/factor_names_efa_wdm_d1a_ad")
+factor_names_efa_wdm_d1b_ad <- readRDS( 
+        file = "./factor_names/factor_names_efa_wdm_d1b_ad")
+factor_names_efa_wdm_d1c_ad <- readRDS( 
+        file = "./factor_names/factor_names_efa_wdm_d1c_ad")
+factor_names_efa_wdm_d1d_ad <- readRDS( 
+        file = "./factor_names/factor_names_efa_wdm_d1d_ad")
+
+# study 2
+factor_names_efa_wdm_d2_ad <- readRDS( 
+        file = "./factor_names/factor_names_efa_wdm_d2_ad")
+factor_names_efa_par_d2_ad <- readRDS( 
+        file = "./factor_names/factor_names_efa_par_d2_ad")
+factor_names_efa_wdm_d2_79 <- readRDS( 
+        file = "./factor_names/factor_names_efa_wdm_d2_79")
+
+# study 3
+factor_names_efa_wdm_d3_ad <- readRDS( 
+        file = "./factor_names/factor_names_efa_wdm_d3_ad")
+factor_names_efa_wdm_d3_79 <- readRDS( 
+        file = "./factor_names/factor_names_efa_wdm_d3_79")
+factor_names_efa_wdm_d3_46 <- readRDS( 
+        file = "./factor_names/factor_names_efa_wdm_d3_46")
+factor_names_efa_par_d3_46 <- readRDS( 
+        file = "./factor_names/factor_names_efa_par_d3_46")
+
+# study 4
+factor_names_efa_wdm_d4_ad <- readRDS( 
+        file = "./factor_names/factor_names_efa_wdm_d4_ad")
+factor_names_efa_par_d4_46 <- readRDS( 
+        file = "./factor_names/factor_names_efa_par_d4_46")
+factor_names_efa_wdm_d4_46 <- readRDS( 
+        file = "./factor_names/factor_names_efa_wdm_d4_46")
 ```
 
 
@@ -169,6 +206,23 @@ As noted in Chapter II, in the original analysis of these datasets responses wer
 ### Study 1a
 
 In Study 1a, `r nrow(d1a_ad_wide)` US adults each assessed a single target character on 40 mental capacities. This study employed the "edge case" variant of the general approach, with participants randomly assigned to assess either a beetle or a robot. (See Chapter II and Weisman et al., 2017, for detailed methods.)
+
+#### Scale construction
+
+XX
+
+```{r}
+scale_fun(efa_wdm_d1a_ad, factor_names = factor_names_efa_wdm_d1a_ad)
+```
+
+
+#### Visualization
+
+XX
+
+#### Analysis of asymmetries
+
+XX
 
 ### Study 1b
 

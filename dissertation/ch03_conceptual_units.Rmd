@@ -1731,3 +1731,44 @@ Of course, this is not the only possible interpretation of the pattern of result
 
 In the next chapter, I apply the same exploratory spirit to another aspect of these conceptual representations: the _relationships among_ these conceptual units.
 
+```{r}
+# export EFAs: interspersed above
+
+# export factor names
+# study 1
+saveRDS(factor_names_efa_wdm_d1a_ad, 
+        file = "./factor_names/factor_names_efa_wdm_d1a_ad")
+saveRDS(factor_names_efa_wdm_d1b_ad, 
+        file = "./factor_names/factor_names_efa_wdm_d1b_ad")
+saveRDS(factor_names_efa_wdm_d1c_ad, 
+        file = "./factor_names/factor_names_efa_wdm_d1c_ad")
+saveRDS(factor_names_efa_wdm_d1d_ad, 
+        file = "./factor_names/factor_names_efa_wdm_d1d_ad")
+
+# study 2
+saveRDS(factor_names_efa_wdm_d2_ad, 
+        file = "./factor_names/factor_names_efa_wdm_d2_ad")
+saveRDS(factor_names_efa_par_d2_ad, 
+        file = "./factor_names/factor_names_efa_par_d2_ad")
+saveRDS(factor_names_efa_wdm_d2_79, 
+        file = "./factor_names/factor_names_efa_wdm_d2_79")
+
+# study 3
+saveRDS(factor_names_efa_wdm_d3_ad, 
+        file = "./factor_names/factor_names_efa_wdm_d3_ad")
+saveRDS(factor_names_efa_wdm_d3_79, 
+        file = "./factor_names/factor_names_efa_wdm_d3_79")
+saveRDS(factor_names_efa_wdm_d3_46, 
+        file = "./factor_names/factor_names_efa_wdm_d3_46")
+saveRDS(factor_names_efa_par_d3_46, 
+        file = "./factor_names/factor_names_efa_par_d3_46")
+
+# study 4
+saveRDS(factor_names_efa_wdm_d4_ad, 
+        file = "./factor_names/factor_names_efa_wdm_d4_ad")
+saveRDS(factor_names_efa_par_d4_46, 
+        file = "./factor_names/factor_names_efa_par_d4_46")
+saveRDS(factor_names_efa_wdm_d4_46, 
+        file = "./factor_names/factor_names_efa_wdm_d4_46")
+```
+
