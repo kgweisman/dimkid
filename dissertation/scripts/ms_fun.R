@@ -18,7 +18,6 @@ missing_print_fun <- function(df, round_n = NA){
          paste0(missing_percent_fun(df, round_n = 2), "%"))
 }
 
-
 # function for quickly getting counts and proportions for categorical demo variables
 demo_fun <- function(df, var, n_round = NA){
   new_df <- df %>%
@@ -170,54 +169,7 @@ IFcor_fun <- function(efa, factor_names = NA, remove_dup = F){
   return(d2)
 }
 
-# functions for plotting
-IFcor_plot_fun <- function(efa, factor_names = NA, remove_dup = F){
-  
-  efa_cor <- IFcor_fun(efa = efa, factor_names = factor_names,
-                       remove_dup = remove_dup) %>%
-    mutate_at(vars(factor1, factor2), 
-              funs(gsub("vs\\.", "vs", .))) %>%
-    mutate_at(vars(factor1, factor2), 
-              funs(gsub(".vs.", " vs ", .))) %>%
-    mutate_at(vars(factor1, factor2), 
-              funs(gsub("Factor\\.", "Factor ", .))) %>%
-    mutate_at(vars(factor1, factor2), 
-              funs(gsub("BODY.HEART", "BODY-HEART ", .))) %>%
-    mutate_at(vars(factor1, factor2), 
-              funs(gsub("MIND.HEART", "MIND-HEART ", .))) %>%
-    mutate_at(vars(factor1, factor2),
-              funs(gsub("\\.\\.", " (", .))) %>%
-    mutate_at(vars(factor1, factor2),
-              funs(gsub("\\.$", ")", .))) %>%
-    mutate_at(vars(factor1, factor2),
-              funs(gsub(" \\(", "\n\\(", .))) %>%
-    mutate_at(vars(factor1, factor2), 
-              funs(gsub("  ", " ", .))) %>%
-    mutate(cor = ifelse(factor1 == factor2, NA, cor))
-  
-  plot <- ggplot(efa_cor,
-                 aes(x = factor1, y = reorder(factor2, desc(factor2)), 
-                     fill = cor,
-                     label = ifelse(is.na(cor), "",
-                                    format(round(cor, 2), nsmall = 2)))) +
-    geom_tile(color = "black") +
-    geom_text(size = 3) +
-    scale_fill_distiller(limits = c(-1, 1),
-                         palette = "PRGn",
-                         guide = guide_colorbar(barheight = 6), 
-                         na.value = "white") +
-    theme(axis.title = element_blank(),
-          axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
-  
-  return(plot)
-  
-}
-
-binomial_smooth <- function(...) {
-  geom_smooth(method = "glm", method.args = list(family = "binomial"), ...)
-}
-
+# function for italicizing items
 ital_by_cap_fun <- function(str) {
   paste0("_", paste(str, collapse = "_, _"), "_")
 }
-

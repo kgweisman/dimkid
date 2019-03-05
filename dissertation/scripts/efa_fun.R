@@ -1,5 +1,6 @@
 # custom functions for efa
 
+# general custom efa function
 fa_fun <- function(df, n){
   efa <- fa(df, nfactors = n, missing = T, impute = "median",
             cor = chosen_cor, rotate = chosen_rot,
@@ -14,6 +15,59 @@ fa_fun <- function(df, n){
   return(efa)
 }
 
+# functions for implementing weisman et al.'s (2017) factor retention criteria
+s_moments <- function(p) {p*(p+1)/2}
+param_est <- function(p, k) {p*k + p - (k*(k-1)/2)}
+
+check_ok <- function(p, k) {
+  a <- (p-k)^2
+  b <- p+k
+  return(ifelse(a>b, TRUE, FALSE))
+}
+
+max_ok <- function(p) {
+  df_check <- data.frame()
+  for(i in 1:p){
+    df_check[i,"check"] <- check_ok(p,i)
+  }
+  max <- df_check %>% filter(check) %>% nrow()
+  return(max)
+}
+
+reten_fun <- function(df, rot_type = c("oblimin", "varimax", "none")){
+  
+  # figure out max number of factors to retain
+  n_var <- length(names(df))
+  max_k <- max_ok(n_var)
+  
+  # run efa with max factors, unrotated
+  fa_unrot <- fa(df, nfactors = max_k, rotate = "none", 
+                 scores = "tenBerge", impute = "median")
+  eigen <- fa_unrot$Vaccounted %>%
+    data.frame() %>%
+    rownames_to_column("param") %>%
+    gather(factor, value, -param) %>%
+    spread(param, value) %>%
+    filter(`SS loadings` > 1, `Proportion Explained` > 0.05)
+  retain_k <- nrow(eigen)
+  
+  fa_rot <- fa(df, nfactors = retain_k, rotate = rot_type,
+               scores = "tenBerge", impute = "median")
+  
+  loadings <- fa_rot$loadings[] %>%
+    data.frame() %>%
+    rownames_to_column("capacity") %>%
+    gather(factor, loading, -capacity) %>%
+    group_by(capacity) %>%
+    top_n(1, abs(loading)) %>%
+    ungroup() %>%
+    count(factor)
+  retain_k_final <- nrow(loadings)
+  
+  return(retain_k_final)
+}
+
+# function for extracting factor loadings
 loadings_fun <- function(efa, long_wide = "long"){
   loadings_df <- efa$loadings[] %>%
     data.frame() %>%
@@ -27,6 +81,7 @@ loadings_fun <- function(efa, long_wide = "long"){
   return(loadings_df)
 }
 
+# function for grabbing top n mental capacities for which a factor was dominant
 top_n_domCap <- function(efa, n, factor, abs_pos = "abs"){
   
   loadings_df <- loadings_fun(efa)
