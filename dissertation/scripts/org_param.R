@@ -9,9 +9,10 @@ chosen_trim <- TRUE # yes, trim scales to equal length - REPORTED
 # chosen_trim <- FALSE # no, allow scales to vary in length
 
 # number of items to keep per scale
-chosen_n_keep <- NA # as many as possible - REPORTED
-# chosen_n_keep <- 5 # 5-item scale
-# chosen_n_keep <- 4 # 4-item scale (and so on...)
+# chosen_n_keep <- NA # as many as possible
+chosen_n_keep <- 6 # up to 6-item scale - REPORTED
+# chosen_n_keep <- 5 # up to 5-item scale
+# chosen_n_keep <- 4 # up to 4-item scale (and so on...)
 
 # minimum factor loading (on dominant factor)
 chosen_min_loading <- NA # none - REPORTED

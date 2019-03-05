@@ -145,7 +145,7 @@ Unlike the previous chapter, in which I employed a canonical approach to identif
 
 The first step in these analyses is to transform participants' ratings of individual mental capacities into "scores" that indicate the extent to which they endorsed a particular conceptual unit for the target character(s) that they were assigned to assess. To do this, I make use of the EFAs presented in Chapter II—which originally served to identify a set of conceptual units in a particular sample—to a new end: the construction of "scales" for each of these conceptual units. Scale construction is a common use of EFA and similar dimensionality reduction analyses (if anything, more common than using EFA to make the kinds of theoretical arguments featured in Chapter II).
 
-For each EFA solution, I construct a scale for each of the factors (conceptual units) identified by that solution. First, I sort each of the mental capacities included in that study into categories based on their loadings on each of the factors in that solution. For each mental capacity, I identify the "dominant" factor as the factor with the largest positive factor loading. For example, if the mental capacity _feel happy_ had loadings of 0.60 on the BODY factor, 0.70 on the HEART factor, and 0.30 on the MIND factor, I would sort it into the HEART category. For each factor, I then "drop" the capacities with the smallest factor loadings on their respective dominant factors until I have the same number of mental capacities in each category. For example, if the BODY factor were the dominant factor for nine mental capacities, the HEART factor for six mental capacities, and the MIND factor for five capacities, for each factor I would keep only the capacities with the five highest positive loadings on that factor, in order to construct three scales of equal length.
+For each EFA solution, I construct a scale for each of the factors (conceptual units) identified by that solution. First, I sort each of the mental capacities included in that study into categories based on their loadings on each of the factors in that solution. For each mental capacity, I identify the "dominant" factor as the factor with the largest positive factor loading. For example, if the mental capacity _feel happy_ had loadings of 0.60 on the BODY factor, 0.70 on the HEART factor, and 0.30 on the MIND factor, I would sort it into the HEART category. For each factor, I take the six highest-loading items as a candidate scale, then "drop" the capacities with the smallest factor loadings on their respective dominant factors until I have the same number of mental capacities in each category. For example, if the BODY factor were the dominant factor for nine mental capacities, the HEART factor for six mental capacities, and the MIND factor for five capacities, for each factor I would keep only the capacities with the five highest positive loadings on that factor, in order to construct three scales of equal length (and a maximum length of six items).
 
 To calculate scores on these scales, I take the average of all of mental capacities for each scale. This yields a dataset in which each participant is associated with one score for each of the conceptual units identified in the relative EFA solution, for each of the target characters that that participant assessed.
 
@@ -159,7 +159,7 @@ For "younger" children, this means examining multiple sets of conceptual units f
 
 The reader should note that this is far from the only way to approach "scoring" participants on these conceptual units. In particular, I could have examined factor scores—summaries of each factor (conceptual unit) based on a participant's responses to all mental capacities and the relationships between all mental capacities and all factors included in that EFA solution—rather than constructing "scales" in the way I have just outlined. However, much like _z_-scores, factor scores indicate where a participant falls in relation to other participants in the sample, and do not provide the kind of absolute score that is key to my goal in this chapter, which is to analyze relationships among factors in terms of the extent to which individual participants indicated that target characters "possessed" the conceptual units BODY, HEART, and MIND. [XX APPENDIX B?]
 
-Even within the "scale" approach described in this section, there are many parameters of this analysis that I could have set differently. For example, I could have considered absolute factor loadings rather than raw factor loadings, which would allow for mental capacities that loaded especially strongly _negatively_ on a particular factor to contribute (negatively) to scores on that conceptual unit; I could have omitted the step of making the scales for all factors within a single EFA sotluion equal length; I could have chosen to use only the top 4, 5, 6 (or more) mental capacities across all EFA solutions; or I could have implemented absolute thresholds for how strongly a mental capacity must load on a factor in order to count toward the score for that conceptual unit, or absolute limits on the degree to which a mental capacity can "cross-load" on non-dominant factors and still count toward the score for any one conceptual unit. [XX APPENDIX B?] However, these kinds of details differ quite dramatically across studies and age groups. For example, in some samples there are no strong negative factor loadings, and in others there are; if I considered absolute loadings rather than raw loadings, I could end up comparing scores from a "bipolar" scale in one sample to scores from a "unipolar" scales in another sample, making the comparison more difficult to interpret. Likewise, some EFA solutions tended to feature generally weaker factor loadings than others; if I were to impose absolute thresholds for the strength of factor loadings, I could end up comparing scores from scales of wildly different lengths across samples. In my view, the analysis decisions outlined above maximize comparability across studies and age groups—the primary goal of this chapter. (Note, however, that in the analysis code for this chapter I have included easy short cuts for the interested reader to explore different options for each of these parameters.)
+Even within the "scale" approach described in this section, there are many parameters of this analysis that I could have set differently. For example, I could have considered absolute factor loadings rather than raw factor loadings, which would allow for mental capacities that loaded especially strongly _negatively_ on a particular factor to contribute (negatively) to scores on that conceptual unit; I could have omitted the step of making the scales for all factors within a single EFA sotluion equal length; I could have chosen to use only the top 4 or 5 mental capacities across all EFA solutions, or to set no limit on the number of items in a scale; or I could have implemented absolute thresholds for how strongly a mental capacity must load on a factor in order to count toward the score for that conceptual unit, or absolute limits on the degree to which a mental capacity can "cross-load" on non-dominant factors and still count toward the score for any one conceptual unit. [XX APPENDIX B?] However, these kinds of details differ quite dramatically across studies and age groups. For example, in some samples there are no strong negative factor loadings, and in others there are; if I considered absolute loadings rather than raw loadings, I could end up comparing scores from a "bipolar" scale in one sample to scores from a "unipolar" scales in another sample, making the comparison more difficult to interpret. Likewise, some EFA solutions tended to feature generally weaker factor loadings than others; if I were to impose absolute thresholds for the strength of factor loadings, I could end up comparing scores from scales of wildly different lengths across samples. In my view, the analysis decisions outlined above maximize comparability across studies and age groups—the primary goal of this chapter. (Note, however, that in the analysis code for this chapter I have included easy short cuts for the interested reader to explore different options for each of these parameters.)
 
 ```{r}
 # see "./scripts/org_param.R" for parameter setting
@@ -212,7 +212,8 @@ In Study 1a, `r nrow(d1a_ad_wide)` US adults each assessed a single target chara
 XX
 
 ```{r}
-scale_fun(efa_wdm_d1a_ad, factor_names = factor_names_efa_wdm_d1a_ad)
+scales_efa_wdm_d1a_ad <- scale_fun(efa_wdm_d1a_ad, 
+                                   factor_names = factor_names_efa_wdm_d1a_ad)
 ```
 
 
@@ -228,13 +229,108 @@ XX
 
 Study 1b was a direct replication of Study 1a: `r nrow(d1b_ad_wide)` US adults each assessed a single target character (either a beetle or a robot) on 40 mental capacities. (See Chapter II and Weisman et al., 2017, for detailed methods.)
 
+#### Scale construction
+
+XX
+
+```{r}
+scales_efa_wdm_d1b_ad <- scale_fun(efa_wdm_d1b_ad, 
+                                   factor_names = factor_names_efa_wdm_d1b_ad)
+```
+
+
+#### Visualization
+
+XX
+
+#### Analysis of asymmetries
+
+XX
+
 ### Study 1c
 
 In Study 1c, `r nrow(d1c_ad_wide)/2` US adults each assessed two target characters on 40 mental capacities. Like Studies 1a and 1b, this study employed the "edge case" variant of the general approach; but in this study, all participants assessed both of these target characters side by side (with left-right position counterbalaned across participants). (See Chapter II and Weisman et al., 2017, for detailed methods.)
 
+#### Scale construction
+
+XX
+
+```{r}
+scales_efa_wdm_d1c_ad <- scale_fun(efa_wdm_d1c_ad, 
+                                   factor_names = factor_names_efa_wdm_d1c_ad)
+```
+
+
+#### Visualization
+
+XX
+
+#### Analysis of asymmetries
+
+XX
+
 ### Study 1d
 
 In Study 1d, `r nrow(d1d_ad_wide)` US adults each assessed a single target character on 40 mental capacities. Unlike Studies 1a-1c, this study employed the "many characters" variant of the general approach, in which participants were randomly assigned to assess one of the following 21 target characters: an adult, a child, an infant, a person in a persistent vegetative state, a fetus, a chimpanzee, an elephant, a dolphin, a bear, a dog, a goat, a mouse, a frog, a blue jay, a fish, a beetle, a microbe, a robot, a computer, a car, or a stapler. (See Chapter II and Weisman et al., 2017, for detailed methods.)
+
+#### Scale construction
+
+XX
+
+```{r}
+scales_efa_wdm_d1d_ad <- scale_fun(efa_wdm_d1d_ad, 
+                                   factor_names = factor_names_efa_wdm_d1d_ad)
+```
+
+
+#### Visualization
+
+XX
+
+#### Analysis of asymmetries
+
+XX
+
+```{r}
+scales_study1 <- bind_rows(scales_efa_wdm_d1a_ad %>% mutate(study = "Study 1a"),
+                           scales_efa_wdm_d1b_ad %>% mutate(study = "Study 1b"),
+                           scales_efa_wdm_d1c_ad %>% mutate(study = "Study 1c"),
+                           scales_efa_wdm_d1d_ad %>% mutate(study = "Study 1d")) %>%
+  select(-c(loading, order)) %>%
+  distinct() %>%
+  spread(study, factor) %>%
+  mutate(ur_factor = ifelse(!is.na(`Study 1a`), `Study 1a`,
+                            ifelse(!is.na(`Study 1b`), `Study 1b`,
+                                   ifelse(!is.na(`Study 1c`), `Study 1c`,
+                                          `Study 1d`)))) %>%
+  left_join(scales_efa_wdm_d1a_ad %>% 
+              select(capacity, order) %>% rename(order1a = order)) %>%
+  left_join(scales_efa_wdm_d1b_ad %>% 
+              select(capacity, order) %>% rename(order1b = order)) %>%
+  left_join(scales_efa_wdm_d1c_ad %>% 
+              select(capacity, order) %>% rename(order1c = order)) %>%
+  left_join(scales_efa_wdm_d1d_ad %>% 
+              select(capacity, order) %>% rename(order1d = order)) %>%
+  arrange(ur_factor, order1a, order1b, order1c, order1d) %>%
+  select(-c(ur_factor, starts_with("order")))
+```
+
+```{r}
+table4.1 <- scales_study1 %>%
+  mutate_at(vars(starts_with("Study")),
+            funs(ifelse(is.na(.), "", "✓"))) %>%
+  rename(Capacity = capacity) %>%
+  kable() %>%
+  kable_styling() %>%
+  group_rows("BODY scale", 1, 9) %>%
+  group_rows("HEART scale", 10, 17) %>%
+  group_rows("MIND scale", 18, 26)
+```
+
+```{r table4.1, include = T}
+table4.1
+```
+
 
 ## Discussion
 
