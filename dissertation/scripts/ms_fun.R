@@ -175,3 +175,30 @@ IFcor_fun <- function(efa, factor_names = NA, remove_dup = F){
 ital_by_cap_fun <- function(str) {
   paste0("_", paste(str, collapse = "_, _"), "_")
 }
+
+# function for spelling out factor names
+fact_name_fun <- function(names) {
+  
+  # put factors in a standard order when applicable
+  body_factors <- names[grepl("BODY", names)]
+  
+  leftovers <- names[!names %in% body_factors]
+  heart_factors <- leftovers[grepl("HEART", leftovers)]
+  
+  leftovers <- leftovers[!leftovers %in% heart_factors]
+  mind_factors <- leftovers[grepl("MIND", leftovers)]
+  
+  other_factors <- leftovers[!leftovers %in% mind_factors]
+  
+  list0 <- c(body_factors, heart_factors, mind_factors, other_factors)
+
+  # make a pretty prose list
+  list1 <- paste0('_', paste(list0, collapse = '_, _'), '_')
+  list2 <- gsub("\\*", "\\\\\\*", list1)
+  if(length(names) > 2){
+    list3 <- stri_replace_last_regex(list2, ",", ", and")
+  } else {
+    list3 <- stri_replace_last_regex(list2, ",", " and")
+  }
+  return(list3)
+}
