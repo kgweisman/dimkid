@@ -51,11 +51,53 @@ Here I will translate this general interest in the relationships among conceptua
 
 ## Details of analyses
 
+Unlike the previous chapter, in which I exploited a canonical approach to identifying latent constructs (in my case, "conceptual units") through analyses of correlation structures, in this chapter there is no tried-and-true method for meeting my analysis goals. Instead, I chart my own course through these datasets, using the exploratory factor analyses (EFAs) reported in Chapter II to score participants' endorsements of each conceptual unit for the particular target character(s) that they assessed, examining visualizations of the complicated relationships among these endorsements, and then conducting more targeted statistical analyses of one particular aspect of these relationships: the possibilty of asymmetries in the endorsements of these conceptual units.
+
+### Scoring endorsements of conceptual units
+
+XX 
+
+outline:
+
+- for any sample, I have identified relevant conceptual units (chapter II)
+- now, I want to "score" each participant in that sample on the degree to which they endorsed that unit for that target character. in other words, not just did they attribute particular mental capacities, but did they attribute that unit (and to what degree).
+- to do this, exploited EFAs from chapter II to a new end (and this is often what people use EFA for): constructing a "scale" for each conceptual unit (for each sample, for each study). details:
+    - sort capacities by "dominant" factor, considering only positive loadings
+    - skim off capacities with the lowest factor loading until we have scales of equal length for all factors
+    - "score" participants by averaging their responses across the mental capacities associated with each factor (i.e., like a normal "scale")
+- lots of alternatives to this (e.g., could consider absolute rather than only positive loadings, could skip the part where I make the scales equal length; could use only the top 3, 4, 5, ... mental capacities for each factor, could throw out mental capacities that cross-load beyond a certain threshhold on other non-dominant factors, could throw out mental capacities that don't meet a certain threshhold of strong factor loadings on dominant factor), but i think this maximizes comparability across samples (especially across age groups)
+- could also look at factor scores, but they are like z-scores, so they don't provide a sense of absolute minimum/maximum score (key to interpretation goals)
+
+### Visualizing relationships
+
 XX
+
+outline:
+
+- for any sample, I have identified relevant conceptual units (chapter II) and scored each participant's endorsement of each of these units for their assigned target character(s) (previous section)
+- now, I want to assess the relationships among these endorsements 
+- but I don't really know what to expect, and these relationships could be very complex
+- so, start with holistic, exploratory visualization: scatterplots of pairs of conceptual units
+
+
+### Targeting the possibility of asymmetries
+
+XX
+
+outline:
+- now, a more targeted approach to one particular aspect of these relationships: asymmetries
+- reminder of basic intuition: in this sample, do participants tend to endorse A without B? B without A? is there an asymmetry here?
+- connect to the visualizations: asymmetries of points around the y=x line of equivalence
+- one way to boil this down to a number: difference scores (for each pair), comparisons to 0 via bayesian regressions
+    - for any pair: if 0, no evidence for hierarchy. if non-zero, some evidence.
+    - comparisons across pairs: further from 0, more hierarchical.
+    - caveat 1: these are post-hoc analyses! but still using confirmatory stats. 
+    - caveat 2: scores of (0,0) treated same as scores of (6,6), or anywhere in between.
+
 
 # Study 1: An adult endpoint
 
-In our previously published work on these studies (Weisman et al., 2017), we focused mainly on the "conceptual units" analysis presented in Chapter III; we did not attempt to explore the hierarchical relationships among these units. Here I re-analyze these data from this new perspective.
+In my previously published work on these studies (Weisman et al., 2017), we focused mainly on the "conceptual units" analysis presented in Chapter III; we did not attempt to explore the hierarchical relationships among these units. Here I re-analyze these data from this new perspective.
 
 ## Special notes on data processing and analysis
 
