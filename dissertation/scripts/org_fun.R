@@ -13,6 +13,19 @@ scale_fun <- function(efa, factor_names = NA,
     factor_names <- paste("Factor", 1:efa$factors)
   }
   
+  # put factors in a standard order when applicable
+  body_factors <- factor_names[grepl("BODY", factor_names)]
+  
+  leftovers <- factor_names[!factor_names %in% body_factors]
+  heart_factors <- leftovers[grepl("HEART", leftovers)]
+  
+  leftovers <- leftovers[!leftovers %in% heart_factors]
+  mind_factors <- leftovers[grepl("MIND", leftovers)]
+  
+  other_factors <- leftovers[!leftovers %in% mind_factors]
+  
+  factor_levels <- c(body_factors, heart_factors, mind_factors, other_factors)
+  
   # decide whether to count raw or absolute loadings
   count_fun <- function(num){
     res <- if(count == "absolute"){abs(num)} else (num)
@@ -64,7 +77,9 @@ scale_fun <- function(efa, factor_names = NA,
   
   loadings <- loadings  %>%
     arrange(factor, desc(count_fun(loading))) %>%
-    mutate(order = 1:nrow(.))
+    mutate(order = 1:nrow(.),
+           factor = factor(factor, labels = factor_names),
+           factor = factor(as.character(factor), levels = factor_levels))
   
   return(loadings)
   
