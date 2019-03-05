@@ -317,7 +317,7 @@ scales_study1 <- bind_rows(scales_efa_wdm_d1a_ad %>% mutate(study = "Study 1a"),
 
 ```{r}
 table4.1 <- scales_study1 %>%
-  mutate_at(vars(starts_with("Study")),
+  mutate_at(vars(-capacity),
             funs(ifelse(is.na(.), "", "✓"))) %>%
   rename(Capacity = capacity) %>%
   kable() %>%
@@ -345,7 +345,74 @@ In Study 2, `r nrow(d2_ad_wide)` US adults and `r nrow(d2_79_wide)` US children 
 
 ### Adults
 
+#### Scale construction
+
+XX
+
+```{r}
+scales_efa_wdm_d2_ad <- scale_fun(efa_wdm_d2_ad,
+                                  factor_names = factor_names_efa_wdm_d2_ad)
+```
+
+
+#### Visualization
+
+XX
+
+#### Analysis of asymmetries
+
+XX
+
 ### Children (7-9y)
+
+#### Scale construction
+
+XX
+
+```{r}
+scales_efa_wdm_d2_79 <- scale_fun(efa_wdm_d2_79,
+                                  factor_names = factor_names_efa_wdm_d2_79)
+```
+
+
+#### Visualization
+
+XX
+
+#### Analysis of asymmetries
+
+XX
+
+```{r}
+scales_study2 <- bind_rows(scales_efa_wdm_d2_ad %>% mutate(study = "Adults"),
+                           scales_efa_wdm_d2_79 %>% mutate(study = "Children, 7-9y")) %>%
+  select(-c(loading, order)) %>%
+  distinct() %>%
+  spread(study, factor) %>%
+  mutate(ur_factor = ifelse(!is.na(`Adults`), `Adults`, `Children, 7-9y`)) %>%
+  left_join(scales_efa_wdm_d2_ad %>% 
+              select(capacity, order) %>% rename(order_ad = order)) %>%
+  left_join(scales_efa_wdm_d2_79 %>% 
+              select(capacity, order) %>% rename(order_79 = order)) %>%
+  arrange(ur_factor, order_ad, order_79) %>%
+  select(-c(ur_factor, starts_with("order")))
+```
+
+```{r}
+table4.2 <- scales_study2 %>%
+  mutate_at(vars(-capacity),
+            funs(ifelse(is.na(.), "", "✓"))) %>%
+  rename(Capacity = capacity) %>%
+  kable() %>%
+  kable_styling() %>%
+  group_rows("BODY scale", 1, 7) %>%
+  group_rows("HEART scale", 8, 14) %>%
+  group_rows("MIND scale", 15, 23)
+```
+
+```{r table4.2, include = T}
+table4.2
+```
 
 ## Discussion
 
@@ -360,9 +427,143 @@ In Study 3, `r nrow(d3_ad_wide)` US adults, `r nrow(d3_79_wide)` "older" childre
 
 ### Adults
 
+#### Scale construction
+
+XX
+
+```{r}
+scales_efa_wdm_d3_ad <- scale_fun(efa_wdm_d3_ad,
+                                  factor_names = factor_names_efa_wdm_d3_ad)
+```
+
+
+#### Visualization
+
+XX
+
+#### Analysis of asymmetries
+
+XX
+
 ### Children (7-9y)
 
+#### Scale construction
+
+XX
+
+```{r}
+scales_efa_wdm_d3_79 <- scale_fun(efa_wdm_d3_79,
+                                  factor_names = factor_names_efa_wdm_d3_79)
+```
+
+
+#### Visualization
+
+XX
+
+#### Analysis of asymmetries
+
+XX
+
 ### Children (4-6y)
+
+#### Scale construction
+
+XX
+
+```{r}
+scales_efa_wdm_d3_46 <- scale_fun(efa_wdm_d3_46,
+                                  factor_names = factor_names_efa_wdm_d3_46)
+```
+
+```{r}
+scales_efa_par_d3_46 <- scale_fun(efa_par_d3_46,
+                                  factor_names = factor_names_efa_par_d3_46)
+```
+
+#### Visualization
+
+XX
+
+#### Analysis of asymmetries
+
+XX
+
+```{r}
+scales_study3 <- bind_rows(scales_efa_wdm_d3_ad %>% 
+                             mutate(study = "Adults"),
+                           scales_efa_wdm_d3_79 %>% 
+                             mutate(study = "Older children, 7-9y"),
+                           scales_efa_wdm_d3_46 %>%
+                             mutate(study = "Younger children, 4-6y (3-factor solution)"),
+                           scales_efa_par_d3_46 %>%
+                             mutate(study = "Younger children, 4-6y (2-factor solution)")) %>%
+  select(-c(loading, order)) %>%
+  distinct() %>%
+  mutate(study = factor(study,
+                        levels = c("Adults",
+                                   "Older children, 7-9y",
+                                   "Younger children, 4-6y (3-factor solution)",
+                                   "Younger children, 4-6y (2-factor solution)"))) %>%
+  spread(study, factor) %>%
+  mutate(ur_factor = ifelse(!is.na(`Adults`), 
+                            `Adults`, 
+                            ifelse(!is.na(`Older children, 7-9y`), 
+                                   `Older children, 7-9y`,
+                                   ifelse(is.na(`Younger children, 4-6y (3-factor solution)`), 
+                                          `Younger children, 4-6y (3-factor solution)`,
+                                          `Younger children, 4-6y (2-factor solution)`)))) %>%
+  left_join(scales_efa_wdm_d3_ad %>% 
+              select(capacity, order) %>% rename(order_ad = order)) %>%
+  left_join(scales_efa_wdm_d3_79 %>% 
+              select(capacity, order) %>% rename(order_79 = order)) %>%
+  arrange(ur_factor, order_ad, order_79) %>%
+  select(-c(ur_factor, starts_with("order")))
+```
+
+```{r}
+table4.3 <- scales_study3 %>%
+  mutate_all(as.character) %>%
+  # deal with younger children, 2-factor solution
+  mutate(temp1 = `Younger children, 4-6y (2-factor solution)`,
+         temp2 = gsub("\\*", "", temp1),
+         temp3 = case_when(
+           temp2 == `Adults` | 
+             temp2 == `Older children, 7-9y` ~ "✓",
+           is.na(temp2) ~ "",
+           TRUE ~ temp1)) %>%
+  mutate(`Younger children, 4-6y (2-factor solution)` = temp3) %>%
+  select(-starts_with("temp")) %>%
+  # deal with younger children, 3-factor solution
+  mutate(temp1 = `Younger children, 4-6y (3-factor solution)`,
+         temp2 = gsub("\\*", "", temp1),
+         temp3 = case_when(
+           temp2 == `Adults` | 
+             temp2 == `Older children, 7-9y` |
+             (is.na(`Adults`) & is.na(`Older children, 7-9y`)) ~ "✓",
+           is.na(temp2) ~ "",
+           TRUE ~ temp1)) %>%
+  mutate(`Younger children, 4-6y (3-factor solution)` = temp3) %>%
+  select(-starts_with("temp")) %>%
+  mutate_at(vars(`Adults`, `Older children, 7-9y`),
+            funs(ifelse(is.na(.), "", "✓"))) %>%
+  mutate_at(vars(starts_with("Younger")),
+            funs(ifelse(is.na(.), "", .))) %>%
+  rename(Capacity = capacity,
+         `3-factor solution` = `Younger children, 4-6y (3-factor solution)`,
+         `2-factor solution` = `Younger children, 4-6y (2-factor solution)`) %>%
+  kable() %>%
+  kable_styling() %>%
+  group_rows("BODY scale", 1, 7) %>%
+  group_rows("HEART scale", 8, 14) %>%
+  group_rows("MIND scale", 15, 20) %>%
+  add_header_above(c(" " = 3,
+                     "Younger children, 4-6y" = 2))
+```
+
+```{r table4.3, include = T}
+table4.3
+```
 
 ## Discussion
 
@@ -377,9 +578,112 @@ In Study 4, `r nrow(d4_ad_wide)/2` US adults and `r nrow(d4_46_wide)/2` US child
 
 ### Adults
 
-### Children (7-9y)
+#### Scale construction
+
+XX
+
+```{r}
+scales_efa_wdm_d4_ad <- scale_fun(efa_wdm_d4_ad,
+                                  factor_names = factor_names_efa_wdm_d4_ad)
+```
+
+#### Visualization
+
+XX
+
+#### Analysis of asymmetries
+
+XX
 
 ### Children (4-5y)
+
+#### Scale construction
+
+XX
+
+```{r}
+scales_efa_par_d4_46 <- scale_fun(efa_par_d4_46,
+                                  factor_names = factor_names_efa_par_d4_46)
+```
+
+```{r}
+scales_efa_wdm_d4_46 <- scale_fun(efa_wdm_d4_46,
+                                  factor_names = factor_names_efa_wdm_d4_46)
+```
+
+#### Visualization
+
+XX
+
+#### Analysis of asymmetries
+
+XX
+
+```{r}
+scales_study4 <- bind_rows(scales_efa_wdm_d4_ad %>% 
+                             mutate(study = "Adults"),
+                           scales_efa_par_d4_46 %>%
+                             mutate(study = "Children, 4-5y (3-factor solution)"),
+                           scales_efa_wdm_d4_46 %>%
+                             mutate(study = "Children, 4-5y (4-factor solution)")) %>%
+  select(-c(loading, order)) %>%
+  distinct() %>%
+  mutate(study = factor(study,
+                        levels = c("Adults",
+                                   "Children, 4-5y (3-factor solution)",
+                                   "Children, 4-5y (4-factor solution)"))) %>%
+  spread(study, factor) %>%
+  mutate(ur_factor = ifelse(!is.na(`Adults`), 
+                            `Adults`,
+                            ifelse(is.na(`Children, 4-5y (3-factor solution)`),
+                                   `Children, 4-5y (3-factor solution)`,
+                                   `Children, 4-5y (4-factor solution)`))) %>%
+  left_join(scales_efa_wdm_d4_ad %>% 
+              select(capacity, order) %>% rename(order_ad = order)) %>%
+  arrange(ur_factor, order_ad) %>%
+  select(-c(ur_factor, starts_with("order")))
+```
+
+```{r}
+table4.4 <- scales_study4 %>%
+  mutate_all(as.character) %>%
+  # deal with Children, 4-factor solution
+  mutate(temp1 = `Children, 4-5y (4-factor solution)`,
+         temp2 = gsub("\\*", "", temp1),
+         temp3 = case_when(
+           temp2 == `Adults` ~ "✓",
+           is.na(temp2) ~ "",
+           TRUE ~ temp1)) %>%
+  mutate(`Children, 4-5y (4-factor solution)` = temp3) %>%
+  select(-starts_with("temp")) %>%
+  # deal with Children, 3-factor solution
+  mutate(temp1 = `Children, 4-5y (3-factor solution)`,
+         temp2 = gsub("\\*", "", temp1),
+         temp3 = case_when(
+           temp2 == `Adults` ~ "✓",
+           is.na(temp2) ~ "",
+           TRUE ~ temp1)) %>%
+  mutate(`Children, 4-5y (3-factor solution)` = temp3) %>%
+  select(-starts_with("temp")) %>%
+  mutate_at(vars(`Adults`),
+            funs(ifelse(is.na(.), "", "✓"))) %>%
+  mutate_at(vars(starts_with("Younger")),
+            funs(ifelse(is.na(.), "", .))) %>%
+  rename(Capacity = capacity,
+         `3-factor solution` = `Children, 4-5y (3-factor solution)`,
+         `4-factor solution` = `Children, 4-5y (4-factor solution)`) %>%
+  kable() %>%
+  kable_styling() %>%
+  group_rows("BODY scale", 1, 5) %>%
+  group_rows("HEART scale", 6, 10) %>%
+  group_rows("MIND scale", 11, 15) %>%
+  add_header_above(c(" " = 2,
+                     "Children, 4-5y" = 2))
+```
+
+```{r table4.4, include = T}
+table4.4
+```
 
 ## Discussion
 

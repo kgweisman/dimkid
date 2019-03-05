@@ -62,12 +62,10 @@ scale_fun <- function(efa, factor_names = NA,
   # trim to some number of capacities per factor
   if(trim){
     # decide how many to keep per factor
-    if(is.na(n_keep)){
-      grouped <- loadings %>% count(factor)
-      n_fact <- nrow(grouped)
-      how_many <- min(grouped$n)
-    } else {how_many <- n_keep}
-    
+    grouped <- loadings %>% count(factor)
+    n_fact <- nrow(grouped)
+    how_many <- min(n_keep, min(grouped$n), na.rm = T)
+
     # trim
     loadings <- loadings %>%
       group_by(factor) %>%
