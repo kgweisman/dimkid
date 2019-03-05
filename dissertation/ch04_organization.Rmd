@@ -316,7 +316,8 @@ table4.1 <- scales_study1 %>%
   mutate_at(vars(-capacity),
             funs(ifelse(is.na(.), "", "✓"))) %>%
   rename(Capacity = capacity) %>%
-  kable() %>%
+  kable(format = "html", 
+        caption = "Table 4.1: Scales for each of the conceptual units (factors) identified by EFA for US Adults in Studies 1a-1d (see Chapter II). A checkmark indicates that a mental capacity was included in a scale for a particular study.") %>%  
   kable_styling() %>%
   group_rows("BODY scale", 1, 9) %>%
   group_rows("HEART scale", 10, 17) %>%
@@ -397,7 +398,8 @@ table4.2 <- scales_study2 %>%
   mutate_at(vars(-capacity),
             funs(ifelse(is.na(.), "", "✓"))) %>%
   rename(Capacity = capacity) %>%
-  kable() %>%
+  kable(format = "html",
+        caption = "Table 4.2: Scales for each of the conceptual units (factors) identified by EFA for US Adults and children in Study 2 (see Chapter II). A checkmark indicates that a mental capacity was included in a scale for a particular sample.") %>%
   kable_styling() %>%
   group_rows("BODY scale", 1, 7) %>%
   group_rows("HEART scale", 8, 14) %>%
@@ -550,7 +552,8 @@ table4.3 <- scales_study3 %>%
   rename(Capacity = capacity,
          `3-factor solution` = `Younger children, 4-6y (3-factor solution)`,
          `2-factor solution` = `Younger children, 4-6y (2-factor solution)`) %>%
-  kable() %>%
+  kable(format = "html",
+        caption = "Table 4.3: Scales for each of the conceptual units (factors) identified by EFA for US Adults, older children, and younger children in Study 3 (see Chapter II). For younger children, this includes scales for both three- and two-factor EFA solutions. A checkmark indicates that a mental capacity was included in a scale for a particular sample. The conceptual units of younger children differed substantially from those of older children and adults, such that some mental capacities were included in different scales across age groups (e.g., feel scared was part of the BODY scale for older children and adults, but part of the HEART* scale for younger children). In these cases, the name of the scale is provided (rather than a checkmark).") %>%
   kable_styling() %>%
   group_rows("BODY scale", 1, 7) %>%
   group_rows("HEART scale", 8, 14) %>%
@@ -676,7 +679,8 @@ table4.4 <- scales_study4 %>%
   rename(Capacity = capacity,
          `3-factor solution` = `Children, 4-5y (3-factor solution)`,
          `4-factor solution` = `Children, 4-5y (4-factor solution)`) %>%
-  kable() %>%
+  kable(format = "html",
+        caption = "Table 4.4: Scales for each of the conceptual units (factors) identified by EFA for US Adults and children in Study 4 (see Chapter II). For children, this includes scales for both three- and four-factor EFA solutions. A checkmark indicates that a mental capacity was included in a scale for a particular sample. The conceptual units of younger children differed substantially from those of adults, such that some mental capacities were included in different scales across age groups (e.g., love someone was part of the HEART scale for adults, but part of the MIND* scale in the four-factor solution for younger children). In these cases, the name of the scale is provided (rather than a checkmark).") %>%
   kable_styling() %>%
   group_rows("BODY scale", 1, 5) %>%
   group_rows("HEART scale", 6, 10) %>%
