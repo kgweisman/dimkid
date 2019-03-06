@@ -1255,7 +1255,7 @@ figure4.3 <- plot_grid(figure4.3a_plots_leg_title, figure4.3b_plots_leg_title,
 figure4.3_cap <- add_sub(figure4.3, str_wrap("Figure 4.3: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, organized by sample and scales used (rows) and by pair of conceptual units (columns). For older children (7-9y of age), two sets of scores are presented: using adults' scales (B1-B3) and using older children's own scales (C1-C3). For younger children (4-6y of age), three sets of scores are presented: using adults' scales (D1-D3), using younger children's own scales as indexed by the three-factor EFA solution (E1-E3), and using younger children's own scales as indexed by the two-factor EFA solution (F1). See Table 4.3 for all scales. For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
-```{r, include = T, fig.width = 5, fig.asp = 2.8}
+```{r, include = T, fig.width = 5, fig.asp = 2.65}
 ggdraw(figure4.3_cap)
 ```
 
