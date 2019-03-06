@@ -85,6 +85,73 @@ heatmap_fun <- function(efa, factor_names = NA){
   
 }
 
+# function for visualizing relationships between factors
+relviz_fun <- function(d_scored){
+  
+  factor_names <- levels(d_scored$factor)
+  n_fact <- length(factor_names)
+  n_plots <- choose(n_fact, 2)
+  
+  plots <- vector("list", n_plots)
+  
+  plot_12 <- d_scored %>%
+    filter(factor %in% factor_names[c(1, 2)]) %>%
+    spread(factor, score) %>%
+    ggplot(aes_string(x = factor_names[1], y = factor_names[2],
+                      color = "character")) +
+    geom_jitter(width = 0.1, height = 0.1, alpha = 0.5)
+  
+  plots[[1]] <- plot_12
+  
+  if(n_fact > 2){
+    plot_13 <- d_scored %>%
+      filter(factor %in% factor_names[c(1, 3)]) %>%
+      spread(factor, score) %>%
+      ggplot(aes_string(x = factor_names[1], y = factor_names[3],
+                        color = "character")) +
+      geom_jitter(width = 0.1, height = 0.1, alpha = 0.5)
+    
+    plot_23 <- d_scored %>%
+      filter(factor %in% factor_names[c(2, 3)]) %>%
+      spread(factor, score) %>%
+      ggplot(aes_string(x = factor_names[2], y = factor_names[3],
+                        color = "character")) +
+      geom_jitter(width = 0.1, height = 0.1, alpha = 0.5)
+    
+    plots[[2]] <- plot_13
+    plots[[3]] <- plot_23
+  }
+  
+  if(n_fact > 3){
+    plot_14 <- d_scored %>%
+      filter(factor %in% factor_names[c(1, 4)]) %>%
+      spread(factor, score) %>%
+      ggplot(aes_string(x = factor_names[1], y = factor_names[4],
+                        color = "character")) +
+      geom_jitter(width = 0.1, height = 0.1, alpha = 0.5)
+    
+    plot_24 <- d_scored %>%
+      filter(factor %in% factor_names[c(2, 4)]) %>%
+      spread(factor, score) %>%
+      ggplot(aes_string(x = factor_names[2], y = factor_names[4],
+                        color = "character")) +
+      geom_jitter(width = 0.1, height = 0.1, alpha = 0.5)
+    
+    plot_34 <- d_scored %>%
+      filter(factor %in% factor_names[c(3, 4)]) %>%
+      spread(factor, score) %>%
+      ggplot(aes_string(x = factor_names[3], y = factor_names[4],
+                        color = "character")) +
+      geom_jitter(width = 0.1, height = 0.1, alpha = 0.5)
+  
+    plots[[4]] <- plot_14
+    plots[[5]] <- plot_24
+    plots[[6]] <- plot_34
+  }
+  
+  return(plots)
+}
+
 # function for plotting factor scores by factor, target
 scoresplot_fun <- function(efa, 
                            target = c("all", "beetle", "robot"), 
