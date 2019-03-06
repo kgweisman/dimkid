@@ -82,3 +82,16 @@ scale_fun <- function(efa, factor_names = NA,
   return(loadings)
   
 }
+
+# function for scoring participants
+score_fun <- function(df, scales,
+                      grouping = c("study", "age_group", "subid",
+                                   "character", "factor")){
+  scores <- df %>%
+    full_join(scales %>% select(capacity, factor)) %>%
+    filter(!is.na(factor)) %>%
+    group_by_at(vars(one_of(grouping))) %>%
+    summarise(score = mean(response_num, na.rm = T)) %>%
+    ungroup()
+  return(scores)
+}

@@ -34,7 +34,7 @@ source("./scripts/_SETUP.R")
 ```
 
 ```{r}
-# load in EFAs from Chapter II
+# load in EFAs from Chapter III
 # study 1
 efa_par_d1a_ad <- readRDS(file = "./efas/efa_par_d1a_ad")
 efa_bic_d1a_ad <- readRDS(file = "./efas/efa_bic_d1a_ad")
@@ -83,7 +83,7 @@ efa_par_d4_46 <- readRDS(file = "./efas/efa_par_d4_46")
 efa_bic_d4_46 <- readRDS(file = "./efas/efa_bic_d4_46")
 efa_wdm_d4_46 <- readRDS(file = "./efas/efa_wdm_d4_46")
 
-# load in factor names from Chapter II
+# load in factor names from Chapter III
 # study 1
 factor_names_efa_wdm_d1a_ad <- readRDS( 
         file = "./factor_names/factor_names_efa_wdm_d1a_ad")
@@ -195,7 +195,7 @@ outline:
 
 # Study 1: An adult endpoint
 
-In my previously published work on these studies (Weisman et al., 2017), we focused mainly on the "conceptual units" analysis presented in Chapter III; we did not attempt to explore the hierarchical relationships among these units. Here I re-analyze these data from this new perspective.
+In the context of this dissertation, Study 1 serves the role of describing a developmental endpoint for conceptual representations of mental life. In this chapter, I focus on what these studies can reveal about the relationships among the conceptual units discussed in Chapter III. These analyses were not part of the original publication of these studies (Weisman et al., 2017).
 
 ## Special notes on data processing and analysis
 
@@ -215,6 +215,10 @@ scales_efa_wdm_d1a_ad <- scale_fun(efa_wdm_d1a_ad,
 ```
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d1a_ad)` scales of `r scales_efa_wdm_d1a_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.1.
+
+```{r}
+d1a_ad_scored_ad <- score_fun(d1a_ad, scales_efa_wdm_d1a_ad)
+```
 
 #### Visualization
 
@@ -237,6 +241,10 @@ scales_efa_wdm_d1b_ad <- scale_fun(efa_wdm_d1b_ad,
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d1b_ad)` scales of `r scales_efa_wdm_d1b_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.1.
 
+```{r}
+d1b_ad_scored_ad <- score_fun(d1b_ad, scales_efa_wdm_d1b_ad)
+```
+
 #### Visualization
 
 XX
@@ -258,6 +266,10 @@ scales_efa_wdm_d1c_ad <- scale_fun(efa_wdm_d1c_ad,
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d1c_ad)` scales of `r scales_efa_wdm_d1c_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.1.
 
+```{r}
+d1c_ad_scored_ad <- score_fun(d1c_ad, scales_efa_wdm_d1c_ad)
+```
+
 #### Visualization
 
 XX
@@ -278,6 +290,10 @@ scales_efa_wdm_d1d_ad <- scale_fun(efa_wdm_d1d_ad,
 ```
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d1d_ad)` scales of `r scales_efa_wdm_d1d_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.1.
+
+```{r}
+d1d_ad_scored_ad <- score_fun(d1d_ad, scales_efa_wdm_d1d_ad)
+```
 
 #### Visualization
 
@@ -317,7 +333,7 @@ table4.1 <- scales_study1 %>%
             funs(ifelse(is.na(.), "", "✓"))) %>%
   rename(Capacity = capacity) %>%
   kable(format = "html", 
-        caption = "Table 4.1: Scales for each of the conceptual units (factors) identified by EFA for US Adults in Studies 1a-1d (see Chapter II). A checkmark indicates that a mental capacity was included in a scale for a particular study.") %>%  
+        caption = "Table 4.1: Scales for each of the conceptual units (factors) identified by EFA for US Adults in Studies 1a-1d (see Chapter III). A checkmark indicates that a mental capacity was included in a scale for a particular study.") %>%  
   kable_styling() %>%
   group_rows("BODY scale", 1, 9) %>%
   group_rows("HEART scale", 10, 17) %>%
@@ -351,6 +367,10 @@ scales_efa_wdm_d2_ad <- scale_fun(efa_wdm_d2_ad,
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d2_ad)` scales of `r scales_efa_wdm_d2_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.2.
 
+```{r}
+d2_ad_scored_ad <- score_fun(d2_ad, scales_efa_wdm_d2_ad)
+```
+
 #### Visualization
 
 XX
@@ -369,6 +389,11 @@ scales_efa_wdm_d2_79 <- scale_fun(efa_wdm_d2_79,
 ```
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d2_79)` scales of `r scales_efa_wdm_d2_79 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.2.
+
+```{r}
+d2_79_scored_ad <- score_fun(d2_79, scales_efa_wdm_d2_ad)
+d2_79_scored_79 <- score_fun(d2_79, scales_efa_wdm_d2_79)
+```
 
 #### Visualization
 
@@ -399,7 +424,7 @@ table4.2 <- scales_study2 %>%
             funs(ifelse(is.na(.), "", "✓"))) %>%
   rename(Capacity = capacity) %>%
   kable(format = "html",
-        caption = "Table 4.2: Scales for each of the conceptual units (factors) identified by EFA for US Adults and children in Study 2 (see Chapter II). A checkmark indicates that a mental capacity was included in a scale for a particular sample.") %>%
+        caption = "Table 4.2: Scales for each of the conceptual units (factors) identified by EFA for US Adults and children in Study 2 (see Chapter III). A checkmark indicates that a mental capacity was included in a scale for a particular sample.") %>%
   kable_styling() %>%
   group_rows("BODY scale", 1, 7) %>%
   group_rows("HEART scale", 8, 14) %>%
@@ -432,6 +457,10 @@ scales_efa_wdm_d3_ad <- scale_fun(efa_wdm_d3_ad,
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d3_ad)` scales of `r scales_efa_wdm_d3_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.3.
 
+```{r}
+d3_ad_scored_ad <- score_fun(d3_ad, scales_efa_wdm_d3_ad)
+```
+
 #### Visualization
 
 XX
@@ -450,6 +479,11 @@ scales_efa_wdm_d3_79 <- scale_fun(efa_wdm_d3_79,
 ```
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d3_79)` scales of `r scales_efa_wdm_d3_79 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.3.
+
+```{r}
+d3_79_scored_ad <- score_fun(d3_79, scales_efa_wdm_d3_ad)
+d3_79_scored_79 <- score_fun(d3_79, scales_efa_wdm_d3_79)
+```
 
 #### Visualization
 
@@ -480,6 +514,12 @@ scales_efa_par_d3_46 <- scale_fun(efa_par_d3_46,
 ```
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_par_d3_46)` scales of `r scales_efa_par_d3_46 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.3.
+
+```{r}
+d3_46_scored_ad <- score_fun(d3_46, scales_efa_wdm_d3_ad)
+d3_46_scored_46_wdm <- score_fun(d3_46, scales_efa_wdm_d3_46)
+d3_46_scored_46_par <- score_fun(d3_46, scales_efa_par_d3_46)
+```
 
 #### Visualization
 
@@ -553,7 +593,7 @@ table4.3 <- scales_study3 %>%
          `3-factor solution` = `Younger children, 4-6y (3-factor solution)`,
          `2-factor solution` = `Younger children, 4-6y (2-factor solution)`) %>%
   kable(format = "html",
-        caption = "Table 4.3: Scales for each of the conceptual units (factors) identified by EFA for US Adults, older children, and younger children in Study 3 (see Chapter II). For younger children, this includes scales for both three- and two-factor EFA solutions. A checkmark indicates that a mental capacity was included in a scale for a particular sample. The conceptual units of younger children differed substantially from those of older children and adults, such that some mental capacities were included in different scales across age groups (e.g., feel scared was part of the BODY scale for older children and adults, but part of the HEART* scale for younger children). In these cases, the name of the scale is provided (rather than a checkmark).") %>%
+        caption = "Table 4.3: Scales for each of the conceptual units (factors) identified by EFA for US Adults, older children, and younger children in Study 3 (see Chapter III). For younger children, this includes scales for both three- and two-factor EFA solutions. A checkmark indicates that a mental capacity was included in a scale for a particular sample. The conceptual units of younger children differed substantially from those of older children and adults, such that some mental capacities were included in different scales across age groups (e.g., feel scared was part of the BODY scale for older children and adults, but part of the HEART* scale for younger children). In these cases, the name of the scale is provided (rather than a checkmark).") %>%
   kable_styling() %>%
   group_rows("BODY scale", 1, 7) %>%
   group_rows("HEART scale", 8, 14) %>%
@@ -588,6 +628,10 @@ scales_efa_wdm_d4_ad <- scale_fun(efa_wdm_d4_ad,
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d4_ad)` scales of `r scales_efa_wdm_d4_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.4.
 
+```{r}
+d4_ad_scored_ad <- score_fun(d4_ad, scales_efa_wdm_d4_ad)
+```
+
 #### Visualization
 
 XX
@@ -617,6 +661,12 @@ scales_efa_wdm_d4_46 <- scale_fun(efa_wdm_d4_46,
 ```
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d4_46)` scales of `r scales_efa_wdm_d4_46 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.4.
+
+```{r}
+d4_46_scored_ad <- score_fun(d4_46, scales_efa_wdm_d4_ad)
+d4_46_scored_46_par <- score_fun(d4_46, scales_efa_par_d4_46)
+d4_46_scored_46_wdm <- score_fun(d4_46, scales_efa_wdm_d4_46)
+```
 
 #### Visualization
 
@@ -680,7 +730,7 @@ table4.4 <- scales_study4 %>%
          `3-factor solution` = `Children, 4-5y (3-factor solution)`,
          `4-factor solution` = `Children, 4-5y (4-factor solution)`) %>%
   kable(format = "html",
-        caption = "Table 4.4: Scales for each of the conceptual units (factors) identified by EFA for US Adults and children in Study 4 (see Chapter II). For children, this includes scales for both three- and four-factor EFA solutions. A checkmark indicates that a mental capacity was included in a scale for a particular sample. The conceptual units of younger children differed substantially from those of adults, such that some mental capacities were included in different scales across age groups (e.g., love someone was part of the HEART scale for adults, but part of the MIND* scale in the four-factor solution for younger children). In these cases, the name of the scale is provided (rather than a checkmark).") %>%
+        caption = "Table 4.4: Scales for each of the conceptual units (factors) identified by EFA for US Adults and children in Study 4 (see Chapter III). For children, this includes scales for both three- and four-factor EFA solutions. A checkmark indicates that a mental capacity was included in a scale for a particular sample. The conceptual units of younger children differed substantially from those of adults, such that some mental capacities were included in different scales across age groups (e.g., love someone was part of the HEART scale for adults, but part of the MIND* scale in the four-factor solution for younger children). In these cases, the name of the scale is provided (rather than a checkmark).") %>%
   kable_styling() %>%
   group_rows("BODY scale", 1, 5) %>%
   group_rows("HEART scale", 6, 10) %>%
