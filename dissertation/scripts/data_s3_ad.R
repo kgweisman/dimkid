@@ -21,7 +21,11 @@ d3_ad <- read.csv("./anonymized_data/study3_adults_anonymized.csv") %>%
   mutate(capacity = case_when(
            grepl("sick", capacity) ~ "feel sick...",
            grepl("far away", capacity) ~ "sense...far away",
-           TRUE ~ capacity)) %>%
+           TRUE ~ capacity),
+         character = factor(gsub("_", " ", as.character(character)),
+                            levels = c("elephant", "goat", "mouse", "bird", 
+                                       "beetle", "teddy bear", "doll",
+                                       "robot", "computer"))) %>%
   filter(!grepl("metal", capacity), !grepl("on and off", capacity)) %>%
   distinct()
 

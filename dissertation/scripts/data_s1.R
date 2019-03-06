@@ -373,7 +373,15 @@ d1d_ad <- read.csv("./anonymized_data/bodyheartmind_study1d.csv") %>%
                            "sounds" = "detecting sounds",
                            "temperature" = "sensing temperatures",
                            "thoughts" = "having thoughts",
-                           "tired" = "feeling tired")) %>%
+                           "tired" = "feeling tired"),
+         character = factor(gsub("_", " ", as.character(character)),
+                            levels = c("adult", "child", "infant", 
+                                       "person in a persistant vegetative state",
+                                       "fetus", "chimpanzee", "elephant", 
+                                       "dolphin", "bear", "dog", "goat", "mouse",
+                                       "frog", "blue jay", "fish", "beetle",
+                                       "microbe", "robot", "computer", 
+                                       "car", "stapler"))) %>%
   distinct()
 
 # clean data: NA

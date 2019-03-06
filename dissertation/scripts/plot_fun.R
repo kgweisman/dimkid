@@ -89,9 +89,13 @@ heatmap_fun <- function(efa, factor_names = NA){
 relviz_fun <- function(d_scored, jit = 0.05, add_means = T,
                        colors = c("#e41a1c", "#377eb8")){
   
-  factor_names <- levels(d_scored$factor)
+  factor_names_plot <- levels(d_scored$factor)
+  factor_names <- gsub("\\*", "", gsub("\\-", "_", factor_names_plot))
   n_fact <- length(factor_names)
   n_plots <- choose(n_fact, 2)
+  
+  d_scored <- d_scored %>%
+    mutate(factor = factor(factor, labels = factor_names))
   
   add_means_fun <- function(plot, d_scored, facnames){
     
@@ -132,7 +136,8 @@ relviz_fun <- function(d_scored, jit = 0.05, add_means = T,
     return(newplot)
   }
   
-  plot_fun <- function(facnames){
+  plot_fun <- function(facnames, facnames_plot){
+    
     newplot <- d_scored %>%
       filter(factor %in% facnames) %>%
       spread(factor, score) %>%
@@ -140,9 +145,9 @@ relviz_fun <- function(d_scored, jit = 0.05, add_means = T,
                         color = "character")) +
       geom_abline(slope = 1, intercept = 0, lty = 2) +
       geom_jitter(width = jit, height = jit, alpha = 0.25) +
-      scale_x_continuous(name = paste(facnames[1], "score"), 
+      scale_x_continuous(name = paste(facnames_plot[1], "score"), 
                          limits = c(0-jit, 1+jit), breaks = seq(0, 1, 0.2)) +
-      scale_y_continuous(name = paste(facnames[2], "score"), 
+      scale_y_continuous(name = paste(facnames_plot[2], "score"), 
                          limits = c(0-jit, 1+jit), breaks = seq(0, 1, 0.2)) +
       scale_color_manual(name = "Target character", values = colors)
     
@@ -153,25 +158,31 @@ relviz_fun <- function(d_scored, jit = 0.05, add_means = T,
   
   plots <- vector("list", n_plots)
   
-  plot_12 <- plot_fun(facnames = factor_names[c(1, 2)])
+  plot_12 <- plot_fun(facnames = factor_names[c(1, 2)],
+                      facnames_plot = factor_names_plot[c(1, 2)])
   plots[[1]] <- plot_12
   
   if(n_fact > 2){
-    plot_13 <- plot_fun(facnames = factor_names[c(1, 3)])
+    plot_13 <- plot_fun(facnames = factor_names[c(1, 3)],
+                        facnames_plot = factor_names_plot[c(1, 3)])
     plots[[2]] <- plot_13
     
-    plot_23 <- plot_fun(facnames = factor_names[c(2, 3)])
+    plot_23 <- plot_fun(facnames = factor_names[c(2, 3)],
+                        facnames_plot = factor_names_plot[c(2, 3)])
     plots[[3]] <- plot_23
   }
   
   if(n_fact > 3){
-    plot_14 <- plot_fun(facnames = factor_names[c(1, 4)])
+    plot_14 <- plot_fun(facnames = factor_names[c(1, 4)],
+                        facnames_plot = factor_names_plot[c(1, 4)])
     plots[[4]] <- plot_14
     
-    plot_24 <- plot_fun(facnames = factor_names[c(2, 4)])
+    plot_24 <- plot_fun(facnames = factor_names[c(2, 4)],
+                        facnames_plot = factor_names_plot[c(2, 4)])
     plots[[5]] <- plot_24
   
-    plot_34 <- plot_fun(facnames = factor_names[c(3, 4)])
+    plot_34 <- plot_fun(facnames = factor_names[c(3, 4)],
+                        facnames_plot = factor_names_plot[c(3, 4)])
     plots[[6]] <- plot_34
   }
   
