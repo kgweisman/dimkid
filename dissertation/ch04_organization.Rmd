@@ -691,6 +691,50 @@ figure4.2b_plots_leg_title <- plot_grid(figure4.2b_title, figure4.2b_plots_leg,
 figure4.2b_plots_leg_title
 ```
 
+```{r}
+plots_agegp_d2_scored_ad <- relviz_agegp_fun(
+  d_scored = d2_ad_scored_ad %>% full_join(d2_79_scored_ad), 
+  age_groups = c("children79", "adults"),
+  age_group_labels = c("Children (7-9y)", "Adults"))
+```
+
+```{r}
+figure4.2all_plots <- plot_grid(plots_agegp_d2_scored_ad[[1]] + 
+                               theme(legend.position = "none"),
+                             plots_agegp_d2_scored_ad[[2]] + 
+                               theme(legend.position = "none"),
+                             plots_agegp_d2_scored_ad[[3]] + 
+                               theme(legend.position = "none"),
+                             labels = c("C1", "C2", "C3"), ncol = 3)
+
+figure4.2all_leg <- get_legend(plots_agegp_d2_scored_ad[[1]] +
+                               theme(legend.position = "bottom", 
+                                     legend.direction = "horizontal") +
+                               scale_color_manual("Target character",
+                                                  values = colors02,
+                                                  na.translate = F,
+                                                  guide = guide_legend(
+                                                    title.position = "left",
+                                                    direction = "horizontal",
+                                                    ncol = 2)))
+  
+figure4.2all_plots_leg <- plot_grid(figure4.2all_plots,
+                                  figure4.2all_leg,
+                                  ncol = 1, rel_heights = c(1, 0.05))
+
+figure4.2all_title <- ggdraw() + 
+  draw_label("Tracking development between 7-9y and adulthood (scored using adults' scales)", 
+             size = 16, fontface = 'bold', x = 0, hjust = 0)
+
+figure4.2all_plots_leg_title <- plot_grid(figure4.2all_title, figure4.2all_plots_leg,
+                                        ncol = 1, rel_heights = c(0.12, 1))
+```
+
+```{r, fig.width = 6, fig.asp = 0.4}
+figure4.2all_plots_leg_title
+```
+
+
 ##### Using children's own scales
 
 XX
@@ -782,12 +826,13 @@ table4.2
 
 ```{r}
 figure4.2 <- plot_grid(figure4.2a_plots_leg_title, figure4.2b_plots_leg_title,
+                       figure4.2all_plots_leg_title,
                        ncol = 1)
 
-figure4.2_cap <- add_sub(figure4.2, str_wrap("Figure 4.2: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 2, scored using adults' BODY, HEART, and MIND scales (see Table 4.2). Plots are organized by sample (rows) and by pair of conceptual units (columns). For children, two sets of scores are presented: using adults' scales (B1-B3) and using children's own scales (C1-C3; see Table 4.2 for differences in these scales). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.2_cap <- add_sub(figure4.2, str_wrap("Figure 4.2: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 2, scored using adults' BODY, HEART, and MIND scales (see Table 4.2). Plots are organized by sample (rows) and by pair of conceptual units (columns). (A) Adults. (B) Children (7-9y of age), scored using adults' scales. (C) A visualization of development between 7-9y and adulthood, using mean scores by character and age group. For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
-```{r, include = T, fig.width = 5, fig.asp = 0.95}
+```{r, include = T, fig.width = 5, fig.asp = 1.4}
 ggdraw(figure4.2_cap)
 ```
 
@@ -1258,14 +1303,60 @@ table4.3
 ```
 
 ```{r}
-figure4.4 <- plot_grid(figure4.3a_plots_leg_title, figure4.3b_plots_leg_title,
-                       figure4.3d_plots_leg_title,
-                       ncol = 1)
-
-figure4.4_cap <- add_sub(figure4.3, str_wrap("Figure 4.4: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using adults' BODY, HEART, and MIND scales (see Table 4.3). Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+plots_agegp_d3_scored_ad <- relviz_agegp_fun(
+  d_scored = d3_ad_scored_ad %>% 
+    full_join(d3_79_scored_ad) %>% 
+    full_join(d3_46_scored_ad), 
+  age_groups = c("children46", "children79", "adults"),
+  age_group_labels = c("Children, (4-6y)", "Children (7-9y)", "Adults"),
+  colors = colors09)
 ```
 
-```{r, include = T, fig.width = 5, fig.asp = 1.35}
+```{r}
+figure4.3all_plots <- plot_grid(plots_agegp_d3_scored_ad[[1]] + 
+                               theme(legend.position = "none"),
+                             plots_agegp_d3_scored_ad[[2]] + 
+                               theme(legend.position = "none"),
+                             plots_agegp_d3_scored_ad[[3]] + 
+                               theme(legend.position = "none"),
+                             labels = c("D1", "D2", "D3"), ncol = 3)
+
+figure4.3all_leg <- get_legend(plots_agegp_d3_scored_ad[[1]] +
+                               theme(legend.position = "bottom", 
+                                     legend.direction = "horizontal") +
+                               scale_color_manual("Target character",
+                                                  values = colors09,
+                                                  na.translate = F,
+                                                  guide = guide_legend(
+                                                    title.position = "left",
+                                                    direction = "horizontal",
+                                                    ncol = 9)))
+  
+figure4.3all_plots_leg <- plot_grid(figure4.3all_plots,
+                                  figure4.3all_leg,
+                                  ncol = 1, rel_heights = c(1, 0.05))
+
+figure4.3all_title <- ggdraw() + 
+  draw_label("Tracking development between 4-9y and adulthood (scored using adults' scales)", 
+             size = 16, fontface = 'bold', x = 0, hjust = 0)
+
+figure4.3all_plots_leg_title <- plot_grid(figure4.3all_title, figure4.3all_plots_leg,
+                                        ncol = 1, rel_heights = c(0.12, 1))
+```
+
+```{r, fig.width = 6, fig.asp = 0.4}
+figure4.3all_plots_leg_title
+```
+
+```{r}
+figure4.4 <- plot_grid(figure4.3a_plots_leg_title, figure4.3b_plots_leg_title,
+                       figure4.3d_plots_leg_title, figure4.3all_plots_leg_title,
+                       ncol = 1)
+
+figure4.4_cap <- add_sub(figure4.4, str_wrap("Figure 4.4: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using adults' BODY, HEART, and MIND scales (see Table 4.3). (A) Adults. (B) Older children (7-9y of age). (C) Younger children (4-6y of age). (D) A visualization of development between 4-9y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-C, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 1.85}
 ggdraw(figure4.4_cap)
 ```
 
@@ -1614,13 +1705,59 @@ table4.5
 ```
 
 ```{r}
-figure4.6 <- plot_grid(figure4.5a_plots_leg_title, figure4.5b_plots_leg_title,
-                       ncol = 1)
-
-figure4.6_cap <- add_sub(figure4.6, str_wrap("Figure 4.6: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using adults' BODY, HEART, and MIND scales (see Table 4.3). Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+plots_agegp_d4_scored_ad <- relviz_agegp_fun(
+  d_scored = d4_ad_scored_ad %>% 
+    full_join(d4_46_scored_ad), 
+  age_groups = c("children46", "adults"),
+  age_group_labels = c("Children, (4-5y)", "Adults"),
+  colors = colors02)
 ```
 
-```{r, include = T, fig.width = 5, fig.asp = 0.9}
+```{r}
+figure4.5all_plots <- plot_grid(plots_agegp_d4_scored_ad[[1]] + 
+                               theme(legend.position = "none"),
+                             plots_agegp_d4_scored_ad[[2]] + 
+                               theme(legend.position = "none"),
+                             plots_agegp_d4_scored_ad[[3]] + 
+                               theme(legend.position = "none"),
+                             labels = c("D1", "D2", "d4"), ncol = 3)
+
+figure4.5all_leg <- get_legend(plots_agegp_d4_scored_ad[[1]] +
+                               theme(legend.position = "bottom", 
+                                     legend.direction = "horizontal") +
+                               scale_color_manual("Target character",
+                                                  values = colors02,
+                                                  na.translate = F,
+                                                  guide = guide_legend(
+                                                    title.position = "left",
+                                                    direction = "horizontal",
+                                                    ncol = 2)))
+  
+figure4.5all_plots_leg <- plot_grid(figure4.5all_plots,
+                                  figure4.5all_leg,
+                                  ncol = 1, rel_heights = c(1, 0.05))
+
+figure4.5all_title <- ggdraw() + 
+  draw_label("Tracking development between 4-5y and adulthood (scored using adults' scales)", 
+             size = 16, fontface = 'bold', x = 0, hjust = 0)
+
+figure4.5all_plots_leg_title <- plot_grid(figure4.5all_title, figure4.5all_plots_leg,
+                                        ncol = 1, rel_heights = c(0.12, 1))
+```
+
+```{r, fig.width = 6, fig.asp = 0.4}
+figure4.5all_plots_leg_title
+```
+
+```{r}
+figure4.6 <- plot_grid(figure4.5a_plots_leg_title, figure4.5b_plots_leg_title,
+                       figure4.5all_plots_leg_title,
+                       ncol = 1)
+
+figure4.6_cap <- add_sub(figure4.6, str_wrap("Figure 4.6: Relationships among US adults' and children's attributions of conceptual units in Study 4, scored using adults' BODY, HEART, and MIND scales (see Table 4.5). (A) Adults. (B) Children (4-5y of age). (C) A visualization of development between 4-5y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 1.4}
 ggdraw(figure4.6_cap)
 ```
 
@@ -1628,7 +1765,7 @@ ggdraw(figure4.6_cap)
 figure4.7 <- plot_grid(figure4.5c_plots_leg_title, figure4.5d_plots_leg_title,
                        ncol = 1, rel_heights = c(1, 2))
 
-figure4.7_cap <- add_sub(figure4.7, str_wrap("Figure 4.7: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using adults' BODY, HEART, and MIND scales (see Table 4.3). For children, two sets of scores are presented: using a three-factor EFA solution (A1-A3) and using a four-factor EFA solution (B1-B6). Plots are organized by scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.7_cap <- add_sub(figure4.7, str_wrap("Figure 4.7: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using their own scales scales (see Table 4.3). Ttwo sets of scores are presented: using a three-factor EFA solution (A1-A3) and using a four-factor EFA solution (B1-B6). Plots are organized by scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.35}

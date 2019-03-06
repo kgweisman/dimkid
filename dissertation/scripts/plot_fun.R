@@ -193,6 +193,80 @@ relviz_fun <- function(d_scored, jit = 0.05, add_means = T,
   return(plots)
 }
 
+relviz_agegp_fun <- function(d_scored, age_groups, age_group_labels,
+                             colors = c("#e41a1c", "#377eb8")){
+  
+  d_scored_means_BODY <- d_scored %>%
+    filter(factor == "BODY") %>%
+    group_by(age_group, character) %>%
+    multi_boot_standard(col = "score") %>%
+    ungroup() %>%
+    rename(ci_lower_BODY = ci_lower, ci_upper_BODY = ci_upper, mean_BODY = mean)
+  
+  d_scored_means_HEART <- d_scored %>%
+    filter(factor == "HEART") %>%
+    group_by(age_group, character) %>%
+    multi_boot_standard(col = "score") %>%
+    ungroup() %>%
+    rename(ci_lower_HEART = ci_lower, ci_upper_HEART = ci_upper, mean_HEART = mean)
+  
+  d_scored_means_MIND <- d_scored %>%
+    filter(factor == "MIND") %>%
+    group_by(age_group, character) %>%
+    multi_boot_standard(col = "score") %>%
+    ungroup() %>%
+    rename(ci_lower_MIND = ci_lower, ci_upper_MIND = ci_upper, mean_MIND = mean)
+  
+  d_scored_means_all <- d_scored_means_BODY %>%
+    full_join(d_scored_means_HEART) %>%
+    full_join(d_scored_means_MIND) %>%
+    mutate(age_group = factor(age_group,
+                              levels = age_groups,
+                              labels = age_group_labels)) %>%
+    arrange(age_group) %>%
+    filter(!is.na(character))
+  
+  plot_BH <- ggplot(d_scored_means_all,
+                    aes(x = mean_BODY, y = mean_HEART, color = character)) +
+    geom_abline(slope = 1, intercept = 0, lty = 2) +
+    ggforce::geom_link2(arrow = arrow(type = "closed", length = unit(0.5, "lines")),
+                        show.legend = F) +
+    geom_point(data = . %>% filter(age_group != "Adults"),
+               aes(size = age_group)) +
+    scale_color_manual("Target character", values = colors, na.translate = F) +
+    scale_size_manual("Age group", values = c(2, 3), guide = "none") +
+    scale_x_continuous("BODY score", limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
+    scale_y_continuous("HEART score", limits = c(0, 1), breaks = seq(0, 1, 0.2))
+  
+  plot_BM <- ggplot(d_scored_means_all,
+                    aes(x = mean_BODY, y = mean_MIND, color = character)) +
+    geom_abline(slope = 1, intercept = 0, lty = 2) +
+    ggforce::geom_link2(arrow = arrow(type = "closed", length = unit(0.5, "lines")),
+                        show.legend = F) +
+    geom_point(data = . %>% filter(age_group != "Adults"),
+               aes(size = age_group)) +
+    scale_color_manual("Target character", values = colors, na.translate = F) +
+    scale_size_manual("Age group", values = c(1, 1.75), guide = "none") +
+    scale_x_continuous("BODY score", limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
+    scale_y_continuous("MIND score", limits = c(0, 1), breaks = seq(0, 1, 0.2))
+  
+  plot_HM <- ggplot(d_scored_means_all,
+                    aes(x = mean_HEART, y = mean_MIND, color = character)) +
+    geom_abline(slope = 1, intercept = 0, lty = 2) +
+    ggforce::geom_link2(arrow = arrow(type = "closed", length = unit(0.5, "lines")),
+                        show.legend = F) +
+    geom_point(data = . %>% filter(age_group != "Adults"),
+               aes(size = age_group)) +
+    scale_color_manual("Target character", values = colors, na.translate = F) +
+    scale_size_manual("Age group", values = c(1, 1.75), guide = "none") +
+    scale_x_continuous("HEART score", limits = c(0, 1), breaks = seq(0, 1, 0.2)) +
+    scale_y_continuous("MIND score", limits = c(0, 1), breaks = seq(0, 1, 0.2))
+  
+  plots <- list(plot_BH, plot_BM, plot_HM)
+  return(plots)
+  
+}
+
 # function for plotting factor scores by factor, target
 scoresplot_fun <- function(efa, 
                            target = c("all", "beetle", "robot"), 
