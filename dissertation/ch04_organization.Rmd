@@ -1287,6 +1287,50 @@ d4_ad_scored_ad <- score_fun(d4_ad, scales_efa_wdm_d4_ad)
 
 XX
 
+```{r}
+plots_d4_ad_scored_ad <- relviz_fun(d4_ad_scored_ad, colors = colors02)
+```
+
+```{r}
+figure4.4a_plots <- plot_grid(plots_d4_ad_scored_ad[[1]] + 
+                               theme(legend.position = "none"),
+                             plots_d4_ad_scored_ad[[2]] + 
+                               theme(legend.position = "none"),
+                             plots_d4_ad_scored_ad[[3]] + 
+                               theme(legend.position = "none"),
+                             labels = c("A1", "A2", "A3"), ncol = 3)
+
+figure4.4a_leg <- get_legend(plots_d4_ad_scored_ad[[1]] +
+                               theme(legend.position = "bottom", 
+                                     legend.direction = "horizontal") +
+                               scale_fill_manual("Target character", 
+                                                 values = colors02,
+                                                 guide = guide_legend(
+                                                   title.position = "left",
+                                                   direction = "horizontal", 
+                                                   ncol = 9)) +
+                               scale_color_manual("Target character",
+                                                  values = colors02,
+                                                  guide = guide_legend(
+                                                    title.position = "left",
+                                                    direction = "horizontal",
+                                                    ncol = 9)))
+  
+figure4.4a_plots_leg <- plot_grid(figure4.4a_plots,
+                                  figure4.4a_leg,
+                                  ncol = 1, rel_heights = c(1, 0.05))
+
+figure4.4a_title <- ggdraw() + 
+  draw_label("Study 4: Adults", size = 16, fontface = 'bold', x = 0, hjust = 0)
+
+figure4.4a_plots_leg_title <- plot_grid(figure4.4a_title, figure4.4a_plots_leg,
+                                        ncol = 1, rel_heights = c(0.12, 1))
+```
+
+```{r, fig.width = 6, fig.asp = 0.4}
+figure4.4a_plots_leg_title
+```
+
 #### Analysis of asymmetries
 
 XX
@@ -1321,7 +1365,156 @@ d4_46_scored_46_wdm <- score_fun(d4_46, scales_efa_wdm_d4_46)
 
 #### Visualization
 
+##### Using adults' scales
+
 XX
+
+```{r}
+plots_d4_46_scored_ad <- relviz_fun(d4_46_scored_ad, colors = colors02)
+```
+
+```{r}
+figure4.4b_plots <- plot_grid(plots_d4_46_scored_ad[[1]] + 
+                               theme(legend.position = "none"),
+                             plots_d4_46_scored_ad[[2]] + 
+                               theme(legend.position = "none"),
+                             plots_d4_46_scored_ad[[3]] + 
+                               theme(legend.position = "none"),
+                             labels = c("B1", "B2", "B3"), ncol = 3)
+
+figure4.4b_leg <- get_legend(plots_d4_46_scored_ad[[1]] +
+                               theme(legend.position = "bottom", 
+                                     legend.direction = "horizontal") +
+                               scale_fill_manual("Target character", 
+                                                 values = colors02,
+                                                 guide = guide_legend(
+                                                   title.position = "left",
+                                                   direction = "horizontal", 
+                                                   ncol = 9)) +
+                               scale_color_manual("Target character",
+                                                  values = colors02,
+                                                  guide = guide_legend(
+                                                    title.position = "left",
+                                                    direction = "horizontal",
+                                                    ncol = 9)))
+  
+figure4.4b_plots_leg <- plot_grid(figure4.4b_plots,
+                                  figure4.4b_leg,
+                                  ncol = 1, rel_heights = c(1, 0.05))
+
+figure4.4b_title <- ggdraw() + 
+  draw_label("Study 4: Children, 4-5y (scored using adults' scales)", size = 16, fontface = 'bold', x = 0, hjust = 0)
+
+figure4.4b_plots_leg_title <- plot_grid(figure4.4b_title, figure4.4b_plots_leg,
+                                        ncol = 1, rel_heights = c(0.12, 1))
+```
+
+```{r, fig.width = 6, fig.asp = 0.4}
+figure4.4b_plots_leg_title
+```
+
+##### Using children's own scales (three-factor solution)
+
+XX
+
+```{r}
+plots_d4_46_scored_46_par <- relviz_fun(d4_46_scored_46_par, colors = colors02)
+```
+
+```{r}
+figure4.4c_plots <- plot_grid(plots_d4_46_scored_46_par[[1]] + 
+                               theme(legend.position = "none"),
+                             plots_d4_46_scored_46_par[[2]] + 
+                               theme(legend.position = "none"),
+                             plots_d4_46_scored_46_par[[3]] + 
+                               theme(legend.position = "none"),
+                             labels = c("C1", "C2", "C3"), ncol = 3)
+
+figure4.4c_leg <- get_legend(plots_d4_46_scored_46_par[[1]] +
+                               theme(legend.position = "bottom", 
+                                     legend.direction = "horizontal") +
+                               scale_fill_manual("Target character", 
+                                                 values = colors02,
+                                                 guide = guide_legend(
+                                                   title.position = "left",
+                                                   direction = "horizontal", 
+                                                   ncol = 9)) +
+                               scale_color_manual("Target character",
+                                                  values = colors02,
+                                                  guide = guide_legend(
+                                                    title.position = "left",
+                                                    direction = "horizontal",
+                                                    ncol = 9)))
+  
+figure4.4c_plots_leg <- plot_grid(figure4.4c_plots,
+                                  figure4.4c_leg,
+                                  ncol = 1, rel_heights = c(1, 0.05))
+
+figure4.4c_title <- ggdraw() + 
+  draw_label("Study 4: Children, 4-5y (scored using their own scales, 3-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
+
+figure4.4c_plots_leg_title <- plot_grid(figure4.4c_title, figure4.4c_plots_leg,
+                                        ncol = 1, rel_heights = c(0.12, 1))
+```
+
+```{r, fig.width = 6, fig.asp = 0.4}
+figure4.4c_plots_leg_title
+```
+
+##### Using children's own scales (four-factor solution)
+
+XX
+
+```{r}
+plots_d4_46_scored_46_wdm <- relviz_fun(d4_46_scored_46_wdm, colors = colors02)
+```
+
+```{r}
+figure4.4d_plots <- plot_grid(plots_d4_46_scored_46_wdm[[1]] + 
+                               theme(legend.position = "none"),
+                             plots_d4_46_scored_46_wdm[[2]] + 
+                               theme(legend.position = "none"),
+                             plots_d4_46_scored_46_wdm[[3]] + 
+                               theme(legend.position = "none"),
+                             plots_d4_46_scored_46_wdm[[4]] + 
+                               theme(legend.position = "none"),
+                             plots_d4_46_scored_46_wdm[[5]] + 
+                               theme(legend.position = "none"),
+                             plots_d4_46_scored_46_wdm[[6]] + 
+                               theme(legend.position = "none"),
+                             labels = c("D1", "D2", "D3", "D4", "D5", "D6"), 
+                             ncol = 3)
+
+figure4.4d_leg <- get_legend(plots_d4_46_scored_46_wdm[[1]] +
+                               theme(legend.position = "bottom", 
+                                     legend.direction = "horizontal") +
+                               scale_fill_manual("Target character", 
+                                                 values = colors02,
+                                                 guide = guide_legend(
+                                                   title.position = "left",
+                                                   direction = "horizontal", 
+                                                   ncol = 9)) +
+                               scale_color_manual("Target character",
+                                                  values = colors02,
+                                                  guide = guide_legend(
+                                                    title.position = "left",
+                                                    direction = "horizontal",
+                                                    ncol = 9)))
+  
+figure4.4d_plots_leg <- plot_grid(figure4.4d_plots,
+                                  figure4.4d_leg,
+                                  ncol = 1, rel_heights = c(1, 0.05))
+
+figure4.4d_title <- ggdraw() + 
+  draw_label("Study 4: Children, 4-5y (scored using their own scales, 4-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
+
+figure4.4d_plots_leg_title <- plot_grid(figure4.4d_title, figure4.4d_plots_leg,
+                                        ncol = 1, rel_heights = c(0.12, 1))
+```
+
+```{r, fig.width = 6, fig.asp = 0.7}
+figure4.4d_plots_leg_title
+```
 
 #### Analysis of asymmetries
 
@@ -1396,6 +1589,18 @@ table4.4 <- scales_study4 %>%
 
 ```{r table4.4, include = T}
 table4.4
+```
+
+```{r}
+figure4.4 <- plot_grid(figure4.4a_plots_leg_title, figure4.4b_plots_leg_title,
+                       figure4.4c_plots_leg_title, figure4.4d_plots_leg_title, 
+                       rel_heights = c(1, 1, 1, 2), ncol = 1)
+
+figure4.4_cap <- add_sub(figure4.4, str_wrap("Figure 4.4: Relationships among US adults' and 4- to 5-year-old children's attributions of conceptual units in Study 4, organized by sample and scales used (rows) and by pair of conceptual units (columns). For children, three sets of scores are presented: using adults' scales (B1-B3), using younger children's own scales as indexed by the three-factor EFA solution (C1-C3), and using younger children's own scales as indexed by the four-factor EFA solution (D1-D6). See Table 4.4 for all scales. For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 2.2}
+ggdraw(figure4.4_cap)
 ```
 
 

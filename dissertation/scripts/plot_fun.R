@@ -90,7 +90,11 @@ relviz_fun <- function(d_scored, jit = 0.05, add_means = T,
                        colors = c("#e41a1c", "#377eb8")){
   
   factor_names_plot <- levels(d_scored$factor)
-  factor_names <- gsub("\\*", "", gsub("\\-", "_", factor_names_plot))
+  factor_names <- gsub("\\*", "", 
+                       gsub("\\-", "_", 
+                            gsub("\\(", "", 
+                                 gsub("\\)", "", 
+                                      gsub(" ", "_", factor_names_plot)))))
   n_fact <- length(factor_names)
   n_plots <- choose(n_fact, 2)
   

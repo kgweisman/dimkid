@@ -100,6 +100,10 @@ score_fun <- function(df, scales,
       mutate(score = scales::rescale(score, to = c(0, 1)))
   }
   
+  if(is.null(levels(df$character))){
+    df <- df %>% mutate(character = factor(character))
+  }
+  
   scores <- scores %>%
     mutate(character = factor(character,
                               levels = levels(df$character)))
