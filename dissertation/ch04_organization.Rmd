@@ -122,6 +122,14 @@ factor_names_efa_wdm_d4_46 <- readRDS(
 ```
 
 
+```{r}
+# colors for plotting target characters
+colors21 <- colorRampPalette(c("#e31a1c", "#ff7f00", "#33a02c", 
+                               "#1f78b4", "#6a3d9a"), # from colorbrewer2.org "Paired"
+                             space = "Lab")(21)
+colors02 <- c("#e41a1c", "#377eb8")
+```
+
 # Chapter overview
 
 In this chapter, I focus on the second of my three key questions about the development of representations of mental life: _How are the conceptual units that anchor representations of mental life organized in relation to each other, and how does this organization change over development?_ As in Chapter III, to address this question I draw on data from all of the current studies (Studies 1-4); for details about the methods of these studies, see Chapter II. The goal of this chapter is to provide "snapshots" of the organization of conceptual units in early childhood, middle childhood, and adulthood.
@@ -224,6 +232,50 @@ d1a_ad_scored_ad <- score_fun(d1a_ad, scales_efa_wdm_d1a_ad)
 
 XX
 
+```{r}
+plots_d1a_ad_scored_ad <- relviz_fun(d1a_ad_scored_ad)
+```
+
+```{r}
+figure4.1a_plots <- plot_grid(plots_d1a_ad_scored_ad[[1]] + 
+                               theme(legend.position = "none"),
+                             plots_d1a_ad_scored_ad[[2]] + 
+                               theme(legend.position = "none"),
+                             plots_d1a_ad_scored_ad[[3]] + 
+                               theme(legend.position = "none"),
+                             labels = c("A1", "A2", "A3"), ncol = 3)
+
+figure4.1a_leg <- get_legend(plots_d1a_ad_scored_ad[[1]] +
+                               theme(legend.position = "bottom", 
+                                     legend.direction = "horizontal") +
+                               scale_fill_manual("Target character", 
+                                                 values = colors02,
+                                                 guide = guide_legend(
+                                                   title.position = "left",
+                                                   direction = "horizontal", 
+                                                   ncol = 2)) +
+                               scale_color_manual("Target character",
+                                                  values = colors02,
+                                                  guide = guide_legend(
+                                                    title.position = "left",
+                                                    direction = "horizontal",
+                                                    ncol = 2)))
+  
+figure4.1a_plots_leg <- plot_grid(figure4.1a_plots,
+                                  figure4.1a_leg,
+                                  ncol = 1, rel_heights = c(1, 0.05))
+
+figure4.1a_title <- ggdraw() + 
+  draw_label("Study 1a, Adults", size = 16, fontface = 'bold', x = 0, hjust = 0)
+
+figure4.1a_plots_leg_title <- plot_grid(figure4.1a_title, figure4.1a_plots_leg,
+                                        ncol = 1, rel_heights = c(0.12, 1))
+```
+
+```{r, fig.width = 6, fig.asp = 0.4}
+figure4.1a_plots_leg_title
+```
+
 #### Analysis of asymmetries
 
 XX
@@ -248,6 +300,50 @@ d1b_ad_scored_ad <- score_fun(d1b_ad, scales_efa_wdm_d1b_ad)
 #### Visualization
 
 XX
+
+```{r}
+plots_d1b_ad_scored_ad <- relviz_fun(d1b_ad_scored_ad)
+```
+
+```{r}
+figure4.1b_plots <- plot_grid(plots_d1b_ad_scored_ad[[1]] + 
+                               theme(legend.position = "none"),
+                             plots_d1b_ad_scored_ad[[2]] + 
+                               theme(legend.position = "none"),
+                             plots_d1b_ad_scored_ad[[3]] + 
+                               theme(legend.position = "none"),
+                             labels = c("B1", "B2", "B3"), ncol = 3)
+
+figure4.1b_leg <- get_legend(plots_d1b_ad_scored_ad[[1]] +
+                               theme(legend.position = "bottom", 
+                                     legend.direction = "horizontal") +
+                               scale_fill_manual("Target character", 
+                                                 values = colors02,
+                                                 guide = guide_legend(
+                                                   title.position = "left",
+                                                   direction = "horizontal", 
+                                                   ncol = 2)) +
+                               scale_color_manual("Target character",
+                                                  values = colors02,
+                                                  guide = guide_legend(
+                                                    title.position = "left",
+                                                    direction = "horizontal",
+                                                    ncol = 2)))
+  
+figure4.1b_plots_leg <- plot_grid(figure4.1b_plots,
+                                  figure4.1b_leg,
+                                  ncol = 1, rel_heights = c(1, 0.05))
+
+figure4.1b_title <- ggdraw() + 
+  draw_label("Study 1b, Adults", size = 16, fontface = 'bold', x = 0, hjust = 0)
+
+figure4.1b_plots_leg_title <- plot_grid(figure4.1b_title, figure4.1b_plots_leg,
+                                        ncol = 1, rel_heights = c(0.12, 1))
+```
+
+```{r, fig.width = 6, fig.asp = 0.4}
+figure4.1b_plots_leg_title
+```
 
 #### Analysis of asymmetries
 
@@ -274,6 +370,50 @@ d1c_ad_scored_ad <- score_fun(d1c_ad, scales_efa_wdm_d1c_ad)
 
 XX
 
+```{r}
+plots_d1c_ad_scored_ad <- relviz_fun(d1c_ad_scored_ad)
+```
+
+```{r}
+figure4.1c_plots <- plot_grid(plots_d1c_ad_scored_ad[[1]] + 
+                               theme(legend.position = "none"),
+                             plots_d1c_ad_scored_ad[[2]] + 
+                               theme(legend.position = "none"),
+                             plots_d1c_ad_scored_ad[[3]] + 
+                               theme(legend.position = "none"),
+                             labels = c("C1", "C2", "C3"), ncol = 3)
+
+figure4.1c_leg <- get_legend(plots_d1c_ad_scored_ad[[1]] +
+                               theme(legend.position = "bottom", 
+                                     legend.direction = "horizontal") +
+                               scale_fill_manual("Target character", 
+                                                 values = colors02,
+                                                 guide = guide_legend(
+                                                   title.position = "left",
+                                                   direction = "horizontal", 
+                                                   ncol = 2)) +
+                               scale_color_manual("Target character",
+                                                  values = colors02,
+                                                  guide = guide_legend(
+                                                    title.position = "left",
+                                                    direction = "horizontal",
+                                                    ncol = 2)))
+  
+figure4.1c_plots_leg <- plot_grid(figure4.1c_plots,
+                                  figure4.1c_leg,
+                                  ncol = 1, rel_heights = c(1, 0.05))
+
+figure4.1c_title <- ggdraw() + 
+  draw_label("Study 1c, Adults", size = 16, fontface = 'bold', x = 0, hjust = 0)
+
+figure4.1c_plots_leg_title <- plot_grid(figure4.1c_title, figure4.1c_plots_leg,
+                                        ncol = 1, rel_heights = c(0.12, 1))
+```
+
+```{r, fig.width = 6, fig.asp = 0.4}
+figure4.1c_plots_leg_title
+```
+
 #### Analysis of asymmetries
 
 XX
@@ -299,9 +439,56 @@ d1d_ad_scored_ad <- score_fun(d1d_ad, scales_efa_wdm_d1d_ad)
 
 XX
 
+```{r}
+plots_d1d_ad_scored_ad <- relviz_fun(d1d_ad_scored_ad, colors = colors21)
+```
+
+```{r}
+figure4.1d_plots <- plot_grid(plots_d1d_ad_scored_ad[[1]] + 
+                               theme(legend.position = "none"),
+                             plots_d1d_ad_scored_ad[[2]] + 
+                               theme(legend.position = "none"),
+                             plots_d1d_ad_scored_ad[[3]] + 
+                               theme(legend.position = "none"),
+                             labels = c("D1", "D2", "D3"), ncol = 3)
+
+figure4.1d_leg <- get_legend(plots_d1d_ad_scored_ad[[1]] +
+                               theme(legend.position = "bottom", 
+                                     legend.direction = "horizontal") +
+                               scale_fill_manual("Target character", 
+                                                 values = colors21,
+                                                 guide = guide_legend(
+                                                   title.position = "left",
+                                                   direction = "horizontal", 
+                                                   ncol = 7)) +
+                               scale_color_manual("Target character",
+                                                  values = colors21,
+                                                  guide = guide_legend(
+                                                    title.position = "left",
+                                                    direction = "horizontal",
+                                                    ncol = 7)))
+  
+figure4.1d_plots_leg <- plot_grid(figure4.1d_plots,
+                                  figure4.1d_leg,
+                                  ncol = 1, rel_heights = c(1, 0.2))
+
+figure4.1d_title <- ggdraw() + 
+  draw_label("Study 1d, Adults", size = 16, fontface = 'bold', x = 0, hjust = 0)
+
+figure4.1d_plots_leg_title <- plot_grid(figure4.1d_title, figure4.1d_plots_leg,
+                                        ncol = 1, rel_heights = c(0.12, 1))
+```
+
+```{r, fig.width = 6, fig.asp = 0.45}
+figure4.1d_plots_leg_title
+```
+
 #### Analysis of asymmetries
 
 XX
+
+
+## Discussion
 
 ```{r}
 scales_study1 <- bind_rows(scales_efa_wdm_d1a_ad %>% mutate(study = "Study 1a"),
@@ -345,12 +532,19 @@ table4.1
 ```
 
 ```{r}
+figure4.1 <- plot_grid(figure4.1a_plots_leg_title, figure4.1b_plots_leg_title,
+                       figure4.1c_plots_leg_title, figure4.1d_plots_leg_title, 
+                       ncol = 1, rel_heights = c(1, 1, 1, 1.15))
 
+figure4.1_cap <- add_sub(figure4.1, str_wrap("Figure 4.1: Relationships among US adults' attributions of conceptual units in Studies 1a-1d, organized by study (rows) and pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 1.8}
+ggdraw(figure4.1_cap)
 ```
 
 
-## Discussion
-
+XX
 
 # Study 2: Conceptual change between middle childhood (7-9y) and adulthood
 
@@ -382,20 +576,20 @@ plots_d2_ad_scored_ad <- relviz_fun(d2_ad_scored_ad)
 ```
 
 ```{r}
-figure4.1_plots <- plot_grid(plots_d2_ad_scored_ad[[1]] + 
+figure4.2_plots <- plot_grid(plots_d2_ad_scored_ad[[1]] + 
                                theme(legend.position = "none"),
                              plots_d2_ad_scored_ad[[2]] + 
                                theme(legend.position = "none"),
                              plots_d2_ad_scored_ad[[3]] + 
                                theme(legend.position = "none"),
                              labels = "AUTO", ncol = 3)
-figure4.1_plots_leg <- plot_grid(figure4.1_plots,
+figure4.2_plots_leg <- plot_grid(figure4.2_plots,
                                  get_legend(plots_d2_ad_scored_ad[[1]]),
                                  ncol = 2, rel_widths = c(1, 0.12))
 ```
 
 ```{r, fig.width = 6, fig.asp = 0.3}
-figure4.1_plots_leg
+figure4.2_plots_leg
 ```
 
 XX

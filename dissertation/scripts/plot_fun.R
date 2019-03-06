@@ -86,26 +86,69 @@ heatmap_fun <- function(efa, factor_names = NA){
 }
 
 # function for visualizing relationships between factors
-relviz_fun <- function(d_scored, jit = 0.05, 
+relviz_fun <- function(d_scored, jit = 0.05, add_means = T,
                        colors = c("#e41a1c", "#377eb8")){
   
   factor_names <- levels(d_scored$factor)
   n_fact <- length(factor_names)
   n_plots <- choose(n_fact, 2)
   
+  add_means_fun <- function(plot, d_scored, facnames){
+    
+    char_means <- d_scored %>%
+      mutate(factor = as.character(factor)) %>%
+      filter(factor %in% facnames) %>%
+      group_by(character, factor) %>%
+      multi_boot_standard(col = "score") %>%
+      ungroup()
+    
+    df_means <- full_join(char_means %>%
+                            filter(factor == facnames[1]) %>%
+                            rename(factor_x = factor,
+                                   ci_lower_x = ci_lower,
+                                   ci_upper_x = ci_upper,
+                                   mean_x = mean),
+                          char_means %>%
+                            filter(factor == facnames[2]) %>%
+                            rename(factor_y = factor,
+                                   ci_lower_y = ci_lower,
+                                   ci_upper_y = ci_upper,
+                                   mean_y = mean))
+    
+    newplot <- plot +
+      geom_errorbar(data = df_means,
+                    aes(x = mean_x, y = NULL, 
+                        ymin = ci_lower_y, ymax = ci_upper_y),
+                    width = 0, color = "black", show.legend = F) +
+      geom_errorbarh(data = df_means,
+                     aes(x = NULL, y = mean_y, 
+                         xmin = ci_lower_x, xmax = ci_upper_x),
+                     height = 0, color = "black", show.legend = F) +
+      geom_point(data = df_means,
+                 aes(x = mean_x, y = mean_y, fill = character),
+                 size = 3, stroke = 0.8, shape = 23, color = "black") +
+      scale_fill_manual("Target character", values = colors)
+    
+    return(newplot)
+  }
+  
   plot_fun <- function(facnames){
-    d_scored %>%
+    newplot <- d_scored %>%
       filter(factor %in% facnames) %>%
       spread(factor, score) %>%
       ggplot(aes_string(x = facnames[1], y = facnames[2],
                         color = "character")) +
       geom_abline(slope = 1, intercept = 0, lty = 2) +
-      geom_jitter(width = jit, height = jit, alpha = 0.5) +
+      geom_jitter(width = jit, height = jit, alpha = 0.25) +
       scale_x_continuous(name = paste(facnames[1], "score"), 
                          limits = c(0-jit, 1+jit), breaks = seq(0, 1, 0.2)) +
       scale_y_continuous(name = paste(facnames[2], "score"), 
                          limits = c(0-jit, 1+jit), breaks = seq(0, 1, 0.2)) +
       scale_color_manual(name = "Target character", values = colors)
+    
+    if(add_means){newplot <- add_means_fun(newplot, d_scored, facnames)}
+    
+    return(newplot)
   }
   
   plots <- vector("list", n_plots)
