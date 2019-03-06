@@ -548,6 +548,7 @@ ggdraw(figure4.1_cap)
 
 XX
 
+
 # Study 2: Conceptual change between middle childhood (7-9y) and adulthood
 
 In Study 2, `r nrow(d2_ad_wide)` US adults and `r nrow(d2_79_wide)` US children between the ages of `r summary(d2_79$age)["Min."] %>% round(2)`-`r summary(d2_79$age)["Max."] %>% round(2)` years (median: `r summary(d2_79$age)["Median"] %>% round(2)`y) each assessed a single target character on 40 mental capacities. To make the study appropriate for children in this age range, the wording of some the 40 mental capacities employed in Study 1 was modified to use more age-appropriate vocabulary, and participants responded on a 3-point scale ("no," coded as 0; "kinda," coded as 0.5, "yes," coded as 1). This study employed the "edge case" variant of the general approach, with participants randomly assigned to assess either a beetle or a robot. (See Chapter II for detailed methods.)
@@ -705,7 +706,7 @@ figure4.2c_plots <- plot_grid(plots_d2_79_scored_79[[1]] +
                                theme(legend.position = "none"),
                              plots_d2_79_scored_79[[3]] + 
                                theme(legend.position = "none"),
-                             labels = c("C1", "C2", "C3"), ncol = 3)
+                             labels = c("A1", "A2", "A3"), ncol = 3)
 
 figure4.2c_leg <- get_legend(plots_d2_79_scored_79[[1]] +
                                theme(legend.position = "bottom", 
@@ -781,14 +782,24 @@ table4.2
 
 ```{r}
 figure4.2 <- plot_grid(figure4.2a_plots_leg_title, figure4.2b_plots_leg_title,
-                       figure4.2c_plots_leg_title, 
-                       ncol = 1, rel_heights = c(1, 1, 1))
+                       ncol = 1)
 
-figure4.2_cap <- add_sub(figure4.2, str_wrap("Figure 4.2: Relationships among US adults' and 7- to 9-year-old children's attributions of conceptual units in Study 2, organized by sample and scales used (rows) and by pair of conceptual units (columns). For children, two sets of scores are presented: using adults' scales (B1-B3) and using children's own scales (C1-C3; see Table 4.2 for differences in these scales). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.2_cap <- add_sub(figure4.2, str_wrap("Figure 4.2: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 2, scored using adults' BODY, HEART, and MIND scales (see Table 4.2). Plots are organized by sample (rows) and by pair of conceptual units (columns). For children, two sets of scores are presented: using adults' scales (B1-B3) and using children's own scales (C1-C3; see Table 4.2 for differences in these scales). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
-```{r, include = T, fig.width = 5, fig.asp = 1.4}
+```{r, include = T, fig.width = 5, fig.asp = 0.95}
 ggdraw(figure4.2_cap)
+```
+
+```{r}
+figure4.3 <- plot_grid(figure4.2c_plots_leg_title, 
+                       ncol = 1)
+
+figure4.3_cap <- add_sub(figure4.3, str_wrap("Figure 4.3: Relationships among children's attributions of conceptual units in Study 2, scored using their own scales (see Table 4.3). Plots are organized by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 0.5}
+ggdraw(figure4.3_cap)
 ```
 
 
@@ -948,7 +959,7 @@ figure4.3c_plots <- plot_grid(plots_d3_79_scored_79[[1]] +
                                theme(legend.position = "none"),
                              plots_d3_79_scored_79[[3]] + 
                                theme(legend.position = "none"),
-                             labels = c("C1", "C2", "C3"), ncol = 3)
+                             labels = c("A1", "A2", "A3"), ncol = 3)
 
 figure4.3c_leg <- get_legend(plots_d3_79_scored_79[[1]] +
                                theme(legend.position = "bottom", 
@@ -1030,7 +1041,7 @@ figure4.3d_plots <- plot_grid(plots_d3_46_scored_ad[[1]] +
                                theme(legend.position = "none"),
                              plots_d3_46_scored_ad[[3]] + 
                                theme(legend.position = "none"),
-                             labels = c("D1", "D2", "D3"), ncol = 3)
+                             labels = c("C1", "C2", "C3"), ncol = 3)
 
 figure4.3d_leg <- get_legend(plots_d3_46_scored_ad[[1]] +
                                theme(legend.position = "bottom", 
@@ -1080,7 +1091,7 @@ figure4.3e_plots <- plot_grid(plots_d3_46_scored_46_wdm[[1]] +
                                theme(legend.position = "none"),
                              plots_d3_46_scored_46_wdm[[3]] + 
                                theme(legend.position = "none"),
-                             labels = c("E1", "E2", "E3"), ncol = 3)
+                             labels = c("B1", "B2", "B3"), ncol = 3)
 
 figure4.3e_leg <- get_legend(plots_d3_46_scored_46_wdm[[1]] +
                                theme(legend.position = "bottom", 
@@ -1126,7 +1137,7 @@ plots_d3_46_scored_46_par <- relviz_fun(d3_46_scored_46_par, colors = colors09)
 ```{r}
 figure4.3f_plots <- plot_grid(plots_d3_46_scored_46_par[[1]] + 
                                theme(legend.position = "none"),
-                             labels = c("F1"), ncol = 3)
+                             labels = c("C1"), ncol = 3)
 
 figure4.3f_leg <- get_legend(plots_d3_46_scored_46_par[[1]] +
                                theme(legend.position = "bottom", 
@@ -1247,16 +1258,27 @@ table4.3
 ```
 
 ```{r}
-figure4.3 <- plot_grid(figure4.3a_plots_leg_title, figure4.3b_plots_leg_title,
-                       figure4.3c_plots_leg_title, figure4.3d_plots_leg_title, 
-                       figure4.3e_plots_leg_title, figure4.3f_plots_leg_title,
+figure4.4 <- plot_grid(figure4.3a_plots_leg_title, figure4.3b_plots_leg_title,
+                       figure4.3d_plots_leg_title,
                        ncol = 1)
 
-figure4.3_cap <- add_sub(figure4.3, str_wrap("Figure 4.3: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, organized by sample and scales used (rows) and by pair of conceptual units (columns). For older children (7-9y of age), two sets of scores are presented: using adults' scales (B1-B3) and using older children's own scales (C1-C3). For younger children (4-6y of age), three sets of scores are presented: using adults' scales (D1-D3), using younger children's own scales as indexed by the three-factor EFA solution (E1-E3), and using younger children's own scales as indexed by the two-factor EFA solution (F1). See Table 4.3 for all scales. For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.4_cap <- add_sub(figure4.3, str_wrap("Figure 4.4: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using adults' BODY, HEART, and MIND scales (see Table 4.3). Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
-```{r, include = T, fig.width = 5, fig.asp = 2.65}
-ggdraw(figure4.3_cap)
+```{r, include = T, fig.width = 5, fig.asp = 1.35}
+ggdraw(figure4.4_cap)
+```
+
+```{r}
+figure4.5 <- plot_grid(figure4.3c_plots_leg_title, figure4.3e_plots_leg_title,
+                       figure4.3f_plots_leg_title,
+                       ncol = 1)
+
+figure4.5_cap <- add_sub(figure4.5, str_wrap("Figure 4.5: Relationships among older and younger children's attributions of conceptual units in Study 3, scored using their own scales (see Table 4.3). For younger children (4-6y of age), two sets of scores are presented: using a three-factor EFA solution (B1-B3) and using a two-factor EFA solution (C1-C3). Plots are organized by sample and scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 1.35}
+ggdraw(figure4.5_cap)
 ```
 
 
@@ -1292,7 +1314,7 @@ plots_d4_ad_scored_ad <- relviz_fun(d4_ad_scored_ad, colors = colors02)
 ```
 
 ```{r}
-figure4.4a_plots <- plot_grid(plots_d4_ad_scored_ad[[1]] + 
+figure4.5a_plots <- plot_grid(plots_d4_ad_scored_ad[[1]] + 
                                theme(legend.position = "none"),
                              plots_d4_ad_scored_ad[[2]] + 
                                theme(legend.position = "none"),
@@ -1300,7 +1322,7 @@ figure4.4a_plots <- plot_grid(plots_d4_ad_scored_ad[[1]] +
                                theme(legend.position = "none"),
                              labels = c("A1", "A2", "A3"), ncol = 3)
 
-figure4.4a_leg <- get_legend(plots_d4_ad_scored_ad[[1]] +
+figure4.5a_leg <- get_legend(plots_d4_ad_scored_ad[[1]] +
                                theme(legend.position = "bottom", 
                                      legend.direction = "horizontal") +
                                scale_fill_manual("Target character", 
@@ -1316,19 +1338,19 @@ figure4.4a_leg <- get_legend(plots_d4_ad_scored_ad[[1]] +
                                                     direction = "horizontal",
                                                     ncol = 9)))
   
-figure4.4a_plots_leg <- plot_grid(figure4.4a_plots,
-                                  figure4.4a_leg,
+figure4.5a_plots_leg <- plot_grid(figure4.5a_plots,
+                                  figure4.5a_leg,
                                   ncol = 1, rel_heights = c(1, 0.05))
 
-figure4.4a_title <- ggdraw() + 
+figure4.5a_title <- ggdraw() + 
   draw_label("Study 4: Adults", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.4a_plots_leg_title <- plot_grid(figure4.4a_title, figure4.4a_plots_leg,
+figure4.5a_plots_leg_title <- plot_grid(figure4.5a_title, figure4.5a_plots_leg,
                                         ncol = 1, rel_heights = c(0.12, 1))
 ```
 
 ```{r, fig.width = 6, fig.asp = 0.4}
-figure4.4a_plots_leg_title
+figure4.5a_plots_leg_title
 ```
 
 #### Analysis of asymmetries
@@ -1346,7 +1368,7 @@ scales_efa_par_d4_46 <- scale_fun(efa_par_d4_46,
                                   factor_names = factor_names_efa_par_d4_46)
 ```
 
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_par_d4_46)` scales of `r scales_efa_par_d4_46 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.4.
+Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_par_d4_46)` scales of `r scales_efa_par_d4_46 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.5.
 
 ##### Four-factor solution
 
@@ -1355,7 +1377,7 @@ scales_efa_wdm_d4_46 <- scale_fun(efa_wdm_d4_46,
                                   factor_names = factor_names_efa_wdm_d4_46)
 ```
 
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d4_46)` scales of `r scales_efa_wdm_d4_46 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.4.
+Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d4_46)` scales of `r scales_efa_wdm_d4_46 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.5.
 
 ```{r}
 d4_46_scored_ad <- score_fun(d4_46, scales_efa_wdm_d4_ad)
@@ -1374,7 +1396,7 @@ plots_d4_46_scored_ad <- relviz_fun(d4_46_scored_ad, colors = colors02)
 ```
 
 ```{r}
-figure4.4b_plots <- plot_grid(plots_d4_46_scored_ad[[1]] + 
+figure4.5b_plots <- plot_grid(plots_d4_46_scored_ad[[1]] + 
                                theme(legend.position = "none"),
                              plots_d4_46_scored_ad[[2]] + 
                                theme(legend.position = "none"),
@@ -1382,7 +1404,7 @@ figure4.4b_plots <- plot_grid(plots_d4_46_scored_ad[[1]] +
                                theme(legend.position = "none"),
                              labels = c("B1", "B2", "B3"), ncol = 3)
 
-figure4.4b_leg <- get_legend(plots_d4_46_scored_ad[[1]] +
+figure4.5b_leg <- get_legend(plots_d4_46_scored_ad[[1]] +
                                theme(legend.position = "bottom", 
                                      legend.direction = "horizontal") +
                                scale_fill_manual("Target character", 
@@ -1398,19 +1420,19 @@ figure4.4b_leg <- get_legend(plots_d4_46_scored_ad[[1]] +
                                                     direction = "horizontal",
                                                     ncol = 9)))
   
-figure4.4b_plots_leg <- plot_grid(figure4.4b_plots,
-                                  figure4.4b_leg,
+figure4.5b_plots_leg <- plot_grid(figure4.5b_plots,
+                                  figure4.5b_leg,
                                   ncol = 1, rel_heights = c(1, 0.05))
 
-figure4.4b_title <- ggdraw() + 
+figure4.5b_title <- ggdraw() + 
   draw_label("Study 4: Children, 4-5y (scored using adults' scales)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.4b_plots_leg_title <- plot_grid(figure4.4b_title, figure4.4b_plots_leg,
+figure4.5b_plots_leg_title <- plot_grid(figure4.5b_title, figure4.5b_plots_leg,
                                         ncol = 1, rel_heights = c(0.12, 1))
 ```
 
 ```{r, fig.width = 6, fig.asp = 0.4}
-figure4.4b_plots_leg_title
+figure4.5b_plots_leg_title
 ```
 
 ##### Using children's own scales (three-factor solution)
@@ -1422,15 +1444,15 @@ plots_d4_46_scored_46_par <- relviz_fun(d4_46_scored_46_par, colors = colors02)
 ```
 
 ```{r}
-figure4.4c_plots <- plot_grid(plots_d4_46_scored_46_par[[1]] + 
+figure4.5c_plots <- plot_grid(plots_d4_46_scored_46_par[[1]] + 
                                theme(legend.position = "none"),
                              plots_d4_46_scored_46_par[[2]] + 
                                theme(legend.position = "none"),
                              plots_d4_46_scored_46_par[[3]] + 
                                theme(legend.position = "none"),
-                             labels = c("C1", "C2", "C3"), ncol = 3)
+                             labels = c("A1", "A2", "A3"), ncol = 3)
 
-figure4.4c_leg <- get_legend(plots_d4_46_scored_46_par[[1]] +
+figure4.5c_leg <- get_legend(plots_d4_46_scored_46_par[[1]] +
                                theme(legend.position = "bottom", 
                                      legend.direction = "horizontal") +
                                scale_fill_manual("Target character", 
@@ -1446,19 +1468,19 @@ figure4.4c_leg <- get_legend(plots_d4_46_scored_46_par[[1]] +
                                                     direction = "horizontal",
                                                     ncol = 9)))
   
-figure4.4c_plots_leg <- plot_grid(figure4.4c_plots,
-                                  figure4.4c_leg,
+figure4.5c_plots_leg <- plot_grid(figure4.5c_plots,
+                                  figure4.5c_leg,
                                   ncol = 1, rel_heights = c(1, 0.05))
 
-figure4.4c_title <- ggdraw() + 
+figure4.5c_title <- ggdraw() + 
   draw_label("Study 4: Children, 4-5y (scored using their own scales, 3-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.4c_plots_leg_title <- plot_grid(figure4.4c_title, figure4.4c_plots_leg,
+figure4.5c_plots_leg_title <- plot_grid(figure4.5c_title, figure4.5c_plots_leg,
                                         ncol = 1, rel_heights = c(0.12, 1))
 ```
 
 ```{r, fig.width = 6, fig.asp = 0.4}
-figure4.4c_plots_leg_title
+figure4.5c_plots_leg_title
 ```
 
 ##### Using children's own scales (four-factor solution)
@@ -1470,7 +1492,7 @@ plots_d4_46_scored_46_wdm <- relviz_fun(d4_46_scored_46_wdm, colors = colors02)
 ```
 
 ```{r}
-figure4.4d_plots <- plot_grid(plots_d4_46_scored_46_wdm[[1]] + 
+figure4.5d_plots <- plot_grid(plots_d4_46_scored_46_wdm[[1]] + 
                                theme(legend.position = "none"),
                              plots_d4_46_scored_46_wdm[[2]] + 
                                theme(legend.position = "none"),
@@ -1482,10 +1504,10 @@ figure4.4d_plots <- plot_grid(plots_d4_46_scored_46_wdm[[1]] +
                                theme(legend.position = "none"),
                              plots_d4_46_scored_46_wdm[[6]] + 
                                theme(legend.position = "none"),
-                             labels = c("D1", "D2", "D3", "D4", "D5", "D6"), 
+                             labels = c("B1", "B2", "B3", "B4", "B5", "B6"), 
                              ncol = 3)
 
-figure4.4d_leg <- get_legend(plots_d4_46_scored_46_wdm[[1]] +
+figure4.5d_leg <- get_legend(plots_d4_46_scored_46_wdm[[1]] +
                                theme(legend.position = "bottom", 
                                      legend.direction = "horizontal") +
                                scale_fill_manual("Target character", 
@@ -1501,19 +1523,19 @@ figure4.4d_leg <- get_legend(plots_d4_46_scored_46_wdm[[1]] +
                                                     direction = "horizontal",
                                                     ncol = 9)))
   
-figure4.4d_plots_leg <- plot_grid(figure4.4d_plots,
-                                  figure4.4d_leg,
+figure4.5d_plots_leg <- plot_grid(figure4.5d_plots,
+                                  figure4.5d_leg,
                                   ncol = 1, rel_heights = c(1, 0.05))
 
-figure4.4d_title <- ggdraw() + 
+figure4.5d_title <- ggdraw() + 
   draw_label("Study 4: Children, 4-5y (scored using their own scales, 4-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.4d_plots_leg_title <- plot_grid(figure4.4d_title, figure4.4d_plots_leg,
+figure4.5d_plots_leg_title <- plot_grid(figure4.5d_title, figure4.5d_plots_leg,
                                         ncol = 1, rel_heights = c(0.12, 1))
 ```
 
 ```{r, fig.width = 6, fig.asp = 0.7}
-figure4.4d_plots_leg_title
+figure4.5d_plots_leg_title
 ```
 
 #### Analysis of asymmetries
@@ -1550,7 +1572,7 @@ scales_study4 <- bind_rows(scales_efa_wdm_d4_ad %>%
 ```
 
 ```{r}
-table4.4 <- scales_study4 %>%
+table4.5 <- scales_study4 %>%
   mutate_all(as.character) %>%
   # deal with Children, 4-factor solution
   mutate(temp1 = `Children, 4-5y (4-factor solution)`,
@@ -1578,7 +1600,7 @@ table4.4 <- scales_study4 %>%
          `3-factor solution` = `Children, 4-5y (3-factor solution)`,
          `4-factor solution` = `Children, 4-5y (4-factor solution)`) %>%
   kable(format = "html",
-        caption = "Table 4.4: Scales for each of the conceptual units (factors) identified by EFA for US Adults and children in Study 4 (see Chapter III). For children, this includes scales for both three- and four-factor EFA solutions. A checkmark indicates that a mental capacity was included in a scale for a particular sample. The conceptual units of younger children differed substantially from those of adults, such that some mental capacities were included in different scales across age groups (e.g., love someone was part of the HEART scale for adults, but part of the MIND* scale in the four-factor solution for younger children). In these cases, the name of the scale is provided (rather than a checkmark).") %>%
+        caption = "Table 4.5: Scales for each of the conceptual units (factors) identified by EFA for US Adults and children in Study 4 (see Chapter III). For children, this includes scales for both three- and four-factor EFA solutions. A checkmark indicates that a mental capacity was included in a scale for a particular sample. The conceptual units of younger children differed substantially from those of adults, such that some mental capacities were included in different scales across age groups (e.g., love someone was part of the HEART scale for adults, but part of the MIND* scale in the four-factor solution for younger children). In these cases, the name of the scale is provided (rather than a checkmark).") %>%
   kable_styling() %>%
   group_rows("BODY scale", 1, 5) %>%
   group_rows("HEART scale", 6, 10) %>%
@@ -1587,24 +1609,36 @@ table4.4 <- scales_study4 %>%
                      "Children, 4-5y" = 2))
 ```
 
-```{r table4.4, include = T}
-table4.4
+```{r table4.5, include = T}
+table4.5
 ```
 
 ```{r}
-figure4.4 <- plot_grid(figure4.4a_plots_leg_title, figure4.4b_plots_leg_title,
-                       figure4.4c_plots_leg_title, figure4.4d_plots_leg_title, 
-                       rel_heights = c(1, 1, 1, 2), ncol = 1)
+figure4.6 <- plot_grid(figure4.5a_plots_leg_title, figure4.5b_plots_leg_title,
+                       ncol = 1)
 
-figure4.4_cap <- add_sub(figure4.4, str_wrap("Figure 4.4: Relationships among US adults' and 4- to 5-year-old children's attributions of conceptual units in Study 4, organized by sample and scales used (rows) and by pair of conceptual units (columns). For children, three sets of scores are presented: using adults' scales (B1-B3), using younger children's own scales as indexed by the three-factor EFA solution (C1-C3), and using younger children's own scales as indexed by the four-factor EFA solution (D1-D6). See Table 4.4 for all scales. For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.6_cap <- add_sub(figure4.6, str_wrap("Figure 4.6: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using adults' BODY, HEART, and MIND scales (see Table 4.3). Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
-```{r, include = T, fig.width = 5, fig.asp = 2.2}
-ggdraw(figure4.4_cap)
+```{r, include = T, fig.width = 5, fig.asp = 0.9}
+ggdraw(figure4.6_cap)
+```
+
+```{r}
+figure4.7 <- plot_grid(figure4.5c_plots_leg_title, figure4.5d_plots_leg_title,
+                       ncol = 1, rel_heights = c(1, 2))
+
+figure4.7_cap <- add_sub(figure4.7, str_wrap("Figure 4.7: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using adults' BODY, HEART, and MIND scales (see Table 4.3). For children, two sets of scores are presented: using a three-factor EFA solution (A1-A3) and using a four-factor EFA solution (B1-B6). Plots are organized by scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 1.35}
+ggdraw(figure4.7_cap)
 ```
 
 
 # General discussion
+
+XX
 
 
 # Chapter conclusion
