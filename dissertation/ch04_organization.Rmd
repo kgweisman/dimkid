@@ -377,6 +377,27 @@ d2_ad_scored_ad <- score_fun(d2_ad, scales_efa_wdm_d2_ad)
 
 #### Visualization
 
+```{r}
+plots_d2_ad_scored_ad <- relviz_fun(d2_ad_scored_ad)
+```
+
+```{r}
+figure4.1_plots <- plot_grid(plots_d2_ad_scored_ad[[1]] + 
+                               theme(legend.position = "none"),
+                             plots_d2_ad_scored_ad[[2]] + 
+                               theme(legend.position = "none"),
+                             plots_d2_ad_scored_ad[[3]] + 
+                               theme(legend.position = "none"),
+                             labels = "AUTO", ncol = 3)
+figure4.1_plots_leg <- plot_grid(figure4.1_plots,
+                                 get_legend(plots_d2_ad_scored_ad[[1]]),
+                                 ncol = 2, rel_widths = c(1, 0.12))
+```
+
+```{r, fig.width = 6, fig.asp = 0.3}
+figure4.1_plots_leg
+```
+
 XX
 
 #### Analysis of asymmetries
