@@ -279,7 +279,7 @@ d1a_ad_scored_ad_diff <- diff_fun(d1a_ad_scored_ad)
 ```
 
 ```{r}
-plot_d1a_scored_ad_diff <- diffplot_fun(d1a_ad_scored_ad_diff)
+plot_d1a_ad_scored_ad_diff <- diffplot_fun(d1a_ad_scored_ad_diff)
 ```
 
 ### Study 1b
@@ -347,7 +347,7 @@ d1b_ad_scored_ad_diff <- diff_fun(d1b_ad_scored_ad)
 ```
 
 ```{r}
-plot_d1b_scored_ad_diff <- diffplot_fun(d1b_ad_scored_ad_diff)
+plot_d1b_ad_scored_ad_diff <- diffplot_fun(d1b_ad_scored_ad_diff)
 ```
 
 ### Study 1c
@@ -415,7 +415,7 @@ d1c_ad_scored_ad_diff <- diff_fun(d1c_ad_scored_ad)
 ```
 
 ```{r}
-plot_d1c_scored_ad_diff <- diffplot_fun(d1c_ad_scored_ad_diff)
+plot_d1c_ad_scored_ad_diff <- diffplot_fun(d1c_ad_scored_ad_diff)
 ```
 
 ### Study 1d
@@ -483,7 +483,7 @@ d1d_ad_scored_ad_diff <- diff_fun(d1d_ad_scored_ad)
 ```
 
 ```{r}
-plot_d1d_scored_ad_diff <- diffplot_fun(d1d_ad_scored_ad_diff, colors21)
+plot_d1d_ad_scored_ad_diff <- diffplot_fun(d1d_ad_scored_ad_diff, colors21)
 ```
 
 ## Discussion
@@ -544,46 +544,36 @@ ggdraw(figure4.1_cap)
 ```
 
 ```{r}
-figure4.1diff_plots <- plot_grid(plot_d1a_scored_ad_diff + 
-                                   labs(title = "Study 1a, Adults") +
-                                   theme(legend.position = "none"), 
-                                 plot_d1b_scored_ad_diff + 
-                                   labs(title = "Study 1b, Adults") +
-                                   theme(legend.position = "none"),
-                                 plot_d1c_scored_ad_diff + 
-                                   labs(title = "Study 1c, Adults") +
-                                   theme(legend.position = "none"), 
-                                 plot_d1d_scored_ad_diff + 
-                                   labs(title = "Study 1d, Adults") +
-                                   theme(legend.position = "none"), 
-                                 ncol = 2, rel_widths = c(1, 1.2), 
-                                 labels = "AUTO")
+figure4.2_plots123 <- plot_grid(plot_d1a_ad_scored_ad_diff + 
+                                  labs(title = "Study 1a: Adults") +
+                                  theme(legend.position = "bottom"), 
+                                plot_d1b_ad_scored_ad_diff + 
+                                  labs(title = "Study 1b: Adults") +
+                                  theme(legend.position = "bottom"),
+                                plot_d1c_ad_scored_ad_diff + 
+                                  labs(title = "Study 1c: Adults") +
+                                  theme(legend.position = "bottom"), 
+                                ncol = 3, rel_widths = c(1, 1, 1),
+                                labels = "AUTO")
 
-figure4.1diff_leg <- plot_grid(
-  get_legend(plot_d1b_scored_ad_diff +
-               # scale_color_manual(values = colors02,
-               #                    guide = guide_legend(direction = "vertical")) +
-               scale_fill_manual("Target character",
-                                 values = colors02,
-                                 guide = guide_legend(direction = "vertical",
-                                                      ncol = 1))),
-  get_legend(plot_d1d_scored_ad_diff +
-               # scale_color_manual(values = colors21,
-               #                    guide = guide_legend(direction = "vertical")) +
-               scale_fill_manual("Target character",
-                                 values = colors21,
-                                 guide = guide_legend(direction = "vertical",
-                                                      ncol = 2))),
-  ncol = 1, align = "h", axis = "l")
+figure4.2_plots4 <- plot_grid(
+  plot_d1d_ad_scored_ad_diff +
+    labs(title = "Study 1d: Adults") +
+    theme(legend.position = "bottom") +
+    scale_color_manual("Target character", values = colors21,
+                       guide = guide_legend(direction = "horizontal", ncol = 7)) +
+    scale_fill_manual("Target character", values = colors21,
+                      guide = guide_legend(direction = "horizontal", ncol = 7)),
+  labels = "D")
 
-figure4.1diff_plots_leg <- plot_grid(figure4.1diff_plots, figure4.1diff_leg,
-                                     ncol = 2, rel_widths = c(1, 1))
+figure4.2_plots <- plot_grid(figure4.2_plots123, figure4.2_plots4,
+                             ncol = 1, rel_heights = c(1, 1.1))
 
-figure4.1diff_cap <- add_sub(figure4.1diff_plots_leg, str_wrap("PLACEHOLDER", 110), x = 0, hjust = 0)
+figure4.2_cap <- add_sub(figure4.2_plots, str_wrap("Figure 4.2: Difference scores between US adults' attributions of conceptual units in Studies 1a-1d. For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 140), x = 0, hjust = 0)
 ```
 
-```{r, include = T, fig.width = 5, fig.asp = 1}
-ggdraw(figure4.1diff_cap)
+```{r, include = T, fig.width = 6, fig.asp = 0.8}
+ggdraw(figure4.2_cap)
 ```
 
 
@@ -648,6 +638,14 @@ fig_d2_ad_plots_leg_title <- plot_grid(fig_d2_ad_title, fig_d2_ad_plots_leg,
 ```
 
 #### Analysis of asymmetries
+
+```{r}
+d2_ad_scored_ad_diff <- diff_fun(d2_ad_scored_ad)
+```
+
+```{r}
+plot_d2_ad_scored_ad_diff <- diffplot_fun(d2_ad_scored_ad_diff, colors02)
+```
 
 XX
 
@@ -792,6 +790,28 @@ fig_d2_79_scored_79_plots_leg_title <- plot_grid(
 
 #### Analysis of asymmetries
 
+##### Using adults' scales
+
+```{r}
+d2_79_scored_ad_diff <- diff_fun(d2_79_scored_ad)
+```
+
+```{r}
+plot_d2_79_scored_ad_diff <- diffplot_fun(d2_79_scored_ad_diff, colors02)
+```
+
+XX
+
+##### Using children's own scales
+
+```{r}
+d2_79_scored_79_diff <- diff_fun(d2_79_scored_79)
+```
+
+```{r}
+plot_d2_79_scored_79_diff <- diffplot_fun(d2_79_scored_79_diff, colors02)
+```
+
 XX
 
 ## Discussion
@@ -831,29 +851,49 @@ table4.2
 ```
 
 ```{r}
-figure4.2 <- plot_grid(fig_d2_ad_plots_leg_title, 
+figure4.3 <- plot_grid(fig_d2_ad_plots_leg_title, 
                        fig_d2_79_scored_ad_plots_leg_title,
                        fig_d2_all_scored_ad_plots_leg_title,
                        ncol = 1)
 
-figure4.2_cap <- add_sub(figure4.2, str_wrap("Figure 4.2: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 2, scored using adults' BODY, HEART, and MIND scales (see Table 4.2). Plots are organized by sample (rows) and by pair of conceptual units (columns). (A) Adults. (B) Children (7-9y of age), scored using adults' scales. (C) A visualization of development between 7-9y and adulthood, using mean scores by character and age group. For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.3_cap <- add_sub(figure4.3, str_wrap("Figure 4.3: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 2, scored using adults' BODY, HEART, and MIND scales (see Table 4.2). Plots are organized by sample (rows) and by pair of conceptual units (columns). (A) Adults. (B) Children (7-9y of age), scored using adults' scales. (C) A visualization of development between 7-9y and adulthood, using mean scores by character and age group. For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.4}
-ggdraw(figure4.2_cap)
-```
-
-```{r}
-figure4.3 <- plot_grid(fig_d2_79_scored_79_plots_leg_title, 
-                       ncol = 1)
-
-figure4.3_cap <- add_sub(figure4.3, str_wrap("Figure 4.3: Relationships among children's attributions of conceptual units in Study 2, scored using their own scales (see Table 4.3). Plots are organized by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
-```
-
-```{r, include = T, fig.width = 5, fig.asp = 0.5}
 ggdraw(figure4.3_cap)
 ```
 
+```{r}
+figure4.4 <- plot_grid(fig_d2_79_scored_79_plots_leg_title, 
+                       ncol = 1)
+
+figure4.4_cap <- add_sub(figure4.4, str_wrap("Figure 4.4: Relationships among children's attributions of conceptual units in Study 2, scored using their own scales (see Table 4.3). Plots are organized by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 0.5}
+ggdraw(figure4.4_cap)
+```
+
+```{r}
+figure4.5_plots <- plot_grid(
+  plot_d2_ad_scored_ad_diff +
+    labs(title = "Study 2: Adults") +
+    theme(legend.position = "bottom"),
+  plot_d2_79_scored_ad_diff +
+    labs(title = "Study 2: Children, 7-9y (scored using adults' scales)") +
+    theme(legend.position = "bottom"),
+  plot_d2_79_scored_79_diff + 
+    labs(title = "Study 2: Children, 4-6y (scored using their own scales)") +
+    theme(legend.position = "bottom"), 
+  ncol = 3, rel_widths = c(1, 1, 1),
+  labels = "AUTO")
+
+figure4.5_cap <- add_sub(figure4.5_plots, str_wrap("Figure 4.5: Difference scores between US adults' and children's attributions of conceptual units in Study 2. this includes difference scores using adults' BODY, HEART, and MIND scales (panel B) and difference scores using children's own scales (panel C; see Table 4.2). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 8, fig.asp = 0.38}
+ggdraw(figure4.5_cap)
+```
 
 # Study 3: Conceptual change over early and middle childhood (4-9y)
 
@@ -922,6 +962,14 @@ fig_d3_ad_plots_leg_title <- plot_grid(fig_d3_ad_title, fig_d3_ad_plots_leg,
 #### Analysis of asymmetries
 
 XX
+
+```{r}
+d3_ad_scored_ad_diff <- diff_fun(d3_ad_scored_ad)
+```
+
+```{r}
+plot_d3_ad_scored_ad_diff <- diffplot_fun(d3_ad_scored_ad_diff, colors09)
+```
 
 ### Children (7-9y)
 
@@ -1027,7 +1075,29 @@ fig_d3_79_scored_79_plots_leg_title <- plot_grid(
 
 #### Analysis of asymmetries
 
+##### Using adults' scales
+
 XX
+
+```{r}
+d3_79_scored_ad_diff <- diff_fun(d3_79_scored_ad)
+```
+
+```{r}
+plot_d3_79_scored_ad_diff <- diffplot_fun(d3_79_scored_ad_diff, colors09)
+```
+
+##### Using children's own scales
+
+XX
+
+```{r}
+d3_79_scored_79_diff <- diff_fun(d3_79_scored_79)
+```
+
+```{r}
+plot_d3_79_scored_79_diff <- diffplot_fun(d3_79_scored_79_diff, colors09)
+```
 
 ### Children (4-6y)
 
@@ -1181,7 +1251,42 @@ fig_d3_46_scored_46_par_plots_leg_title <- plot_grid(
 
 #### Analysis of asymmetries
 
+##### Using adults' scales
+
 XX
+
+```{r}
+d3_46_scored_ad_diff <- diff_fun(d3_46_scored_ad)
+```
+
+```{r}
+plot_d3_46_scored_ad_diff <- diffplot_fun(d3_46_scored_ad_diff, colors09)
+```
+
+##### Using children's own scales (three-factor solution)
+
+XX
+
+```{r}
+d3_46_scored_46_wdm_diff <- diff_fun(d3_46_scored_46_wdm)
+```
+
+```{r}
+plot_d3_46_scored_46_wdm_diff <- diffplot_fun(d3_46_scored_46_wdm_diff, colors09)
+```
+
+##### Using children's own scales (two-factor solution)
+
+XX
+
+```{r}
+d3_46_scored_46_par_diff <- diff_fun(d3_46_scored_46_par)
+```
+
+```{r}
+plot_d3_46_scored_46_par_diff <- diffplot_fun(d3_46_scored_46_par_diff, colors09)
+```
+
 
 ## Discussion
 
@@ -1305,30 +1410,72 @@ fig_d3_all_scored_ad_plots_leg_title <- plot_grid(
 ```
 
 ```{r}
-figure4.4 <- plot_grid(fig_d3_ad_plots_leg_title, 
+figure4.8 <- plot_grid(fig_d3_ad_plots_leg_title, 
                        fig_d3_79_scored_ad_plots_leg_title,
                        fig_d3_46_scored_ad_plots_leg_title, 
                        fig_d3_all_scored_ad_plots_leg_title,
                        ncol = 1)
 
-figure4.4_cap <- add_sub(figure4.4, str_wrap("Figure 4.4: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using adults' BODY, HEART, and MIND scales (see Table 4.3). (A) Adults. (B) Older children (7-9y of age). (C) Younger children (4-6y of age). (D) A visualization of development between 4-9y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-C, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.8_cap <- add_sub(figure4.8, str_wrap("Figure 4.8: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using adults' BODY, HEART, and MIND scales (see Table 4.3). (A) Adults. (B) Older children (7-9y of age). (C) Younger children (4-6y of age). (D) A visualization of development between 4-9y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-C, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.8}
-ggdraw(figure4.4_cap)
+ggdraw(figure4.8_cap)
 ```
 
 ```{r}
-figure4.5 <- plot_grid(fig_d3_79_scored_79_plots_leg_title, 
+figure4.9 <- plot_grid(fig_d3_79_scored_79_plots_leg_title, 
                        fig_d3_46_scored_46_wdm_plots_leg_title,
                        fig_d3_46_scored_46_par_plots_leg_title,
                        ncol = 1)
 
-figure4.5_cap <- add_sub(figure4.5, str_wrap("Figure 4.5: Relationships among older and younger children's attributions of conceptual units in Study 3, scored using their own scales (see Table 4.3). For younger children (4-6y of age), two sets of scores are presented: using a three-factor EFA solution (B1-B3) and using a two-factor EFA solution (C1-C3). Plots are organized by sample and scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.9_cap <- add_sub(figure4.9, str_wrap("Figure 4.9: Relationships among older and younger children's attributions of conceptual units in Study 3, scored using their own scales (see Table 4.3). For younger children (4-6y of age), two sets of scores are presented: using a three-factor EFA solution (B1-B3) and using a two-factor EFA solution (C1-C3). Plots are organized by sample and scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.4}
-ggdraw(figure4.5_cap)
+ggdraw(figure4.9_cap)
+```
+
+```{r}
+figure4.10_plots <- plot_grid(
+  plot_d3_ad_scored_ad_diff +
+    labs(title = "Study 3: Adults") +
+    theme(legend.position = "bottom"),
+  plot_d3_79_scored_ad_diff +
+    labs(title = "Study 3: Children, 7-9y (scored using adults' scales)") +
+    theme(legend.position = "bottom"),
+  plot_d3_46_scored_ad_diff + 
+    labs(title = "Study 3: Children, 4-6y (scored using adults' scales)") +
+    theme(legend.position = "bottom"), 
+  ncol = 3, rel_widths = c(1, 1, 1),
+  labels = "AUTO")
+
+figure4.10_cap <- add_sub(figure4.10_plots, str_wrap("Figure 4.10: Difference scores between US adults' and children's attributions of conceptual units in Study 3. this includes difference scores using adults' BODY, HEART, and MIND scales (panel B) and difference scores using children's own scales (panel C; see Table 4.2). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 8, fig.asp = 0.38}
+ggdraw(figure4.10_cap)
+```
+
+```{r}
+figure4.11_plots <- plot_grid(
+  plot_d3_79_scored_79_diff +
+    labs(title = "Study 3: Children, 7-9y (scored using their own scales)") +
+    theme(legend.position = "bottom"),
+  plot_d3_46_scored_46_wdm_diff + 
+    labs(title = "Study 3: Children, 4-6y (scored using their own scales, 3-factor solution)") +
+    theme(legend.position = "bottom"), 
+  plot_d3_46_scored_46_par_diff + 
+    labs(title = "Study 3: Children, 4-6y (scored using their own scales, 2-factor solution)") +
+    theme(legend.position = "bottom"), 
+  ncol = 3, rel_widths = c(1, 1, 1),
+  labels = "AUTO")
+
+figure4.11_cap <- add_sub(figure4.11_plots, str_wrap("Figure 4.11: Difference scores between 7- to 9-year-old children's and 4- to 6-year-old children's attributions of conceptual units in Study 3, using their own scales. For younger children (4-6y of age), this includes difference scores using the three-factor EFA solution (panel B) and difference scores using the two-factor solution (panel C; see Table 4.2). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 8, fig.asp = 0.38}
+ggdraw(figure4.11_cap)
 ```
 
 
@@ -1397,6 +1544,14 @@ fig_d4_ad_plots_leg_title <- plot_grid(fig_d4_ad_title, fig_d4_ad_plots_leg,
 #### Analysis of asymmetries
 
 XX
+
+```{r}
+d4_ad_scored_ad_diff <- diff_fun(d4_ad_scored_ad)
+```
+
+```{r}
+plot_d4_ad_scored_ad_diff <- diffplot_fun(d4_ad_scored_ad_diff, colors02)
+```
 
 ### Children (4-5y)
 
@@ -1562,6 +1717,40 @@ fig_d4_46_scored_46_wdm_plots_leg_title <- plot_grid(
 
 #### Analysis of asymmetries
 
+##### Using adults' scales
+
+```{r}
+d4_46_scored_ad_diff <- diff_fun(d4_46_scored_ad)
+```
+
+```{r}
+plot_d4_46_scored_ad_diff <- diffplot_fun(d4_46_scored_ad_diff, colors02)
+```
+
+XX
+
+##### Using children's own scales (three-factor solution)
+
+```{r}
+d4_46_scored_46_par_diff <- diff_fun(d4_46_scored_46_par)
+```
+
+```{r}
+plot_d4_46_scored_46_par_diff <- diffplot_fun(d4_46_scored_46_par_diff, colors02)
+```
+
+XX
+
+##### Using children's own scales (four-factor solution)
+
+```{r}
+d4_46_scored_46_wdm_diff <- diff_fun(d4_46_scored_46_wdm)
+```
+
+```{r}
+plot_d4_46_scored_46_wdm_diff <- diffplot_fun(d4_46_scored_46_wdm_diff, colors02)
+```
+
 XX
 
 ## Discussion
@@ -1674,28 +1863,64 @@ fig_d4_all_scored_ad_plots_leg_title <- plot_grid(
 ```
 
 ```{r}
-figure4.6 <- plot_grid(fig_d4_ad_plots_leg_title, 
-                       fig_d4_46_scored_ad_plots_leg_title,
-                       fig_d4_all_scored_ad_plots_leg_title,
-                       ncol = 1)
+figure4.12 <- plot_grid(fig_d4_ad_plots_leg_title, 
+                        fig_d4_46_scored_ad_plots_leg_title,
+                        fig_d4_all_scored_ad_plots_leg_title,
+                        ncol = 1)
 
-figure4.6_cap <- add_sub(figure4.6, str_wrap("Figure 4.6: Relationships among US adults' and children's attributions of conceptual units in Study 4, scored using adults' BODY, HEART, and MIND scales (see Table 4.5). (A) Adults. (B) Children (4-5y of age). (C) A visualization of development between 4-5y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.12_cap <- add_sub(figure4.12, str_wrap("Figure 4.12: Relationships among US adults' and children's attributions of conceptual units in Study 4, scored using adults' BODY, HEART, and MIND scales (see Table 4.5). (A) Adults. (B) Children (4-5y of age). (C) A visualization of development between 4-5y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.4}
-ggdraw(figure4.6_cap)
+ggdraw(figure4.12_cap)
 ```
 
 ```{r}
-figure4.7 <- plot_grid(fig_d4_46_scored_46_par_plots_leg_title, 
-                       fig_d4_46_scored_46_wdm_plots_leg_title,
-                       ncol = 1, rel_heights = c(1, 2))
+figure4.13 <- plot_grid(fig_d4_46_scored_46_par_plots_leg_title, 
+                        fig_d4_46_scored_46_wdm_plots_leg_title,
+                        ncol = 1, rel_heights = c(1, 2))
 
-figure4.7_cap <- add_sub(figure4.7, str_wrap("Figure 4.7: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using their own scales scales (see Table 4.3). Ttwo sets of scores are presented: using a three-factor EFA solution (A1-A3) and using a four-factor EFA solution (B1-B6). Plots are organized by scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.13_cap <- add_sub(figure4.13, str_wrap("Figure 4.13: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using their own scales scales (see Table 4.3). Ttwo sets of scores are presented: using a three-factor EFA solution (A1-A3) and using a four-factor EFA solution (B1-B6). Plots are organized by scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.35}
-ggdraw(figure4.7_cap)
+ggdraw(figure4.13_cap)
+```
+
+```{r}
+figure4.14_plots <- plot_grid(
+  plot_d4_ad_scored_ad_diff +
+    labs(title = "Study 4: Adults") +
+    theme(legend.position = "bottom"),
+  plot_d4_46_scored_ad_diff + 
+    labs(title = "Study 4: Children, 4-6y (scored using adults' scales)") +
+    theme(legend.position = "bottom"), 
+  ncol = 2, rel_widths = c(1, 1),
+  labels = "AUTO")
+
+figure4.14_cap <- add_sub(figure4.14_plots, str_wrap("Figure 4.14: Difference scores between US adults' and children's attributions of conceptual units in Study 4. For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 8, fig.asp = 0.38}
+ggdraw(figure4.14_cap)
+```
+
+```{r}
+figure4.15_plots <- plot_grid(
+  plot_d4_46_scored_46_par_diff + 
+    labs(title = "Study 4: Children, 4-6y (scored using their own scales, 3-factor solution)") +
+    theme(legend.position = "bottom"), 
+  plot_d4_46_scored_46_wdm_diff + 
+    labs(title = "Study 4: Children, 4-6y (scored using their own scales, 4-factor solution)") +
+    theme(legend.position = "bottom"), 
+  ncol = 2, rel_widths = c(1, 2),
+  labels = "AUTO")
+
+figure4.15_cap <- add_sub(figure4.15_plots, str_wrap("Figure 4.15: Difference scores between 4- to 5-year-old children's attributions of conceptual units in Study 4, using their own scales. This includes difference scores using the three-factor EFA solution (panel A) and difference scores using the four-factor solution (panel B; see Table 4.2). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 8, fig.asp = 0.38}
+ggdraw(figure4.15_cap)
 ```
 
 

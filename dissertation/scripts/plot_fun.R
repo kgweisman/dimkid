@@ -268,24 +268,20 @@ relviz_agegp_fun <- function(d_scored, age_groups, age_group_labels,
 }
 
 # function for plotting difference scores between factors
-diffplot_fun <- function(df_diff, colors = colors02){
-  
-  colors_cols <- case_when(length(colors) == 2 ~ 2,
-                           length(colors) == 9 ~ 9,
-                           length(colors) == 21 ~ 7)
+diffplot_fun <- function(df_diff, colors = colors02, wid = 0.8){
   
   df_diff %>%
     ggplot(aes(x = pair, y = diff, color = character, fill = character)) +
     geom_hline(yintercept = 0, lty = 2) +
     geom_point(alpha = 0.25, show.legend = F,
-               position = position_jitterdodge(jitter.width = 0.4, 
-                                               dodge.width = 0.5)) +
+               position = position_jitterdodge(jitter.width = wid - 0.1, 
+                                               dodge.width = wid)) +
     geom_pointrange(data = . %>%
                       group_by(pair, character) %>%
                       multi_boot_standard(col = "diff", na.rm = T) %>%
                       ungroup(),
                     aes(y = mean, ymin = ci_lower, ymax = ci_upper),
-                    position = position_dodge(width = 0.5),
+                    position = position_dodge(width = wid),
                     color = "black", shape = 23) +
     scale_x_discrete("Pair of conceptual units") +
     scale_y_continuous("Difference in scores", limits = c(-1, 1)) +
