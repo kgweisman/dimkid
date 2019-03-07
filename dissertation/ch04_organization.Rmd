@@ -19,7 +19,7 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 #   word_document:
 #     reference_docx: "./word-styles-reference.docx"
 # always_allow_html: yes
-   
+
 # # for knitting to .nb.html 
 # output:
 #   html_notebook:
@@ -86,39 +86,39 @@ efa_wdm_d4_46 <- readRDS(file = "./efas/efa_wdm_d4_46")
 # load in factor names from Chapter III
 # study 1
 factor_names_efa_wdm_d1a_ad <- readRDS( 
-        file = "./factor_names/factor_names_efa_wdm_d1a_ad")
+  file = "./factor_names/factor_names_efa_wdm_d1a_ad")
 factor_names_efa_wdm_d1b_ad <- readRDS( 
-        file = "./factor_names/factor_names_efa_wdm_d1b_ad")
+  file = "./factor_names/factor_names_efa_wdm_d1b_ad")
 factor_names_efa_wdm_d1c_ad <- readRDS( 
-        file = "./factor_names/factor_names_efa_wdm_d1c_ad")
+  file = "./factor_names/factor_names_efa_wdm_d1c_ad")
 factor_names_efa_wdm_d1d_ad <- readRDS( 
-        file = "./factor_names/factor_names_efa_wdm_d1d_ad")
+  file = "./factor_names/factor_names_efa_wdm_d1d_ad")
 
 # study 2
 factor_names_efa_wdm_d2_ad <- readRDS( 
-        file = "./factor_names/factor_names_efa_wdm_d2_ad")
+  file = "./factor_names/factor_names_efa_wdm_d2_ad")
 factor_names_efa_par_d2_ad <- readRDS( 
-        file = "./factor_names/factor_names_efa_par_d2_ad")
+  file = "./factor_names/factor_names_efa_par_d2_ad")
 factor_names_efa_wdm_d2_79 <- readRDS( 
-        file = "./factor_names/factor_names_efa_wdm_d2_79")
+  file = "./factor_names/factor_names_efa_wdm_d2_79")
 
 # study 3
 factor_names_efa_wdm_d3_ad <- readRDS( 
-        file = "./factor_names/factor_names_efa_wdm_d3_ad")
+  file = "./factor_names/factor_names_efa_wdm_d3_ad")
 factor_names_efa_wdm_d3_79 <- readRDS( 
-        file = "./factor_names/factor_names_efa_wdm_d3_79")
+  file = "./factor_names/factor_names_efa_wdm_d3_79")
 factor_names_efa_wdm_d3_46 <- readRDS( 
-        file = "./factor_names/factor_names_efa_wdm_d3_46")
+  file = "./factor_names/factor_names_efa_wdm_d3_46")
 factor_names_efa_par_d3_46 <- readRDS( 
-        file = "./factor_names/factor_names_efa_par_d3_46")
+  file = "./factor_names/factor_names_efa_par_d3_46")
 
 # study 4
 factor_names_efa_wdm_d4_ad <- readRDS( 
-        file = "./factor_names/factor_names_efa_wdm_d4_ad")
+  file = "./factor_names/factor_names_efa_wdm_d4_ad")
 factor_names_efa_par_d4_46 <- readRDS( 
-        file = "./factor_names/factor_names_efa_par_d4_46")
+  file = "./factor_names/factor_names_efa_par_d4_46")
 factor_names_efa_wdm_d4_46 <- readRDS( 
-        file = "./factor_names/factor_names_efa_wdm_d4_46")
+  file = "./factor_names/factor_names_efa_wdm_d4_46")
 ```
 
 
@@ -198,10 +198,10 @@ outline:
 - reminder of basic intuition: in this sample, do participants tend to endorse A without B? B without A? is there an asymmetry here?
 - connect to the visualizations: asymmetries of points around the y=x line of equivalence
 - one way to boil this down to a number: difference scores (for each pair), comparisons to 0 via bayesian regressions
-    - for any pair: if 0, no evidence for hierarchy. if non-zero, some evidence.
-    - comparisons across pairs: further from 0, more hierarchical.
-    - caveat 1: these are post-hoc analyses! but still using confirmatory stats. 
-    - caveat 2: scores of (0,0) treated same as scores of (6,6), or anywhere in between.
+- for any pair: if 0, no evidence for hierarchy. if non-zero, some evidence.
+- comparisons across pairs: further from 0, more hierarchical.
+- caveat 1: these are post-hoc analyses! but still using confirmatory stats. 
+- caveat 2: scores of (0,0) treated same as scores of (6,6), or anywhere in between.
 
 
 # Study 1: An adult endpoint
@@ -240,15 +240,15 @@ plots_d1a_ad_scored_ad <- relviz_fun(d1a_ad_scored_ad)
 ```
 
 ```{r}
-figure4.1a_plots <- plot_grid(plots_d1a_ad_scored_ad[[1]] + 
-                               theme(legend.position = "none"),
-                             plots_d1a_ad_scored_ad[[2]] + 
-                               theme(legend.position = "none"),
-                             plots_d1a_ad_scored_ad[[3]] + 
-                               theme(legend.position = "none"),
-                             labels = c("A1", "A2", "A3"), ncol = 3)
+fig_d1a_ad_plots <- plot_grid(plots_d1a_ad_scored_ad[[1]] + 
+                                theme(legend.position = "none"),
+                              plots_d1a_ad_scored_ad[[2]] + 
+                                theme(legend.position = "none"),
+                              plots_d1a_ad_scored_ad[[3]] + 
+                                theme(legend.position = "none"),
+                              labels = c("A1", "A2", "A3"), ncol = 3)
 
-figure4.1a_leg <- get_legend(plots_d1a_ad_scored_ad[[1]] +
+fig_d1a_ad_leg <- get_legend(plots_d1a_ad_scored_ad[[1]] +
                                theme(legend.position = "bottom", 
                                      legend.direction = "horizontal") +
                                scale_fill_manual("Target character", 
@@ -263,20 +263,16 @@ figure4.1a_leg <- get_legend(plots_d1a_ad_scored_ad[[1]] +
                                                     title.position = "left",
                                                     direction = "horizontal",
                                                     ncol = 2)))
-  
-figure4.1a_plots_leg <- plot_grid(figure4.1a_plots,
-                                  figure4.1a_leg,
+
+fig_d1a_ad_plots_leg <- plot_grid(fig_d1a_ad_plots,
+                                  fig_d1a_ad_leg,
                                   ncol = 1, rel_heights = c(1, 0.05))
 
-figure4.1a_title <- ggdraw() + 
+fig_d1a_ad_title <- ggdraw() + 
   draw_label("Study 1a: Adults", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.1a_plots_leg_title <- plot_grid(figure4.1a_title, figure4.1a_plots_leg,
+fig_d1a_ad_plots_leg_title <- plot_grid(fig_d1a_ad_title, fig_d1a_ad_plots_leg,
                                         ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.1a_plots_leg_title
 ```
 
 #### Analysis of asymmetries
@@ -309,15 +305,15 @@ plots_d1b_ad_scored_ad <- relviz_fun(d1b_ad_scored_ad)
 ```
 
 ```{r}
-figure4.1b_plots <- plot_grid(plots_d1b_ad_scored_ad[[1]] + 
-                               theme(legend.position = "none"),
-                             plots_d1b_ad_scored_ad[[2]] + 
-                               theme(legend.position = "none"),
-                             plots_d1b_ad_scored_ad[[3]] + 
-                               theme(legend.position = "none"),
-                             labels = c("B1", "B2", "B3"), ncol = 3)
+fig_d1b_ad_plots <- plot_grid(plots_d1b_ad_scored_ad[[1]] + 
+                                theme(legend.position = "none"),
+                              plots_d1b_ad_scored_ad[[2]] + 
+                                theme(legend.position = "none"),
+                              plots_d1b_ad_scored_ad[[3]] + 
+                                theme(legend.position = "none"),
+                              labels = c("B1", "B2", "B3"), ncol = 3)
 
-figure4.1b_leg <- get_legend(plots_d1b_ad_scored_ad[[1]] +
+fig_d1b_ad_leg <- get_legend(plots_d1b_ad_scored_ad[[1]] +
                                theme(legend.position = "bottom", 
                                      legend.direction = "horizontal") +
                                scale_fill_manual("Target character", 
@@ -332,20 +328,16 @@ figure4.1b_leg <- get_legend(plots_d1b_ad_scored_ad[[1]] +
                                                     title.position = "left",
                                                     direction = "horizontal",
                                                     ncol = 2)))
-  
-figure4.1b_plots_leg <- plot_grid(figure4.1b_plots,
-                                  figure4.1b_leg,
+
+fig_d1b_ad_plots_leg <- plot_grid(fig_d1b_ad_plots,
+                                  fig_d1b_ad_leg,
                                   ncol = 1, rel_heights = c(1, 0.05))
 
-figure4.1b_title <- ggdraw() + 
+fig_d1b_ad_title <- ggdraw() + 
   draw_label("Study 1b: Adults", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.1b_plots_leg_title <- plot_grid(figure4.1b_title, figure4.1b_plots_leg,
+fig_d1b_ad_plots_leg_title <- plot_grid(fig_d1b_ad_title, fig_d1b_ad_plots_leg,
                                         ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.1b_plots_leg_title
 ```
 
 #### Analysis of asymmetries
@@ -378,15 +370,15 @@ plots_d1c_ad_scored_ad <- relviz_fun(d1c_ad_scored_ad)
 ```
 
 ```{r}
-figure4.1c_plots <- plot_grid(plots_d1c_ad_scored_ad[[1]] + 
-                               theme(legend.position = "none"),
-                             plots_d1c_ad_scored_ad[[2]] + 
-                               theme(legend.position = "none"),
-                             plots_d1c_ad_scored_ad[[3]] + 
-                               theme(legend.position = "none"),
-                             labels = c("C1", "C2", "C3"), ncol = 3)
+fig_d1c_ad_plots <- plot_grid(plots_d1c_ad_scored_ad[[1]] + 
+                                theme(legend.position = "none"),
+                              plots_d1c_ad_scored_ad[[2]] + 
+                                theme(legend.position = "none"),
+                              plots_d1c_ad_scored_ad[[3]] + 
+                                theme(legend.position = "none"),
+                              labels = c("C1", "C2", "C3"), ncol = 3)
 
-figure4.1c_leg <- get_legend(plots_d1c_ad_scored_ad[[1]] +
+fig_d1c_ad_leg <- get_legend(plots_d1c_ad_scored_ad[[1]] +
                                theme(legend.position = "bottom", 
                                      legend.direction = "horizontal") +
                                scale_fill_manual("Target character", 
@@ -401,20 +393,16 @@ figure4.1c_leg <- get_legend(plots_d1c_ad_scored_ad[[1]] +
                                                     title.position = "left",
                                                     direction = "horizontal",
                                                     ncol = 2)))
-  
-figure4.1c_plots_leg <- plot_grid(figure4.1c_plots,
-                                  figure4.1c_leg,
+
+fig_d1c_ad_plots_leg <- plot_grid(fig_d1c_ad_plots,
+                                  fig_d1c_ad_leg,
                                   ncol = 1, rel_heights = c(1, 0.05))
 
-figure4.1c_title <- ggdraw() + 
+fig_d1c_ad_title <- ggdraw() + 
   draw_label("Study 1c: Adults", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.1c_plots_leg_title <- plot_grid(figure4.1c_title, figure4.1c_plots_leg,
+fig_d1c_ad_plots_leg_title <- plot_grid(fig_d1c_ad_title, fig_d1c_ad_plots_leg,
                                         ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.1c_plots_leg_title
 ```
 
 #### Analysis of asymmetries
@@ -447,15 +435,15 @@ plots_d1d_ad_scored_ad <- relviz_fun(d1d_ad_scored_ad, colors = colors21)
 ```
 
 ```{r}
-figure4.1d_plots <- plot_grid(plots_d1d_ad_scored_ad[[1]] + 
-                               theme(legend.position = "none"),
-                             plots_d1d_ad_scored_ad[[2]] + 
-                               theme(legend.position = "none"),
-                             plots_d1d_ad_scored_ad[[3]] + 
-                               theme(legend.position = "none"),
-                             labels = c("D1", "D2", "D3"), ncol = 3)
+fig_d1d_ad_plots <- plot_grid(plots_d1d_ad_scored_ad[[1]] + 
+                                theme(legend.position = "none"),
+                              plots_d1d_ad_scored_ad[[2]] + 
+                                theme(legend.position = "none"),
+                              plots_d1d_ad_scored_ad[[3]] + 
+                                theme(legend.position = "none"),
+                              labels = c("D1", "D2", "D3"), ncol = 3)
 
-figure4.1d_leg <- get_legend(plots_d1d_ad_scored_ad[[1]] +
+fig_d1d_ad_leg <- get_legend(plots_d1d_ad_scored_ad[[1]] +
                                theme(legend.position = "bottom", 
                                      legend.direction = "horizontal") +
                                scale_fill_manual("Target character", 
@@ -470,20 +458,16 @@ figure4.1d_leg <- get_legend(plots_d1d_ad_scored_ad[[1]] +
                                                     title.position = "left",
                                                     direction = "horizontal",
                                                     ncol = 7)))
-  
-figure4.1d_plots_leg <- plot_grid(figure4.1d_plots,
-                                  figure4.1d_leg,
+
+fig_d1d_ad_plots_leg <- plot_grid(fig_d1d_ad_plots,
+                                  fig_d1d_ad_leg,
                                   ncol = 1, rel_heights = c(1, 0.2))
 
-figure4.1d_title <- ggdraw() + 
+fig_d1d_ad_title <- ggdraw() + 
   draw_label("Study 1d: Adults", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.1d_plots_leg_title <- plot_grid(figure4.1d_title, figure4.1d_plots_leg,
+fig_d1d_ad_plots_leg_title <- plot_grid(fig_d1d_ad_title, fig_d1d_ad_plots_leg,
                                         ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 6, fig.asp = 0.45}
-figure4.1d_plots_leg_title
 ```
 
 #### Analysis of asymmetries
@@ -492,6 +476,8 @@ XX
 
 
 ## Discussion
+
+XX
 
 ```{r}
 scales_study1 <- bind_rows(scales_efa_wdm_d1a_ad %>% mutate(study = "Study 1a"),
@@ -535,8 +521,8 @@ table4.1
 ```
 
 ```{r}
-figure4.1 <- plot_grid(figure4.1a_plots_leg_title, figure4.1b_plots_leg_title,
-                       figure4.1c_plots_leg_title, figure4.1d_plots_leg_title, 
+figure4.1 <- plot_grid(fig_d1a_ad_plots_leg_title, fig_d1b_ad_plots_leg_title,
+                       fig_d1c_ad_plots_leg_title, fig_d1d_ad_plots_leg_title, 
                        ncol = 1, rel_heights = c(1, 1, 1, 1.15))
 
 figure4.1_cap <- add_sub(figure4.1, str_wrap("Figure 4.1: Relationships among US adults' attributions of conceptual units in Studies 1a-1d, organized by study (rows) and pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
@@ -545,8 +531,6 @@ figure4.1_cap <- add_sub(figure4.1, str_wrap("Figure 4.1: Relationships among US
 ```{r, include = T, fig.width = 5, fig.asp = 1.8}
 ggdraw(figure4.1_cap)
 ```
-
-XX
 
 
 # Study 2: Conceptual change between middle childhood (7-9y) and adulthood
@@ -579,7 +563,7 @@ plots_d2_ad_scored_ad <- relviz_fun(d2_ad_scored_ad)
 ```
 
 ```{r}
-figure4.2a_plots <- plot_grid(plots_d2_ad_scored_ad[[1]] + 
+fig_d2_ad_plots <- plot_grid(plots_d2_ad_scored_ad[[1]] +
                                theme(legend.position = "none"),
                              plots_d2_ad_scored_ad[[2]] + 
                                theme(legend.position = "none"),
@@ -587,38 +571,32 @@ figure4.2a_plots <- plot_grid(plots_d2_ad_scored_ad[[1]] +
                                theme(legend.position = "none"),
                              labels = c("A1", "A2", "A3"), ncol = 3)
 
-figure4.2a_leg <- get_legend(plots_d2_ad_scored_ad[[1]] +
-                               theme(legend.position = "bottom", 
-                                     legend.direction = "horizontal") +
-                               scale_fill_manual("Target character", 
+fig_d2_ad_leg <- get_legend(plots_d2_ad_scored_ad[[1]] +
+                              theme(legend.position = "bottom", 
+                                    legend.direction = "horizontal") +
+                              scale_fill_manual("Target character", 
+                                                values = colors02,
+                                                guide = guide_legend(
+                                                  title.position = "left",
+                                                  direction = "horizontal", 
+                                                  ncol = 2)) +
+                              scale_color_manual("Target character",
                                                  values = colors02,
                                                  guide = guide_legend(
                                                    title.position = "left",
-                                                   direction = "horizontal", 
-                                                   ncol = 2)) +
-                               scale_color_manual("Target character",
-                                                  values = colors02,
-                                                  guide = guide_legend(
-                                                    title.position = "left",
-                                                    direction = "horizontal",
-                                                    ncol = 2)))
-  
-figure4.2a_plots_leg <- plot_grid(figure4.2a_plots,
-                                  figure4.2a_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
+                                                   direction = "horizontal",
+                                                   ncol = 2)))
 
-figure4.2a_title <- ggdraw() + 
+fig_d2_ad_plots_leg <- plot_grid(fig_d2_ad_plots,
+                                 fig_d2_ad_leg,
+                                 ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d2_ad_title <- ggdraw() + 
   draw_label("Study 2: Adults", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.2a_plots_leg_title <- plot_grid(figure4.2a_title, figure4.2a_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
+fig_d2_ad_plots_leg_title <- plot_grid(fig_d2_ad_title, fig_d2_ad_plots_leg,
+                                       ncol = 1, rel_heights = c(0.12, 1))
 ```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.2a_plots_leg_title
-```
-
-XX
 
 #### Analysis of asymmetries
 
@@ -651,44 +629,40 @@ plots_d2_79_scored_ad <- relviz_fun(d2_79_scored_ad)
 ```
 
 ```{r}
-figure4.2b_plots <- plot_grid(plots_d2_79_scored_ad[[1]] + 
-                               theme(legend.position = "none"),
-                             plots_d2_79_scored_ad[[2]] + 
-                               theme(legend.position = "none"),
-                             plots_d2_79_scored_ad[[3]] + 
-                               theme(legend.position = "none"),
-                             labels = c("B1", "B2", "B3"), ncol = 3)
+fig_d2_79_scored_ad_plots <- plot_grid(plots_d2_79_scored_ad[[1]] + 
+                                         theme(legend.position = "none"),
+                                       plots_d2_79_scored_ad[[2]] + 
+                                         theme(legend.position = "none"),
+                                       plots_d2_79_scored_ad[[3]] + 
+                                         theme(legend.position = "none"),
+                                       labels = c("B1", "B2", "B3"), ncol = 3)
 
-figure4.2b_leg <- get_legend(plots_d2_79_scored_ad[[1]] +
-                               theme(legend.position = "bottom", 
-                                     legend.direction = "horizontal") +
-                               scale_fill_manual("Target character", 
-                                                 values = colors02,
-                                                 guide = guide_legend(
-                                                   title.position = "left",
-                                                   direction = "horizontal", 
-                                                   ncol = 2)) +
-                               scale_color_manual("Target character",
-                                                  values = colors02,
-                                                  guide = guide_legend(
-                                                    title.position = "left",
-                                                    direction = "horizontal",
-                                                    ncol = 2)))
-  
-figure4.2b_plots_leg <- plot_grid(figure4.2b_plots,
-                                  figure4.2b_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
+fig_d2_79_scored_ad_leg <- get_legend(plots_d2_79_scored_ad[[1]] +
+                                        theme(legend.position = "bottom", 
+                                              legend.direction = "horizontal") +
+                                        scale_fill_manual("Target character", 
+                                                          values = colors02,
+                                                          guide = guide_legend(
+                                                            title.position = "left",
+                                                            direction = "horizontal", 
+                                                            ncol = 2)) +
+                                        scale_color_manual("Target character",
+                                                           values = colors02,
+                                                           guide = guide_legend(
+                                                             title.position = "left",
+                                                             direction = "horizontal",
+                                                             ncol = 2)))
 
-figure4.2b_title <- ggdraw() + 
+fig_d2_79_scored_ad_plots_leg <- plot_grid(fig_d2_79_scored_ad_plots,
+                                           fig_d2_79_scored_ad_leg,
+                                           ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d2_79_scored_ad_title <- ggdraw() + 
   draw_label("Study 2: Children, 7-9y (scored using adults' scales)", 
              size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.2b_plots_leg_title <- plot_grid(figure4.2b_title, figure4.2b_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.2b_plots_leg_title
+fig_d2_79_scored_ad_plots_leg_title <- plot_grid(fig_d2_79_scored_ad_title, fig_d2_79_scored_ad_plots_leg,
+                                                 ncol = 1, rel_heights = c(0.12, 1))
 ```
 
 ```{r}
@@ -699,41 +673,36 @@ plots_agegp_d2_scored_ad <- relviz_agegp_fun(
 ```
 
 ```{r}
-figure4.2all_plots <- plot_grid(plots_agegp_d2_scored_ad[[1]] + 
-                               theme(legend.position = "none"),
-                             plots_agegp_d2_scored_ad[[2]] + 
-                               theme(legend.position = "none"),
-                             plots_agegp_d2_scored_ad[[3]] + 
-                               theme(legend.position = "none"),
-                             labels = c("C1", "C2", "C3"), ncol = 3)
+fig_d2_all_scored_ad_plots <- plot_grid(plots_agegp_d2_scored_ad[[1]] + 
+                                          theme(legend.position = "none"),
+                                        plots_agegp_d2_scored_ad[[2]] + 
+                                          theme(legend.position = "none"),
+                                        plots_agegp_d2_scored_ad[[3]] + 
+                                          theme(legend.position = "none"),
+                                        labels = c("C1", "C2", "C3"), ncol = 3)
 
-figure4.2all_leg <- get_legend(plots_agegp_d2_scored_ad[[1]] +
-                               theme(legend.position = "bottom", 
-                                     legend.direction = "horizontal") +
-                               scale_color_manual("Target character",
-                                                  values = colors02,
-                                                  na.translate = F,
-                                                  guide = guide_legend(
-                                                    title.position = "left",
-                                                    direction = "horizontal",
-                                                    ncol = 2)))
-  
-figure4.2all_plots_leg <- plot_grid(figure4.2all_plots,
-                                  figure4.2all_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
+fig_d2_all_scored_ad_leg <- get_legend(plots_agegp_d2_scored_ad[[1]] +
+                                         theme(legend.position = "bottom", 
+                                               legend.direction = "horizontal") +
+                                         scale_color_manual("Target character",
+                                                            values = colors02,
+                                                            na.translate = F,
+                                                            guide = guide_legend(
+                                                              title.position = "left",
+                                                              direction = "horizontal",
+                                                              ncol = 2)))
 
-figure4.2all_title <- ggdraw() + 
+fig_d2_all_scored_ad_plots_leg <- plot_grid(fig_d2_all_scored_ad_plots,
+                                            fig_d2_all_scored_ad_leg,
+                                            ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d2_all_scored_ad_title <- ggdraw() + 
   draw_label("Tracking development between 7-9y and adulthood (scored using adults' scales)", 
              size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.2all_plots_leg_title <- plot_grid(figure4.2all_title, figure4.2all_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
+fig_d2_all_scored_ad_plots_leg_title <- plot_grid(fig_d2_all_scored_ad_title, fig_d2_all_scored_ad_plots_leg,
+                                                  ncol = 1, rel_heights = c(0.12, 1))
 ```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.2all_plots_leg_title
-```
-
 
 ##### Using children's own scales
 
@@ -744,44 +713,40 @@ plots_d2_79_scored_79 <- relviz_fun(d2_79_scored_79)
 ```
 
 ```{r}
-figure4.2c_plots <- plot_grid(plots_d2_79_scored_79[[1]] + 
-                               theme(legend.position = "none"),
-                             plots_d2_79_scored_79[[2]] + 
-                               theme(legend.position = "none"),
-                             plots_d2_79_scored_79[[3]] + 
-                               theme(legend.position = "none"),
-                             labels = c("A1", "A2", "A3"), ncol = 3)
+fig_d2_79_scored_79_plots <- plot_grid(plots_d2_79_scored_79[[1]] + 
+                                         theme(legend.position = "none"),
+                                       plots_d2_79_scored_79[[2]] + 
+                                         theme(legend.position = "none"),
+                                       plots_d2_79_scored_79[[3]] + 
+                                         theme(legend.position = "none"),
+                                       labels = c("A1", "A2", "A3"), ncol = 3)
 
-figure4.2c_leg <- get_legend(plots_d2_79_scored_79[[1]] +
-                               theme(legend.position = "bottom", 
-                                     legend.direction = "horizontal") +
-                               scale_fill_manual("Target character", 
-                                                 values = colors02,
-                                                 guide = guide_legend(
-                                                   title.position = "left",
-                                                   direction = "horizontal", 
-                                                   ncol = 2)) +
-                               scale_color_manual("Target character",
-                                                  values = colors02,
-                                                  guide = guide_legend(
-                                                    title.position = "left",
-                                                    direction = "horizontal",
-                                                    ncol = 2)))
-  
-figure4.2c_plots_leg <- plot_grid(figure4.2c_plots,
-                                  figure4.2c_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
+fig_d2_79_scored_79_leg <- get_legend(plots_d2_79_scored_79[[1]] +
+                                        theme(legend.position = "bottom", 
+                                              legend.direction = "horizontal") +
+                                        scale_fill_manual("Target character", 
+                                                          values = colors02,
+                                                          guide = guide_legend(
+                                                            title.position = "left",
+                                                            direction = "horizontal", 
+                                                            ncol = 2)) +
+                                        scale_color_manual("Target character",
+                                                           values = colors02,
+                                                           guide = guide_legend(
+                                                             title.position = "left",
+                                                             direction = "horizontal",
+                                                             ncol = 2)))
 
-figure4.2c_title <- ggdraw() + 
+fig_d2_79_scored_79_plots_leg <- plot_grid(fig_d2_79_scored_79_plots,
+                                           fig_d2_79_scored_79_leg,
+                                           ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d2_79_scored_79_title <- ggdraw() + 
   draw_label("Study 2: Children, 7-9y (scored using their own scales)", 
              size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.2c_plots_leg_title <- plot_grid(figure4.2c_title, figure4.2c_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.2c_plots_leg_title
+fig_d2_79_scored_79_plots_leg_title <- plot_grid(fig_d2_79_scored_79_title, fig_d2_79_scored_79_plots_leg,
+                                                 ncol = 1, rel_heights = c(0.12, 1))
 ```
 
 #### Analysis of asymmetries
@@ -825,8 +790,9 @@ table4.2
 ```
 
 ```{r}
-figure4.2 <- plot_grid(figure4.2a_plots_leg_title, figure4.2b_plots_leg_title,
-                       figure4.2all_plots_leg_title,
+figure4.2 <- plot_grid(fig_d2_ad_plots_leg_title, 
+                       fig_d2_79_scored_ad_plots_leg_title,
+                       fig_d2_all_scored_ad_plots_leg_title,
                        ncol = 1)
 
 figure4.2_cap <- add_sub(figure4.2, str_wrap("Figure 4.2: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 2, scored using adults' BODY, HEART, and MIND scales (see Table 4.2). Plots are organized by sample (rows) and by pair of conceptual units (columns). (A) Adults. (B) Children (7-9y of age), scored using adults' scales. (C) A visualization of development between 7-9y and adulthood, using mean scores by character and age group. For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
@@ -837,7 +803,7 @@ ggdraw(figure4.2_cap)
 ```
 
 ```{r}
-figure4.3 <- plot_grid(figure4.2c_plots_leg_title, 
+figure4.3 <- plot_grid(fig_d2_79_scored_79_plots_leg_title, 
                        ncol = 1)
 
 figure4.3_cap <- add_sub(figure4.3, str_wrap("Figure 4.3: Relationships among children's attributions of conceptual units in Study 2, scored using their own scales (see Table 4.3). Plots are organized by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
@@ -880,7 +846,7 @@ plots_d3_ad_scored_ad <- relviz_fun(d3_ad_scored_ad, colors = colors09)
 ```
 
 ```{r}
-figure4.3a_plots <- plot_grid(plots_d3_ad_scored_ad[[1]] + 
+fig_d3_ad_plots <- plot_grid(plots_d3_ad_scored_ad[[1]] + 
                                theme(legend.position = "none"),
                              plots_d3_ad_scored_ad[[2]] + 
                                theme(legend.position = "none"),
@@ -888,35 +854,31 @@ figure4.3a_plots <- plot_grid(plots_d3_ad_scored_ad[[1]] +
                                theme(legend.position = "none"),
                              labels = c("A1", "A2", "A3"), ncol = 3)
 
-figure4.3a_leg <- get_legend(plots_d3_ad_scored_ad[[1]] +
-                               theme(legend.position = "bottom", 
-                                     legend.direction = "horizontal") +
-                               scale_fill_manual("Target character", 
+fig_d3_ad_leg <- get_legend(plots_d3_ad_scored_ad[[1]] +
+                              theme(legend.position = "bottom", 
+                                    legend.direction = "horizontal") +
+                              scale_fill_manual("Target character", 
+                                                values = colors09,
+                                                guide = guide_legend(
+                                                  title.position = "left",
+                                                  direction = "horizontal", 
+                                                  ncol = 9)) +
+                              scale_color_manual("Target character",
                                                  values = colors09,
                                                  guide = guide_legend(
                                                    title.position = "left",
-                                                   direction = "horizontal", 
-                                                   ncol = 9)) +
-                               scale_color_manual("Target character",
-                                                  values = colors09,
-                                                  guide = guide_legend(
-                                                    title.position = "left",
-                                                    direction = "horizontal",
-                                                    ncol = 9)))
-  
-figure4.3a_plots_leg <- plot_grid(figure4.3a_plots,
-                                  figure4.3a_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
+                                                   direction = "horizontal",
+                                                   ncol = 9)))
 
-figure4.3a_title <- ggdraw() + 
+fig_d3_ad_plots_leg <- plot_grid(fig_d3_ad_plots,
+                                 fig_d3_ad_leg,
+                                 ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d3_ad_title <- ggdraw() + 
   draw_label("Study 3: Adults", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.3a_plots_leg_title <- plot_grid(figure4.3a_title, figure4.3a_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.3a_plots_leg_title
+fig_d3_ad_plots_leg_title <- plot_grid(fig_d3_ad_title, fig_d3_ad_plots_leg,
+                                       ncol = 1, rel_heights = c(0.12, 1))
 ```
 
 #### Analysis of asymmetries
@@ -950,43 +912,39 @@ plots_d3_79_scored_ad <- relviz_fun(d3_79_scored_ad, colors = colors09)
 ```
 
 ```{r}
-figure4.3b_plots <- plot_grid(plots_d3_79_scored_ad[[1]] + 
-                               theme(legend.position = "none"),
-                             plots_d3_79_scored_ad[[2]] + 
-                               theme(legend.position = "none"),
-                             plots_d3_79_scored_ad[[3]] + 
-                               theme(legend.position = "none"),
-                             labels = c("B1", "B2", "B3"), ncol = 3)
+fig_d3_79_scored_ad_plots <- plot_grid(plots_d3_79_scored_ad[[1]] + 
+                                         theme(legend.position = "none"),
+                                       plots_d3_79_scored_ad[[2]] + 
+                                         theme(legend.position = "none"),
+                                       plots_d3_79_scored_ad[[3]] + 
+                                         theme(legend.position = "none"),
+                                       labels = c("B1", "B2", "B3"), ncol = 3)
 
-figure4.3b_leg <- get_legend(plots_d3_79_scored_ad[[1]] +
-                               theme(legend.position = "bottom", 
-                                     legend.direction = "horizontal") +
-                               scale_fill_manual("Target character", 
-                                                 values = colors09,
-                                                 guide = guide_legend(
-                                                   title.position = "left",
-                                                   direction = "horizontal", 
-                                                   ncol = 9)) +
-                               scale_color_manual("Target character",
-                                                  values = colors09,
-                                                  guide = guide_legend(
-                                                    title.position = "left",
-                                                    direction = "horizontal",
-                                                    ncol = 9)))
-  
-figure4.3b_plots_leg <- plot_grid(figure4.3b_plots,
-                                  figure4.3b_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
+fig_d3_79_scored_ad_leg <- get_legend(plots_d3_79_scored_ad[[1]] +
+                                        theme(legend.position = "bottom", 
+                                              legend.direction = "horizontal") +
+                                        scale_fill_manual("Target character", 
+                                                          values = colors09,
+                                                          guide = guide_legend(
+                                                            title.position = "left",
+                                                            direction = "horizontal", 
+                                                            ncol = 9)) +
+                                        scale_color_manual("Target character",
+                                                           values = colors09,
+                                                           guide = guide_legend(
+                                                             title.position = "left",
+                                                             direction = "horizontal",
+                                                             ncol = 9)))
 
-figure4.3b_title <- ggdraw() + 
+fig_d3_79_scored_ad_plots_leg <- plot_grid(fig_d3_79_scored_ad_plots,
+                                           fig_d3_79_scored_ad_leg,
+                                           ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d3_79_scored_ad_title <- ggdraw() + 
   draw_label("Study 3: Children, 7-9y (scored using adults' scales)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.3b_plots_leg_title <- plot_grid(figure4.3b_title, figure4.3b_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.3b_plots_leg_title
+fig_d3_79_scored_ad_plots_leg_title <- plot_grid(fig_d3_79_scored_ad_title, fig_d3_79_scored_ad_plots_leg,
+                                                 ncol = 1, rel_heights = c(0.12, 1))
 ```
 
 ##### Using children's own scales
@@ -998,43 +956,39 @@ plots_d3_79_scored_79 <- relviz_fun(d3_79_scored_79, colors = colors09)
 ```
 
 ```{r}
-figure4.3c_plots <- plot_grid(plots_d3_79_scored_79[[1]] + 
-                               theme(legend.position = "none"),
-                             plots_d3_79_scored_79[[2]] + 
-                               theme(legend.position = "none"),
-                             plots_d3_79_scored_79[[3]] + 
-                               theme(legend.position = "none"),
-                             labels = c("A1", "A2", "A3"), ncol = 3)
+fig_d3_79_scored_79_plots <- plot_grid(plots_d3_79_scored_79[[1]] + 
+                                         theme(legend.position = "none"),
+                                       plots_d3_79_scored_79[[2]] + 
+                                         theme(legend.position = "none"),
+                                       plots_d3_79_scored_79[[3]] + 
+                                         theme(legend.position = "none"),
+                                       labels = c("A1", "A2", "A3"), ncol = 3)
 
-figure4.3c_leg <- get_legend(plots_d3_79_scored_79[[1]] +
-                               theme(legend.position = "bottom", 
-                                     legend.direction = "horizontal") +
-                               scale_fill_manual("Target character", 
-                                                 values = colors09,
-                                                 guide = guide_legend(
-                                                   title.position = "left",
-                                                   direction = "horizontal", 
-                                                   ncol = 9)) +
-                               scale_color_manual("Target character",
-                                                  values = colors09,
-                                                  guide = guide_legend(
-                                                    title.position = "left",
-                                                    direction = "horizontal",
-                                                    ncol = 9)))
-  
-figure4.3c_plots_leg <- plot_grid(figure4.3c_plots,
-                                  figure4.3c_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
+fig_d3_79_scored_79_leg <- get_legend(plots_d3_79_scored_79[[1]] +
+                                        theme(legend.position = "bottom", 
+                                              legend.direction = "horizontal") +
+                                        scale_fill_manual("Target character", 
+                                                          values = colors09,
+                                                          guide = guide_legend(
+                                                            title.position = "left",
+                                                            direction = "horizontal", 
+                                                            ncol = 9)) +
+                                        scale_color_manual("Target character",
+                                                           values = colors09,
+                                                           guide = guide_legend(
+                                                             title.position = "left",
+                                                             direction = "horizontal",
+                                                             ncol = 9)))
 
-figure4.3c_title <- ggdraw() + 
+fig_d3_79_scored_79_plots_leg <- plot_grid(fig_d3_79_scored_79_plots,
+                                           fig_d3_79_scored_79_leg,
+                                           ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d3_79_scored_79_title <- ggdraw() + 
   draw_label("Study 3: Children, 7-9y (scored using their own scales)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.3c_plots_leg_title <- plot_grid(figure4.3c_title, figure4.3c_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.3c_plots_leg_title
+fig_d3_79_scored_79_plots_leg_title <- plot_grid(fig_d3_79_scored_79_title, fig_d3_79_scored_79_plots_leg,
+                                                 ncol = 1, rel_heights = c(0.12, 1))
 ```
 
 #### Analysis of asymmetries
@@ -1080,46 +1034,40 @@ plots_d3_46_scored_ad <- relviz_fun(d3_46_scored_ad, colors = colors09)
 ```
 
 ```{r}
-figure4.3d_plots <- plot_grid(plots_d3_46_scored_ad[[1]] + 
-                               theme(legend.position = "none"),
-                             plots_d3_46_scored_ad[[2]] + 
-                               theme(legend.position = "none"),
-                             plots_d3_46_scored_ad[[3]] + 
-                               theme(legend.position = "none"),
-                             labels = c("C1", "C2", "C3"), ncol = 3)
+fig_d3_46_scored_ad_plots <- plot_grid(plots_d3_46_scored_ad[[1]] + 
+                                         theme(legend.position = "none"),
+                                       plots_d3_46_scored_ad[[2]] + 
+                                         theme(legend.position = "none"),
+                                       plots_d3_46_scored_ad[[3]] + 
+                                         theme(legend.position = "none"),
+                                       labels = c("C1", "C2", "C3"), ncol = 3)
 
-figure4.3d_leg <- get_legend(plots_d3_46_scored_ad[[1]] +
-                               theme(legend.position = "bottom", 
-                                     legend.direction = "horizontal") +
-                               scale_fill_manual("Target character", 
-                                                 values = colors09,
-                                                 guide = guide_legend(
-                                                   title.position = "left",
-                                                   direction = "horizontal", 
-                                                   ncol = 9)) +
-                               scale_color_manual("Target character",
-                                                  values = colors09,
-                                                  guide = guide_legend(
-                                                    title.position = "left",
-                                                    direction = "horizontal",
-                                                    ncol = 9)))
-  
-figure4.3d_plots_leg <- plot_grid(figure4.3d_plots,
-                                  figure4.3d_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
+fig_d3_46_scored_ad_leg <- get_legend(plots_d3_46_scored_ad[[1]] +
+                                        theme(legend.position = "bottom", 
+                                              legend.direction = "horizontal") +
+                                        scale_fill_manual("Target character", 
+                                                          values = colors09,
+                                                          guide = guide_legend(
+                                                            title.position = "left",
+                                                            direction = "horizontal", 
+                                                            ncol = 9)) +
+                                        scale_color_manual("Target character",
+                                                           values = colors09,
+                                                           guide = guide_legend(
+                                                             title.position = "left",
+                                                             direction = "horizontal",
+                                                             ncol = 9)))
 
-figure4.3d_title <- ggdraw() + 
+fig_d3_46_scored_ad_plots_leg <- plot_grid(fig_d3_46_scored_ad_plots,
+                                           fig_d3_46_scored_ad_leg,
+                                           ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d3_46_scored_ad_title <- ggdraw() + 
   draw_label("Study 3: Children, 4-6y (scored using adults' scales)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.3d_plots_leg_title <- plot_grid(figure4.3d_title, figure4.3d_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
+fig_d3_46_scored_ad_plots_leg_title <- plot_grid(fig_d3_46_scored_ad_title, fig_d3_46_scored_ad_plots_leg,
+                                                 ncol = 1, rel_heights = c(0.12, 1))
 ```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.3d_plots_leg_title
-```
-
-XX
 
 ##### Using children's own scales (three-factor solution)
 
@@ -1130,46 +1078,40 @@ plots_d3_46_scored_46_wdm <- relviz_fun(d3_46_scored_46_wdm, colors = colors09)
 ```
 
 ```{r}
-figure4.3e_plots <- plot_grid(plots_d3_46_scored_46_wdm[[1]] + 
-                               theme(legend.position = "none"),
-                             plots_d3_46_scored_46_wdm[[2]] + 
-                               theme(legend.position = "none"),
-                             plots_d3_46_scored_46_wdm[[3]] + 
-                               theme(legend.position = "none"),
-                             labels = c("B1", "B2", "B3"), ncol = 3)
+fig_d3_46_scored_46_wdm_plots <- plot_grid(plots_d3_46_scored_46_wdm[[1]] + 
+                                             theme(legend.position = "none"),
+                                           plots_d3_46_scored_46_wdm[[2]] + 
+                                             theme(legend.position = "none"),
+                                           plots_d3_46_scored_46_wdm[[3]] + 
+                                             theme(legend.position = "none"),
+                                           labels = c("B1", "B2", "B3"), ncol = 3)
 
-figure4.3e_leg <- get_legend(plots_d3_46_scored_46_wdm[[1]] +
-                               theme(legend.position = "bottom", 
-                                     legend.direction = "horizontal") +
-                               scale_fill_manual("Target character", 
-                                                 values = colors09,
-                                                 guide = guide_legend(
-                                                   title.position = "left",
-                                                   direction = "horizontal", 
-                                                   ncol = 9)) +
-                               scale_color_manual("Target character",
-                                                  values = colors09,
-                                                  guide = guide_legend(
-                                                    title.position = "left",
-                                                    direction = "horizontal",
-                                                    ncol = 9)))
-  
-figure4.3e_plots_leg <- plot_grid(figure4.3e_plots,
-                                  figure4.3e_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
+fig_d3_46_scored_46_wdm_leg <- get_legend(plots_d3_46_scored_46_wdm[[1]] +
+                                            theme(legend.position = "bottom", 
+                                                  legend.direction = "horizontal") +
+                                            scale_fill_manual("Target character", 
+                                                              values = colors09,
+                                                              guide = guide_legend(
+                                                                title.position = "left",
+                                                                direction = "horizontal", 
+                                                                ncol = 9)) +
+                                            scale_color_manual("Target character",
+                                                               values = colors09,
+                                                               guide = guide_legend(
+                                                                 title.position = "left",
+                                                                 direction = "horizontal",
+                                                                 ncol = 9)))
 
-figure4.3e_title <- ggdraw() + 
+fig_d3_46_scored_46_wdm_plots_leg <- plot_grid(fig_d3_46_scored_46_wdm_plots,
+                                               fig_d3_46_scored_46_wdm_leg,
+                                               ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d3_46_scored_46_wdm_title <- ggdraw() + 
   draw_label("Study 3: Children, 4-6y (scored using their own scales, 3-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.3e_plots_leg_title <- plot_grid(figure4.3e_title, figure4.3e_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
+fig_d3_46_scored_46_wdm_plots_leg_title <- plot_grid(fig_d3_46_scored_46_wdm_title, fig_d3_46_scored_46_wdm_plots_leg,
+                                                     ncol = 1, rel_heights = c(0.12, 1))
 ```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.3e_plots_leg_title
-```
-
-XX
 
 ##### Using children's own scales (three-factor solution)
 
@@ -1180,42 +1122,36 @@ plots_d3_46_scored_46_par <- relviz_fun(d3_46_scored_46_par, colors = colors09)
 ```
 
 ```{r}
-figure4.3f_plots <- plot_grid(plots_d3_46_scored_46_par[[1]] + 
-                               theme(legend.position = "none"),
-                             labels = c("C1"), ncol = 3)
+fig_d3_46_scored_46_par_plots <- plot_grid(plots_d3_46_scored_46_par[[1]] + 
+                                             theme(legend.position = "none"),
+                                           labels = c("C1"), ncol = 3)
 
-figure4.3f_leg <- get_legend(plots_d3_46_scored_46_par[[1]] +
-                               theme(legend.position = "bottom", 
-                                     legend.direction = "horizontal") +
-                               scale_fill_manual("Target character", 
-                                                 values = colors09,
-                                                 guide = guide_legend(
-                                                   title.position = "left",
-                                                   direction = "horizontal", 
-                                                   ncol = 9)) +
-                               scale_color_manual("Target character",
-                                                  values = colors09,
-                                                  guide = guide_legend(
-                                                    title.position = "left",
-                                                    direction = "horizontal",
-                                                    ncol = 9)))
-  
-figure4.3f_plots_leg <- plot_grid(figure4.3f_plots,
-                                  figure4.3f_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
+fig_d3_46_scored_46_par_leg <- get_legend(plots_d3_46_scored_46_par[[1]] +
+                                            theme(legend.position = "bottom", 
+                                                  legend.direction = "horizontal") +
+                                            scale_fill_manual("Target character", 
+                                                              values = colors09,
+                                                              guide = guide_legend(
+                                                                title.position = "left",
+                                                                direction = "horizontal", 
+                                                                ncol = 9)) +
+                                            scale_color_manual("Target character",
+                                                               values = colors09,
+                                                               guide = guide_legend(
+                                                                 title.position = "left",
+                                                                 direction = "horizontal",
+                                                                 ncol = 9)))
 
-figure4.3f_title <- ggdraw() + 
+fig_d3_46_scored_46_par_plots_leg <- plot_grid(fig_d3_46_scored_46_par_plots,
+                                               fig_d3_46_scored_46_par_leg,
+                                               ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d3_46_scored_46_par_title <- ggdraw() + 
   draw_label("Study 3: Children, 4-6y (scored using their own scales, 2-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.3f_plots_leg_title <- plot_grid(figure4.3f_title, figure4.3f_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
+fig_d3_46_scored_46_par_plots_leg_title <- plot_grid(fig_d3_46_scored_46_par_title, fig_d3_46_scored_46_par_plots_leg,
+                                                     ncol = 1, rel_heights = c(0.12, 1))
 ```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.3f_plots_leg_title
-```
-
-XX
 
 #### Analysis of asymmetries
 
@@ -1313,44 +1249,42 @@ plots_agegp_d3_scored_ad <- relviz_agegp_fun(
 ```
 
 ```{r}
-figure4.3all_plots <- plot_grid(plots_agegp_d3_scored_ad[[1]] + 
-                               theme(legend.position = "none"),
-                             plots_agegp_d3_scored_ad[[2]] + 
-                               theme(legend.position = "none"),
-                             plots_agegp_d3_scored_ad[[3]] + 
-                               theme(legend.position = "none"),
-                             labels = c("D1", "D2", "D3"), ncol = 3)
+fig_d3_all_scored_ad_plots <- plot_grid(plots_agegp_d3_scored_ad[[1]] + 
+                                          theme(legend.position = "none"),
+                                        plots_agegp_d3_scored_ad[[2]] + 
+                                          theme(legend.position = "none"),
+                                        plots_agegp_d3_scored_ad[[3]] + 
+                                          theme(legend.position = "none"),
+                                        labels = c("D1", "D2", "D3"), ncol = 3)
 
-figure4.3all_leg <- get_legend(plots_agegp_d3_scored_ad[[1]] +
-                               theme(legend.position = "bottom", 
-                                     legend.direction = "horizontal") +
-                               scale_color_manual("Target character",
-                                                  values = colors09,
-                                                  na.translate = F,
-                                                  guide = guide_legend(
-                                                    title.position = "left",
-                                                    direction = "horizontal",
-                                                    ncol = 9)))
-  
-figure4.3all_plots_leg <- plot_grid(figure4.3all_plots,
-                                  figure4.3all_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
+fig_d3_all_scored_ad_leg <- get_legend(plots_agegp_d3_scored_ad[[1]] +
+                                         theme(legend.position = "bottom", 
+                                               legend.direction = "horizontal") +
+                                         scale_color_manual("Target character",
+                                                            values = colors09,
+                                                            na.translate = F,
+                                                            guide = guide_legend(
+                                                              title.position = "left",
+                                                              direction = "horizontal",
+                                                              ncol = 9)))
 
-figure4.3all_title <- ggdraw() + 
+fig_d3_all_scored_ad_plots_leg <- plot_grid(fig_d3_all_scored_ad_plots,
+                                            fig_d3_all_scored_ad_leg,
+                                            ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d3_all_scored_ad_title <- ggdraw() + 
   draw_label("Tracking development between 4-9y and adulthood (scored using adults' scales)", 
              size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.3all_plots_leg_title <- plot_grid(figure4.3all_title, figure4.3all_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.3all_plots_leg_title
+fig_d3_all_scored_ad_plots_leg_title <- plot_grid(fig_d3_all_scored_ad_title, fig_d3_all_scored_ad_plots_leg,
+                                                  ncol = 1, rel_heights = c(0.12, 1))
 ```
 
 ```{r}
-figure4.4 <- plot_grid(figure4.3a_plots_leg_title, figure4.3b_plots_leg_title,
-                       figure4.3d_plots_leg_title, figure4.3all_plots_leg_title,
+figure4.4 <- plot_grid(fig_d3_ad_plots_leg_title, 
+                       fig_d3_79_scored_ad_plots_leg_title,
+                       fig_d3_46_scored_ad_plots_leg_title, 
+                       fig_d3_all_scored_ad_plots_leg_title,
                        ncol = 1)
 
 figure4.4_cap <- add_sub(figure4.4, str_wrap("Figure 4.4: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using adults' BODY, HEART, and MIND scales (see Table 4.3). (A) Adults. (B) Older children (7-9y of age). (C) Younger children (4-6y of age). (D) A visualization of development between 4-9y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-C, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
@@ -1361,14 +1295,15 @@ ggdraw(figure4.4_cap)
 ```
 
 ```{r}
-figure4.5 <- plot_grid(figure4.3c_plots_leg_title, figure4.3e_plots_leg_title,
-                       figure4.3f_plots_leg_title,
+figure4.5 <- plot_grid(fig_d3_79_scored_79_plots_leg_title, 
+                       fig_d3_46_scored_46_wdm_plots_leg_title,
+                       fig_d3_46_scored_46_par_plots_leg_title,
                        ncol = 1)
 
 figure4.5_cap <- add_sub(figure4.5, str_wrap("Figure 4.5: Relationships among older and younger children's attributions of conceptual units in Study 3, scored using their own scales (see Table 4.3). For younger children (4-6y of age), two sets of scores are presented: using a three-factor EFA solution (B1-B3) and using a two-factor EFA solution (C1-C3). Plots are organized by sample and scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
-```{r, include = T, fig.width = 5, fig.asp = 1.35}
+```{r, include = T, fig.width = 5, fig.asp = 1.4}
 ggdraw(figure4.5_cap)
 ```
 
@@ -1405,7 +1340,7 @@ plots_d4_ad_scored_ad <- relviz_fun(d4_ad_scored_ad, colors = colors02)
 ```
 
 ```{r}
-figure4.5a_plots <- plot_grid(plots_d4_ad_scored_ad[[1]] + 
+fig_d4_ad_plots <- plot_grid(plots_d4_ad_scored_ad[[1]] + 
                                theme(legend.position = "none"),
                              plots_d4_ad_scored_ad[[2]] + 
                                theme(legend.position = "none"),
@@ -1413,35 +1348,31 @@ figure4.5a_plots <- plot_grid(plots_d4_ad_scored_ad[[1]] +
                                theme(legend.position = "none"),
                              labels = c("A1", "A2", "A3"), ncol = 3)
 
-figure4.5a_leg <- get_legend(plots_d4_ad_scored_ad[[1]] +
-                               theme(legend.position = "bottom", 
-                                     legend.direction = "horizontal") +
-                               scale_fill_manual("Target character", 
+fig_d4_ad_leg <- get_legend(plots_d4_ad_scored_ad[[1]] +
+                              theme(legend.position = "bottom", 
+                                    legend.direction = "horizontal") +
+                              scale_fill_manual("Target character", 
+                                                values = colors02,
+                                                guide = guide_legend(
+                                                  title.position = "left",
+                                                  direction = "horizontal", 
+                                                  ncol = 9)) +
+                              scale_color_manual("Target character",
                                                  values = colors02,
                                                  guide = guide_legend(
                                                    title.position = "left",
-                                                   direction = "horizontal", 
-                                                   ncol = 9)) +
-                               scale_color_manual("Target character",
-                                                  values = colors02,
-                                                  guide = guide_legend(
-                                                    title.position = "left",
-                                                    direction = "horizontal",
-                                                    ncol = 9)))
-  
-figure4.5a_plots_leg <- plot_grid(figure4.5a_plots,
-                                  figure4.5a_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
+                                                   direction = "horizontal",
+                                                   ncol = 9)))
 
-figure4.5a_title <- ggdraw() + 
+fig_d4_ad_plots_leg <- plot_grid(fig_d4_ad_plots,
+                                 fig_d4_ad_leg,
+                                 ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d4_ad_title <- ggdraw() + 
   draw_label("Study 4: Adults", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.5a_plots_leg_title <- plot_grid(figure4.5a_title, figure4.5a_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.5a_plots_leg_title
+fig_d4_ad_plots_leg_title <- plot_grid(fig_d4_ad_title, fig_d4_ad_plots_leg,
+                                       ncol = 1, rel_heights = c(0.12, 1))
 ```
 
 #### Analysis of asymmetries
@@ -1487,43 +1418,39 @@ plots_d4_46_scored_ad <- relviz_fun(d4_46_scored_ad, colors = colors02)
 ```
 
 ```{r}
-figure4.5b_plots <- plot_grid(plots_d4_46_scored_ad[[1]] + 
-                               theme(legend.position = "none"),
-                             plots_d4_46_scored_ad[[2]] + 
-                               theme(legend.position = "none"),
-                             plots_d4_46_scored_ad[[3]] + 
-                               theme(legend.position = "none"),
-                             labels = c("B1", "B2", "B3"), ncol = 3)
+fig_d4_46_scored_ad_plots <- plot_grid(plots_d4_46_scored_ad[[1]] + 
+                                         theme(legend.position = "none"),
+                                       plots_d4_46_scored_ad[[2]] + 
+                                         theme(legend.position = "none"),
+                                       plots_d4_46_scored_ad[[3]] + 
+                                         theme(legend.position = "none"),
+                                       labels = c("B1", "B2", "B3"), ncol = 3)
 
-figure4.5b_leg <- get_legend(plots_d4_46_scored_ad[[1]] +
-                               theme(legend.position = "bottom", 
-                                     legend.direction = "horizontal") +
-                               scale_fill_manual("Target character", 
-                                                 values = colors02,
-                                                 guide = guide_legend(
-                                                   title.position = "left",
-                                                   direction = "horizontal", 
-                                                   ncol = 9)) +
-                               scale_color_manual("Target character",
-                                                  values = colors02,
-                                                  guide = guide_legend(
-                                                    title.position = "left",
-                                                    direction = "horizontal",
-                                                    ncol = 9)))
-  
-figure4.5b_plots_leg <- plot_grid(figure4.5b_plots,
-                                  figure4.5b_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
+fig_d4_46_scored_ad_leg <- get_legend(plots_d4_46_scored_ad[[1]] +
+                                        theme(legend.position = "bottom", 
+                                              legend.direction = "horizontal") +
+                                        scale_fill_manual("Target character", 
+                                                          values = colors02,
+                                                          guide = guide_legend(
+                                                            title.position = "left",
+                                                            direction = "horizontal", 
+                                                            ncol = 9)) +
+                                        scale_color_manual("Target character",
+                                                           values = colors02,
+                                                           guide = guide_legend(
+                                                             title.position = "left",
+                                                             direction = "horizontal",
+                                                             ncol = 9)))
 
-figure4.5b_title <- ggdraw() + 
+fig_d4_46_scored_ad_plots_leg <- plot_grid(fig_d4_46_scored_ad_plots,
+                                           fig_d4_46_scored_ad_leg,
+                                           ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d4_46_scored_ad_title <- ggdraw() + 
   draw_label("Study 4: Children, 4-5y (scored using adults' scales)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.5b_plots_leg_title <- plot_grid(figure4.5b_title, figure4.5b_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.5b_plots_leg_title
+fig_d4_46_scored_ad_plots_leg_title <- plot_grid(fig_d4_46_scored_ad_title, fig_d4_46_scored_ad_plots_leg,
+                                                 ncol = 1, rel_heights = c(0.12, 1))
 ```
 
 ##### Using children's own scales (three-factor solution)
@@ -1535,43 +1462,39 @@ plots_d4_46_scored_46_par <- relviz_fun(d4_46_scored_46_par, colors = colors02)
 ```
 
 ```{r}
-figure4.5c_plots <- plot_grid(plots_d4_46_scored_46_par[[1]] + 
-                               theme(legend.position = "none"),
-                             plots_d4_46_scored_46_par[[2]] + 
-                               theme(legend.position = "none"),
-                             plots_d4_46_scored_46_par[[3]] + 
-                               theme(legend.position = "none"),
-                             labels = c("A1", "A2", "A3"), ncol = 3)
+fig_d4_46_scored_46_par_plots <- plot_grid(plots_d4_46_scored_46_par[[1]] + 
+                                             theme(legend.position = "none"),
+                                           plots_d4_46_scored_46_par[[2]] + 
+                                             theme(legend.position = "none"),
+                                           plots_d4_46_scored_46_par[[3]] + 
+                                             theme(legend.position = "none"),
+                                           labels = c("A1", "A2", "A3"), ncol = 3)
 
-figure4.5c_leg <- get_legend(plots_d4_46_scored_46_par[[1]] +
-                               theme(legend.position = "bottom", 
-                                     legend.direction = "horizontal") +
-                               scale_fill_manual("Target character", 
-                                                 values = colors02,
-                                                 guide = guide_legend(
-                                                   title.position = "left",
-                                                   direction = "horizontal", 
-                                                   ncol = 9)) +
-                               scale_color_manual("Target character",
-                                                  values = colors02,
-                                                  guide = guide_legend(
-                                                    title.position = "left",
-                                                    direction = "horizontal",
-                                                    ncol = 9)))
-  
-figure4.5c_plots_leg <- plot_grid(figure4.5c_plots,
-                                  figure4.5c_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
+fig_d4_46_scored_46_par_leg <- get_legend(plots_d4_46_scored_46_par[[1]] +
+                                            theme(legend.position = "bottom", 
+                                                  legend.direction = "horizontal") +
+                                            scale_fill_manual("Target character", 
+                                                              values = colors02,
+                                                              guide = guide_legend(
+                                                                title.position = "left",
+                                                                direction = "horizontal", 
+                                                                ncol = 9)) +
+                                            scale_color_manual("Target character",
+                                                               values = colors02,
+                                                               guide = guide_legend(
+                                                                 title.position = "left",
+                                                                 direction = "horizontal",
+                                                                 ncol = 9)))
 
-figure4.5c_title <- ggdraw() + 
+fig_d4_46_scored_46_par_plots_leg <- plot_grid(fig_d4_46_scored_46_par_plots,
+                                               fig_d4_46_scored_46_par_leg,
+                                               ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d4_46_scored_46_par_title <- ggdraw() + 
   draw_label("Study 4: Children, 4-5y (scored using their own scales, 3-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.5c_plots_leg_title <- plot_grid(figure4.5c_title, figure4.5c_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.5c_plots_leg_title
+fig_d4_46_scored_46_par_plots_leg_title <- plot_grid(fig_d4_46_scored_46_par_title, fig_d4_46_scored_46_par_plots_leg,
+                                                     ncol = 1, rel_heights = c(0.12, 1))
 ```
 
 ##### Using children's own scales (four-factor solution)
@@ -1583,50 +1506,46 @@ plots_d4_46_scored_46_wdm <- relviz_fun(d4_46_scored_46_wdm, colors = colors02)
 ```
 
 ```{r}
-figure4.5d_plots <- plot_grid(plots_d4_46_scored_46_wdm[[1]] + 
-                               theme(legend.position = "none"),
-                             plots_d4_46_scored_46_wdm[[2]] + 
-                               theme(legend.position = "none"),
-                             plots_d4_46_scored_46_wdm[[3]] + 
-                               theme(legend.position = "none"),
-                             plots_d4_46_scored_46_wdm[[4]] + 
-                               theme(legend.position = "none"),
-                             plots_d4_46_scored_46_wdm[[5]] + 
-                               theme(legend.position = "none"),
-                             plots_d4_46_scored_46_wdm[[6]] + 
-                               theme(legend.position = "none"),
-                             labels = c("B1", "B2", "B3", "B4", "B5", "B6"), 
-                             ncol = 3)
+fig_d4_46_scored_46_wdm_plots <- plot_grid(plots_d4_46_scored_46_wdm[[1]] + 
+                                             theme(legend.position = "none"),
+                                           plots_d4_46_scored_46_wdm[[2]] + 
+                                             theme(legend.position = "none"),
+                                           plots_d4_46_scored_46_wdm[[3]] + 
+                                             theme(legend.position = "none"),
+                                           plots_d4_46_scored_46_wdm[[4]] + 
+                                             theme(legend.position = "none"),
+                                           plots_d4_46_scored_46_wdm[[5]] + 
+                                             theme(legend.position = "none"),
+                                           plots_d4_46_scored_46_wdm[[6]] + 
+                                             theme(legend.position = "none"),
+                                           labels = c("B1", "B2", "B3", "B4", "B5", "B6"), 
+                                           ncol = 3)
 
-figure4.5d_leg <- get_legend(plots_d4_46_scored_46_wdm[[1]] +
-                               theme(legend.position = "bottom", 
-                                     legend.direction = "horizontal") +
-                               scale_fill_manual("Target character", 
-                                                 values = colors02,
-                                                 guide = guide_legend(
-                                                   title.position = "left",
-                                                   direction = "horizontal", 
-                                                   ncol = 9)) +
-                               scale_color_manual("Target character",
-                                                  values = colors02,
-                                                  guide = guide_legend(
-                                                    title.position = "left",
-                                                    direction = "horizontal",
-                                                    ncol = 9)))
-  
-figure4.5d_plots_leg <- plot_grid(figure4.5d_plots,
-                                  figure4.5d_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
+fig_d4_46_scored_46_wdm_leg <- get_legend(plots_d4_46_scored_46_wdm[[1]] +
+                                            theme(legend.position = "bottom", 
+                                                  legend.direction = "horizontal") +
+                                            scale_fill_manual("Target character", 
+                                                              values = colors02,
+                                                              guide = guide_legend(
+                                                                title.position = "left",
+                                                                direction = "horizontal", 
+                                                                ncol = 9)) +
+                                            scale_color_manual("Target character",
+                                                               values = colors02,
+                                                               guide = guide_legend(
+                                                                 title.position = "left",
+                                                                 direction = "horizontal",
+                                                                 ncol = 9)))
 
-figure4.5d_title <- ggdraw() + 
+fig_d4_46_scored_46_wdm_plots_leg <- plot_grid(fig_d4_46_scored_46_wdm_plots,
+                                               fig_d4_46_scored_46_wdm_leg,
+                                               ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d4_46_scored_46_wdm_title <- ggdraw() + 
   draw_label("Study 4: Children, 4-5y (scored using their own scales, 4-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.5d_plots_leg_title <- plot_grid(figure4.5d_title, figure4.5d_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 6, fig.asp = 0.7}
-figure4.5d_plots_leg_title
+fig_d4_46_scored_46_wdm_plots_leg_title <- plot_grid(fig_d4_46_scored_46_wdm_title, fig_d4_46_scored_46_wdm_plots_leg,
+                                                     ncol = 1, rel_heights = c(0.12, 1))
 ```
 
 #### Analysis of asymmetries
@@ -1714,44 +1633,41 @@ plots_agegp_d4_scored_ad <- relviz_agegp_fun(
 ```
 
 ```{r}
-figure4.5all_plots <- plot_grid(plots_agegp_d4_scored_ad[[1]] + 
-                               theme(legend.position = "none"),
-                             plots_agegp_d4_scored_ad[[2]] + 
-                               theme(legend.position = "none"),
-                             plots_agegp_d4_scored_ad[[3]] + 
-                               theme(legend.position = "none"),
-                             labels = c("D1", "D2", "d4"), ncol = 3)
+fig_d4_all_scored_ad_plots <- plot_grid(plots_agegp_d4_scored_ad[[1]] + 
+                                          theme(legend.position = "none"),
+                                        plots_agegp_d4_scored_ad[[2]] + 
+                                          theme(legend.position = "none"),
+                                        plots_agegp_d4_scored_ad[[3]] + 
+                                          theme(legend.position = "none"),
+                                        labels = c("D1", "D2", "d4"), ncol = 3)
 
-figure4.5all_leg <- get_legend(plots_agegp_d4_scored_ad[[1]] +
-                               theme(legend.position = "bottom", 
-                                     legend.direction = "horizontal") +
-                               scale_color_manual("Target character",
-                                                  values = colors02,
-                                                  na.translate = F,
-                                                  guide = guide_legend(
-                                                    title.position = "left",
-                                                    direction = "horizontal",
-                                                    ncol = 2)))
-  
-figure4.5all_plots_leg <- plot_grid(figure4.5all_plots,
-                                  figure4.5all_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
+fig_d4_all_scored_ad_leg <- get_legend(plots_agegp_d4_scored_ad[[1]] +
+                                         theme(legend.position = "bottom", 
+                                               legend.direction = "horizontal") +
+                                         scale_color_manual("Target character",
+                                                            values = colors02,
+                                                            na.translate = F,
+                                                            guide = guide_legend(
+                                                              title.position = "left",
+                                                              direction = "horizontal",
+                                                              ncol = 2)))
 
-figure4.5all_title <- ggdraw() + 
+fig_d4_all_scored_ad_plots_leg <- plot_grid(fig_d4_all_scored_ad_plots,
+                                            fig_d4_all_scored_ad_leg,
+                                            ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d4_all_scored_ad_title <- ggdraw() + 
   draw_label("Tracking development between 4-5y and adulthood (scored using adults' scales)", 
              size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-figure4.5all_plots_leg_title <- plot_grid(figure4.5all_title, figure4.5all_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 6, fig.asp = 0.4}
-figure4.5all_plots_leg_title
+fig_d4_all_scored_ad_plots_leg_title <- plot_grid(fig_d4_all_scored_ad_title, fig_d4_all_scored_ad_plots_leg,
+                                                  ncol = 1, rel_heights = c(0.12, 1))
 ```
 
 ```{r}
-figure4.6 <- plot_grid(figure4.5a_plots_leg_title, figure4.5b_plots_leg_title,
-                       figure4.5all_plots_leg_title,
+figure4.6 <- plot_grid(fig_d4_ad_plots_leg_title, 
+                       fig_d4_46_scored_ad_plots_leg_title,
+                       fig_d4_all_scored_ad_plots_leg_title,
                        ncol = 1)
 
 figure4.6_cap <- add_sub(figure4.6, str_wrap("Figure 4.6: Relationships among US adults' and children's attributions of conceptual units in Study 4, scored using adults' BODY, HEART, and MIND scales (see Table 4.5). (A) Adults. (B) Children (4-5y of age). (C) A visualization of development between 4-5y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
@@ -1762,7 +1678,8 @@ ggdraw(figure4.6_cap)
 ```
 
 ```{r}
-figure4.7 <- plot_grid(figure4.5c_plots_leg_title, figure4.5d_plots_leg_title,
+figure4.7 <- plot_grid(fig_d4_46_scored_46_par_plots_leg_title, 
+                       fig_d4_46_scored_46_wdm_plots_leg_title,
                        ncol = 1, rel_heights = c(1, 2))
 
 figure4.7_cap <- add_sub(figure4.7, str_wrap("Figure 4.7: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using their own scales scales (see Table 4.3). Ttwo sets of scores are presented: using a three-factor EFA solution (A1-A3) and using a four-factor EFA solution (B1-B6). Plots are organized by scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
