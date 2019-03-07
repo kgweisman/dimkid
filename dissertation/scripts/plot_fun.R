@@ -85,7 +85,7 @@ heatmap_fun <- function(efa, factor_names = NA){
   
 }
 
-# function for visualizing relationships between factors
+# functions for visualizing relationships between factors
 relviz_fun <- function(d_scored, jit = 0.05, add_means = T,
                        colors = c("#e41a1c", "#377eb8")){
   
@@ -267,6 +267,33 @@ relviz_agegp_fun <- function(d_scored, age_groups, age_group_labels,
   
 }
 
+# function for plotting difference scores between factors
+diffplot_fun <- function(df_diff, colors = colors02){
+  
+  colors_cols <- case_when(length(colors) == 2 ~ 2,
+                           length(colors) == 9 ~ 9,
+                           length(colors) == 21 ~ 7)
+  
+  df_diff %>%
+    ggplot(aes(x = pair, y = diff, color = character, fill = character)) +
+    geom_hline(yintercept = 0, lty = 2) +
+    geom_point(alpha = 0.25, show.legend = F,
+               position = position_jitterdodge(jitter.width = 0.4, 
+                                               dodge.width = 0.5)) +
+    geom_pointrange(data = . %>%
+                      group_by(pair, character) %>%
+                      multi_boot_standard(col = "diff", na.rm = T) %>%
+                      ungroup(),
+                    aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                    position = position_dodge(width = 0.5),
+                    color = "black", shape = 23) +
+    scale_x_discrete("Pair of conceptual units") +
+    scale_y_continuous("Difference in scores", limits = c(-1, 1)) +
+    scale_color_manual("Target character", values = colors) +
+    scale_fill_manual("Target character", values = colors) +
+    theme(legend.position = "bottom")
+}
+
 # function for plotting factor scores by factor, target
 scoresplot_fun <- function(efa, 
                            target = c("all", "beetle", "robot"), 
@@ -359,7 +386,7 @@ scoresplot_fun <- function(efa,
   plot <- ggplot(df, aes(x = target, y = score, fill = factor)) +
     facet_grid(cols = vars(factor)) +
     geom_hline(yintercept = 0, lty = 2, color = "darkgray") +
-    geom_point(aes(color = factor), alpha = 0.2,
+    geom_point(aes(color = factor), alpha = 0.25,
                position = position_jitter(width = 0.25, height = 0)) +
     # geom_path(aes(color = factor, group = ResponseId), alpha = 0.1) +
     # geom_path(data = df_boot, 

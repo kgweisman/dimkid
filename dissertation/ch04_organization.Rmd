@@ -274,6 +274,14 @@ fig_d1a_ad_plots_leg_title <- plot_grid(fig_d1a_ad_title, fig_d1a_ad_plots_leg,
 
 XX
 
+```{r}
+d1a_ad_scored_ad_diff <- diff_fun(d1a_ad_scored_ad)
+```
+
+```{r}
+plot_d1a_scored_ad_diff <- diffplot_fun(d1a_ad_scored_ad_diff)
+```
+
 ### Study 1b
 
 Study 1b was a direct replication of Study 1a: `r nrow(d1b_ad_wide)` US adults each assessed a single target character (either a beetle or a robot) on 40 mental capacities. (See Chapter II and Weisman et al., 2017, for detailed methods.)
@@ -333,6 +341,14 @@ fig_d1b_ad_plots_leg_title <- plot_grid(fig_d1b_ad_title, fig_d1b_ad_plots_leg,
 #### Analysis of asymmetries
 
 XX
+
+```{r}
+d1b_ad_scored_ad_diff <- diff_fun(d1b_ad_scored_ad)
+```
+
+```{r}
+plot_d1b_scored_ad_diff <- diffplot_fun(d1b_ad_scored_ad_diff)
+```
 
 ### Study 1c
 
@@ -394,6 +410,14 @@ fig_d1c_ad_plots_leg_title <- plot_grid(fig_d1c_ad_title, fig_d1c_ad_plots_leg,
 
 XX
 
+```{r}
+d1c_ad_scored_ad_diff <- diff_fun(d1c_ad_scored_ad)
+```
+
+```{r}
+plot_d1c_scored_ad_diff <- diffplot_fun(d1c_ad_scored_ad_diff)
+```
+
 ### Study 1d
 
 In Study 1d, `r nrow(d1d_ad_wide)` US adults each assessed a single target character on 40 mental capacities. Unlike Studies 1a-1c, this study employed the "many characters" variant of the general approach, in which participants were randomly assigned to assess one of the following 21 target characters: an adult, a child, an infant, a person in a persistent vegetative state, a fetus, a chimpanzee, an elephant, a dolphin, a bear, a dog, a goat, a mouse, a frog, a blue jay, a fish, a beetle, a microbe, a robot, a computer, a car, or a stapler. (See Chapter II and Weisman et al., 2017, for detailed methods.)
@@ -454,6 +478,13 @@ fig_d1d_ad_plots_leg_title <- plot_grid(fig_d1d_ad_title, fig_d1d_ad_plots_leg,
 
 XX
 
+```{r}
+d1d_ad_scored_ad_diff <- diff_fun(d1d_ad_scored_ad)
+```
+
+```{r}
+plot_d1d_scored_ad_diff <- diffplot_fun(d1d_ad_scored_ad_diff, colors21)
+```
 
 ## Discussion
 
@@ -510,6 +541,49 @@ figure4.1_cap <- add_sub(figure4.1, str_wrap("Figure 4.1: Relationships among US
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.8}
 ggdraw(figure4.1_cap)
+```
+
+```{r}
+figure4.1diff_plots <- plot_grid(plot_d1a_scored_ad_diff + 
+                                   labs(title = "Study 1a, Adults") +
+                                   theme(legend.position = "none"), 
+                                 plot_d1b_scored_ad_diff + 
+                                   labs(title = "Study 1b, Adults") +
+                                   theme(legend.position = "none"),
+                                 plot_d1c_scored_ad_diff + 
+                                   labs(title = "Study 1c, Adults") +
+                                   theme(legend.position = "none"), 
+                                 plot_d1d_scored_ad_diff + 
+                                   labs(title = "Study 1d, Adults") +
+                                   theme(legend.position = "none"), 
+                                 ncol = 2, rel_widths = c(1, 1.2), 
+                                 labels = "AUTO")
+
+figure4.1diff_leg <- plot_grid(
+  get_legend(plot_d1b_scored_ad_diff +
+               # scale_color_manual(values = colors02,
+               #                    guide = guide_legend(direction = "vertical")) +
+               scale_fill_manual("Target character",
+                                 values = colors02,
+                                 guide = guide_legend(direction = "vertical",
+                                                      ncol = 1))),
+  get_legend(plot_d1d_scored_ad_diff +
+               # scale_color_manual(values = colors21,
+               #                    guide = guide_legend(direction = "vertical")) +
+               scale_fill_manual("Target character",
+                                 values = colors21,
+                                 guide = guide_legend(direction = "vertical",
+                                                      ncol = 2))),
+  ncol = 1, align = "h", axis = "l")
+
+figure4.1diff_plots_leg <- plot_grid(figure4.1diff_plots, figure4.1diff_leg,
+                                     ncol = 2, rel_widths = c(1, 1))
+
+figure4.1diff_cap <- add_sub(figure4.1diff_plots_leg, str_wrap("PLACEHOLDER", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 1}
+ggdraw(figure4.1diff_cap)
 ```
 
 

@@ -65,7 +65,7 @@ scale_fun <- function(efa, factor_names = NA,
     grouped <- loadings %>% count(factor)
     n_fact <- nrow(grouped)
     how_many <- min(n_keep, min(grouped$n), na.rm = T)
-
+    
     # trim
     loadings <- loadings %>%
       group_by(factor) %>%
@@ -109,4 +109,74 @@ score_fun <- function(df, scales,
                               levels = levels(df$character)))
   
   return(scores)
+}
+
+# function for getting difference scores across factors
+diff_fun <- function(d_scored){
+  
+  # put factors in a standard order when applicable
+  factor_names <- levels(d_scored$factor)
+  
+  body_factors <- factor_names[grepl("BODY", factor_names)]
+  leftovers <- factor_names[!factor_names %in% body_factors]
+  
+  heart_factors <- leftovers[grepl("HEART", leftovers)]
+  leftovers <- leftovers[!leftovers %in% heart_factors]
+  
+  mind_factors <- leftovers[grepl("MIND", leftovers)]
+  
+  other_factors <- leftovers[!leftovers %in% mind_factors]
+  
+  # save good factor names for plot
+  factor_names_plot <- c(body_factors, heart_factors,
+                         mind_factors, other_factors)
+  
+  # get factor names
+  factor_names <- gsub("\\*", "", 
+                       gsub("\\-", "_", 
+                            gsub("\\(", "", 
+                                 gsub("\\)", "", 
+                                      gsub(" ", "_", factor_names_plot)))))
+  n_fact <- length(factor_names)
+  
+  d_diff <- d_scored %>%
+    mutate(factor = factor(factor, labels = factor_names)) %>%
+    spread(factor, score)
+  
+  d_diff$diff1 <- unlist(d_diff[factor_names[1]] - 
+                           d_diff[factor_names[2]]) %>% unname()
+  
+  diff_names <- c()
+  diff_names[1] <- paste(factor_names_plot[1], "-", factor_names_plot[2])
+  
+  if(n_fact > 2){
+    d_diff$diff2 <- unlist(d_diff[factor_names[1]] - 
+                             d_diff[factor_names[3]]) %>% unname()
+    diff_names[2] <- paste(factor_names_plot[1], "-", factor_names_plot[3])
+    
+    d_diff$diff3 <- unlist(d_diff[factor_names[2]] - 
+                             d_diff[factor_names[3]]) %>% unname()
+    diff_names[3] <- paste(factor_names_plot[2], "-", factor_names_plot[3])
+  }
+  
+  if(n_fact > 3){
+    d_diff$diff4 <- unlist(d_diff[factor_names[1]] -
+                             d_diff[factor_names[4]]) %>% unname()
+    diff_names[4] <- paste(factor_names_plot[1], "-", factor_names_plot[4])
+    
+    d_diff$diff5 <- unlist(d_diff[factor_names[2]] -
+                             d_diff[factor_names[4]]) %>% unname()
+    diff_names[5] <- paste(factor_names_plot[2], "-", factor_names_plot[4])
+
+    d_diff$diff6 <- unlist(d_diff[factor_names[3]] -
+                             d_diff[factor_names[4]]) %>% unname()
+    diff_names[6] <- paste(factor_names_plot[3], "-", factor_names_plot[4])
+  }
+  
+  d_diff <- d_diff %>%
+    select(-one_of(factor_names)) %>%
+    gather(pair, diff, -c(study, age_group, subid, character)) %>%
+    mutate(pair = factor(pair, labels = diff_names))
+  
+  return(d_diff)
 }
