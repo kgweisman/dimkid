@@ -560,9 +560,11 @@ figure4.2_plots4 <- plot_grid(
   plot_d1d_ad_scored_ad_diff +
     labs(title = "Study 1d: Adults") +
     theme(legend.position = "bottom") +
-    scale_color_manual("Target character", values = colors21,
+    scale_color_manual("Target character", values = c(colors21, "black"),
                        guide = guide_legend(direction = "horizontal", ncol = 7)) +
-    scale_fill_manual("Target character", values = colors21,
+    scale_fill_manual("Target character", values = c(colors21, "black"),
+                      guide = guide_legend(direction = "horizontal", ncol = 7)) +
+    scale_size_manual("Target character", values = c(rep(0.5, 21), 0.8),
                       guide = guide_legend(direction = "horizontal", ncol = 7)),
   labels = "D")
 

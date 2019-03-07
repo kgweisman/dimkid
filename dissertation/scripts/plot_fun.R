@@ -268,25 +268,48 @@ relviz_agegp_fun <- function(d_scored, age_groups, age_group_labels,
 }
 
 # function for plotting difference scores between factors
-diffplot_fun <- function(df_diff, colors = colors02, wid = 0.8){
+diffplot_fun <- function(df_diff, colors = colors02, wid = 0.7){
+  
+  charnames <- levels(df_diff$character)
+  
+  means_bychar <- df_diff %>%
+    group_by(pair, character) %>%
+    multi_boot_standard(col = "diff", na.rm = T) %>%
+    ungroup()
+  
+  means_nochar <- df_diff %>%
+    group_by(pair) %>%
+    multi_boot_standard(col = "diff", na.rm = T) %>%
+    ungroup() %>%
+    mutate(character = "OVERALL")
+  
+  means_all <- full_join(means_bychar, means_nochar) %>%
+    mutate(character = factor(character,
+                              levels = c(charnames, "OVERALL")))
+  
+  colors_plus <- c(colors, "black")
+  sizes_plus <- c(rep(0.5, length(charnames)), 0.8)
   
   df_diff %>%
+    bind_rows(data.frame(character = "OVERALL",
+                         diff = NA_integer_,
+                         pair = levels(df_diff$pair))) %>%
+    mutate(character = factor(character, levels = c(charnames, "OVERALL"))) %>%
     ggplot(aes(x = pair, y = diff, color = character, fill = character)) +
     geom_hline(yintercept = 0, lty = 2) +
     geom_point(alpha = 0.25, show.legend = F,
                position = position_jitterdodge(jitter.width = wid - 0.1, 
                                                dodge.width = wid)) +
-    geom_pointrange(data = . %>%
-                      group_by(pair, character) %>%
-                      multi_boot_standard(col = "diff", na.rm = T) %>%
-                      ungroup(),
-                    aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+    geom_pointrange(data = means_all,
+                    aes(y = mean, ymin = ci_lower, ymax = ci_upper,
+                        size = character),
                     position = position_dodge(width = wid),
                     color = "black", shape = 23) +
     scale_x_discrete("Pair of conceptual units") +
     scale_y_continuous("Difference in scores", limits = c(-1, 1)) +
-    scale_color_manual("Target character", values = colors) +
-    scale_fill_manual("Target character", values = colors) +
+    scale_color_manual("Target character", values = colors_plus) +
+    scale_fill_manual("Target character", values = colors_plus) +
+    scale_size_manual("Target character", values = sizes_plus) +
     theme(legend.position = "bottom")
 }
 
