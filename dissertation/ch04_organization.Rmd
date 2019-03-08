@@ -121,7 +121,6 @@ factor_names_efa_wdm_d4_46 <- readRDS(
   file = "./factor_names/factor_names_efa_wdm_d4_46")
 ```
 
-
 ```{r}
 # colors for plotting target characters
 colors02 <- c("#e41a1c", "#377eb8")
@@ -132,6 +131,34 @@ colors21 <- colorRampPalette(c("#e31a1c", "#ff7f00", "#33a02c",
                                "#1f78b4", "#6a3d9a"), # from colorbrewer2.org "Paired"
                              space = "Lab")(21)
 ```
+
+```{r}
+# contrasts for regressions
+
+# target character: 2 edge cases
+contrasts_sum_edge <- cbind("_robot_GM" = c(-1, 1))
+contrasts_trt_edge <- cbind("_robot" = c(0, 1))
+
+# target character: 21 diverse characters
+contrasts_sum_dv21 <- contr.sum(21)
+contrasts_trt_dv21 <- contr.treatment(21)
+
+# target character: 9 diverse characters
+contrasts_sum_dv09 <- contr.sum(9)
+contrasts_trt_dv09 <- contr.treatment(9)
+
+
+# age group: 2 age groups
+contrasts_sum2_agegp <- cbind("_child_GM" = c(-1, 1))
+contrasts_dum2_agegp <- cbind("_child" = c(0, 1))
+
+# age group: 2 age groups
+contrasts_sum3_agegp <- cbind("_old_GM" = c(-1, 0, 1),
+                              "_yng_GM" = c(-1, 1, 0))
+contrasts_dum3_agegp <- cbind("_old" = c(0, 0, 1),
+                              "_yng" = c(0, 1, 0))
+```
+
 
 # Chapter overview
 
@@ -282,6 +309,78 @@ d1a_ad_scored_ad_diff <- diff_fun(d1a_ad_scored_ad)
 plot_d1a_ad_scored_ad_diff <- diffplot_fun(d1a_ad_scored_ad_diff)
 ```
 
+```{r}
+# r_d1a_ad_scored_ad_diff_BODY_HEART <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d1a_ad_scored_ad_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d1a_ad_scored_ad_diff_BODY_HEART <- lm(
+  diff ~ 1 + character,
+  data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d1a_ad_scored_ad_diff_BODY_HEART <- lm(
+#   diff ~ 1,
+#   data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+
+summary(r_d1a_ad_scored_ad_diff_BODY_HEART)
+```
+
+```{r}
+# r_d1a_ad_scored_ad_diff_BODY_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d1a_ad_scored_ad_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d1a_ad_scored_ad_diff_BODY_MIND <- lm(
+  diff ~ 1 + character,
+  data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d1a_ad_scored_ad_diff_BODY_MIND <- lm(
+#   diff ~ 1,
+#   data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"))
+
+summary(r_d1a_ad_scored_ad_diff_BODY_MIND)
+```
+
+```{r}
+# r_d1a_ad_scored_ad_diff_HEART_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d1a_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d1a_ad_scored_ad_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d1a_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d1a_ad_scored_ad_diff_HEART_MIND <- lm(
+  diff ~ 1 + character,
+  data = d1a_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d1a_ad_scored_ad_diff_HEART_MIND <- lm(
+#   diff ~ 1,
+#   data = d1a_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"))
+
+summary(r_d1a_ad_scored_ad_diff_HEART_MIND)
+```
+
 ### Study 1b
 
 Study 1b was a direct replication of Study 1a: `r nrow(d1b_ad_wide)` US adults each assessed a single target character (either a beetle or a robot) on 40 mental capacities. (See Chapter II and Weisman et al., 2017, for detailed methods.)
@@ -348,6 +447,78 @@ d1b_ad_scored_ad_diff <- diff_fun(d1b_ad_scored_ad)
 
 ```{r}
 plot_d1b_ad_scored_ad_diff <- diffplot_fun(d1b_ad_scored_ad_diff)
+```
+
+```{r}
+# r_d1b_ad_scored_ad_diff_BODY_HEART <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d1b_ad_scored_ad_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d1b_ad_scored_ad_diff_BODY_HEART <- lm(
+  diff ~ 1 + character,
+  data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d1b_ad_scored_ad_diff_BODY_HEART <- lm(
+#   diff ~ 1,
+#   data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+
+summary(r_d1b_ad_scored_ad_diff_BODY_HEART)
+```
+
+```{r}
+# r_d1b_ad_scored_ad_diff_BODY_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d1b_ad_scored_ad_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d1b_ad_scored_ad_diff_BODY_MIND <- lm(
+  diff ~ 1 + character,
+  data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d1b_ad_scored_ad_diff_BODY_MIND <- lm(
+#   diff ~ 1,
+#   data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"))
+
+summary(r_d1b_ad_scored_ad_diff_BODY_MIND)
+```
+
+```{r}
+# r_d1b_ad_scored_ad_diff_HEART_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d1b_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d1b_ad_scored_ad_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d1b_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d1b_ad_scored_ad_diff_HEART_MIND <- lm(
+  diff ~ 1 + character,
+  data = d1b_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d1b_ad_scored_ad_diff_HEART_MIND <- lm(
+#   diff ~ 1,
+#   data = d1b_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"))
+
+summary(r_d1b_ad_scored_ad_diff_HEART_MIND)
 ```
 
 ### Study 1c
@@ -418,6 +589,78 @@ d1c_ad_scored_ad_diff <- diff_fun(d1c_ad_scored_ad)
 plot_d1c_ad_scored_ad_diff <- diffplot_fun(d1c_ad_scored_ad_diff)
 ```
 
+```{r}
+# r_d1c_ad_scored_ad_diff_BODY_HEART <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d1c_ad_scored_ad_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d1c_ad_scored_ad_diff_BODY_HEART <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d1c_ad_scored_ad_diff_BODY_HEART <- lmer(
+#   diff ~ 1  + (1 | subid),
+#   data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+
+summary(r_d1c_ad_scored_ad_diff_BODY_HEART)
+```
+
+```{r}
+# r_d1c_ad_scored_ad_diff_BODY_MIND <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d1c_ad_scored_ad_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d1c_ad_scored_ad_diff_BODY_MIND <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d1c_ad_scored_ad_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | subid),
+#   data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"))
+
+summary(r_d1c_ad_scored_ad_diff_BODY_MIND)
+```
+
+```{r}
+# r_d1c_ad_scored_ad_diff_HEART_MIND <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d1c_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d1c_ad_scored_ad_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d1c_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d1c_ad_scored_ad_diff_HEART_MIND <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d1c_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d1c_ad_scored_ad_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | subid),
+#   data = d1c_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"))
+
+summary(r_d1c_ad_scored_ad_diff_HEART_MIND)
+```
+
 ### Study 1d
 
 In Study 1d, `r nrow(d1d_ad_wide)` US adults each assessed a single target character on 40 mental capacities. Unlike Studies 1a-1c, this study employed the "many characters" variant of the general approach, in which participants were randomly assigned to assess one of the following 21 target characters: an adult, a child, an infant, a person in a persistent vegetative state, a fetus, a chimpanzee, an elephant, a dolphin, a bear, a dog, a goat, a mouse, a frog, a blue jay, a fish, a beetle, a microbe, a robot, a computer, a car, or a stapler. (See Chapter II and Weisman et al., 2017, for detailed methods.)
@@ -485,6 +728,78 @@ d1d_ad_scored_ad_diff <- diff_fun(d1d_ad_scored_ad)
 ```{r}
 plot_d1d_ad_scored_ad_diff <- diffplot_fun(d1d_ad_scored_ad_diff, 
                                            colors21, wid = 0.9)
+```
+
+```{r}
+# r_d1d_ad_scored_ad_diff_BODY_HEART <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d1d_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_dv21),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d1d_ad_scored_ad_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d1d_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_dv21))
+
+r_d1d_ad_scored_ad_diff_BODY_HEART <- lm(
+  diff ~ 1 + character,
+  data = d1d_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+  contrasts = list(character = contrasts_sum_dv21))
+
+# r_d1d_ad_scored_ad_diff_BODY_HEART <- lm(
+#   diff ~ 1,
+#   data = d1d_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+
+summary(r_d1d_ad_scored_ad_diff_BODY_HEART)
+```
+
+```{r}
+# r_d1d_ad_scored_ad_diff_BODY_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d1d_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_dv21),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d1d_ad_scored_ad_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d1d_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_dv21))
+
+r_d1d_ad_scored_ad_diff_BODY_MIND <- lm(
+  diff ~ 1 + character,
+  data = d1d_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+  contrasts = list(character = contrasts_sum_dv21))
+
+# r_d1d_ad_scored_ad_diff_BODY_MIND <- lm(
+#   diff ~ 1,
+#   data = d1d_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"))
+
+summary(r_d1d_ad_scored_ad_diff_BODY_MIND)
+```
+
+```{r}
+# r_d1d_ad_scored_ad_diff_HEART_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d1d_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_dv21),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d1d_ad_scored_ad_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d1d_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_dv21))
+
+r_d1d_ad_scored_ad_diff_HEART_MIND <- lm(
+  diff ~ 1 + character,
+  data = d1d_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+  contrasts = list(character = contrasts_sum_dv21))
+
+# r_d1d_ad_scored_ad_diff_HEART_MIND <- lm(
+#   diff ~ 1,
+#   data = d1d_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"))
+
+summary(r_d1d_ad_scored_ad_diff_HEART_MIND)
 ```
 
 ## Discussion
@@ -655,6 +970,78 @@ d2_ad_scored_ad_diff <- diff_fun(d2_ad_scored_ad)
 plot_d2_ad_scored_ad_diff <- diffplot_fun(d2_ad_scored_ad_diff, colors02)
 ```
 
+```{r}
+# r_d2_ad_scored_ad_diff_BODY_HEART <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d2_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d2_ad_scored_ad_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d2_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d2_ad_scored_ad_diff_BODY_HEART <- lm(
+  diff ~ 1 + character,
+  data = d2_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d2_ad_scored_ad_diff_BODY_HEART <- lm(
+#   diff ~ 1,
+#   data = d2_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+
+summary(r_d2_ad_scored_ad_diff_BODY_HEART)
+```
+
+```{r}
+# r_d2_ad_scored_ad_diff_BODY_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d2_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d2_ad_scored_ad_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d2_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d2_ad_scored_ad_diff_BODY_MIND <- lm(
+  diff ~ 1 + character,
+  data = d2_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d2_ad_scored_ad_diff_BODY_MIND <- lm(
+#   diff ~ 1,
+#   data = d2_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"))
+
+summary(r_d2_ad_scored_ad_diff_BODY_MIND)
+```
+
+```{r}
+# r_d2_ad_scored_ad_diff_HEART_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d2_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d2_ad_scored_ad_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d2_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d2_ad_scored_ad_diff_HEART_MIND <- lm(
+  diff ~ 1 + character,
+  data = d2_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d2_ad_scored_ad_diff_HEART_MIND <- lm(
+#   diff ~ 1,
+#   data = d2_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"))
+
+summary(r_d2_ad_scored_ad_diff_HEART_MIND)
+```
+
 XX
 
 ### Children (7-9y)
@@ -808,6 +1195,190 @@ d2_79_scored_ad_diff <- diff_fun(d2_79_scored_ad)
 plot_d2_79_scored_ad_diff <- diffplot_fun(d2_79_scored_ad_diff, colors02)
 ```
 
+```{r}
+# r_d2_79_scored_ad_diff_BODY_HEART <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d2_79_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d2_79_scored_ad_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d2_79_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d2_79_scored_ad_diff_BODY_HEART <- lm(
+  diff ~ 1 + character,
+  data = d2_79_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d2_79_scored_ad_diff_BODY_HEART <- lm(
+#   diff ~ 1,
+#   data = d2_79_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+
+summary(r_d2_79_scored_ad_diff_BODY_HEART)
+```
+
+```{r}
+# r_d2_79_scored_ad_diff_BODY_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d2_79_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d2_79_scored_ad_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d2_79_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d2_79_scored_ad_diff_BODY_MIND <- lm(
+  diff ~ 1 + character,
+  data = d2_79_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d2_79_scored_ad_diff_BODY_MIND <- lm(
+#   diff ~ 1,
+#   data = d2_79_scored_ad_diff %>% filter(pair == "BODY - MIND"))
+
+summary(r_d2_79_scored_ad_diff_BODY_MIND)
+```
+
+```{r}
+# r_d2_79_scored_ad_diff_HEART_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d2_79_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d2_79_scored_ad_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d2_79_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d2_79_scored_ad_diff_HEART_MIND <- lm(
+  diff ~ 1 + character,
+  data = d2_79_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d2_79_scored_ad_diff_HEART_MIND <- lm(
+#   diff ~ 1,
+#   data = d2_79_scored_ad_diff %>% filter(pair == "HEART - MIND"))
+
+summary(r_d2_79_scored_ad_diff_HEART_MIND)
+```
+
+XX
+
+###### Developmental comparison
+
+```{r}
+# r_d2_ad79_scored_ad_diff_BODY_HEART <- brm(
+#   diff ~ 1 + age_group + (1 | character),
+#   data = d2_ad_scored_ad_diff %>%
+#     full_join(d2_79_scored_ad_diff) %>%
+#     filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge,
+#                    age_group = contrasts_dum2_agegp),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d2_ad79_scored_ad_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + age_group + (1 | character),
+#   data = d2_ad_scored_ad_diff %>%
+#     full_join(d2_79_scored_ad_diff) %>%
+#     filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge,
+#                    age_group = contrasts_dum2_agegp))
+
+r_d2_ad79_scored_ad_diff_BODY_HEART <- lm(
+  diff ~ 1 + character * age_group,
+  data = d2_ad_scored_ad_diff %>% 
+    full_join(d2_79_scored_ad_diff) %>%
+    filter(pair == "BODY - HEART"),
+  contrasts = list(character = contrasts_sum_edge,
+                   age_group = contrasts_dum2_agegp))
+
+# r_d2_ad79_scored_ad_diff_BODY_HEART <- lm(
+#   diff ~ 1 + age_group,
+#   data = d2_ad_scored_ad_diff %>%
+#     full_join(d2_79_scored_ad_diff) %>%
+#     filter(pair == "BODY - HEART"),
+#   contrasts = list(age_group = contrasts_dum2_agegp))
+
+summary(r_d2_ad79_scored_ad_diff_BODY_HEART)
+```
+
+```{r}
+# r_d2_ad79_scored_ad_diff_BODY_MIND <- brm(
+#   diff ~ 1 + age_group + (1 | character),
+#   data = d2_ad_scored_ad_diff %>%
+#     full_join(d2_79_scored_ad_diff) %>%
+#     filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge,
+#                    age_group = contrasts_dum2_agegp),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d2_ad79_scored_ad_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + age_group + (1 | character),
+#   data = d2_ad_scored_ad_diff %>%
+#     full_join(d2_79_scored_ad_diff) %>%
+#     filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge,
+#                    age_group = contrasts_dum2_agegp))
+
+r_d2_ad79_scored_ad_diff_BODY_MIND <- lm(
+  diff ~ 1 + character * age_group,
+  data = d2_ad_scored_ad_diff %>% 
+    full_join(d2_79_scored_ad_diff) %>%
+    filter(pair == "BODY - MIND"),
+  contrasts = list(character = contrasts_sum_edge,
+                   age_group = contrasts_dum2_agegp))
+
+# r_d2_ad79_scored_ad_diff_BODY_MIND <- lm(
+#   diff ~ 1 + age_group,
+#   data = d2_ad_scored_ad_diff %>%
+#     full_join(d2_79_scored_ad_diff) %>%
+#     filter(pair == "BODY - MIND"),
+#   contrasts = list(age_group = contrasts_dum2_agegp))
+
+summary(r_d2_ad79_scored_ad_diff_BODY_MIND)
+```
+
+```{r}
+# r_d2_ad79_scored_ad_diff_HEART_MIND <- brm(
+#   diff ~ 1 + age_group + (1 | character),
+#   data = d2_ad_scored_ad_diff %>%
+#     full_join(d2_79_scored_ad_diff) %>%
+#     filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge,
+#                    age_group = contrasts_dum2_agegp),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d2_ad79_scored_ad_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + age_group + (1 | character),
+#   data = d2_ad_scored_ad_diff %>%
+#     full_join(d2_79_scored_ad_diff) %>%
+#     filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge,
+#                    age_group = contrasts_dum2_agegp))
+
+r_d2_ad79_scored_ad_diff_HEART_MIND <- lm(
+  diff ~ 1 + character * age_group,
+  data = d2_ad_scored_ad_diff %>% 
+    full_join(d2_79_scored_ad_diff) %>%
+    filter(pair == "HEART - MIND"),
+  contrasts = list(character = contrasts_sum_edge,
+                   age_group = contrasts_dum2_agegp))
+
+# r_d2_ad79_scored_ad_diff_HEART_MIND <- lm(
+#   diff ~ 1 + age_group,
+#   data = d2_ad_scored_ad_diff %>%
+#     full_join(d2_79_scored_ad_diff) %>%
+#     filter(pair == "HEART - MIND"),
+#   contrasts = list(age_group = contrasts_dum2_agegp))
+
+summary(r_d2_ad79_scored_ad_diff_HEART_MIND)
+```
+
 XX
 
 ##### Using children's own scales
@@ -818,6 +1389,78 @@ d2_79_scored_79_diff <- diff_fun(d2_79_scored_79)
 
 ```{r}
 plot_d2_79_scored_79_diff <- diffplot_fun(d2_79_scored_79_diff, colors02)
+```
+
+```{r}
+# r_d2_79_scored_79_diff_BODY_HEART <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d2_79_scored_79_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d2_79_scored_79_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d2_79_scored_79_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d2_79_scored_79_diff_BODY_HEART <- lm(
+  diff ~ 1 + character,
+  data = d2_79_scored_79_diff %>% filter(pair == "BODY - HEART"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d2_79_scored_79_diff_BODY_HEART <- lm(
+#   diff ~ 1,
+#   data = d2_79_scored_79_diff %>% filter(pair == "BODY - HEART"))
+
+summary(r_d2_79_scored_79_diff_BODY_HEART)
+```
+
+```{r}
+# r_d2_79_scored_79_diff_BODY_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d2_79_scored_79_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d2_79_scored_79_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d2_79_scored_79_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d2_79_scored_79_diff_BODY_MIND <- lm(
+  diff ~ 1 + character,
+  data = d2_79_scored_79_diff %>% filter(pair == "BODY - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d2_79_scored_79_diff_BODY_MIND <- lm(
+#   diff ~ 1,
+#   data = d2_79_scored_79_diff %>% filter(pair == "BODY - MIND"))
+
+summary(r_d2_79_scored_79_diff_BODY_MIND)
+```
+
+```{r}
+# r_d2_79_scored_79_diff_HEART_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d2_79_scored_79_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d2_79_scored_79_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d2_79_scored_79_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d2_79_scored_79_diff_HEART_MIND <- lm(
+  diff ~ 1 + character,
+  data = d2_79_scored_79_diff %>% filter(pair == "HEART - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d2_79_scored_79_diff_HEART_MIND <- lm(
+#   diff ~ 1,
+#   data = d2_79_scored_79_diff %>% filter(pair == "HEART - MIND"))
+
+summary(r_d2_79_scored_79_diff_HEART_MIND)
 ```
 
 XX
@@ -979,6 +1622,78 @@ d3_ad_scored_ad_diff <- diff_fun(d3_ad_scored_ad)
 plot_d3_ad_scored_ad_diff <- diffplot_fun(d3_ad_scored_ad_diff, colors09)
 ```
 
+```{r}
+# r_d3_ad_scored_ad_diff_BODY_HEART <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d3_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_dv09),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_ad_scored_ad_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d3_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_dv09))
+
+r_d3_ad_scored_ad_diff_BODY_HEART <- lm(
+  diff ~ 1 + character,
+  data = d3_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+  contrasts = list(character = contrasts_sum_dv09))
+
+# r_d3_ad_scored_ad_diff_BODY_HEART <- lm(
+#   diff ~ 1,
+#   data = d3_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+
+summary(r_d3_ad_scored_ad_diff_BODY_HEART)
+```
+
+```{r}
+# r_d3_ad_scored_ad_diff_BODY_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d3_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_ad_scored_ad_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d3_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09))
+
+r_d3_ad_scored_ad_diff_BODY_MIND <- lm(
+  diff ~ 1 + character,
+  data = d3_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+  contrasts = list(character = contrasts_sum_dv09))
+
+# r_d3_ad_scored_ad_diff_BODY_MIND <- lm(
+#   diff ~ 1,
+#   data = d3_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"))
+
+summary(r_d3_ad_scored_ad_diff_BODY_MIND)
+```
+
+```{r}
+# r_d3_ad_scored_ad_diff_HEART_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d3_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_ad_scored_ad_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d3_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09))
+
+r_d3_ad_scored_ad_diff_HEART_MIND <- lm(
+  diff ~ 1 + character,
+  data = d3_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+  contrasts = list(character = contrasts_sum_dv09))
+
+# r_d3_ad_scored_ad_diff_HEART_MIND <- lm(
+#   diff ~ 1,
+#   data = d3_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"))
+
+summary(r_d3_ad_scored_ad_diff_HEART_MIND)
+```
+
 ### Children (7-9y)
 
 #### Scale construction
@@ -1095,6 +1810,78 @@ d3_79_scored_ad_diff <- diff_fun(d3_79_scored_ad)
 plot_d3_79_scored_ad_diff <- diffplot_fun(d3_79_scored_ad_diff, colors09)
 ```
 
+```{r}
+# r_d3_79_scored_ad_diff_BODY_HEART <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d3_79_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_dv09),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_79_scored_ad_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d3_79_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_dv09))
+
+r_d3_79_scored_ad_diff_BODY_HEART <- lm(
+  diff ~ 1 + character,
+  data = d3_79_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+  contrasts = list(character = contrasts_sum_dv09))
+
+# r_d3_79_scored_ad_diff_BODY_HEART <- lm(
+#   diff ~ 1,
+#   data = d3_79_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+
+summary(r_d3_79_scored_ad_diff_BODY_HEART)
+```
+
+```{r}
+# r_d3_79_scored_ad_diff_BODY_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d3_79_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_79_scored_ad_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d3_79_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09))
+
+r_d3_79_scored_ad_diff_BODY_MIND <- lm(
+  diff ~ 1 + character,
+  data = d3_79_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+  contrasts = list(character = contrasts_sum_dv09))
+
+# r_d3_79_scored_ad_diff_BODY_MIND <- lm(
+#   diff ~ 1,
+#   data = d3_79_scored_ad_diff %>% filter(pair == "BODY - MIND"))
+
+summary(r_d3_79_scored_ad_diff_BODY_MIND)
+```
+
+```{r}
+# r_d3_79_scored_ad_diff_HEART_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d3_79_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_79_scored_ad_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d3_79_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09))
+
+r_d3_79_scored_ad_diff_HEART_MIND <- lm(
+  diff ~ 1 + character,
+  data = d3_79_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+  contrasts = list(character = contrasts_sum_dv09))
+
+# r_d3_79_scored_ad_diff_HEART_MIND <- lm(
+#   diff ~ 1,
+#   data = d3_79_scored_ad_diff %>% filter(pair == "HEART - MIND"))
+
+summary(r_d3_79_scored_ad_diff_HEART_MIND)
+```
+
 ##### Using children's own scales
 
 XX
@@ -1105,6 +1892,78 @@ d3_79_scored_79_diff <- diff_fun(d3_79_scored_79)
 
 ```{r}
 plot_d3_79_scored_79_diff <- diffplot_fun(d3_79_scored_79_diff, colors09)
+```
+
+```{r}
+# r_d3_79_scored_79_diff_BODY_HEART <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d3_79_scored_79_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_dv09),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_79_scored_79_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d3_79_scored_79_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_dv09))
+
+r_d3_79_scored_79_diff_BODY_HEART <- lm(
+  diff ~ 1 + character,
+  data = d3_79_scored_79_diff %>% filter(pair == "BODY - HEART"),
+  contrasts = list(character = contrasts_sum_dv09))
+
+# r_d3_79_scored_79_diff_BODY_HEART <- lm(
+#   diff ~ 1,
+#   data = d3_79_scored_79_diff %>% filter(pair == "BODY - HEART"))
+
+summary(r_d3_79_scored_79_diff_BODY_HEART)
+```
+
+```{r}
+# r_d3_79_scored_79_diff_BODY_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d3_79_scored_79_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_79_scored_79_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d3_79_scored_79_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09))
+
+r_d3_79_scored_79_diff_BODY_MIND <- lm(
+  diff ~ 1 + character,
+  data = d3_79_scored_79_diff %>% filter(pair == "BODY - MIND"),
+  contrasts = list(character = contrasts_sum_dv09))
+
+# r_d3_79_scored_79_diff_BODY_MIND <- lm(
+#   diff ~ 1,
+#   data = d3_79_scored_79_diff %>% filter(pair == "BODY - MIND"))
+
+summary(r_d3_79_scored_79_diff_BODY_MIND)
+```
+
+```{r}
+# r_d3_79_scored_79_diff_HEART_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d3_79_scored_79_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_79_scored_79_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d3_79_scored_79_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09))
+
+r_d3_79_scored_79_diff_HEART_MIND <- lm(
+  diff ~ 1 + character,
+  data = d3_79_scored_79_diff %>% filter(pair == "HEART - MIND"),
+  contrasts = list(character = contrasts_sum_dv09))
+
+# r_d3_79_scored_79_diff_HEART_MIND <- lm(
+#   diff ~ 1,
+#   data = d3_79_scored_79_diff %>% filter(pair == "HEART - MIND"))
+
+summary(r_d3_79_scored_79_diff_HEART_MIND)
 ```
 
 ### Children (4-6y)
@@ -1271,6 +2130,200 @@ d3_46_scored_ad_diff <- diff_fun(d3_46_scored_ad)
 plot_d3_46_scored_ad_diff <- diffplot_fun(d3_46_scored_ad_diff, colors09)
 ```
 
+```{r}
+# r_d3_46_scored_ad_diff_BODY_HEART <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d3_46_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_dv09),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_46_scored_ad_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d3_46_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_dv09))
+
+r_d3_46_scored_ad_diff_BODY_HEART <- lm(
+  diff ~ 1 + character,
+  data = d3_46_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+  contrasts = list(character = contrasts_sum_dv09))
+
+# r_d3_46_scored_ad_diff_BODY_HEART <- lm(
+#   diff ~ 1,
+#   data = d3_46_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+
+summary(r_d3_46_scored_ad_diff_BODY_HEART)
+```
+
+```{r}
+# r_d3_46_scored_ad_diff_BODY_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d3_46_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_46_scored_ad_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d3_46_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09))
+
+r_d3_46_scored_ad_diff_BODY_MIND <- lm(
+  diff ~ 1 + character,
+  data = d3_46_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+  contrasts = list(character = contrasts_sum_dv09))
+
+# r_d3_46_scored_ad_diff_BODY_MIND <- lm(
+#   diff ~ 1,
+#   data = d3_46_scored_ad_diff %>% filter(pair == "BODY - MIND"))
+
+summary(r_d3_46_scored_ad_diff_BODY_MIND)
+```
+
+```{r}
+# r_d3_46_scored_ad_diff_HEART_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d3_46_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_46_scored_ad_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d3_46_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09))
+
+r_d3_46_scored_ad_diff_HEART_MIND <- lm(
+  diff ~ 1 + character,
+  data = d3_46_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+  contrasts = list(character = contrasts_sum_dv09))
+
+# r_d3_46_scored_ad_diff_HEART_MIND <- lm(
+#   diff ~ 1,
+#   data = d3_46_scored_ad_diff %>% filter(pair == "HEART - MIND"))
+
+summary(r_d3_46_scored_ad_diff_HEART_MIND)
+```
+
+###### Developmental comparison
+
+```{r}
+# r_d3_ad7946_scored_ad_diff_BODY_HEART <- brm(
+#   diff ~ 1 + age_group + (1 | character),
+#   data = d3_ad_scored_ad_diff %>%
+#     full_join(d3_79_scored_ad_diff) %>%
+#     full_join(d3_46_scored_ad_diff) %>%
+#     filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_dv09,
+#                    age_group = contrasts_dum3_agegp),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_ad7946_scored_ad_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + age_group + (1 | character),
+#   data = d3_ad_scored_ad_diff %>%
+#     full_join(d3_79_scored_ad_diff) %>%
+#     full_join(d3_46_scored_ad_diff) %>%
+#     filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_dv09,
+#                    age_group = contrasts_dum3_agegp))
+
+r_d3_ad7946_scored_ad_diff_BODY_HEART <- lm(
+  diff ~ 1 + character * age_group,
+  data = d3_ad_scored_ad_diff %>% 
+    full_join(d3_79_scored_ad_diff) %>%
+    full_join(d3_46_scored_ad_diff) %>%
+    filter(pair == "BODY - HEART"),
+  contrasts = list(character = contrasts_sum_dv09,
+                   age_group = contrasts_dum3_agegp))
+
+# r_d3_ad7946_scored_ad_diff_BODY_HEART <- lm(
+#   diff ~ 1 + age_group,
+#   data = d3_ad_scored_ad_diff %>%
+#     full_join(d3_79_scored_ad_diff) %>%
+#     full_join(d3_46_scored_ad_diff) %>%
+#     filter(pair == "BODY - HEART"),
+#   contrasts = list(age_group = contrasts_dum3_agegp))
+
+summary(r_d3_ad7946_scored_ad_diff_BODY_HEART)
+```
+
+```{r}
+# r_d3_ad7946_scored_ad_diff_BODY_MIND <- brm(
+#   diff ~ 1 + age_group + (1 | character),
+#   data = d3_ad_scored_ad_diff %>%
+#     full_join(d3_79_scored_ad_diff) %>%
+#     full_join(d3_46_scored_ad_diff) %>%
+#     filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09,
+#                    age_group = contrasts_dum3_agegp),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_ad7946_scored_ad_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + age_group + (1 | character),
+#   data = d3_ad_scored_ad_diff %>%
+#     full_join(d3_79_scored_ad_diff) %>%
+#     full_join(d3_46_scored_ad_diff) %>%
+#     filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09,
+#                    age_group = contrasts_dum3_agegp))
+
+r_d3_ad7946_scored_ad_diff_BODY_MIND <- lm(
+  diff ~ 1 + character * age_group,
+  data = d3_ad_scored_ad_diff %>% 
+    full_join(d3_79_scored_ad_diff) %>%
+    full_join(d3_46_scored_ad_diff) %>%
+    filter(pair == "BODY - MIND"),
+  contrasts = list(character = contrasts_sum_dv09,
+                   age_group = contrasts_dum3_agegp))
+
+# r_d3_ad7946_scored_ad_diff_BODY_MIND <- lm(
+#   diff ~ 1 + age_group,
+#   data = d3_ad_scored_ad_diff %>%
+#     full_join(d3_79_scored_ad_diff) %>%
+#     full_join(d3_46_scored_ad_diff) %>%
+#     filter(pair == "BODY - MIND"),
+#   contrasts = list(age_group = contrasts_dum3_agegp))
+
+summary(r_d3_ad7946_scored_ad_diff_BODY_MIND)
+```
+
+```{r}
+# r_d3_ad7946_scored_ad_diff_HEART_MIND <- brm(
+#   diff ~ 1 + age_group + (1 | character),
+#   data = d3_ad_scored_ad_diff %>%
+#     full_join(d3_79_scored_ad_diff) %>%
+#     full_join(d3_46_scored_ad_diff) %>%
+#     filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09,
+#                    age_group = contrasts_dum3_agegp),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_ad7946_scored_ad_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + age_group + (1 | character),
+#   data = d3_ad_scored_ad_diff %>%
+#     full_join(d3_79_scored_ad_diff) %>%
+#     full_join(d3_46_scored_ad_diff) %>%
+#     filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09,
+#                    age_group = contrasts_dum3_agegp))
+
+r_d3_ad7946_scored_ad_diff_HEART_MIND <- lm(
+  diff ~ 1 + character * age_group,
+  data = d3_ad_scored_ad_diff %>% 
+    full_join(d3_79_scored_ad_diff) %>%
+    full_join(d3_46_scored_ad_diff) %>%
+    filter(pair == "HEART - MIND"),
+  contrasts = list(character = contrasts_sum_dv09,
+                   age_group = contrasts_dum3_agegp))
+
+# r_d3_ad7946_scored_ad_diff_HEART_MIND <- lm(
+#   diff ~ 1 + age_group,
+#   data = d3_ad_scored_ad_diff %>%
+#     full_join(d3_79_scored_ad_diff) %>%
+#     full_join(d3_46_scored_ad_diff) %>%
+#     filter(pair == "HEART - MIND"),
+#   contrasts = list(age_group = contrasts_dum3_agegp))
+
+summary(r_d3_ad7946_scored_ad_diff_HEART_MIND)
+```
+
 ##### Using children's own scales (three-factor solution)
 
 XX
@@ -1281,6 +2334,78 @@ d3_46_scored_46_wdm_diff <- diff_fun(d3_46_scored_46_wdm)
 
 ```{r}
 plot_d3_46_scored_46_wdm_diff <- diffplot_fun(d3_46_scored_46_wdm_diff, colors09)
+```
+
+```{r}
+# r_d3_46_scored_46_wdm_diff_BODY_HEART <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d3_46_scored_46_wdm_diff %>% filter(pair == "BODY* - HEART*"),
+#   contrasts = list(character = contrasts_sum_dv09),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_46_scored_46_wdm_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d3_46_scored_46_wdm_diff %>% filter(pair == "BODY* - HEART*"),
+#   contrasts = list(character = contrasts_sum_dv09))
+
+r_d3_46_scored_46_wdm_diff_BODY_HEART <- lm(
+  diff ~ 1 + character,
+  data = d3_46_scored_46_wdm_diff %>% filter(pair == "BODY* - HEART*"),
+  contrasts = list(character = contrasts_sum_dv09))
+
+# r_d3_46_scored_46_wdm_diff_BODY_HEART <- lm(
+#   diff ~ 1,
+#   data = d3_46_scored_46_wdm_diff %>% filter(pair == "BODY* - HEART*"))
+
+summary(r_d3_46_scored_46_wdm_diff_BODY_HEART)
+```
+
+```{r}
+# r_d3_46_scored_46_wdm_diff_BODY_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d3_46_scored_46_wdm_diff %>% filter(pair == "BODY* - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_46_scored_46_wdm_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d3_46_scored_46_wdm_diff %>% filter(pair == "BODY* - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09))
+
+r_d3_46_scored_46_wdm_diff_BODY_MIND <- lm(
+  diff ~ 1 + character,
+  data = d3_46_scored_46_wdm_diff %>% filter(pair == "BODY* - MIND"),
+  contrasts = list(character = contrasts_sum_dv09))
+
+# r_d3_46_scored_46_wdm_diff_BODY_MIND <- lm(
+#   diff ~ 1,
+#   data = d3_46_scored_46_wdm_diff %>% filter(pair == "BODY* - MIND"))
+
+summary(r_d3_46_scored_46_wdm_diff_BODY_MIND)
+```
+
+```{r}
+# r_d3_46_scored_46_wdm_diff_HEART_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d3_46_scored_46_wdm_diff %>% filter(pair == "HEART* - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_46_scored_46_wdm_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d3_46_scored_46_wdm_diff %>% filter(pair == "HEART* - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09))
+
+r_d3_46_scored_46_wdm_diff_HEART_MIND <- lm(
+  diff ~ 1 + character,
+  data = d3_46_scored_46_wdm_diff %>% filter(pair == "HEART* - MIND"),
+  contrasts = list(character = contrasts_sum_dv09))
+
+# r_d3_46_scored_46_wdm_diff_HEART_MIND <- lm(
+#   diff ~ 1,
+#   data = d3_46_scored_46_wdm_diff %>% filter(pair == "HEART* - MIND"))
+
+summary(r_d3_46_scored_46_wdm_diff_HEART_MIND)
 ```
 
 ##### Using children's own scales (two-factor solution)
@@ -1295,6 +2420,29 @@ d3_46_scored_46_par_diff <- diff_fun(d3_46_scored_46_par)
 plot_d3_46_scored_46_par_diff <- diffplot_fun(d3_46_scored_46_par_diff, colors09)
 ```
 
+```{r}
+# r_d3_46_scored_46_par_diff_BODYHEART_MIND <- brm(
+#   diff ~ 1 + (1 | character),
+#   data = d3_46_scored_46_par_diff %>% filter(pair == "BODY-HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d3_46_scored_46_par_diff_BODYHEART_MIND <- lmer(
+#   diff ~ 1 + (1 | character),
+#   data = d3_46_scored_46_par_diff %>% filter(pair == "BODY-HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_dv09))
+
+r_d3_46_scored_46_par_diff_BODYHEART_MIND <- lm(
+  diff ~ 1 + character,
+  data = d3_46_scored_46_par_diff %>% filter(pair == "BODY-HEART - MIND"),
+  contrasts = list(character = contrasts_sum_dv09))
+
+# r_d3_46_scored_46_par_diff_BODYHEART_MIND <- lm(
+#   diff ~ 1,
+#   data = d3_46_scored_46_par_diff %>% filter(pair == "BODY-HEART - MIND"))
+
+summary(r_d3_46_scored_46_par_diff_BODYHEART_MIND)
+```
 
 ## Discussion
 
@@ -1569,6 +2717,78 @@ d4_ad_scored_ad_diff <- diff_fun(d4_ad_scored_ad)
 plot_d4_ad_scored_ad_diff <- diffplot_fun(d4_ad_scored_ad_diff, colors02)
 ```
 
+```{r}
+# r_d4_ad_scored_ad_diff_BODY_HEART <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d4_ad_scored_ad_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d4_ad_scored_ad_diff_BODY_HEART <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d4_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d4_ad_scored_ad_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | subid),
+#   data = d4_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+
+summary(r_d4_ad_scored_ad_diff_BODY_HEART)
+```
+
+```{r}
+# r_d4_ad_scored_ad_diff_BODY_MIND <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d4_ad_scored_ad_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d4_ad_scored_ad_diff_BODY_MIND <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d4_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d4_ad_scored_ad_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | subid),
+#   data = d4_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"))
+
+summary(r_d4_ad_scored_ad_diff_BODY_MIND)
+```
+
+```{r}
+# r_d4_ad_scored_ad_diff_HEART_MIND <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d4_ad_scored_ad_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d4_ad_scored_ad_diff_HEART_MIND <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d4_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d4_ad_scored_ad_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | subid),
+#   data = d4_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"))
+
+summary(r_d4_ad_scored_ad_diff_HEART_MIND)
+```
+
 ### Children (4-5y)
 
 #### Scale construction
@@ -1743,6 +2963,78 @@ d4_46_scored_ad_diff <- diff_fun(d4_46_scored_ad)
 plot_d4_46_scored_ad_diff <- diffplot_fun(d4_46_scored_ad_diff, colors02)
 ```
 
+```{r}
+# r_d4_46_scored_ad_diff_BODY_HEART <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d4_46_scored_ad_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d4_46_scored_ad_diff_BODY_HEART <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d4_46_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d4_46_scored_ad_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | subid),
+#   data = d4_46_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+
+summary(r_d4_46_scored_ad_diff_BODY_HEART)
+```
+
+```{r}
+# r_d4_46_scored_ad_diff_BODY_MIND <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d4_46_scored_ad_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d4_46_scored_ad_diff_BODY_MIND <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d4_46_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d4_46_scored_ad_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | subid),
+#   data = d4_46_scored_ad_diff %>% filter(pair == "BODY - MIND"))
+
+summary(r_d4_46_scored_ad_diff_BODY_MIND)
+```
+
+```{r}
+# r_d4_46_scored_ad_diff_HEART_MIND <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d4_46_scored_ad_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d4_46_scored_ad_diff_HEART_MIND <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d4_46_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d4_46_scored_ad_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | subid),
+#   data = d4_46_scored_ad_diff %>% filter(pair == "HEART - MIND"))
+
+summary(r_d4_46_scored_ad_diff_HEART_MIND)
+```
+
 XX
 
 ##### Using children's own scales (three-factor solution)
@@ -1755,6 +3047,78 @@ d4_46_scored_46_par_diff <- diff_fun(d4_46_scored_46_par)
 plot_d4_46_scored_46_par_diff <- diffplot_fun(d4_46_scored_46_par_diff, colors02)
 ```
 
+```{r}
+# r_d4_46_scored_46_par_diff_BODY_HEART <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d4_46_scored_46_par_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - HEART"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d4_46_scored_46_par_diff_BODY_HEART <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - HEART"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d4_46_scored_46_par_diff_BODY_HEART <- lmer(
+#   diff ~ 1 + (1 | subid),
+#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - HEART"))
+
+summary(r_d4_46_scored_46_par_diff_BODY_HEART)
+```
+
+```{r}
+# r_d4_46_scored_46_par_diff_BODY_MIND <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d4_46_scored_46_par_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d4_46_scored_46_par_diff_BODY_MIND <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d4_46_scored_46_par_diff_BODY_MIND <- lmer(
+#   diff ~ 1 + (1 | subid),
+#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - MIND"))
+
+summary(r_d4_46_scored_46_par_diff_BODY_MIND)
+```
+
+```{r}
+# r_d4_46_scored_46_par_diff_HEART_MIND <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_par_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d4_46_scored_46_par_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_par_diff %>% filter(pair == "HEART - MIND"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d4_46_scored_46_par_diff_HEART_MIND <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d4_46_scored_46_par_diff %>% filter(pair == "HEART - MIND"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d4_46_scored_46_par_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | subid),
+#   data = d4_46_scored_46_par_diff %>% filter(pair == "HEART - MIND"))
+
+summary(r_d4_46_scored_46_par_diff_HEART_MIND)
+```
+
 XX
 
 ##### Using children's own scales (four-factor solution)
@@ -1765,6 +3129,150 @@ d4_46_scored_46_wdm_diff <- diff_fun(d4_46_scored_46_wdm)
 
 ```{r}
 plot_d4_46_scored_46_wdm_diff <- diffplot_fun(d4_46_scored_46_wdm_diff, colors02)
+```
+
+```{r}
+# r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - BODY (other)"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - BODY (other)"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - BODY (other)"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother <- lmer(
+#   diff ~ 1 + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - BODY (other)"))
+
+summary(r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother)
+```
+
+```{r}
+# r_d4_46_scored_46_wdm_diff_BODYnausea_HEART <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - HEART*"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d4_46_scored_46_wdm_diff_BODYnausea_HEART <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - HEART*"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d4_46_scored_46_wdm_diff_BODYnausea_HEART <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - HEART*"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d4_46_scored_46_wdm_diff_BODYnausea_HEART <- lmer(
+#   diff ~ 1 + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - HEART*"))
+
+summary(r_d4_46_scored_46_wdm_diff_BODYnausea_HEART)
+```
+
+```{r}
+# r_d4_46_scored_46_wdm_diff_BODYother_HEART <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - HEART*"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d4_46_scored_46_wdm_diff_BODYother_HEART <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - HEART*"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d4_46_scored_46_wdm_diff_BODYother_HEART <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - HEART*"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d4_46_scored_46_wdm_diff_BODYother_HEART <- lmer(
+#   diff ~ 1 + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - HEART*"))
+
+summary(r_d4_46_scored_46_wdm_diff_BODYother_HEART)
+```
+
+```{r}
+# r_d4_46_scored_46_wdm_diff_BODYnausea_MIND <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - MIND*"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d4_46_scored_46_wdm_diff_BODYnausea_MIND <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - MIND*"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d4_46_scored_46_wdm_diff_BODYnausea_MIND <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - MIND*"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d4_46_scored_46_wdm_diff_BODYnausea_MIND <- lmer(
+#   diff ~ 1 + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - MIND*"))
+
+summary(r_d4_46_scored_46_wdm_diff_BODYnausea_MIND)
+```
+
+```{r}
+# r_d4_46_scored_46_wdm_diff_BODYother_MIND <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - MIND*"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d4_46_scored_46_wdm_diff_BODYother_MIND <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - MIND*"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d4_46_scored_46_wdm_diff_BODYother_MIND <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - MIND*"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d4_46_scored_46_wdm_diff_BODYother_MIND <- lmer(
+#   diff ~ 1 + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - MIND*"))
+
+summary(r_d4_46_scored_46_wdm_diff_BODYother_MIND)
+```
+
+```{r}
+# r_d4_46_scored_46_wdm_diff_HEART_MIND <- brm(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "HEART* - MIND*"),
+#   contrasts = list(character = contrasts_sum_edge),
+#   cores = 4, control = list(adapt_delta = 0.999))
+
+# r_d4_46_scored_46_wdm_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | character) + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "HEART* - MIND*"),
+#   contrasts = list(character = contrasts_sum_edge))
+
+r_d4_46_scored_46_wdm_diff_HEART_MIND <- lmer(
+  diff ~ 1 + character + (1 | subid),
+  data = d4_46_scored_46_wdm_diff %>% filter(pair == "HEART* - MIND*"),
+  contrasts = list(character = contrasts_sum_edge))
+
+# r_d4_46_scored_46_wdm_diff_HEART_MIND <- lmer(
+#   diff ~ 1 + (1 | subid),
+#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "HEART* - MIND*"))
+
+summary(r_d4_46_scored_46_wdm_diff_HEART_MIND)
 ```
 
 XX
