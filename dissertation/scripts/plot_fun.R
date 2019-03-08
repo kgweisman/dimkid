@@ -80,7 +80,7 @@ heatmap_fun <- function(efa, factor_names = NA){
     theme_minimal() +
     scale_x_discrete(position = "top") +
     theme(axis.title = element_blank())
-
+  
   return(plot)
   
 }
@@ -184,7 +184,7 @@ relviz_fun <- function(d_scored, jit = 0.05, add_means = T,
     plot_24 <- plot_fun(facnames = factor_names[c(2, 4)],
                         facnames_plot = factor_names_plot[c(2, 4)])
     plots[[5]] <- plot_24
-  
+    
     plot_34 <- plot_fun(facnames = factor_names[c(3, 4)],
                         facnames_plot = factor_names_plot[c(3, 4)])
     plots[[6]] <- plot_34
@@ -290,6 +290,8 @@ diffplot_fun <- function(df_diff, colors = colors02, wid = 0.7){
   colors_plus <- c(colors, "black")
   sizes_plus <- c(rep(0.5, length(charnames)), 0.8)
   
+  ncolumns <- ifelse(length(colors_plus) <= 10, length(colors_plus), 8)
+  
   df_diff %>%
     bind_rows(data.frame(character = "OVERALL",
                          diff = NA_integer_,
@@ -307,9 +309,15 @@ diffplot_fun <- function(df_diff, colors = colors02, wid = 0.7){
                     color = "black", shape = 23) +
     scale_x_discrete("Pair of conceptual units") +
     scale_y_continuous("Difference in scores", limits = c(-1, 1)) +
-    scale_color_manual("Target character", values = colors_plus) +
-    scale_fill_manual("Target character", values = colors_plus) +
-    scale_size_manual("Target character", values = sizes_plus) +
+    scale_color_manual("Target character", values = colors_plus,
+                       guide = guide_legend(direction = "horizontal", 
+                                            ncol = ncolumns)) +
+    scale_fill_manual("Target character", values = colors_plus,
+                      guide = guide_legend(direction = "horizontal", 
+                                           ncol = ncolumns)) +
+    scale_size_manual("Target character", values = sizes_plus,
+                      guide = guide_legend(direction = "horizontal", 
+                                           ncol = ncolumns)) +
     theme(legend.position = "bottom")
 }
 

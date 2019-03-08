@@ -18,7 +18,8 @@ d2_ad <- read.csv("./anonymized_data/study2_adults_anonymized.csv") %>%
            grepl("close by or far away", capWording) ~ "sense...far away",
            grepl("understand how somebody else is feeling", capWording) ~
              "understand how someone...feeling",
-           TRUE ~ capWording)) %>%
+           TRUE ~ capWording),
+         character = factor(character)) %>%
   distinct()
 
 # clean data

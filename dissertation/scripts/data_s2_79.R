@@ -27,7 +27,8 @@ d2_79 <- read.csv("./anonymized_data/study2_children79_anonymized.csv") %>%
            grepl("goals", capWording) ~ "have goals...",
            grepl("personality", capWording) ~ "have a personality...",
            grepl("beliefs", capWording) ~ "have beliefs...",
-           TRUE ~ capWording)) %>%
+           TRUE ~ capWording),
+         character = factor(character)) %>%
   mutate(ethnicity = as.character(ethnicity),
          ethnicity = case_when(
            grepl("\\;", ethnicity) | 
