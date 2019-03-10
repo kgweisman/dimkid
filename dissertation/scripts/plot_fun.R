@@ -1,5 +1,14 @@
 # FUNCTIONS FOR PLOTTING
 
+# colors for plotting target characters
+colors02 <- c("#e41a1c", "#377eb8")
+colors09 <- colorRampPalette(c("#e31a1c", "#ff7f00", "#33a02c", 
+                               "#1f78b4", "#6a3d9a"), # from colorbrewer2.org "Paired"
+                             space = "Lab")(9)
+colors21 <- colorRampPalette(c("#e31a1c", "#ff7f00", "#33a02c", 
+                               "#1f78b4", "#6a3d9a"), # from colorbrewer2.org "Paired"
+                             space = "Lab")(21)
+
 # function for generating heatmap of factor loadings
 heatmap_fun <- function(efa, factor_names = NA){
   
