@@ -17,7 +17,7 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 # # for knitting to .docx
 # output:
 #   word_document:
-#     reference_docx: "./word-styles-reference.docx"
+#     reference_docx: "./stored/word-styles-reference.docx"
 # always_allow_html: yes
 
 # # for knitting to .nb.html 
@@ -129,8 +129,8 @@ scales_efa_wdm_d1a_ad <- scale_fun(efa_wdm_d1a_ad,
                                    factor_names = factor_names_efa_wdm_d1a_ad)
 d1a_ad_scored_ad <- score_fun(d1a_ad, scales_efa_wdm_d1a_ad)
 
-saveRDS(scales_efa_wdm_d1a_ad, file = "./scales/scales_efa_wdm_d1a_ad")
-saveRDS(d1a_ad_scored_ad, file = "./scored_data/d1a_ad_scored_ad")
+saveRDS(scales_efa_wdm_d1a_ad, file = "./stored/scales/scales_efa_wdm_d1a_ad")
+saveRDS(d1a_ad_scored_ad, file = "./stored/scored_data/d1a_ad_scored_ad")
 ```
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d1a_ad)` scales of `r scales_efa_wdm_d1a_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.1.
@@ -180,7 +180,7 @@ XX
 
 ```{r}
 d1a_ad_scored_ad_diff <- diff_fun(d1a_ad_scored_ad)
-saveRDS(d1a_ad_scored_ad_diff, "./diffscore_data/d1a_ad_scored_ad_diff")
+saveRDS(d1a_ad_scored_ad_diff, "./stored/diffscore_data/d1a_ad_scored_ad_diff")
 ```
 
 ```{r}
@@ -270,8 +270,8 @@ scales_efa_wdm_d1b_ad <- scale_fun(efa_wdm_d1b_ad,
                                    factor_names = factor_names_efa_wdm_d1b_ad)
 d1b_ad_scored_ad <- score_fun(d1b_ad, scales_efa_wdm_d1b_ad)
 
-saveRDS(scales_efa_wdm_d1b_ad, file = "./scales/scales_efa_wdm_d1b_ad")
-saveRDS(d1b_ad_scored_ad, file = "./scored_data/d1b_ad_scored_ad")
+saveRDS(scales_efa_wdm_d1b_ad, file = "./stored/scales/scales_efa_wdm_d1b_ad")
+saveRDS(d1b_ad_scored_ad, file = "./stored/scored_data/d1b_ad_scored_ad")
 ```
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d1b_ad)` scales of `r scales_efa_wdm_d1b_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.1.
@@ -321,7 +321,7 @@ XX
 
 ```{r}
 d1b_ad_scored_ad_diff <- diff_fun(d1b_ad_scored_ad)
-saveRDS(d1b_ad_scored_ad_diff, "./diffscore_data/d1b_ad_scored_ad_diff")
+saveRDS(d1b_ad_scored_ad_diff, "./stored/diffscore_data/d1b_ad_scored_ad_diff")
 ```
 
 ```{r}
@@ -411,8 +411,8 @@ scales_efa_wdm_d1c_ad <- scale_fun(efa_wdm_d1c_ad,
                                    factor_names = factor_names_efa_wdm_d1c_ad)
 d1c_ad_scored_ad <- score_fun(d1c_ad, scales_efa_wdm_d1c_ad)
 
-saveRDS(scales_efa_wdm_d1c_ad, file = "./scales/scales_efa_wdm_d1c_ad")
-saveRDS(d1c_ad_scored_ad, file = "./scored_data/d1c_ad_scored_ad")
+saveRDS(scales_efa_wdm_d1c_ad, file = "./stored/scales/scales_efa_wdm_d1c_ad")
+saveRDS(d1c_ad_scored_ad, file = "./stored/scored_data/d1c_ad_scored_ad")
 ```
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d1c_ad)` scales of `r scales_efa_wdm_d1c_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.1.
@@ -462,7 +462,7 @@ XX
 
 ```{r}
 d1c_ad_scored_ad_diff <- diff_fun(d1c_ad_scored_ad)
-saveRDS(d1c_ad_scored_ad_diff, "./diffscore_data/d1c_ad_scored_ad_diff")
+saveRDS(d1c_ad_scored_ad_diff, "./stored/diffscore_data/d1c_ad_scored_ad_diff")
 ```
 
 ```{r}
@@ -552,8 +552,8 @@ scales_efa_wdm_d1d_ad <- scale_fun(efa_wdm_d1d_ad,
                                    factor_names = factor_names_efa_wdm_d1d_ad)
 d1d_ad_scored_ad <- score_fun(d1d_ad, scales_efa_wdm_d1d_ad)
 
-saveRDS(scales_efa_wdm_d1d_ad, file = "./scales/scales_efa_wdm_d1d_ad")
-saveRDS(d1d_ad_scored_ad, file = "./scored_data/d1d_ad_scored_ad")
+saveRDS(scales_efa_wdm_d1d_ad, file = "./stored/scales/scales_efa_wdm_d1d_ad")
+saveRDS(d1d_ad_scored_ad, file = "./stored/scored_data/d1d_ad_scored_ad")
 ```
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d1d_ad)` scales of `r scales_efa_wdm_d1d_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.1.
@@ -603,7 +603,7 @@ XX
 
 ```{r}
 d1d_ad_scored_ad_diff <- diff_fun(d1d_ad_scored_ad)
-saveRDS(d1d_ad_scored_ad_diff, "./diffscore_data/d1d_ad_scored_ad_diff")
+saveRDS(d1d_ad_scored_ad_diff, "./stored/diffscore_data/d1d_ad_scored_ad_diff")
 ```
 
 ```{r}
@@ -798,8 +798,8 @@ scales_efa_wdm_d2_ad <- scale_fun(efa_wdm_d2_ad,
                                    factor_names = factor_names_efa_wdm_d2_ad)
 d2_ad_scored_ad <- score_fun(d2_ad, scales_efa_wdm_d2_ad)
 
-saveRDS(scales_efa_wdm_d2_ad, file = "./scales/scales_efa_wdm_d2_ad")
-saveRDS(d2_ad_scored_ad, file = "./scored_data/d2_ad_scored_ad")
+saveRDS(scales_efa_wdm_d2_ad, file = "./stored/scales/scales_efa_wdm_d2_ad")
+saveRDS(d2_ad_scored_ad, file = "./stored/scored_data/d2_ad_scored_ad")
 ```
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d2_ad)` scales of `r scales_efa_wdm_d2_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.2.
@@ -845,7 +845,7 @@ fig_d2_ad_plots_leg_title <- plot_grid(fig_d2_ad_title, fig_d2_ad_plots_leg,
 
 ```{r}
 d2_ad_scored_ad_diff <- diff_fun(d2_ad_scored_ad)
-saveRDS(d2_ad_scored_ad_diff, "./diffscore_data/d2_ad_scored_ad_diff")
+saveRDS(d2_ad_scored_ad_diff, "./stored/diffscore_data/d2_ad_scored_ad_diff")
 ```
 
 ```{r}
@@ -936,9 +936,9 @@ scales_efa_wdm_d2_79 <- scale_fun(efa_wdm_d2_79,
 d2_79_scored_ad <- score_fun(d2_79, scales_efa_wdm_d2_ad)
 d2_79_scored_79 <- score_fun(d2_79, scales_efa_wdm_d2_79)
 
-saveRDS(scales_efa_wdm_d2_79, file = "./scales/scales_efa_wdm_d2_79")
-saveRDS(d2_79_scored_ad, file = "./scored_data/d2_79_scored_ad")
-saveRDS(d2_79_scored_79, file = "./scored_data/d2_79_scored_79")
+saveRDS(scales_efa_wdm_d2_79, file = "./stored/scales/scales_efa_wdm_d2_79")
+saveRDS(d2_79_scored_ad, file = "./stored/scored_data/d2_79_scored_ad")
+saveRDS(d2_79_scored_79, file = "./stored/scored_data/d2_79_scored_79")
 ```
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d2_79)` scales of `r scales_efa_wdm_d2_79 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.2.
@@ -1071,8 +1071,8 @@ fig_d2_79_scored_79_plots_leg_title <- plot_grid(
 ```{r}
 d2_79_scored_ad_diff <- diff_fun(d2_79_scored_ad)
 d2_79_scored_79_diff <- diff_fun(d2_79_scored_79)
-saveRDS(d2_79_scored_ad_diff, "./diffscore_data/d2_79_scored_ad_diff")
-saveRDS(d2_79_scored_79_diff, "./diffscore_data/d2_79_scored_79_diff")
+saveRDS(d2_79_scored_ad_diff, "./stored/diffscore_data/d2_79_scored_ad_diff")
+saveRDS(d2_79_scored_79_diff, "./stored/diffscore_data/d2_79_scored_79_diff")
 ```
 
 ##### Using adults' scales
@@ -1445,8 +1445,8 @@ scales_efa_wdm_d3_ad <- scale_fun(efa_wdm_d3_ad,
                                    factor_names = factor_names_efa_wdm_d3_ad)
 d3_ad_scored_ad <- score_fun(d3_ad, scales_efa_wdm_d3_ad)
 
-saveRDS(scales_efa_wdm_d3_ad, file = "./scales/scales_efa_wdm_d3_ad")
-saveRDS(d3_ad_scored_ad, file = "./scored_data/d3_ad_scored_ad")
+saveRDS(scales_efa_wdm_d3_ad, file = "./stored/scales/scales_efa_wdm_d3_ad")
+saveRDS(d3_ad_scored_ad, file = "./stored/scored_data/d3_ad_scored_ad")
 ```
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d3_ad)` scales of `r scales_efa_wdm_d3_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.3.
@@ -1498,7 +1498,7 @@ XX
 
 ```{r}
 d3_ad_scored_ad_diff <- diff_fun(d3_ad_scored_ad)
-saveRDS(d3_ad_scored_ad_diff, "./diffscore_data/d3_ad_scored_ad_diff")
+saveRDS(d3_ad_scored_ad_diff, "./stored/diffscore_data/d3_ad_scored_ad_diff")
 ```
 
 ```{r}
@@ -1591,9 +1591,9 @@ scales_efa_wdm_d3_79 <- scale_fun(efa_wdm_d3_79,
 d3_79_scored_ad <- score_fun(d3_79, scales_efa_wdm_d3_ad)
 d3_79_scored_79 <- score_fun(d3_79, scales_efa_wdm_d3_79)
 
-saveRDS(scales_efa_wdm_d3_79, file = "./scales/scales_efa_wdm_d3_79")
-saveRDS(d3_79_scored_ad, file = "./scored_data/d3_79_scored_ad")
-saveRDS(d3_79_scored_79, file = "./scored_data/d3_79_scored_79")
+saveRDS(scales_efa_wdm_d3_79, file = "./stored/scales/scales_efa_wdm_d3_79")
+saveRDS(d3_79_scored_ad, file = "./stored/scored_data/d3_79_scored_ad")
+saveRDS(d3_79_scored_79, file = "./stored/scored_data/d3_79_scored_79")
 ```
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d3_79)` scales of `r scales_efa_wdm_d3_79 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.3.
@@ -1689,8 +1689,8 @@ fig_d3_79_scored_79_plots_leg_title <- plot_grid(
 ```{r}
 d3_79_scored_ad_diff <- diff_fun(d3_79_scored_ad)
 d3_79_scored_79_diff <- diff_fun(d3_79_scored_79)
-saveRDS(d3_79_scored_ad_diff, "./diffscore_data/d3_79_scored_ad_diff")
-saveRDS(d3_79_scored_79_diff, "./diffscore_data/d3_79_scored_79_diff")
+saveRDS(d3_79_scored_ad_diff, "./stored/diffscore_data/d3_79_scored_ad_diff")
+saveRDS(d3_79_scored_79_diff, "./stored/diffscore_data/d3_79_scored_79_diff")
 ```
 
 ##### Using adults' scales
@@ -1866,10 +1866,10 @@ d3_46_scored_ad <- score_fun(d3_46, scales_efa_wdm_d3_ad)
 d3_46_scored_46_wdm <- score_fun(d3_46, scales_efa_wdm_d3_46)
 d3_46_scored_46_par <- score_fun(d3_46, scales_efa_par_d3_46)
 
-saveRDS(scales_efa_wdm_d3_46, file = "./scales/scales_efa_wdm_d3_46")
-saveRDS(d3_46_scored_ad, file = "./scored_data/d3_46_scored_ad")
-saveRDS(d3_46_scored_46_wdm, file = "./scored_data/d3_46_scored_46_wdm")
-saveRDS(d3_46_scored_46_par, file = "./scored_data/d3_46_scored_46_par")
+saveRDS(scales_efa_wdm_d3_46, file = "./stored/scales/scales_efa_wdm_d3_46")
+saveRDS(d3_46_scored_ad, file = "./stored/scored_data/d3_46_scored_ad")
+saveRDS(d3_46_scored_46_wdm, file = "./stored/scored_data/d3_46_scored_46_wdm")
+saveRDS(d3_46_scored_46_par, file = "./stored/scored_data/d3_46_scored_46_par")
 ```
 
 ##### Three-factor solution
@@ -1885,6 +1885,10 @@ Following the steps described in "General analysis plan," above, yielded `r fact
 ##### Using adults' scales
 
 XX
+
+```{r}
+plots_d3_46_scored_ad <- relviz_fun(d3_46_scored_ad, colors = colors09)
+```
 
 ```{r}
 fig_d3_46_scored_ad_plots <- plot_grid(plots_d3_46_scored_ad[[1]] + 
@@ -2004,9 +2008,9 @@ fig_d3_46_scored_46_par_plots_leg_title <- plot_grid(
 d3_46_scored_ad_diff <- diff_fun(d3_46_scored_ad)
 d3_46_scored_46_wdm_diff <- diff_fun(d3_46_scored_46_wdm)
 d3_46_scored_46_par_diff <- diff_fun(d3_46_scored_46_par)
-saveRDS(d3_46_scored_ad_diff, "./diffscore_data/d3_46_scored_ad_diff")
-saveRDS(d3_46_scored_46_wdm_diff, "./diffscore_data/d3_46_scored_46_wdm_diff")
-saveRDS(d3_46_scored_46_par_diff, "./diffscore_data/d3_46_scored_46_par_diff")
+saveRDS(d3_46_scored_ad_diff, "./stored/diffscore_data/d3_46_scored_ad_diff")
+saveRDS(d3_46_scored_46_wdm_diff, "./stored/diffscore_data/d3_46_scored_46_wdm_diff")
+saveRDS(d3_46_scored_46_par_diff, "./stored/diffscore_data/d3_46_scored_46_par_diff")
 ```
 
 ##### Using adults' scales
@@ -2539,8 +2543,8 @@ scales_efa_wdm_d4_ad <- scale_fun(efa_wdm_d4_ad,
                                    factor_names = factor_names_efa_wdm_d4_ad)
 d4_ad_scored_ad <- score_fun(d4_ad, scales_efa_wdm_d4_ad)
 
-saveRDS(scales_efa_wdm_d4_ad, file = "./scales/scales_efa_wdm_d4_ad")
-saveRDS(d4_ad_scored_ad, file = "./scored_data/d4_ad_scored_ad")
+saveRDS(scales_efa_wdm_d4_ad, file = "./stored/scales/scales_efa_wdm_d4_ad")
+saveRDS(d4_ad_scored_ad, file = "./stored/scored_data/d4_ad_scored_ad")
 ```
 
 Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d4_ad)` scales of `r scales_efa_wdm_d4_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.4.
@@ -2590,7 +2594,7 @@ XX
 
 ```{r}
 d4_ad_scored_ad_diff <- diff_fun(d4_ad_scored_ad)
-saveRDS(d4_ad_scored_ad_diff, "./diffscore_data/d4_ad_scored_ad_diff")
+saveRDS(d4_ad_scored_ad_diff, "./stored/diffscore_data/d4_ad_scored_ad_diff")
 ```
 
 ```{r}
@@ -2682,10 +2686,10 @@ d4_46_scored_ad <- score_fun(d4_46, scales_efa_wdm_d4_ad)
 d4_46_scored_46_par <- score_fun(d4_46, scales_efa_par_d4_46)
 d4_46_scored_46_wdm <- score_fun(d4_46, scales_efa_wdm_d4_46)
 
-saveRDS(scales_efa_wdm_d4_46, file = "./scales/scales_efa_wdm_d4_46")
-saveRDS(d4_46_scored_ad, file = "./scored_data/d4_46_scored_ad")
-saveRDS(d4_46_scored_46_par, file = "./scored_data/d4_46_scored_46_par")
-saveRDS(d4_46_scored_46_wdm, file = "./scored_data/d4_46_scored_46_wdm")
+saveRDS(scales_efa_wdm_d4_46, file = "./stored/scales/scales_efa_wdm_d4_46")
+saveRDS(d4_46_scored_ad, file = "./stored/scored_data/d4_46_scored_ad")
+saveRDS(d4_46_scored_46_par, file = "./stored/scored_data/d4_46_scored_46_par")
+saveRDS(d4_46_scored_46_wdm, file = "./stored/scored_data/d4_46_scored_46_wdm")
 ```
 
 ##### Three-factor solution
@@ -2836,9 +2840,9 @@ fig_d4_46_scored_46_wdm_plots_leg_title <- plot_grid(
 d4_46_scored_ad_diff <- diff_fun(d4_46_scored_ad)
 d4_46_scored_46_par_diff <- diff_fun(d4_46_scored_46_par)
 d4_46_scored_46_wdm_diff <- diff_fun(d4_46_scored_46_wdm)
-saveRDS(d4_46_scored_ad_diff, "./diffscore_data/d4_46_scored_ad_diff")
-saveRDS(d4_46_scored_46_par_diff, "./diffscore_data/d4_46_scored_46_par_diff")
-saveRDS(d4_46_scored_46_wdm_diff, "./diffscore_data/d4_46_scored_46_wdm_diff")
+saveRDS(d4_46_scored_ad_diff, "./stored/diffscore_data/d4_46_scored_ad_diff")
+saveRDS(d4_46_scored_46_par_diff, "./stored/diffscore_data/d4_46_scored_46_par_diff")
+saveRDS(d4_46_scored_46_wdm_diff, "./stored/diffscore_data/d4_46_scored_46_wdm_diff")
 ```
 
 ##### Using adults' scales

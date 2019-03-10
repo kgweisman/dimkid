@@ -1,0 +1,949 @@
+---
+title: "Appendix A: Additional EFA solutions"
+output:
+  html_notebook:
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
+always_allow_html: yes
+---
+
+```{r global_options, include = F}
+knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
+                      include = F, echo = F)
+```
+
+```{r}
+# # for knitting to .docx
+# output:
+#   word_document:
+#     reference_docx: "./word-styles-reference.docx"
+# always_allow_html: yes
+   
+# # for knitting to .nb.html 
+# output:
+#   html_notebook:
+#     toc: yes
+#     toc_depth: 4
+#     toc_float: yes
+```
+
+```{r}
+# run ur-setup script (which runs other scripts)
+source("./scripts/_SETUP.R")
+```
+
+```{r}
+# load in EFAs from Chapter II
+# study 1
+efa_par_d1a_ad <- readRDS(file = "./efas/efa_par_d1a_ad")
+efa_bic_d1a_ad <- readRDS(file = "./efas/efa_bic_d1a_ad")
+efa_wdm_d1a_ad <- readRDS(file = "./efas/efa_wdm_d1a_ad")
+
+efa_par_d1b_ad <- readRDS(file = "./efas/efa_par_d1b_ad")
+efa_bic_d1b_ad <- readRDS(file = "./efas/efa_bic_d1b_ad")
+efa_wdm_d1b_ad <- readRDS(file = "./efas/efa_wdm_d1b_ad")
+
+efa_par_d1c_ad <- readRDS(file = "./efas/efa_par_d1c_ad")
+efa_bic_d1c_ad <- readRDS(file = "./efas/efa_bic_d1c_ad")
+efa_wdm_d1c_ad <- readRDS(file = "./efas/efa_wdm_d1c_ad")
+
+efa_par_d1d_ad <- readRDS(file = "./efas/efa_par_d1d_ad")
+efa_bic_d1d_ad <- readRDS(file = "./efas/efa_bic_d1d_ad")
+efa_wdm_d1d_ad <- readRDS(file = "./efas/efa_wdm_d1d_ad")
+
+# study 2
+efa_par_d2_ad <- readRDS(file = "./efas/efa_par_d2_ad")
+efa_bic_d2_ad <- readRDS(file = "./efas/efa_bic_d2_ad")
+efa_wdm_d2_ad <- readRDS(file = "./efas/efa_wdm_d2_ad")
+
+efa_par_d2_79 <- readRDS(file = "./efas/efa_par_d2_79")
+efa_bic_d2_79 <- readRDS(file = "./efas/efa_bic_d2_79")
+efa_wdm_d2_79 <- readRDS(file = "./efas/efa_wdm_d2_79")
+
+# study 3
+efa_par_d3_ad <- readRDS(file = "./efas/efa_par_d3_ad")
+efa_bic_d3_ad <- readRDS(file = "./efas/efa_bic_d3_ad")
+efa_wdm_d3_ad <- readRDS(file = "./efas/efa_wdm_d3_ad")
+
+efa_par_d3_79 <- readRDS(file = "./efas/efa_par_d3_79")
+efa_bic_d3_79 <- readRDS(file = "./efas/efa_bic_d3_79")
+efa_wdm_d3_79 <- readRDS(file = "./efas/efa_wdm_d3_79")
+
+efa_par_d3_46 <- readRDS(file = "./efas/efa_par_d3_46")
+efa_bic_d3_46 <- readRDS(file = "./efas/efa_bic_d3_46")
+efa_wdm_d3_46 <- readRDS(file = "./efas/efa_wdm_d3_46")
+
+# study 4
+efa_par_d4_ad <- readRDS(file = "./efas/efa_par_d4_ad")
+efa_bic_d4_ad <- readRDS(file = "./efas/efa_bic_d4_ad")
+efa_wdm_d4_ad <- readRDS(file = "./efas/efa_wdm_d4_ad")
+
+efa_par_d4_46 <- readRDS(file = "./efas/efa_par_d4_46")
+efa_bic_d4_46 <- readRDS(file = "./efas/efa_bic_d4_46")
+efa_wdm_d4_46 <- readRDS(file = "./efas/efa_wdm_d4_46")
+```
+
+# Appendix overview
+
+In this appendix, I report additional exploratory factor analysis (EFA) results that were excluded from the main text of Chapter III, including: (a) unrotated versions of all of the EFA solutions reported in Chapter III; (b) oblimin-transformed (rather than varimax-rotated) versions of all of the EFA solutions reported in Chapter III; and (c) additional varimax-rotated EFA solutions not reported in full in Chapter III because I deemd to be redundant with the reported solutions.
+
+
+# Unrotated solutions
+
+Throughout this dissertation, beginning in Chapter III, I have reported EFA solutions after applying varimax rotation. This rotation, which maximizes the sum of the variances of the squared factor loadings, is intended to make factors more interpretable by producing "simple structure" (Thurstone, 1949). Here, for completeness, I present unrotated EFA solutions for all of the EFAs reported in Chapter III.
+
+```{r}
+# reset EFA parameters to default, then set chosen rotation to none
+source("./scripts/efa_param.R")
+chosen_rot <- "none"
+```
+
+## Study 1
+
+```{r}
+efa_3_d1a_ad_unrot <- fa_fun(d1a_ad_wide_i, 3)
+efa_3_d1b_ad_unrot <- fa_fun(d1b_ad_wide_i, 3)
+efa_3_d1c_ad_unrot <- fa_fun(d1c_ad_wide_i, 3)
+efa_3_d1d_ad_unrot <- fa_fun(d1d_ad_wide_i, 3)
+```
+
+```{r}
+# study 1a
+plot_efa_3_d1a_ad_unrot <- heatmap_fun(efa_3_d1a_ad_unrot) +
+  labs(title = "Study 1a", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+# study 1b
+plot_efa_3_d1b_ad_unrot <- heatmap_fun(efa_3_d1b_ad_unrot) +
+  labs(title = "Study 1b", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+# study 1c
+plot_efa_3_d1c_ad_unrot <- heatmap_fun(efa_3_d1c_ad_unrot) +
+  labs(title = "Study 1c", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+# study 1d
+plot_efa_3_d1d_ad_unrot <- heatmap_fun(efa_3_d1d_ad_unrot) +
+  labs(title = "Study 1d", subtitle = "Unrotated 3-factor solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.1 <- plot_grid(plot_efa_3_d1a_ad_unrot, plot_efa_3_d1b_ad_unrot, 
+                       plot_efa_3_d1c_ad_unrot, plot_efa_3_d1d_ad_unrot,
+                       labels = "AUTO", ncol = 4, rel_widths = c(1, 1, 1, 1.2))
+
+figureA.1_cap <- add_sub(figureA.1, str_wrap("Figure A.1: Factor loadings from exploratory factor analyses of Study 1 (as reported in Chapter III), before rotation. All results are from US adult samples; see Chapter II for methods. (A) Study 1a. (B) Study 1b. (C) Study 1c. (D) Study 1d. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r figureA.1, include = T, fig.width = 9, fig.asp = 0.6}
+ggdraw(figureA.1_cap)
+```
+
+## Study 2
+
+```{r}
+efa_3_d2_ad_unrot <- fa_fun(d2_ad_wide_i, 3)
+efa_4_d2_ad_unrot <- fa_fun(d2_ad_wide_i, 4)
+efa_3_d2_79_unrot <- fa_fun(d2_79_wide_i, 3)
+```
+
+```{r}
+# adults
+plot_efa_3_d2_ad_unrot <- heatmap_fun(efa_3_d2_ad_unrot) +
+  labs(title = "Adults", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_4_d2_ad_unrot <- heatmap_fun(efa_4_d2_ad_unrot) +
+  labs(title = "Adults", subtitle = "Unrotated 4-factor solution") +
+  theme(legend.position = "none")
+
+# children
+plot_efa_3_d2_79_unrot <- heatmap_fun(efa_3_d2_79_unrot) +
+  labs(title = "Chidlren, 7-9y", subtitle = "Unrotated 3-factor solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.2 <- plot_grid(plot_efa_3_d2_ad_unrot, plot_efa_4_d2_ad_unrot, 
+                       plot_efa_3_d2_79_unrot, 
+                       labels = "AUTO", ncol = 3, rel_widths = c(1, 1.2, 1.2))
+
+figureA.2_cap <- add_sub(figureA.2, str_wrap("Figure A.2: Factor loadings from exploratory factor analyses of Study 2 (as reported in Chapter III), before rotation. (A) Results for US adults, retaining three factors. (B) Results for US adults, retaining four factors. (C) Results for US children ages 7-9y. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r figureA.2, include = T, fig.width = 9, fig.asp = 0.6}
+ggdraw(figureA.2_cap)
+```
+
+## Study 3
+
+```{r}
+efa_3_d3_ad_unrot <- fa_fun(d3_ad_wide_i, 3)
+efa_3_d3_79_unrot <- fa_fun(d3_79_wide_i, 3)
+efa_2_d3_46_unrot <- fa_fun(d3_46_wide_i, 2)
+efa_3_d3_46_unrot <- fa_fun(d3_46_wide_i, 3)
+```
+
+```{r}
+# adults
+plot_efa_3_d3_ad_unrot <- heatmap_fun(efa_3_d3_ad_unrot) +
+  labs(title = "Adults", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+# older children
+plot_efa_3_d3_79_unrot <- heatmap_fun(efa_3_d3_79_unrot) +
+  labs(title = "Older children, 7-9y", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+# younger children
+plot_efa_3_d3_46_unrot <- heatmap_fun(efa_3_d3_46_unrot) +
+  labs(title = "Younger children, 4-6y", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_2_d3_46_unrot <- heatmap_fun(efa_2_d3_46_unrot) +
+  labs(title = "Younger children, 4-6y", subtitle = "Unrotated 2-factor solution") +
+  theme(legend.position = "none")
+```
+
+```{r}
+figureA.3 <- plot_grid(plot_efa_3_d3_ad_unrot, plot_efa_3_d3_79_unrot,
+                       plot_efa_3_d3_46_unrot, plot_efa_2_d3_46_unrot,
+                       labels = "AUTO", ncol = 4, rel_widths = c(1, 1, 1, 1))
+
+figureA.3_cap <- add_sub(figureA.3, str_wrap("Figure A.3: Factor loadings from exploratory factor analyses of Study 3 (as reported in Chapter III), before rotation. (A) Results for US adults. (B) Results for US children ages 7-9y. (C) Results for US children ages 4-6y, retaining three factors. (D) Results for US children ages 4-6y, retaining two factors. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r figureA.3, include = T, fig.width = 9, fig.asp = 0.6}
+ggdraw(figureA.3_cap)
+```
+
+## Study 4
+
+```{r}
+efa_3_d4_ad_unrot <- fa_fun(d4_ad_wide_i, 3)
+efa_3_d4_46_unrot <- fa_fun(d4_46_wide_i, 3)
+efa_4_d4_46_unrot <- fa_fun(d4_46_wide_i, 4)
+```
+
+```{r}
+# adults
+plot_efa_3_d4_ad_unrot <- heatmap_fun(efa_3_d4_ad_unrot) +
+  labs(title = "Adults", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+# younger children
+plot_efa_3_d4_46_unrot <- heatmap_fun(efa_3_d4_46_unrot) +
+  labs(title = "Children, 4-5y", subtitle = "Unrotated 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_4_d4_46_unrot <- heatmap_fun(efa_4_d4_46_unrot) +
+  labs(title = "Children, 4-5y", subtitle = "Unrotated 4-factor solution") +
+  theme(legend.position = "none")
+```
+
+```{r}
+figureA.4 <- plot_grid(plot_efa_3_d4_ad_unrot, plot_efa_3_d4_46_unrot, 
+                       plot_efa_4_d4_46_unrot,
+                       labels = "AUTO", ncol = 3, rel_widths = c(1, 1, 1.4))
+
+figureA.4_cap <- add_sub(figureA.4, str_wrap("Figure A.4: Factor loadings from exploratory factor analyses of Study 4 (as reported in Chapter III), before rotation. (A) Results for US adults. (B) Results for US children ages 4-5y, retaining three factors. (C) Results for US children ages 4-5y, retaining four factors. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r figureA.4, include = T, fig.width = 9, fig.asp = 0.6}
+ggdraw(figureA.4_cap)
+```
+
+```{r}
+# reset EFA parameters to default
+source("./scripts/efa_param.R")
+```
+
+
+# Oblimin-transformed solutions
+
+Throughout this dissertation, I have opted to focus on varimax-rotated EFA solutions, in which factors are constrained to be orthogonal (i.e., inter-factor correlations are 0). In my (admittedly anecdotal) experience, this rotation has tended to produce solutions that are more replicable when studies are repeated exactly, more similar across variants of the empirical approach, and easier to make factor retention decisions about. Orthogonal solutions also lend themselves more naturally to "scoring" individual participants on each of the underlying constructs because factors are, by definition, maximally distinct from one another. Since comparing EFA solutions across studies and age groups (Chapter III) and using these solutions to "score" participants on their assessments of the mental lives of different target characters (Chapter V) are two of the main goals of this dissertation, varimax rotations seemed to me to be appropriate for my current purposes. 
+
+However, "oblique" transformations, such as the "oblimin" transformation, also confer many advantages in using EFA to identify constructs of theoretical interest (for discussion, see Revelle, 2018, Chapter 6). In contrast to orthogonal rotations, oblique transformations allow factors to correlate with each other. In removing the orthgonality constraint, oblique transformations thus reveal relationships between variables (in my case, mental capacities) and factors (conceptual units) that might be considered more "natural"; they might also reveal new aspects of the relationships among factors themselves (pertinent to my goals in Chapter V).
+
+In the interest of adding nuance to my primary discussions of the conceptual units identified by EFA (Chatper III) and the relationships among these units (Chapter V), here I present oblimin-transformed EFA solutions for all studies.
+
+```{r}
+# reset EFA parameters to default, then set chosen rotation to oblimin
+source("./scripts/efa_param.R")
+chosen_rot <- "oblimin"
+```
+
+```{r}
+# check whether rotation impacts factor retention (it doesn't)
+reten_report_oblimin <- list("Study 1a" = d1a_ad_wide_i,
+                             "Study 1b" = d1b_ad_wide_i,
+                             "Study 1c" = d1c_ad_wide_i,
+                             "Study 1d" = d1d_ad_wide_i,
+                             "Study 2: Adults" = d2_ad_wide_i,
+                             "Study 2: Children (7-9y)" = d2_79_wide_i,
+                             "Study 3: Adults" = d3_ad_wide_i,
+                             "Study 3: Older children (7-9y)" = d3_79_wide_i,
+                             "Study 3: Younger children (4-6y)" = d3_46_wide_i,
+                             "Study 4: Adults" = d4_ad_wide_i,
+                             "Study 4: Children (4-5y)" = d4_46_wide_i) %>%
+  reten_report_fun()
+reten_report_oblimin
+```
+
+
+## Study 1
+
+### EFA solutions
+
+Different factor retention protocols suggested retaining between 3-5 factors for Studies 1a-1d. Here, I report 3-, 4-, and 5-factor solutions for all of these studies. When these factors seem similar to the BODY, HEART, and MIND factors presented in Chapter III, I have labeled them accordingly.
+
+```{r}
+efa_3_d1a_ad_oblimin <- fa_fun(d1a_ad_wide_i, 3)
+efa_3_d1b_ad_oblimin <- fa_fun(d1b_ad_wide_i, 3)
+efa_3_d1c_ad_oblimin <- fa_fun(d1c_ad_wide_i, 3)
+efa_3_d1d_ad_oblimin <- fa_fun(d1d_ad_wide_i, 3)
+
+efa_4_d1a_ad_oblimin <- fa_fun(d1a_ad_wide_i, 4)
+efa_4_d1b_ad_oblimin <- fa_fun(d1b_ad_wide_i, 4)
+efa_4_d1c_ad_oblimin <- fa_fun(d1c_ad_wide_i, 4)
+efa_4_d1d_ad_oblimin <- fa_fun(d1d_ad_wide_i, 4)
+
+efa_5_d1a_ad_oblimin <- fa_fun(d1a_ad_wide_i, 5)
+efa_5_d1b_ad_oblimin <- fa_fun(d1b_ad_wide_i, 5)
+efa_5_d1c_ad_oblimin <- fa_fun(d1c_ad_wide_i, 5)
+efa_5_d1d_ad_oblimin <- fa_fun(d1d_ad_wide_i, 5)
+```
+
+```{r}
+factor_names_efa_3_d1a_ad_oblimin <- c("HEART", "BODY", "MIND")
+factor_names_efa_3_d1b_ad_oblimin <- c("BODY", "HEART", "MIND")
+factor_names_efa_3_d1c_ad_oblimin <- c("HEART", "BODY", "MIND")
+factor_names_efa_3_d1d_ad_oblimin <- c("BODY", "HEART", "MIND")
+
+factor_names_efa_4_d1a_ad_oblimin <- c("HEART", "BODY", "MIND (perception)", 
+                                       "MIND (agency)")
+factor_names_efa_4_d1b_ad_oblimin <- c("HEART (social)", "MIND", "BODY", 
+                                       "HEART (basic)")
+factor_names_efa_4_d1c_ad_oblimin <- c("HEART", "MIND (agency)", 
+                                       "BODY vs. MIND", "MIND (perception)")
+factor_names_efa_4_d1d_ad_oblimin <- c("HEART", "MIND", "BODY", "Factor 4")
+
+factor_names_efa_5_d1a_ad_oblimin <- c("HEART (social)", "BODY vs. MIND", 
+                                       "HEART (basic)", "MIND (perception)",
+                                       "MIND (agency)")
+factor_names_efa_5_d1b_ad_oblimin <- c("BODY vs. MIND", "HEART (social)", 
+                                       "MIND (perception)", "HEART (basic)",
+                                       "MIND (cognition)")
+factor_names_efa_5_d1c_ad_oblimin <- c("HEART (social)", "MIND (agency)",
+                                       "MIND (perception)", "MIND vs. BODY",
+                                       "Factor 5")
+factor_names_efa_5_d1d_ad_oblimin <- c("HEART (basic)", "HEART (social)",
+                                       "MIND (perception)", "MIND (agency)",
+                                       "BODY vs. MIND")
+```
+
+```{r}
+# study 1a
+plot_efa_3_d1a_ad_oblimin <- heatmap_fun(
+  efa_3_d1a_ad_oblimin, factor_names = factor_names_efa_3_d1a_ad_oblimin) +
+  labs(title = "Study 1a", subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_4_d1a_ad_oblimin <- heatmap_fun(
+  efa_4_d1a_ad_oblimin, factor_names = factor_names_efa_4_d1a_ad_oblimin) +
+  labs(title = "Study 1a", subtitle = "Oblimin-transformed 4-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_5_d1a_ad_oblimin <- heatmap_fun(
+  efa_5_d1a_ad_oblimin, factor_names = factor_names_efa_5_d1a_ad_oblimin) +
+  labs(title = "Study 1a", subtitle = "Oblimin-transformed 5-factor solution") +
+  theme(legend.position = "none")
+
+# study 1b
+plot_efa_3_d1b_ad_oblimin <- heatmap_fun(
+  efa_3_d1b_ad_oblimin, factor_names = factor_names_efa_3_d1b_ad_oblimin) +
+  labs(title = "Study 1b", subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_4_d1b_ad_oblimin <- heatmap_fun(
+  efa_4_d1b_ad_oblimin, factor_names = factor_names_efa_4_d1b_ad_oblimin) +
+  labs(title = "Study 1b", subtitle = "Oblimin-transformed 4-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_5_d1b_ad_oblimin <- heatmap_fun(
+  efa_5_d1b_ad_oblimin, factor_names = factor_names_efa_5_d1b_ad_oblimin) +
+  labs(title = "Study 1b", subtitle = "Oblimin-transformed 5-factor solution") +
+  theme(legend.position = "none")
+
+# study 1c
+plot_efa_3_d1c_ad_oblimin <- heatmap_fun(
+  efa_3_d1c_ad_oblimin, factor_names = factor_names_efa_3_d1c_ad_oblimin) +
+  labs(title = "Study 1c", subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_4_d1c_ad_oblimin <- heatmap_fun(
+  efa_4_d1c_ad_oblimin, factor_names = factor_names_efa_4_d1c_ad_oblimin) +
+  labs(title = "Study 1c", subtitle = "Oblimin-transformed 4-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_5_d1c_ad_oblimin <- heatmap_fun(
+  efa_5_d1c_ad_oblimin, factor_names = factor_names_efa_5_d1c_ad_oblimin) +
+  labs(title = "Study 1c", subtitle = "Oblimin-transformed 5-factor solution") +
+  theme(legend.position = "none")
+
+# study 1d
+plot_efa_3_d1d_ad_oblimin <- heatmap_fun(
+  efa_3_d1d_ad_oblimin, factor_names = factor_names_efa_3_d1d_ad_oblimin) +
+  labs(title = "Study 1d", subtitle = "Oblimin-transformed 3-factor solution") # +
+  # theme(legend.position = "none")
+
+plot_efa_4_d1d_ad_oblimin <- heatmap_fun(
+  efa_4_d1d_ad_oblimin, factor_names = factor_names_efa_4_d1d_ad_oblimin) +
+  labs(title = "Study 1d", subtitle = "Oblimin-transformed 4-factor solution") # +
+  # theme(legend.position = "none")
+
+plot_efa_5_d1d_ad_oblimin <- heatmap_fun(
+  efa_5_d1d_ad_oblimin, factor_names = factor_names_efa_5_d1d_ad_oblimin) +
+  labs(title = "Study 1d", subtitle = "Oblimin-transformed 5-factor solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.5 <- plot_grid(plot_efa_3_d1a_ad_oblimin, plot_efa_3_d1b_ad_oblimin, 
+                       plot_efa_3_d1c_ad_oblimin, plot_efa_3_d1d_ad_oblimin,
+                       plot_efa_4_d1a_ad_oblimin, plot_efa_4_d1b_ad_oblimin, 
+                       plot_efa_4_d1c_ad_oblimin, plot_efa_4_d1d_ad_oblimin,
+                       plot_efa_5_d1a_ad_oblimin, plot_efa_5_d1b_ad_oblimin, 
+                       plot_efa_5_d1c_ad_oblimin, plot_efa_5_d1d_ad_oblimin,
+                       labels = "AUTO", ncol = 4, rel_widths = c(1, 1, 1, 1.2))
+
+figureA.5_cap <- add_sub(figureA.5, str_wrap("Figure A.5: Factor loadings from exploratory factor analyses of Study 1 after oblimin transformation. All results are from US adult samples; see Chapter II for methods. (A) Study 1a. (B) Study 1b. (C) Study 1c. (D) Study 1d. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 360), x = 0, hjust = 0)
+```
+
+```{r figureA.5, include = T, fig.width = 16, fig.asp = 1.4}
+ggdraw(figureA.5_cap)
+```
+
+### Inter-factor correlations
+
+Here I present inter-factor correlations for all of the above EFA solutions for Studies 1a-1d. 
+
+```{r}
+# study 1a
+IFcor_efa_3_d1a_ad_oblimin <- IFcor_plot_fun(
+  efa_3_d1a_ad_oblimin, factor_names = factor_names_efa_3_d1a_ad_oblimin) +
+  labs(title = "Study 1a", subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_4_d1a_ad_oblimin <- IFcor_plot_fun(
+  efa_4_d1a_ad_oblimin, factor_names = factor_names_efa_4_d1a_ad_oblimin) +
+  labs(title = "Study 1a", subtitle = "Oblimin-transformed 4-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_5_d1a_ad_oblimin <- IFcor_plot_fun(
+  efa_5_d1a_ad_oblimin, factor_names = factor_names_efa_5_d1a_ad_oblimin) +
+  labs(title = "Study 1a", subtitle = "Oblimin-transformed 5-factor solution") +
+  theme(legend.position = "none")
+
+# study 1b
+IFcor_efa_3_d1b_ad_oblimin <- IFcor_plot_fun(
+  efa_3_d1b_ad_oblimin, factor_names = factor_names_efa_3_d1b_ad_oblimin) +
+  labs(title = "Study 1b", subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_4_d1b_ad_oblimin <- IFcor_plot_fun(
+  efa_4_d1b_ad_oblimin, factor_names = factor_names_efa_4_d1b_ad_oblimin) +
+  labs(title = "Study 1b", subtitle = "Oblimin-transformed 4-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_5_d1b_ad_oblimin <- IFcor_plot_fun(
+  efa_5_d1b_ad_oblimin, factor_names = factor_names_efa_5_d1b_ad_oblimin) +
+  labs(title = "Study 1b", subtitle = "Oblimin-transformed 5-factor solution") +
+  theme(legend.position = "none")
+
+# study 1c
+IFcor_efa_3_d1c_ad_oblimin <- IFcor_plot_fun(
+  efa_3_d1c_ad_oblimin, factor_names = factor_names_efa_3_d1c_ad_oblimin) +
+  labs(title = "Study 1c", subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_4_d1c_ad_oblimin <- IFcor_plot_fun(
+  efa_4_d1c_ad_oblimin, factor_names = factor_names_efa_4_d1c_ad_oblimin) +
+  labs(title = "Study 1c", subtitle = "Oblimin-transformed 4-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_5_d1c_ad_oblimin <- IFcor_plot_fun(
+  efa_5_d1c_ad_oblimin, factor_names = factor_names_efa_5_d1c_ad_oblimin) +
+  labs(title = "Study 1c", subtitle = "Oblimin-transformed 5-factor solution") +
+  theme(legend.position = "none")
+
+# study 1d
+IFcor_efa_3_d1d_ad_oblimin <- IFcor_plot_fun(
+  efa_3_d1d_ad_oblimin, factor_names = factor_names_efa_3_d1d_ad_oblimin) +
+  labs(title = "Study 1d", subtitle = "Oblimin-transformed 3-factor solution") # +
+  # theme(legend.position = "none")
+
+IFcor_efa_4_d1d_ad_oblimin <- IFcor_plot_fun(
+  efa_4_d1d_ad_oblimin, factor_names = factor_names_efa_4_d1d_ad_oblimin) +
+  labs(title = "Study 1d", subtitle = "Oblimin-transformed 4-factor solution") # +
+  # theme(legend.position = "none")
+
+IFcor_efa_5_d1d_ad_oblimin <- IFcor_plot_fun(
+  efa_5_d1d_ad_oblimin, factor_names = factor_names_efa_5_d1d_ad_oblimin) +
+  labs(title = "Study 1d", subtitle = "Oblimin-transformed 5-factor solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.6 <- plot_grid(IFcor_efa_3_d1a_ad_oblimin, IFcor_efa_3_d1b_ad_oblimin,
+                        IFcor_efa_3_d1c_ad_oblimin, IFcor_efa_3_d1d_ad_oblimin,
+                        IFcor_efa_4_d1a_ad_oblimin, IFcor_efa_4_d1b_ad_oblimin,
+                        IFcor_efa_4_d1c_ad_oblimin, IFcor_efa_4_d1d_ad_oblimin,
+                        IFcor_efa_5_d1a_ad_oblimin, IFcor_efa_5_d1b_ad_oblimin,
+                        IFcor_efa_5_d1c_ad_oblimin, IFcor_efa_5_d1d_ad_oblimin,
+                        labels = "AUTO", ncol = 4, rel_widths = c(1, 1, 1, 1.2))
+
+figureA.6_cap <- add_sub(figureA.6, str_wrap("Figure A.6: Inter-factor correlations from exploratory factor analyses of Study 1 after oblimin transformation. All results are from US adult samples; see Chapter II for methods. (A) Study 1a. (B) Study 1b. (C) Study 1c. (D) Study 1d. Factors have been labeled with the labels 'BODY,' 'HEART,' and 'MIND,' when applicable, to facilitate comparison across studies.", 190), x = 0, hjust = 0)
+```
+
+```{r figureA.6, include = T, fig.width = 8, fig.asp = 0.8}
+ggdraw(figureA.6_cap)
+```
+
+## Study 2
+
+### EFA solutions
+
+Different factor retention protocols suggested retaining either 3 or 4 factors for adults in Study 2; all protocols suggested retaining 3 factors for children (ages 7-9y). Here, I report 3-, and 4-factor solutions for adults and the 3-factor solution for children. When these factors seem similar to the BODY, HEART, and MIND factors presented in Chapter III, I have labeled them accordingly.
+
+```{r}
+efa_3_d2_ad_oblimin <- fa_fun(d2_ad_wide_i, 3)
+efa_4_d2_ad_oblimin <- fa_fun(d2_ad_wide_i, 4)
+efa_3_d2_79_oblimin <- fa_fun(d2_79_wide_i, 3)
+```
+
+```{r}
+factor_names_efa_3_d2_ad_oblimin <- c("HEART", "BODY", "MIND")
+factor_names_efa_4_d2_ad_oblimin <- c("HEART", "BODY vs. MIND", 
+                                      "MIND (agency)", "MIND (perception)")
+factor_names_efa_3_d2_79_oblimin <- c("HEART", "BODY vs. MIND", "MIND")
+```
+
+```{r}
+plot_efa_3_d2_ad_oblimin <- heatmap_fun(
+  efa_3_d2_ad_oblimin, factor_names = factor_names_efa_3_d2_ad_oblimin) +
+  labs(title = "Study 2, Adults", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_4_d2_ad_oblimin <- heatmap_fun(
+  efa_4_d2_ad_oblimin, factor_names = factor_names_efa_4_d2_ad_oblimin) +
+  labs(title = "Study 2, Adults", 
+       subtitle = "Oblimin-transformed 4-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_3_d2_79_oblimin <- heatmap_fun(
+  efa_3_d2_79_oblimin, factor_names = factor_names_efa_3_d2_79_oblimin) +
+  labs(title = "Study 2, Children (7-9y)", 
+       subtitle = "Oblimin-transformed 3-factor solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.7 <- plot_grid(plot_efa_3_d2_ad_oblimin, plot_efa_4_d2_ad_oblimin,
+                       plot_efa_3_d2_79_oblimin,
+                       labels = "AUTO", ncol = 3, rel_widths = c(1, 1.2, 1.2))
+
+figureA.7_cap <- add_sub(figureA.7, str_wrap("Figure A.7: Factor loadings from exploratory factor analyses of Study 2 after oblimin transformation. See Chapter II for methods. (A) US adults, 3-factor solution. (B) US adults, 4-factor solution. (C) US children ages 7-9y. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r figureA.7, include = T, fig.width = 9, fig.asp = 0.6}
+ggdraw(figureA.7_cap)
+```
+
+### Inter-factor correlations
+
+Here I present inter-factor correlations for all of the above EFA solutions for Study 2. 
+
+```{r}
+IFcor_efa_3_d2_ad_oblimin <- IFcor_plot_fun(
+  efa_3_d2_ad_oblimin, factor_names = factor_names_efa_3_d2_ad_oblimin) +
+  labs(title = "Study 2, Adults", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_4_d2_ad_oblimin <- IFcor_plot_fun(
+  efa_4_d2_ad_oblimin, factor_names = factor_names_efa_4_d2_ad_oblimin) +
+  labs(title = "Study 2, Adults", 
+       subtitle = "Oblimin-transformed 4-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_3_d2_79_oblimin <- IFcor_plot_fun(
+  efa_3_d2_79_oblimin, factor_names = factor_names_efa_3_d2_79_oblimin) +
+  labs(title = "Study 2, Children (7-9y)", 
+       subtitle = "Oblimin-transformed 3-factor solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.8 <- plot_grid(IFcor_efa_3_d2_ad_oblimin, IFcor_efa_4_d2_ad_oblimin,
+                        IFcor_efa_3_d2_79_oblimin,
+                        labels = "AUTO", ncol = 3, rel_widths = c(1, 1, 1.2))
+
+figureA.8_cap <- add_sub(figureA.8, str_wrap("Figure A.8: Inter-factor correlations from exploratory factor analyses of Study 2 after oblimin transformation. See Chapter II for methods. (A) US adults, 3-factor solution. (B) US adults, 4-factor solution. (C) US children ages 7-9y. Factors have been labeled with the labels 'BODY,' 'HEART,' and 'MIND,' when applicable, to facilitate comparison across studies.", 140), x = 0, hjust = 0)
+```
+
+```{r figureA.8, include = T, fig.width = 6, fig.asp = 0.4}
+ggdraw(figureA.8_cap)
+```
+
+
+## Study 3
+
+### EFA solutions
+
+Various factor retention protocols suggested retaining either 3 or 4 factors for adults in Study 3; 3 factors for older children (ages 7-9y); and either 1, 3, or 4 factors for younger children (ages 4-6y). Here, I report 3-, and 4-factor solutions for adults, the 3-factor solution for older children, and the 1-, 3-, and 4-factor solutions for younger children. When these factors seem similar to the BODY, HEART, and MIND factors presented in Chapter III, I have labeled them accordingly.
+
+```{r}
+efa_3_d3_ad_oblimin <- fa_fun(d3_ad_wide_i, 3)
+efa_4_d3_ad_oblimin <- fa_fun(d3_ad_wide_i, 4)
+efa_3_d3_79_oblimin <- fa_fun(d3_79_wide_i, 3)
+efa_3_d3_46_oblimin <- fa_fun(d3_46_wide_i, 3)
+efa_2_d3_46_oblimin <- fa_fun(d3_46_wide_i, 2)
+efa_1_d3_46_oblimin <- fa_fun(d3_46_wide_i, 1)
+```
+
+```{r}
+factor_names_efa_3_d3_ad_oblimin <- c("BODY", "HEART", "MIND")
+factor_names_efa_4_d3_ad_oblimin <- c("BODY", "MIND", "HEART (social)", 
+                                      "HEART (basic)")
+factor_names_efa_3_d3_79_oblimin <- c("BODY", "HEART", "MIND")
+factor_names_efa_3_d3_46_oblimin <- c("BODY-HEART (negative)", "BODY-HEART (positive)", 
+                                      "MIND")
+factor_names_efa_2_d3_46_oblimin <- c("BODY-HEART", "MIND")
+factor_names_efa_1_d3_46_oblimin <- c("NA")
+```
+
+```{r}
+plot_efa_3_d3_ad_oblimin <- heatmap_fun(
+  efa_3_d3_ad_oblimin, factor_names = factor_names_efa_3_d3_ad_oblimin) +
+  labs(title = "Study 3, Adults", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_4_d3_ad_oblimin <- heatmap_fun(
+  efa_4_d3_ad_oblimin, factor_names = factor_names_efa_4_d3_ad_oblimin) +
+  labs(title = "Study 3, Adults", 
+       subtitle = "Oblimin-transformed 4-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_3_d3_79_oblimin <- heatmap_fun(
+  efa_3_d3_79_oblimin, factor_names = factor_names_efa_3_d3_79_oblimin) +
+  labs(title = "Study 3, Older children (7-9y)", 
+       subtitle = "Oblimin-transformed 3-factor solution") # +
+  # theme(legend.position = "none")
+
+plot_efa_3_d3_46_oblimin <- heatmap_fun(
+  efa_3_d3_46_oblimin, factor_names = factor_names_efa_3_d3_46_oblimin) +
+  labs(title = "Study 3, Younger children (4-6y)", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_2_d3_46_oblimin <- heatmap_fun(
+  efa_2_d3_46_oblimin, factor_names = factor_names_efa_2_d3_46_oblimin) +
+  labs(title = "Study 3, Younger children (4-6y)", 
+       subtitle = "Oblimin-transformed 2-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_1_d3_46_oblimin <- heatmap_fun(
+  efa_1_d3_46_oblimin, factor_names = factor_names_efa_1_d3_46_oblimin) +
+  labs(title = "Study 3, Younger children (4-6y)", 
+       subtitle = "Oblimin-transformed 1-factor (null) solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.9 <- plot_grid(plot_efa_3_d3_ad_oblimin, plot_efa_4_d3_ad_oblimin,
+                       plot_efa_3_d3_79_oblimin, plot_efa_3_d3_46_oblimin,
+                       plot_efa_2_d3_46_oblimin, plot_efa_1_d3_46_oblimin,
+                       labels = "AUTO", ncol = 3, rel_widths = c(1, 1, 1.2))
+
+figureA.9_cap <- add_sub(figureA.9, str_wrap("Figure A.9: Factor loadings from exploratory factor analyses of Study 3 after oblimin transformation. See Chapter II for methods. (A) US adults, 3-factor solution. (B) US adults, 4-factor solution. (C) US children ages 7-9y. (D) US children ages 4-6y, 3-factor solution. (E) US children ages 4-6y, 2-factor solution. (F) US children ages 4-6y, 1-factor (null) solution. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r figureA.9, include = T, fig.width = 9, fig.asp = 1}
+ggdraw(figureA.9_cap)
+```
+
+### Inter-factor correlations
+
+Here I present inter-factor correlations for all of the above EFA solutions for Study 3 (with the exception of the 1-factor null solution for younger children). 
+
+```{r}
+IFcor_efa_3_d3_ad_oblimin <- IFcor_plot_fun(
+  efa_3_d3_ad_oblimin, factor_names = factor_names_efa_3_d3_ad_oblimin) +
+  labs(title = "Study 3, Adults", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_4_d3_ad_oblimin <- IFcor_plot_fun(
+  efa_4_d3_ad_oblimin, factor_names = factor_names_efa_4_d3_ad_oblimin) +
+  labs(title = "Study 3, Adults", 
+       subtitle = "Oblimin-transformed 4-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_3_d3_79_oblimin <- IFcor_plot_fun(
+  efa_3_d3_79_oblimin, factor_names = factor_names_efa_3_d3_79_oblimin) +
+  labs(title = "Study 3, Older children (7-9y)", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_3_d3_46_oblimin <- IFcor_plot_fun(
+  efa_3_d3_46_oblimin, factor_names = factor_names_efa_3_d3_46_oblimin) +
+  labs(title = "Study 3, Younger children (4-6y)", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_2_d3_46_oblimin <- IFcor_plot_fun(
+  efa_2_d3_46_oblimin, factor_names = factor_names_efa_2_d3_46_oblimin) +
+  labs(title = "Study 3, Younger children (4-6y)", 
+       subtitle = "Oblimin-transformed 2-factor solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.10 <- plot_grid(IFcor_efa_3_d3_ad_oblimin, IFcor_efa_4_d3_ad_oblimin,
+                        IFcor_efa_3_d3_79_oblimin, IFcor_efa_3_d3_46_oblimin,
+                        IFcor_efa_2_d3_46_oblimin,
+                        labels = "AUTO", ncol = 5, rel_widths = c(1, 1, 1, 1, 1))
+
+figureA.10_cap <- add_sub(figureA.10, str_wrap("Figure A.10: Inter-factor correlations from exploratory factor analyses of Study 3 after oblimin transformation. See Chapter II for methods. (A) US adults, 3-factor solution. (B) US adults, 4-factor solution. (C) US children ages 7-9y. (D) US children ages 4-6y, 3-factor solution. (E) US children ages 4-6y, 2-factor solution. Factors have been labeled with the labels 'BODY,' 'HEART,' and 'MIND,' when applicable, to facilitate comparison across studies.", 230), x = 0, hjust = 0)
+```
+
+```{r figureA.10, include = T, fig.width = 10, fig.asp = 0.25}
+ggdraw(figureA.10_cap)
+```
+
+
+## Study 4
+
+### EFA solutions
+
+All factor retention protocols suggested retaining 3 factors for adults in Study 4; different protocols suggested retaining either either 1, 3, or 4 factors for children (ages 4-5y). Here, I report the 3-factor solution for adults, and the 1-, 3-, and 4-factor solutions for children. When these factors seem similar to the BODY, HEART, and MIND factors presented in Chapter III, I have labeled them accordingly.
+
+```{r}
+efa_3_d4_ad_oblimin <- fa_fun(d4_ad_wide_i, 3)
+efa_3_d4_46_oblimin <- fa_fun(d4_46_wide_i, 3)
+efa_4_d4_46_oblimin <- fa_fun(d4_46_wide_i, 4)
+efa_1_d4_46_oblimin <- fa_fun(d4_46_wide_i, 1)
+```
+
+```{r}
+factor_names_efa_3_d4_ad_oblimin <- c("BODY", "HEART", "MIND")
+factor_names_efa_3_d4_46_oblimin <- c("BODY", "MIND-HEART", "HEART (negative)")
+factor_names_efa_4_d4_46_oblimin <- c("MIND-HEART", "BODY", "BODY (nausea)",
+                                      "HEART (negative)")
+factor_names_efa_1_d4_46_oblimin <- c("NA")
+```
+
+```{r}
+plot_efa_3_d4_ad_oblimin <- heatmap_fun(
+  efa_3_d4_ad_oblimin, factor_names = factor_names_efa_3_d4_ad_oblimin) +
+  labs(title = "Study 4, Adults", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_3_d4_46_oblimin <- heatmap_fun(
+  efa_3_d4_46_oblimin, factor_names = factor_names_efa_3_d4_46_oblimin) +
+  labs(title = "Study 4, Children (4-6y)", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_4_d4_46_oblimin <- heatmap_fun(
+  efa_4_d4_46_oblimin, factor_names = factor_names_efa_4_d4_46_oblimin) +
+  labs(title = "Study 4, Children (4-5y)", 
+       subtitle = "Oblimin-transformed 4-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_1_d4_46_oblimin <- heatmap_fun(
+  efa_1_d4_46_oblimin, factor_names = factor_names_efa_1_d4_46_oblimin) +
+  labs(title = "Study 4, Children (4-5y)", 
+       subtitle = "Oblimin-transformed 1-factor (null) solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.11 <- plot_grid(plot_efa_3_d4_ad_oblimin, plot_efa_3_d4_46_oblimin,
+                       plot_efa_4_d4_46_oblimin, plot_efa_1_d4_46_oblimin,
+                       labels = "AUTO", ncol = 4, rel_widths = c(1, 1, 1, 1))
+
+figureA.11_cap <- add_sub(figureA.11, str_wrap("Figure A.11: Factor loadings from exploratory factor analyses of Study 4 after oblimin transformation. See Chapter II for methods. (A) US adults. (B) US children ages 4-5y, 3-factor solution. (C) US children ages 4-5y, 4-factor solution. (D) US children ages 4-5y, 1-factor (null) solution. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r figureA.11, include = T, fig.width = 9, fig.asp = 0.6}
+ggdraw(figureA.11_cap)
+```
+
+### Inter-factor correlations
+
+Here I present inter-factor correlations for all of the above EFA solutions for Study 4 (with the exception of the 1-factor null solution for children). 
+
+```{r}
+IFcor_efa_3_d4_ad_oblimin <- IFcor_plot_fun(
+  efa_3_d4_ad_oblimin, factor_names = factor_names_efa_3_d4_ad_oblimin) +
+  labs(title = "Study 4, Adults", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_3_d4_46_oblimin <- IFcor_plot_fun(
+  efa_3_d4_46_oblimin, factor_names = factor_names_efa_3_d4_46_oblimin) +
+  labs(title = "Study 4, Children (4-5y)", 
+       subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_4_d4_46_oblimin <- IFcor_plot_fun(
+  efa_4_d4_46_oblimin, factor_names = factor_names_efa_4_d4_46_oblimin) +
+  labs(title = "Study 4, Children (4-5y)", 
+       subtitle = "Oblimin-transformed 4-factor solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.12 <- plot_grid(IFcor_efa_3_d4_ad_oblimin, IFcor_efa_3_d4_46_oblimin,
+                        IFcor_efa_4_d4_46_oblimin,
+                        labels = "AUTO", ncol = 3, rel_widths = c(1, 1, 1.2))
+
+figureA.12_cap <- add_sub(figureA.12, str_wrap("Figure A.12: Inter-factor correlations from exploratory factor analyses of Study 4 after oblimin transformation. See Chapter II for methods. (A) US adults. (B) US children ages 4-5y, 3-factor solution. (C) US children ages 4-5y, 3-factor solution. Factors have been labeled with the labels 'BODY,' 'HEART,' and 'MIND,' when applicable, to facilitate comparison across studies.", 140), x = 0, hjust = 0)
+```
+
+```{r figureA.12, include = T, fig.width = 6, fig.asp = 0.4}
+ggdraw(figureA.12_cap)
+```
+
+
+# Varimax-rotated solutions previously deemed redundant
+
+In Chapter III, I focused my interpretation on a subset of the EFA solutions suggested by the three factor retention protocols, excluding those solutions in which additional factors were redundant with the 3-factor (BODY-HEART-MIND) solution. These additional factors tend to explain very little of the shared variance; tend not to be the dominant factor (the factor with the strongest absolute factor loading) for many, if any, mental capacities; and tend to have very weak factor loadings. I include them here for completeness.
+
+## Study 1
+
+The factor retention criteria employed in Weisman et al. (2017) suggested retaining 3 factors for all of the studies included in Study 1; see Chapter III. In contrast, parallel analysis suggested retaining 4 factors (instead of 3) for Studies 1b and 1d; minimizing BIC suggested retaining 4 factors (instead of 3) for Study 1c, and 5 factors (instead of 3) for Studies 1a, 1b, and 1d. See Figure A.13.
+
+```{r}
+# study 1a
+plot_efa_bic_d1a_ad <- heatmap_fun(efa_bic_d1a_ad, 
+                                   c("BODY", "HEART", "MIND", 
+                                     "Factor 4", "Factor 5")) +
+  labs(title = "Study 1a", subtitle = "5-factor solution") +
+  theme(legend.position = "none")
+
+# study 1b
+plot_efa_par_d1b_ad <- heatmap_fun(efa_par_d1b_ad, 
+                                   c("BODY", "HEART", "MIND")) +
+  labs(title = "Study 1b", subtitle = "4-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_bic_d1b_ad <- heatmap_fun(efa_bic_d1b_ad, 
+                                   c("BODY", "HEART", "MIND", "Factor 4")) +
+  labs(title = "Study 1b", subtitle = "5-factor solution") # +
+  # theme(legend.position = "none")
+
+# study 1c
+plot_efa_bic_d1c_ad <- heatmap_fun(efa_bic_d1c_ad, 
+                                   c("BODY", "HEART", "MIND", "Factor 4")) +
+  labs(title = "Study 1c", subtitle = "4-factor solution") +
+  theme(legend.position = "none")
+
+# study 1d
+plot_efa_par_d1d_ad <- heatmap_fun(efa_par_d1d_ad, 
+                                   c("BODY", "HEART", "MIND", "Factor 4")) +
+  labs(title = "Study 1d", subtitle = "4-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_bic_d1d_ad <- heatmap_fun(efa_bic_d1d_ad, 
+                                   c("BODY", "HEART", "MIND", 
+                                     "Factor 4", "Factor 5")) +
+  labs(title = "Study 1d", subtitle = "5-factor solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.13 <- plot_grid(plot_efa_bic_d1a_ad, 
+                       plot_efa_par_d1b_ad, plot_efa_bic_d1b_ad, 
+                       plot_efa_bic_d1c_ad,
+                       plot_efa_par_d1d_ad, plot_efa_bic_d1d_ad,
+                       labels = "AUTO", ncol = 3, rel_widths = c(1, 1, 1.2))
+
+figureA.13_cap <- add_sub(figureA.13, str_wrap("Figure A.13: Factor loadings from additional exploratory factor analyses of Study 1, not reported in Chapter III. All results are from US adult samples; see Chapter II for methods. (A) Study 1a, solution suggested by minimizing BIC. (B) Study 1b, solution suggested by parallel analysis. (C) Study 1b, solution suggested by minimizing BIC. (D) Study 1c, solution suggested by minimizing BIC. (E) Study 1d, solution suggested by parallel analysis. (F) Study 1d, solution suggested by minimizing BIC. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 200), x = 0, hjust = 0)
+```
+
+```{r figureA.13, include = T, fig.width = 9, fig.asp = 1}
+ggdraw(figureA.13_cap)
+```
+
+## Study 2
+
+All of the EFA solutions suggested by the three factor retention protocols are reported in full in Chapter III.
+
+## Study 3
+
+The factor retention criteria employed in Weisman et al. (2017) suggested retaining 3 factors for all of the age groups included in Study 3; see Chapter III. In contrast, parallel analysis suggested retaining 2 factors (instead of 3) for younger children; and minimizing BIC suggested retaining 4 factors (instead of 3) for adults, and 1 factor (i.e., a "null" solution) for younger children (ages 4-6y). See Figure A.14.
+
+```{r}
+# study 3
+plot_efa_bic_d3_ad <- heatmap_fun(efa_bic_d3_ad, 
+                                   c("BODY", "HEART", "MIND", "Factor 4")) +
+  labs(title = "Study 3: Adults", subtitle = "5-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_bic_d3_46 <- heatmap_fun(efa_bic_d3_46) +
+  labs(title = "Study 3: Younger children, 4-6y", 
+       subtitle = "1-factor (null) solution") #+
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.14 <- plot_grid(plot_efa_bic_d3_ad, plot_efa_bic_d3_46,
+                       labels = "AUTO", ncol = 2, rel_widths = c(1, 1))
+
+figureA.14_cap <- add_sub(figureA.14, str_wrap("Figure A.14: Factor loadings from additional exploratory factor analyses of Study 3, not reported in Chapter III. See Chapter II for methods. (A) Adults, solution suggested by minimizing BIC. (B) Younger children (4-6y), 'null' solution suggested by minimizing BIC. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 115), x = 0, hjust = 0)
+```
+
+```{r figureA.14, include = T, fig.width = 5, fig.asp = 1}
+ggdraw(figureA.14_cap)
+```
+
+## Study 4
+
+All of the EFA solutions suggested by the three factor retention protocols are reported in full in Chapter III, with the exception of the 1-factor ("null") solution suggested by minimizing BIC for younger children (4-5y). See Figure A.15.
+
+```{r}
+# study 4
+plot_efa_bic_d4_46 <- heatmap_fun(efa_bic_d4_46) +
+  labs(title = "Study 4: Younger children, 4-5y", 
+       subtitle = "1-factor (null) solution") # +
+  # theme(legend.position = "none")
+```
+
+```{r}
+figureA.15 <- plot_efa_bic_d4_46
+
+figureA.15_cap <- add_sub(figureA.15, str_wrap("Figure A.15: Factor loadings from the 'null' solution suggested by minimizing BIC for younger children (4-5y) in Study 4. See Chapter II for methods, and Chapter III for other EFA solutions for this study. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 30), x = 0, hjust = 0)
+```
+
+```{r figureA.15, include = T, fig.width = 2, fig.asp = 1.8}
+ggdraw(figureA.15_cap)
+```
+
+
+# TO DO LIST
+
+- reconsider additions to appendix A: 
+    - left-right position (study 1c)
+    - first-second (study 4)
+    - beetle-robot (studies 1a-1c, study 2, study 4)
+    - analysis of scale use across age groups
+

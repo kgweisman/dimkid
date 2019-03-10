@@ -165,13 +165,13 @@ efa_par_d1a_ad <- fa_fun(d1a_ad_wide_i, reten_report["Study 1a", "par"])
 efa_bic_d1a_ad <- fa_fun(d1a_ad_wide_i, reten_report["Study 1a", "bic"])
 efa_wdm_d1a_ad <- fa_fun(d1a_ad_wide_i, reten_report["Study 1a", "wdm"])
 
-saveRDS(efa_par_d1a_ad, file = "./efas/efa_par_d1a_ad")
-saveRDS(efa_bic_d1a_ad, file = "./efas/efa_bic_d1a_ad")
-saveRDS(efa_wdm_d1a_ad, file = "./efas/efa_wdm_d1a_ad")
+saveRDS(efa_par_d1a_ad, file = "./stored/efas/efa_par_d1a_ad")
+saveRDS(efa_bic_d1a_ad, file = "./stored/efas/efa_bic_d1a_ad")
+saveRDS(efa_wdm_d1a_ad, file = "./stored/efas/efa_wdm_d1a_ad")
 
-# efa_par_d1a_ad <- readRDS(file = "./efas/efa_par_d1a_ad")
-# efa_bic_d1a_ad <- readRDS(file = "./efas/efa_bic_d1a_ad")
-# efa_wdm_d1a_ad <- readRDS(file = "./efas/efa_wdm_d1a_ad")
+# efa_par_d1a_ad <- readRDS(file = "./stored/efas/efa_par_d1a_ad")
+# efa_bic_d1a_ad <- readRDS(file = "./stored/efas/efa_bic_d1a_ad")
+# efa_wdm_d1a_ad <- readRDS(file = "./stored/efas/efa_wdm_d1a_ad")
 ```
 
 ```{r}
@@ -251,13 +251,13 @@ efa_par_d1b_ad <- fa_fun(d1b_ad_wide_i, reten_report["Study 1b", "par"])
 efa_bic_d1b_ad <- fa_fun(d1b_ad_wide_i, reten_report["Study 1b", "bic"])
 efa_wdm_d1b_ad <- fa_fun(d1b_ad_wide_i, reten_report["Study 1b", "wdm"])
 
-saveRDS(efa_par_d1b_ad, file = "./efas/efa_par_d1b_ad")
-saveRDS(efa_bic_d1b_ad, file = "./efas/efa_bic_d1b_ad")
-saveRDS(efa_wdm_d1b_ad, file = "./efas/efa_wdm_d1b_ad")
+saveRDS(efa_par_d1b_ad, file = "./stored/efas/efa_par_d1b_ad")
+saveRDS(efa_bic_d1b_ad, file = "./stored/efas/efa_bic_d1b_ad")
+saveRDS(efa_wdm_d1b_ad, file = "./stored/efas/efa_wdm_d1b_ad")
 
-# efa_par_d1b_ad <- readRDS(file = "./efas/efa_par_d1b_ad")
-# efa_bic_d1b_ad <- readRDS(file = "./efas/efa_bic_d1b_ad")
-# efa_wdm_d1b_ad <- readRDS(file = "./efas/efa_wdm_d1b_ad")
+# efa_par_d1b_ad <- readRDS(file = "./stored/efas/efa_par_d1b_ad")
+# efa_bic_d1b_ad <- readRDS(file = "./stored/efas/efa_bic_d1b_ad")
+# efa_wdm_d1b_ad <- readRDS(file = "./stored/efas/efa_wdm_d1b_ad")
 ```
 
 ```{r}
@@ -318,13 +318,13 @@ efa_par_d1c_ad <- fa_fun(d1c_ad_wide_i, reten_report["Study 1c", "par"])
 efa_bic_d1c_ad <- fa_fun(d1c_ad_wide_i, reten_report["Study 1c", "bic"])
 efa_wdm_d1c_ad <- fa_fun(d1c_ad_wide_i, reten_report["Study 1c", "wdm"])
 
-saveRDS(efa_par_d1c_ad, file = "./efas/efa_par_d1c_ad")
-saveRDS(efa_bic_d1c_ad, file = "./efas/efa_bic_d1c_ad")
-saveRDS(efa_wdm_d1c_ad, file = "./efas/efa_wdm_d1c_ad")
+saveRDS(efa_par_d1c_ad, file = "./stored/efas/efa_par_d1c_ad")
+saveRDS(efa_bic_d1c_ad, file = "./stored/efas/efa_bic_d1c_ad")
+saveRDS(efa_wdm_d1c_ad, file = "./stored/efas/efa_wdm_d1c_ad")
 
-# efa_par_d1c_ad <- readRDS(file = "./efas/efa_par_d1c_ad")
-# efa_bic_d1c_ad <- readRDS(file = "./efas/efa_bic_d1c_ad")
-# efa_wdm_d1c_ad <- readRDS(file = "./efas/efa_wdm_d1c_ad")
+# efa_par_d1c_ad <- readRDS(file = "./stored/efas/efa_par_d1c_ad")
+# efa_bic_d1c_ad <- readRDS(file = "./stored/efas/efa_bic_d1c_ad")
+# efa_wdm_d1c_ad <- readRDS(file = "./stored/efas/efa_wdm_d1c_ad")
 ```
 
 ```{r}
@@ -369,13 +369,13 @@ efa_par_d1d_ad <- fa_fun(d1d_ad_wide_i, reten_report["Study 1d", "par"])
 efa_bic_d1d_ad <- fa_fun(d1d_ad_wide_i, reten_report["Study 1d", "bic"])
 efa_wdm_d1d_ad <- fa_fun(d1d_ad_wide_i, reten_report["Study 1d", "wdm"])
 
-saveRDS(efa_par_d1d_ad, file = "./efas/efa_par_d1d_ad")
-saveRDS(efa_bic_d1d_ad, file = "./efas/efa_bic_d1d_ad")
-saveRDS(efa_wdm_d1d_ad, file = "./efas/efa_wdm_d1d_ad")
+saveRDS(efa_par_d1d_ad, file = "./stored/efas/efa_par_d1d_ad")
+saveRDS(efa_bic_d1d_ad, file = "./stored/efas/efa_bic_d1d_ad")
+saveRDS(efa_wdm_d1d_ad, file = "./stored/efas/efa_wdm_d1d_ad")
 
-# efa_par_d1d_ad <- readRDS(file = "./efas/efa_par_d1d_ad")
-# efa_bic_d1d_ad <- readRDS(file = "./efas/efa_bic_d1d_ad")
-# efa_wdm_d1d_ad <- readRDS(file = "./efas/efa_wdm_d1d_ad")
+# efa_par_d1d_ad <- readRDS(file = "./stored/efas/efa_par_d1d_ad")
+# efa_bic_d1d_ad <- readRDS(file = "./stored/efas/efa_bic_d1d_ad")
+# efa_wdm_d1d_ad <- readRDS(file = "./stored/efas/efa_wdm_d1d_ad")
 ```
 
 ```{r}
@@ -483,13 +483,13 @@ efa_par_d2_ad <- fa_fun(d2_ad_wide_i, reten_report["Study 2: Adults", "par"])
 efa_bic_d2_ad <- fa_fun(d2_ad_wide_i, reten_report["Study 2: Adults", "bic"])
 efa_wdm_d2_ad <- fa_fun(d2_ad_wide_i, reten_report["Study 2: Adults", "wdm"])
 
-saveRDS(efa_par_d2_ad, file = "./efas/efa_par_d2_ad")
-saveRDS(efa_bic_d2_ad, file = "./efas/efa_bic_d2_ad")
-saveRDS(efa_wdm_d2_ad, file = "./efas/efa_wdm_d2_ad")
+saveRDS(efa_par_d2_ad, file = "./stored/efas/efa_par_d2_ad")
+saveRDS(efa_bic_d2_ad, file = "./stored/efas/efa_bic_d2_ad")
+saveRDS(efa_wdm_d2_ad, file = "./stored/efas/efa_wdm_d2_ad")
 
-# efa_par_d2_ad <- readRDS(file = "./efas/efa_par_d2_ad")
-# efa_bic_d2_ad <- readRDS(file = "./efas/efa_bic_d2_ad")
-# efa_wdm_d2_ad <- readRDS(file = "./efas/efa_wdm_d2_ad")
+# efa_par_d2_ad <- readRDS(file = "./stored/efas/efa_par_d2_ad")
+# efa_bic_d2_ad <- readRDS(file = "./stored/efas/efa_bic_d2_ad")
+# efa_wdm_d2_ad <- readRDS(file = "./stored/efas/efa_wdm_d2_ad")
 ```
 
 ```{r}
@@ -559,13 +559,13 @@ efa_par_d2_79 <- fa_fun(d2_79_wide_i, reten_report["Study 2: Children", "par"])
 efa_bic_d2_79 <- fa_fun(d2_79_wide_i, reten_report["Study 2: Children", "bic"])
 efa_wdm_d2_79 <- fa_fun(d2_79_wide_i, reten_report["Study 2: Children", "wdm"])
 
-saveRDS(efa_par_d2_79, file = "./efas/efa_par_d2_79")
-saveRDS(efa_bic_d2_79, file = "./efas/efa_bic_d2_79")
-saveRDS(efa_wdm_d2_79, file = "./efas/efa_wdm_d2_79")
+saveRDS(efa_par_d2_79, file = "./stored/efas/efa_par_d2_79")
+saveRDS(efa_bic_d2_79, file = "./stored/efas/efa_bic_d2_79")
+saveRDS(efa_wdm_d2_79, file = "./stored/efas/efa_wdm_d2_79")
 
-# efa_par_d2_79 <- readRDS(file = "./efas/efa_par_d2_79")
-# efa_bic_d2_79 <- readRDS(file = "./efas/efa_bic_d2_79")
-# efa_wdm_d2_79 <- readRDS(file = "./efas/efa_wdm_d2_79")
+# efa_par_d2_79 <- readRDS(file = "./stored/efas/efa_par_d2_79")
+# efa_bic_d2_79 <- readRDS(file = "./stored/efas/efa_bic_d2_79")
+# efa_wdm_d2_79 <- readRDS(file = "./stored/efas/efa_wdm_d2_79")
 ```
 
 All three protocols for determining how many factors to retain suggested retaining three factors; see Table 3.1.
@@ -650,13 +650,13 @@ efa_par_d3_ad <- fa_fun(d3_ad_wide_i, reten_report["Study 3: Adults", "par"])
 efa_bic_d3_ad <- fa_fun(d3_ad_wide_i, reten_report["Study 3: Adults", "bic"])
 efa_wdm_d3_ad <- fa_fun(d3_ad_wide_i, reten_report["Study 3: Adults", "wdm"])
 
-saveRDS(efa_par_d3_ad, file = "./efas/efa_par_d3_ad")
-saveRDS(efa_bic_d3_ad, file = "./efas/efa_bic_d3_ad")
-saveRDS(efa_wdm_d3_ad, file = "./efas/efa_wdm_d3_ad")
+saveRDS(efa_par_d3_ad, file = "./stored/efas/efa_par_d3_ad")
+saveRDS(efa_bic_d3_ad, file = "./stored/efas/efa_bic_d3_ad")
+saveRDS(efa_wdm_d3_ad, file = "./stored/efas/efa_wdm_d3_ad")
 
-# efa_par_d3_ad <- readRDS(file = "./efas/efa_par_d3_ad")
-# efa_bic_d3_ad <- readRDS(file = "./efas/efa_bic_d3_ad")
-# efa_wdm_d3_ad <- readRDS(file = "./efas/efa_wdm_d3_ad")
+# efa_par_d3_ad <- readRDS(file = "./stored/efas/efa_par_d3_ad")
+# efa_bic_d3_ad <- readRDS(file = "./stored/efas/efa_bic_d3_ad")
+# efa_wdm_d3_ad <- readRDS(file = "./stored/efas/efa_wdm_d3_ad")
 ```
 
 ```{r}
@@ -704,13 +704,13 @@ efa_bic_d3_79 <- fa_fun(d3_79_wide_i,
 efa_wdm_d3_79 <- fa_fun(d3_79_wide_i, 
                         reten_report["Study 3: Older children", "wdm"])
 
-saveRDS(efa_par_d3_79, file = "./efas/efa_par_d3_79")
-saveRDS(efa_bic_d3_79, file = "./efas/efa_bic_d3_79")
-saveRDS(efa_wdm_d3_79, file = "./efas/efa_wdm_d3_79")
+saveRDS(efa_par_d3_79, file = "./stored/efas/efa_par_d3_79")
+saveRDS(efa_bic_d3_79, file = "./stored/efas/efa_bic_d3_79")
+saveRDS(efa_wdm_d3_79, file = "./stored/efas/efa_wdm_d3_79")
 
-# efa_par_d3_79 <- readRDS(file = "./efas/efa_par_d3_79")
-# efa_bic_d3_79 <- readRDS(file = "./efas/efa_bic_d3_79")
-# efa_wdm_d3_79 <- readRDS(file = "./efas/efa_wdm_d3_79")
+# efa_par_d3_79 <- readRDS(file = "./stored/efas/efa_par_d3_79")
+# efa_bic_d3_79 <- readRDS(file = "./stored/efas/efa_bic_d3_79")
+# efa_wdm_d3_79 <- readRDS(file = "./stored/efas/efa_wdm_d3_79")
 ```
 
 As was the case among this age group in Study 2, all three factor retention protocols suggested retaining three factors; see Table 3.1.
@@ -756,13 +756,13 @@ efa_bic_d3_46 <- fa_fun(d3_46_wide_i,
 efa_wdm_d3_46 <- fa_fun(d3_46_wide_i, 
                         reten_report["Study 3: Younger children", "wdm"])
 
-saveRDS(efa_par_d3_46, file = "./efas/efa_par_d3_46")
-saveRDS(efa_bic_d3_46, file = "./efas/efa_bic_d3_46")
-saveRDS(efa_wdm_d3_46, file = "./efas/efa_wdm_d3_46")
+saveRDS(efa_par_d3_46, file = "./stored/efas/efa_par_d3_46")
+saveRDS(efa_bic_d3_46, file = "./stored/efas/efa_bic_d3_46")
+saveRDS(efa_wdm_d3_46, file = "./stored/efas/efa_wdm_d3_46")
 
-# efa_par_d3_46 <- readRDS(file = "./efas/efa_par_d3_46")
-# efa_bic_d3_46 <- readRDS(file = "./efas/efa_bic_d3_46")
-# efa_wdm_d3_46 <- readRDS(file = "./efas/efa_wdm_d3_46")
+# efa_par_d3_46 <- readRDS(file = "./stored/efas/efa_par_d3_46")
+# efa_bic_d3_46 <- readRDS(file = "./stored/efas/efa_bic_d3_46")
+# efa_wdm_d3_46 <- readRDS(file = "./stored/efas/efa_wdm_d3_46")
 ```
 
 ```{r}
@@ -971,13 +971,13 @@ efa_par_d4_ad <- fa_fun(d4_ad_wide_i, reten_report["Study 4: Adults", "par"])
 efa_bic_d4_ad <- fa_fun(d4_ad_wide_i, reten_report["Study 4: Adults", "bic"])
 efa_wdm_d4_ad <- fa_fun(d4_ad_wide_i, reten_report["Study 4: Adults", "wdm"])
 
-saveRDS(efa_par_d4_ad, file = "./efas/efa_par_d4_ad")
-saveRDS(efa_bic_d4_ad, file = "./efas/efa_bic_d4_ad")
-saveRDS(efa_wdm_d4_ad, file = "./efas/efa_wdm_d4_ad")
+saveRDS(efa_par_d4_ad, file = "./stored/efas/efa_par_d4_ad")
+saveRDS(efa_bic_d4_ad, file = "./stored/efas/efa_bic_d4_ad")
+saveRDS(efa_wdm_d4_ad, file = "./stored/efas/efa_wdm_d4_ad")
 
-# efa_par_d4_ad <- readRDS(file = "./efas/efa_par_d4_ad")
-# efa_bic_d4_ad <- readRDS(file = "./efas/efa_bic_d4_ad")
-# efa_wdm_d4_ad <- readRDS(file = "./efas/efa_wdm_d4_ad")
+# efa_par_d4_ad <- readRDS(file = "./stored/efas/efa_par_d4_ad")
+# efa_bic_d4_ad <- readRDS(file = "./stored/efas/efa_bic_d4_ad")
+# efa_wdm_d4_ad <- readRDS(file = "./stored/efas/efa_wdm_d4_ad")
 ```
 
 All three protocols for determining how many factors to retain suggested retaining three factors; see Table 3.1.
@@ -1013,13 +1013,13 @@ efa_par_d4_46 <- fa_fun(d4_46_wide_i, reten_report["Study 4: Children", "par"])
 efa_bic_d4_46 <- fa_fun(d4_46_wide_i, reten_report["Study 4: Children", "bic"])
 efa_wdm_d4_46 <- fa_fun(d4_46_wide_i, reten_report["Study 4: Children", "wdm"])
 
-saveRDS(efa_par_d4_46, file = "./efas/efa_par_d4_46")
-saveRDS(efa_bic_d4_46, file = "./efas/efa_bic_d4_46")
-saveRDS(efa_wdm_d4_46, file = "./efas/efa_wdm_d4_46")
+saveRDS(efa_par_d4_46, file = "./stored/efas/efa_par_d4_46")
+saveRDS(efa_bic_d4_46, file = "./stored/efas/efa_bic_d4_46")
+saveRDS(efa_wdm_d4_46, file = "./stored/efas/efa_wdm_d4_46")
 
-# efa_par_d4_46 <- readRDS(file = "./efas/efa_par_d4_46")
-# efa_bic_d4_46 <- readRDS(file = "./efas/efa_bic_d4_46")
-# efa_wdm_d4_46 <- readRDS(file = "./efas/efa_wdm_d4_46")
+# efa_par_d4_46 <- readRDS(file = "./stored/efas/efa_par_d4_46")
+# efa_bic_d4_46 <- readRDS(file = "./stored/efas/efa_bic_d4_46")
+# efa_wdm_d4_46 <- readRDS(file = "./stored/efas/efa_wdm_d4_46")
 ```
 
 ```{r}
@@ -1737,38 +1737,38 @@ In the next chapter, I apply the same exploratory spirit to another aspect of th
 # export factor names
 # study 1
 saveRDS(factor_names_efa_wdm_d1a_ad, 
-        file = "./factor_names/factor_names_efa_wdm_d1a_ad")
+        file = "./stored/factor_names/factor_names_efa_wdm_d1a_ad")
 saveRDS(factor_names_efa_wdm_d1b_ad, 
-        file = "./factor_names/factor_names_efa_wdm_d1b_ad")
+        file = "./stored/factor_names/factor_names_efa_wdm_d1b_ad")
 saveRDS(factor_names_efa_wdm_d1c_ad, 
-        file = "./factor_names/factor_names_efa_wdm_d1c_ad")
+        file = "./stored/factor_names/factor_names_efa_wdm_d1c_ad")
 saveRDS(factor_names_efa_wdm_d1d_ad, 
-        file = "./factor_names/factor_names_efa_wdm_d1d_ad")
+        file = "./stored/factor_names/factor_names_efa_wdm_d1d_ad")
 
 # study 2
 saveRDS(factor_names_efa_wdm_d2_ad, 
-        file = "./factor_names/factor_names_efa_wdm_d2_ad")
+        file = "./stored/factor_names/factor_names_efa_wdm_d2_ad")
 saveRDS(factor_names_efa_par_d2_ad, 
-        file = "./factor_names/factor_names_efa_par_d2_ad")
+        file = "./stored/factor_names/factor_names_efa_par_d2_ad")
 saveRDS(factor_names_efa_wdm_d2_79, 
-        file = "./factor_names/factor_names_efa_wdm_d2_79")
+        file = "./stored/factor_names/factor_names_efa_wdm_d2_79")
 
 # study 3
 saveRDS(factor_names_efa_wdm_d3_ad, 
-        file = "./factor_names/factor_names_efa_wdm_d3_ad")
+        file = "./stored/factor_names/factor_names_efa_wdm_d3_ad")
 saveRDS(factor_names_efa_wdm_d3_79, 
-        file = "./factor_names/factor_names_efa_wdm_d3_79")
+        file = "./stored/factor_names/factor_names_efa_wdm_d3_79")
 saveRDS(factor_names_efa_wdm_d3_46, 
-        file = "./factor_names/factor_names_efa_wdm_d3_46")
+        file = "./stored/factor_names/factor_names_efa_wdm_d3_46")
 saveRDS(factor_names_efa_par_d3_46, 
-        file = "./factor_names/factor_names_efa_par_d3_46")
+        file = "./stored/factor_names/factor_names_efa_par_d3_46")
 
 # study 4
 saveRDS(factor_names_efa_wdm_d4_ad, 
-        file = "./factor_names/factor_names_efa_wdm_d4_ad")
+        file = "./stored/factor_names/factor_names_efa_wdm_d4_ad")
 saveRDS(factor_names_efa_par_d4_46, 
-        file = "./factor_names/factor_names_efa_par_d4_46")
+        file = "./stored/factor_names/factor_names_efa_par_d4_46")
 saveRDS(factor_names_efa_wdm_d4_46, 
-        file = "./factor_names/factor_names_efa_wdm_d4_46")
+        file = "./stored/factor_names/factor_names_efa_wdm_d4_46")
 ```
 
