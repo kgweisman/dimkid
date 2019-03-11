@@ -1249,9 +1249,31 @@ Difference scores between the _HEART_ and _MIND_ scales were substantially close
 
 These formal comparisons of difference scores among children vs. adults in Study 2 confirm my earlier observations that asymmetries were substantially attenuated (and in some cases, reduced to zero) among children, relative to the baseline set by adults. In addition, among children the differences in these asymmetries between the two "edge cases" included in this study (the beetle vs. the robot) were also attenuated, relative to adults; this is in line with my earlier, informal observations that these asymmetries sometimes appeared to reverse in direction across the two target characters. 
 
+```{r}
+table4.XX <- regtab_d2_ad79_scored_ad_diff %>%
+  select(-pair, -study, -contains("s.e.")) %>%
+  mutate(b = format(round(b, 2), nsmall = 2)) %>%
+  rename(Parameter = param) %>%
+  rename_all(funs(gsub("nonzero", " ", .))) %>%
+  kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
+        caption = "Table 4.XX: Regression analyses of differences in difference scores between US adults and children (7-9y of age) difference scores in Study 2. The table presents results from separate Bayesian regressions of each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND). Each regression included four fixed effect parameters: (1) the intercept (for adults), which I treat as an index of the asymmetry in attributions of the two conceptual units in question among adults; (2) a difference between target characters (among adults), reported here as a difference between the robot and the grand mean (GM); (3) the overall difference between children and adults (collapsing across target characters); and (4) the interaction between this age difference and the difference between target characters. The developmental comparisons are highlighted in bold, because these are the primary parameters of interest for these analyses. For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
+  kable_styling() %>%
+  row_spec(c(3:4, 7:8, 11:12), bold = T) %>%
+  group_rows("BODY - HEART", 1, 4) %>%
+  group_rows("BODY - MIND", 5, 8) %>%
+  group_rows("HEART - MIND", 9, 12) %>%
+  add_header_above(c(" " = 1,
+                     "Developmental comparison" = 3))
+```
+
+```{r, include = T}
+table4.XX
+```
+
 ### Children (7-9y), using children's own scales
 
 __BOOKMARK__
+__REMEMBER TO ADD TABLE FOR NON-COMPARISONS (3)__
 
 #### Scale construction
 
@@ -1390,44 +1412,6 @@ summary(r_d2_79_scored_79_diff_HEART_MIND)
 ```
 
 XX
-
-
-
-```{r}
-# regtab_study2 <- regtab_d2_ad_scored_ad_diff %>%
-#   regtab_d2_79_scored_ad_diff %>%
-#   regtab_d2_79_scored_79_diff %>%
-#   mutate_at(vars(b, s.e.),
-#             funs(format(round(., digits = 2), nsmall = 2))) %>%
-#   unite(result, b, s.e., CI95, nonzero) %>%
-#   spread(study, result) %>%
-#   separate(`Adults`, c("s2_b", "s2_s.e.", "s2_95% CI", "s2_nz"), sep = "_") %>%
-#   separate(`Children, 7-9y (adults' scales)`, c("s2_b", "s2_s.e.", "s2_95% CI", "s2_nz"), sep = "_") %>%
-#   separate(`Chidlren, 7-9y (children's scales)`, c("s2_b", "s2_s.e.", "s2_95% CI", "s2_nz"), sep = "_")
-
-# not quite right!!
-```
-
-```{r}
-table4.XX <- regtab_studyd %>%
-  select(-pair, -ends_with("_s.e.")) %>%
-  rename(Parameter = param) %>%
-  rename_all(funs(gsub("nz", " ", .))) %>%
-  rename_all(funs(gsub("s1._", "", .))) %>%
-  kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
-        caption = "Table 4.XX: Regression analyses of difference scores for US adults in Study 1d. The table presents results from separate Bayesian regressions of each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND). Each regression included two fixed effect parameters: (1) the intercept, which I treat as an index of the asymmetry in attributions of the two conceptual units in question; and (2) a difference between target characters, reported here as a difference between each character and the grand mean (GM). Intercepts are highlighted in bold, because these are the primary parameters of interest for these analyses. For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
-  kable_styling() %>%
-  row_spec(c(1, 22, 43), bold = T) %>%
-  group_rows("BODY - HEART", 1, 21) %>%
-  group_rows("BODY - MIND", 22, 42) %>%
-  group_rows("HEART - MIND", 43, 63) %>%
-  add_header_above(c(" " = 1,
-                     "Study 1d" = 3))
-```
-
-```{r, include = T}
-table4.XX
-```
 
 ## Discussion
 
