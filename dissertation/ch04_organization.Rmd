@@ -116,11 +116,15 @@ In the context of this dissertation, Study 1 serves the role of describing a dev
 
 As noted in Chapter II, in the original analysis of these datasets responses were recoded to run from -3 to +3 before analyses (Weisman et al., 2017); in this dissertation, I maintain the 0-6 coding for comparability to Studies 2-4.
 
+Studies 1a, 1b, and 1c shared similar methods (namely, the "edge case" approach to eliciting variability in mental capacity attributions; see Chapter II) and yielded similar results both with respect to the conceptual units revealed by EFA (Chapter III), and with respect to the organization of these conceptual units (this chapter). For this reason, I will discuss these studies as a group before moving on to Study 1d, which employed substantially diferent methods (namely, the "diverse characters" approach to eliciting variability in mental capacity attributions).
+
 ## Results
 
-### Study 1a
+### Studies 1a-1c
 
-In Study 1a, `r nrow(d1a_ad_wide)` US adults each assessed a single target character on 40 mental capacities. This study employed the "edge case" variant of the general approach, with participants randomly assigned to assess either a beetle or a robot. (See Chapter II and Weisman et al., 2017, for detailed methods.)
+These studies all employed the "edge case" variant of the general approach, with participants assessing the mental capacities of a beetle and/or a robot. (See Chapter II and Weisman et al., 2017, for detailed methods.)
+
+Studies 1a and 1b employed identical methods: US adults (Study 1a: _n_=`r nrow(d1a_ad_wide)`; Study 1b: _n_=`r nrow(d1b_ad_wide)`) each assessed a single target character on 40 mental capacities. Study 1c employed very similar methods, with the exception that participants (_n_=`r nrow(d1c_ad_wide)/2`) each assessed _both_ target characters side by side (with left-right position counterbalaned across participants).
 
 #### Scale construction
 
@@ -133,11 +137,37 @@ saveRDS(scales_efa_wdm_d1a_ad, file = "./stored/scales/scales_efa_wdm_d1a_ad")
 saveRDS(d1a_ad_scored_ad, file = "./stored/scored_data/d1a_ad_scored_ad")
 ```
 
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d1a_ad)` scales of `r scales_efa_wdm_d1a_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.1.
+```{r}
+scales_efa_wdm_d1b_ad <- scale_fun(efa_wdm_d1b_ad, 
+                                   factor_names = factor_names_efa_wdm_d1b_ad)
+d1b_ad_scored_ad <- score_fun(d1b_ad, scales_efa_wdm_d1b_ad)
+
+saveRDS(scales_efa_wdm_d1b_ad, file = "./stored/scales/scales_efa_wdm_d1b_ad")
+saveRDS(d1b_ad_scored_ad, file = "./stored/scored_data/d1b_ad_scored_ad")
+```
+
+```{r}
+scales_efa_wdm_d1c_ad <- scale_fun(efa_wdm_d1c_ad, 
+                                   factor_names = factor_names_efa_wdm_d1c_ad)
+d1c_ad_scored_ad <- score_fun(d1c_ad, scales_efa_wdm_d1c_ad)
+
+saveRDS(scales_efa_wdm_d1c_ad, file = "./stored/scales/scales_efa_wdm_d1c_ad")
+saveRDS(d1c_ad_scored_ad, file = "./stored/scored_data/d1c_ad_scored_ad")
+```
+
+```{r}
+fact_name_fun(factor_names_efa_wdm_d1a_ad)
+fact_name_fun(factor_names_efa_wdm_d1b_ad)
+fact_name_fun(factor_names_efa_wdm_d1c_ad)
+
+scales_efa_wdm_d1a_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()
+scales_efa_wdm_d1b_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()
+scales_efa_wdm_d1c_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()
+```
+
+For each of these three studies, following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d1a_ad)` scales of `r scales_efa_wdm_d1a_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.1.
 
 #### Visualization
-
-XX
 
 ```{r}
 plots_d1a_ad_scored_ad <- relviz_fun(d1a_ad_scored_ad)
@@ -173,6 +203,101 @@ fig_d1a_ad_title <- ggdraw() +
 fig_d1a_ad_plots_leg_title <- plot_grid(fig_d1a_ad_title, fig_d1a_ad_plots_leg,
                                         ncol = 1, rel_heights = c(0.12, 1))
 ```
+
+```{r}
+plots_d1b_ad_scored_ad <- relviz_fun(d1b_ad_scored_ad)
+```
+
+```{r}
+fig_d1b_ad_plots <- plot_grid(plots_d1b_ad_scored_ad[[1]] + 
+                                theme(legend.position = "none"),
+                              plots_d1b_ad_scored_ad[[2]] + 
+                                theme(legend.position = "none"),
+                              plots_d1b_ad_scored_ad[[3]] + 
+                                theme(legend.position = "none"),
+                              labels = c("B1", "B2", "B3"), ncol = 3)
+
+fig_d1b_ad_leg <- get_legend(
+  plots_d1b_ad_scored_ad[[1]] +
+    theme(legend.position = "bottom", legend.direction = "horizontal") +
+    scale_fill_manual("Target character", values = colors02,
+                      guide = guide_legend(title.position = "left",
+                                           direction = "horizontal",
+                                           ncol = 2)) +
+    scale_color_manual("Target character", values = colors02,
+                       guide = guide_legend(title.position = "left",
+                                            direction = "horizontal",
+                                            ncol = 2)))
+
+fig_d1b_ad_plots_leg <- plot_grid(fig_d1b_ad_plots, fig_d1b_ad_leg,
+                                  ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d1b_ad_title <- ggdraw() + 
+  draw_label("Study 1b: Adults", size = 16, fontface = 'bold', x = 0, hjust = 0)
+
+fig_d1b_ad_plots_leg_title <- plot_grid(fig_d1b_ad_title, fig_d1b_ad_plots_leg,
+                                        ncol = 1, rel_heights = c(0.12, 1))
+```
+
+```{r}
+plots_d1c_ad_scored_ad <- relviz_fun(d1c_ad_scored_ad)
+```
+
+```{r}
+fig_d1c_ad_plots <- plot_grid(plots_d1c_ad_scored_ad[[1]] + 
+                                theme(legend.position = "none"),
+                              plots_d1c_ad_scored_ad[[2]] + 
+                                theme(legend.position = "none"),
+                              plots_d1c_ad_scored_ad[[3]] + 
+                                theme(legend.position = "none"),
+                              labels = c("C1", "C2", "C3"), ncol = 3)
+
+fig_d1c_ad_leg <- get_legend(
+  plots_d1c_ad_scored_ad[[1]] +
+    theme(legend.position = "bottom", legend.direction = "horizontal") +
+    scale_fill_manual("Target character", values = colors02,
+                      guide = guide_legend(title.position = "left",
+                                           direction = "horizontal",
+                                           ncol = 2)) +
+    scale_color_manual("Target character", values = colors02,
+                       guide = guide_legend(title.position = "left",
+                                            direction = "horizontal",
+                                            ncol = 2)))
+
+fig_d1c_ad_plots_leg <- plot_grid(fig_d1c_ad_plots, fig_d1c_ad_leg,
+                                  ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d1c_ad_title <- ggdraw() + 
+  draw_label("Study 1c: Adults", size = 16, fontface = 'bold', x = 0, hjust = 0)
+
+fig_d1c_ad_plots_leg_title <- plot_grid(fig_d1c_ad_title, fig_d1c_ad_plots_leg,
+                                        ncol = 1, rel_heights = c(0.12, 1))
+```
+
+```{r, fig.width = 5, fig.asp = 1.2}
+# interim plot for ease of writing
+plot_grid(fig_d1a_ad_plots_leg_title, 
+          fig_d1b_ad_plots_leg_title, 
+          fig_d1c_ad_plots_leg_title, ncol = 1)
+```
+
+The visualizations of relationships among scores on these _BODY_, _HEART_, and _MIND_ scales are remarkably similar across Studies 1a-1c (see Figure 4.1, rows A-C).
+
+##### BODY vs. HEART
+
+First I will consider the relationship between BODY and HEART (Figure 4.1, leftmost column: panels A1, B1, and C1). To my eyes, the most striking features of these visualizations are that (1) there is a positive relationship between scores on the _BODY_ and _HEART_ scales; and (2) there are virtually no datapoints above the line of equivalence ($y = x$, dotted diagonal line), and certainly no datapoints in upper left quadrant of these plots. Individual participants tended to endorse the mental capacity items included in the _BODY_ scale at least as strongly, and often more strongly, than they endorsed items included in the _HEART_ scale—in other words, that many participants attributed more BODY than HEART to the target character in question, but virtually no participants attribute more HEART than BODY. This asymmetry appears to have been driven primarily by participants' assessments of the beetle (in red); for the robot (in blue), _BODY_ and _HEART_ scores may have been more similar (close to the dotted line), and were generally quite low. 
+
+##### BODY vs. MIND
+
+Next I will consider the relationship between BODY and MIND (Figure 4.1, center column: panels A2, B2, and C2). Similar to the BODY vs. HEART comparison, two notable features of these visualizations are that (1) there is a positive relationship between scores on the _BODY_ and _MIND_ scales; and (2) there are fewer datapoints below the line of equivalence ($y = x$, dotted diagonal line) than above it, and no datapoints in lower right quadrant of these plots. Most participants tended to endorse the mental capacity items included in the _MIND_ scale roughly as strongly, and sometimes more strongly, than they endorsed items included in the _BODY_ scale, while relatively few particpiants endorsed _MIND_ items less strongly than _BODY_ items (though this asymmetry appears to have been less extreme than the asymmetry between _BODY_ and _HEART_ scores documented in the previous paragraph). In this case, the asymmetry between _BODY_ and _MIND_ appears to have been driven primarily by participants' assessments of the robot (in blue); for the beetle (in red), _BODY_ and _MIND_ scores appear to have been more similar (close to the dotted line). 
+
+##### HEART vs. MIND
+
+Finally I will consider the relationship between HEART and MIND (Figure 4.1, rightmost column: panels A3, B3, and C3). Again, two features of these visualizations are particularly striking: (1) There is a positive relationship between scores on the _MIND_ and _HEART_ scales; and (2) there are virtually _no_ datapoints below the line of equivalence ($y = x$, dotted diagonal line). The asymmetry between _MIND_ and _HEART_ scores appears to have been particularly extreme: Almost _all_ participants endorsed the mental capacity items included in the _MIND_ scale more strongly than the items included in the _HEART_ scale. In this case, this asymmetry appears to be born out for both target characters, but perhaps more exaggerated for the beetle (in red) than the robot (in blue).
+
+##### Interim discussion
+
+Across Studies 1a-1c, all three of the relationships among the conceptual units identified in Chapter III (BODY, HEART, and MIND) appear to be characterized by two features: (1) Positive relationships, such that the more strongly a participant endorsed one conceptual unit, the more strongly they tended to endorse the others; and (2) Robust asymmetries in these positive relationships, such that participants tended to endorse MIND more strongly than BODY or HEART, and HEART more strongly than MIND. Visual inspection suggests that these asymmetries were most pronounced for comparisons involving HEART, with virtually every participant across all three of these studies endorsing both BODY and MIND more strongly than HEART for both of the "edge case" characters included in these studies (a beetle and a robot). In the following section, I delve deeper into a more formal analysis of these asymmetries.
 
 #### Analysis of asymmetries
 
@@ -259,65 +384,6 @@ r_d1a_ad_scored_ad_diff_HEART_MIND <- lm(
 summary(r_d1a_ad_scored_ad_diff_HEART_MIND)
 ```
 
-### Study 1b
-
-Study 1b was a direct replication of Study 1a: `r nrow(d1b_ad_wide)` US adults each assessed a single target character (either a beetle or a robot) on 40 mental capacities. (See Chapter II and Weisman et al., 2017, for detailed methods.)
-
-#### Scale construction
-
-```{r}
-scales_efa_wdm_d1b_ad <- scale_fun(efa_wdm_d1b_ad, 
-                                   factor_names = factor_names_efa_wdm_d1b_ad)
-d1b_ad_scored_ad <- score_fun(d1b_ad, scales_efa_wdm_d1b_ad)
-
-saveRDS(scales_efa_wdm_d1b_ad, file = "./stored/scales/scales_efa_wdm_d1b_ad")
-saveRDS(d1b_ad_scored_ad, file = "./stored/scored_data/d1b_ad_scored_ad")
-```
-
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d1b_ad)` scales of `r scales_efa_wdm_d1b_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.1.
-
-#### Visualization
-
-XX
-
-```{r}
-plots_d1b_ad_scored_ad <- relviz_fun(d1b_ad_scored_ad)
-```
-
-```{r}
-fig_d1b_ad_plots <- plot_grid(plots_d1b_ad_scored_ad[[1]] + 
-                                theme(legend.position = "none"),
-                              plots_d1b_ad_scored_ad[[2]] + 
-                                theme(legend.position = "none"),
-                              plots_d1b_ad_scored_ad[[3]] + 
-                                theme(legend.position = "none"),
-                              labels = c("B1", "B2", "B3"), ncol = 3)
-
-fig_d1b_ad_leg <- get_legend(
-  plots_d1b_ad_scored_ad[[1]] +
-    theme(legend.position = "bottom", legend.direction = "horizontal") +
-    scale_fill_manual("Target character", values = colors02,
-                      guide = guide_legend(title.position = "left",
-                                           direction = "horizontal",
-                                           ncol = 2)) +
-    scale_color_manual("Target character", values = colors02,
-                       guide = guide_legend(title.position = "left",
-                                            direction = "horizontal",
-                                            ncol = 2)))
-
-fig_d1b_ad_plots_leg <- plot_grid(fig_d1b_ad_plots, fig_d1b_ad_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
-
-fig_d1b_ad_title <- ggdraw() + 
-  draw_label("Study 1b: Adults", size = 16, fontface = 'bold', x = 0, hjust = 0)
-
-fig_d1b_ad_plots_leg_title <- plot_grid(fig_d1b_ad_title, fig_d1b_ad_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
-```
-
-#### Analysis of asymmetries
-
-XX
 
 ```{r}
 d1b_ad_scored_ad_diff <- diff_fun(d1b_ad_scored_ad)
@@ -400,65 +466,6 @@ r_d1b_ad_scored_ad_diff_HEART_MIND <- lm(
 summary(r_d1b_ad_scored_ad_diff_HEART_MIND)
 ```
 
-### Study 1c
-
-In Study 1c, `r nrow(d1c_ad_wide)/2` US adults each assessed two target characters on 40 mental capacities. Like Studies 1a and 1b, this study employed the "edge case" variant of the general approach; but in this study, all participants assessed both of these target characters side by side (with left-right position counterbalaned across participants). (See Chapter II and Weisman et al., 2017, for detailed methods.)
-
-#### Scale construction
-
-```{r}
-scales_efa_wdm_d1c_ad <- scale_fun(efa_wdm_d1c_ad, 
-                                   factor_names = factor_names_efa_wdm_d1c_ad)
-d1c_ad_scored_ad <- score_fun(d1c_ad, scales_efa_wdm_d1c_ad)
-
-saveRDS(scales_efa_wdm_d1c_ad, file = "./stored/scales/scales_efa_wdm_d1c_ad")
-saveRDS(d1c_ad_scored_ad, file = "./stored/scored_data/d1c_ad_scored_ad")
-```
-
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d1c_ad)` scales of `r scales_efa_wdm_d1c_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.1.
-
-#### Visualization
-
-XX
-
-```{r}
-plots_d1c_ad_scored_ad <- relviz_fun(d1c_ad_scored_ad)
-```
-
-```{r}
-fig_d1c_ad_plots <- plot_grid(plots_d1c_ad_scored_ad[[1]] + 
-                                theme(legend.position = "none"),
-                              plots_d1c_ad_scored_ad[[2]] + 
-                                theme(legend.position = "none"),
-                              plots_d1c_ad_scored_ad[[3]] + 
-                                theme(legend.position = "none"),
-                              labels = c("C1", "C2", "C3"), ncol = 3)
-
-fig_d1c_ad_leg <- get_legend(
-  plots_d1c_ad_scored_ad[[1]] +
-    theme(legend.position = "bottom", legend.direction = "horizontal") +
-    scale_fill_manual("Target character", values = colors02,
-                      guide = guide_legend(title.position = "left",
-                                           direction = "horizontal",
-                                           ncol = 2)) +
-    scale_color_manual("Target character", values = colors02,
-                       guide = guide_legend(title.position = "left",
-                                            direction = "horizontal",
-                                            ncol = 2)))
-
-fig_d1c_ad_plots_leg <- plot_grid(fig_d1c_ad_plots, fig_d1c_ad_leg,
-                                  ncol = 1, rel_heights = c(1, 0.05))
-
-fig_d1c_ad_title <- ggdraw() + 
-  draw_label("Study 1c: Adults", size = 16, fontface = 'bold', x = 0, hjust = 0)
-
-fig_d1c_ad_plots_leg_title <- plot_grid(fig_d1c_ad_title, fig_d1c_ad_plots_leg,
-                                        ncol = 1, rel_heights = c(0.12, 1))
-```
-
-#### Analysis of asymmetries
-
-XX
 
 ```{r}
 d1c_ad_scored_ad_diff <- diff_fun(d1c_ad_scored_ad)
