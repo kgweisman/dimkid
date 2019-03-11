@@ -202,3 +202,31 @@ fact_name_fun <- function(names) {
   }
   return(list3)
 }
+
+# function for getting nonzero effects
+nonzero_fun <- function(regtab, which_pair, 
+                        inc_intercept = F, pos_neg = "both"){
+  newtab <- regtab %>%
+    filter(pair == which_pair, nonzero == "*")
+  
+  if(!inc_intercept){
+    newtab <- newtab %>% filter(tolower(param) != "intercept")
+  }
+  
+  if(pos_neg == "pos"){
+    newtab <- newtab %>%
+      filter(b > 0)
+  } else if(pos_neg == "neg"){
+    newtab <- newtab %>%
+      filter(b < 0)
+  }
+  
+  newtab <- newtab %>%
+    mutate(param = gsub(" vs.*$", "", tolower(param)),
+           param = gsub("pvs", "person in a persistant vegetative state (PVS)", 
+                        param))
+  
+  output <- paste(newtab$param, collapse = ", ")
+  
+  return(output)
+}

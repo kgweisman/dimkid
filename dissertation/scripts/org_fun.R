@@ -227,19 +227,24 @@ diff_reg_table_fun <- function(reg_list, pair_list, study_name,
            nonzero = ifelse(Q2.5 * Q97.5 >= 0, "*", "")) %>%
     rename(b = Estimate, s.e. = Est.Error)
   
+  params_all <- levels(factor(table$param))
+  params_char <- params_all[grepl("char", params_all)]
+  if(length(params_char) > 1){
+    params_char <- paste0("character", 1:length(params_char))
+  }
+  params_agegp <- params_all[grepl("agegp", params_all)]
+  params_all_ord <- c("Intercept", params_char, params_agegp)
+  
   if(is.na(agegp_label)) {
     table <- table %>%
-      mutate(param = case_when(param == "Intercept" ~ "Intercept",
-                               grepl("char", param) ~ char_label),
-             param = factor(param,
-                            levels = c("Intercept", char_label)))
+      mutate(param = factor(param, 
+                            levels = params_all_ord,
+                            labels = c("Intercept", char_label)))
   } else {
     table <- table %>%
-      mutate(param = case_when(param == "Intercept" ~ "Intercept",
-                               grepl("char", param) ~ char_label,
-                               grepl("agegp", param) ~ agegp_label),
-             param = factor(param,
-                            levels = c("Intercept", char_label, agegp_label)))
+      mutate(param = factor(param, 
+                            levels = params_all_ord,
+                            labels = c("Intercept", char_label, agegp_label)))
   }
   
   table <- table %>% select(study, pair, param, b, s.e., CI95, nonzero) %>%
