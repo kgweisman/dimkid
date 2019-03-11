@@ -165,7 +165,7 @@ scales_efa_wdm_d1b_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select
 scales_efa_wdm_d1c_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()
 ```
 
-For each of these three studies, following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d1a_ad)` scales of `r scales_efa_wdm_d1a_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.1.
+For each of these three studies, following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d1a_ad)` scales of `r scales_efa_wdm_d1a_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.2.
 
 #### Visualization
 
@@ -301,10 +301,10 @@ Across Studies 1a-1c, all three of the relationships among the conceptual units 
 
 #### Analysis of asymmetries
 
-XX
-
 ```{r}
 d1a_ad_scored_ad_diff <- diff_fun(d1a_ad_scored_ad)
+contrasts(d1a_ad_scored_ad_diff$character) <- contrasts_sum_edge
+
 saveRDS(d1a_ad_scored_ad_diff, "./stored/diffscore_data/d1a_ad_scored_ad_diff")
 ```
 
@@ -314,79 +314,61 @@ plot_d1a_ad_scored_ad_diff <- diffplot_fun(d1a_ad_scored_ad_diff)
 
 ```{r}
 # r_d1a_ad_scored_ad_diff_BODY_HEART <- brm(
-#   diff ~ 1 + (1 | character),
+#   diff ~ 1 + character,
 #   data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d1a_ad_scored_ad_diff_BODY_HEART, 
+#         "./stored/brms_models/r_d1a_ad_scored_ad_diff_BODY_HEART")
 
-# r_d1a_ad_scored_ad_diff_BODY_HEART <- lmer(
-#   diff ~ 1 + (1 | character),
-#   data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d1a_ad_scored_ad_diff_BODY_HEART <- lm(
-  diff ~ 1 + character,
-  data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d1a_ad_scored_ad_diff_BODY_HEART <- lm(
-#   diff ~ 1,
-#   data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+r_d1a_ad_scored_ad_diff_BODY_HEART <- readRDS("./stored/brms_models/r_d1a_ad_scored_ad_diff_BODY_HEART")
 
 summary(r_d1a_ad_scored_ad_diff_BODY_HEART)
 ```
 
 ```{r}
 # r_d1a_ad_scored_ad_diff_BODY_MIND <- brm(
-#   diff ~ 1 + (1 | character),
+#   diff ~ 1 + character,
 #   data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d1a_ad_scored_ad_diff_BODY_MIND, 
+#         "./stored/brms_models/r_d1a_ad_scored_ad_diff_BODY_MIND")
 
-# r_d1a_ad_scored_ad_diff_BODY_MIND <- lmer(
-#   diff ~ 1 + (1 | character),
-#   data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d1a_ad_scored_ad_diff_BODY_MIND <- lm(
-  diff ~ 1 + character,
-  data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d1a_ad_scored_ad_diff_BODY_MIND <- lm(
-#   diff ~ 1,
-#   data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"))
+r_d1a_ad_scored_ad_diff_BODY_MIND <- readRDS("./stored/brms_models/r_d1a_ad_scored_ad_diff_BODY_MIND")
 
 summary(r_d1a_ad_scored_ad_diff_BODY_MIND)
 ```
 
 ```{r}
 # r_d1a_ad_scored_ad_diff_HEART_MIND <- brm(
-#   diff ~ 1 + (1 | character),
+#   diff ~ 1 + character,
 #   data = d1a_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d1a_ad_scored_ad_diff_HEART_MIND, 
+#         "./stored/brms_models/r_d1a_ad_scored_ad_diff_HEART_MIND")
 
-# r_d1a_ad_scored_ad_diff_HEART_MIND <- lmer(
-#   diff ~ 1 + (1 | character),
-#   data = d1a_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d1a_ad_scored_ad_diff_HEART_MIND <- lm(
-  diff ~ 1 + character,
-  data = d1a_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d1a_ad_scored_ad_diff_HEART_MIND <- lm(
-#   diff ~ 1,
-#   data = d1a_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"))
+r_d1a_ad_scored_ad_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d1a_ad_scored_ad_diff_HEART_MIND")
 
 summary(r_d1a_ad_scored_ad_diff_HEART_MIND)
+```
+
+```{r}
+regtab_d1a_ad_scored_ad_diff <- diff_reg_table_fun(
+  reg_list = list(r_d1a_ad_scored_ad_diff_BODY_HEART,
+                  r_d1a_ad_scored_ad_diff_BODY_MIND,
+                  r_d1a_ad_scored_ad_diff_HEART_MIND),
+  pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
+  study_name = "Study 1a",
+  char_label = "Target character")
 ```
 
 
 ```{r}
 d1b_ad_scored_ad_diff <- diff_fun(d1b_ad_scored_ad)
+contrasts(d1b_ad_scored_ad_diff$character) <- contrasts_sum_edge
+
 saveRDS(d1b_ad_scored_ad_diff, "./stored/diffscore_data/d1b_ad_scored_ad_diff")
 ```
 
@@ -396,79 +378,61 @@ plot_d1b_ad_scored_ad_diff <- diffplot_fun(d1b_ad_scored_ad_diff)
 
 ```{r}
 # r_d1b_ad_scored_ad_diff_BODY_HEART <- brm(
-#   diff ~ 1 + (1 | character),
+#   diff ~ 1 + character,
 #   data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d1b_ad_scored_ad_diff_BODY_HEART,
+#         "./stored/brms_models/r_d1b_ad_scored_ad_diff_BODY_HEART")
 
-# r_d1b_ad_scored_ad_diff_BODY_HEART <- lmer(
-#   diff ~ 1 + (1 | character),
-#   data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d1b_ad_scored_ad_diff_BODY_HEART <- lm(
-  diff ~ 1 + character,
-  data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d1b_ad_scored_ad_diff_BODY_HEART <- lm(
-#   diff ~ 1,
-#   data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+r_d1b_ad_scored_ad_diff_BODY_HEART <- readRDS("./stored/brms_models/r_d1b_ad_scored_ad_diff_BODY_HEART")
 
 summary(r_d1b_ad_scored_ad_diff_BODY_HEART)
 ```
 
 ```{r}
 # r_d1b_ad_scored_ad_diff_BODY_MIND <- brm(
-#   diff ~ 1 + (1 | character),
+#   diff ~ 1 + character,
 #   data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d1b_ad_scored_ad_diff_BODY_MIND,
+#         "./stored/brms_models/r_d1b_ad_scored_ad_diff_BODY_MIND")
 
-# r_d1b_ad_scored_ad_diff_BODY_MIND <- lmer(
-#   diff ~ 1 + (1 | character),
-#   data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d1b_ad_scored_ad_diff_BODY_MIND <- lm(
-  diff ~ 1 + character,
-  data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d1b_ad_scored_ad_diff_BODY_MIND <- lm(
-#   diff ~ 1,
-#   data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"))
+r_d1b_ad_scored_ad_diff_BODY_MIND <- readRDS("./stored/brms_models/r_d1b_ad_scored_ad_diff_BODY_MIND")
 
 summary(r_d1b_ad_scored_ad_diff_BODY_MIND)
 ```
 
 ```{r}
 # r_d1b_ad_scored_ad_diff_HEART_MIND <- brm(
-#   diff ~ 1 + (1 | character),
+#   diff ~ 1 + character,
 #   data = d1b_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d1b_ad_scored_ad_diff_HEART_MIND,
+#         "./stored/brms_models/r_d1b_ad_scored_ad_diff_HEART_MIND")
 
-# r_d1b_ad_scored_ad_diff_HEART_MIND <- lmer(
-#   diff ~ 1 + (1 | character),
-#   data = d1b_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d1b_ad_scored_ad_diff_HEART_MIND <- lm(
-  diff ~ 1 + character,
-  data = d1b_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d1b_ad_scored_ad_diff_HEART_MIND <- lm(
-#   diff ~ 1,
-#   data = d1b_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"))
+r_d1b_ad_scored_ad_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d1b_ad_scored_ad_diff_HEART_MIND")
 
 summary(r_d1b_ad_scored_ad_diff_HEART_MIND)
+```
+
+```{r}
+regtab_d1b_ad_scored_ad_diff <- diff_reg_table_fun(
+  reg_list = list(r_d1b_ad_scored_ad_diff_BODY_HEART,
+                  r_d1b_ad_scored_ad_diff_BODY_MIND,
+                  r_d1b_ad_scored_ad_diff_HEART_MIND),
+  pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
+  study_name = "Study 1b",
+  char_label = "Target character")
 ```
 
 
 ```{r}
 d1c_ad_scored_ad_diff <- diff_fun(d1c_ad_scored_ad)
+contrasts(d1c_ad_scored_ad_diff$character) <- contrasts_sum_edge
+
 saveRDS(d1c_ad_scored_ad_diff, "./stored/diffscore_data/d1c_ad_scored_ad_diff")
 ```
 
@@ -478,75 +442,95 @@ plot_d1c_ad_scored_ad_diff <- diffplot_fun(d1c_ad_scored_ad_diff)
 
 ```{r}
 # r_d1c_ad_scored_ad_diff_BODY_HEART <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
+#   diff ~ 1 + character,
 #   data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d1c_ad_scored_ad_diff_BODY_HEART,
+#         "./stored/brms_models/r_d1c_ad_scored_ad_diff_BODY_HEART")
 
-# r_d1c_ad_scored_ad_diff_BODY_HEART <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d1c_ad_scored_ad_diff_BODY_HEART <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d1c_ad_scored_ad_diff_BODY_HEART <- lmer(
-#   diff ~ 1  + (1 | subid),
-#   data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+r_d1c_ad_scored_ad_diff_BODY_HEART <- readRDS("./stored/brms_models/r_d1c_ad_scored_ad_diff_BODY_HEART")
 
 summary(r_d1c_ad_scored_ad_diff_BODY_HEART)
 ```
 
 ```{r}
 # r_d1c_ad_scored_ad_diff_BODY_MIND <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
+#   diff ~ 1 + character,
 #   data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d1c_ad_scored_ad_diff_BODY_MIND,
+#         "./stored/brms_models/r_d1c_ad_scored_ad_diff_BODY_MIND")
 
-# r_d1c_ad_scored_ad_diff_BODY_MIND <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d1c_ad_scored_ad_diff_BODY_MIND <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d1c_ad_scored_ad_diff_BODY_MIND <- lmer(
-#   diff ~ 1 + (1 | subid),
-#   data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"))
+r_d1c_ad_scored_ad_diff_BODY_MIND <- readRDS("./stored/brms_models/r_d1c_ad_scored_ad_diff_BODY_MIND")
 
 summary(r_d1c_ad_scored_ad_diff_BODY_MIND)
 ```
 
 ```{r}
 # r_d1c_ad_scored_ad_diff_HEART_MIND <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
+#   diff ~ 1 + character,
 #   data = d1c_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d1c_ad_scored_ad_diff_HEART_MIND,
+#         "./stored/brms_models/r_d1c_ad_scored_ad_diff_HEART_MIND")
 
-# r_d1c_ad_scored_ad_diff_HEART_MIND <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d1c_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d1c_ad_scored_ad_diff_HEART_MIND <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d1c_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d1c_ad_scored_ad_diff_HEART_MIND <- lmer(
-#   diff ~ 1 + (1 | subid),
-#   data = d1c_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"))
+r_d1c_ad_scored_ad_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d1c_ad_scored_ad_diff_HEART_MIND")
 
 summary(r_d1c_ad_scored_ad_diff_HEART_MIND)
 ```
+
+```{r}
+regtab_d1c_ad_scored_ad_diff <- diff_reg_table_fun(
+  reg_list = list(r_d1c_ad_scored_ad_diff_BODY_HEART,
+                  r_d1c_ad_scored_ad_diff_BODY_MIND,
+                  r_d1c_ad_scored_ad_diff_HEART_MIND),
+  pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
+  study_name = "Study 1c",
+  char_label = "Target character")
+```
+
+```{r}
+regtab_studies1abc <- regtab_d1a_ad_scored_ad_diff %>%
+  full_join(regtab_d1b_ad_scored_ad_diff) %>%
+  full_join(regtab_d1c_ad_scored_ad_diff) %>%
+  mutate_at(vars(b, s.e.),
+            funs(format(round(., digits = 2), nsmall = 2))) %>%
+  unite(result, b, s.e., CI95, nonzero) %>%
+  spread(study, result) %>%
+  separate(`Study 1a`, c("s1a_b", "s1a_s.e.", "s1a_95% CI", "s1a_nz"), sep = "_") %>%
+  separate(`Study 1b`, c("s1b_b", "s1b_s.e.", "s1b_95% CI", "s1b_nz"), sep = "_") %>%
+  separate(`Study 1c`, c("s1c_b", "s1c_s.e.", "s1c_95% CI", "s1c_nz"), sep = "_")
+```
+
+```{r}
+table4.1 <- regtab_studies1abc %>%
+  select(-pair, -ends_with("_s.e.")) %>%
+  rename(Parameter = param) %>%
+  rename_all(funs(gsub("nz", " ", .))) %>%
+  rename_all(funs(gsub("s1._", "", .))) %>%
+  kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
+        caption = "Table 4.1: Regression analyses of difference scores for US adults in Studies 1a-1c. The table presents results from separate Bayesian regressions of each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND). Each regression included two fixed effect parameters: (1) the intercept, which I treat as an index of the asymmetry in attributions of the two conceptual units in question; and (2) a difference between target characters, reported here as a difference between the robot and the grand mean (G.M.). For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
+  kable_styling() %>%
+  # column_spec(c(4, 7, 10), border_right = T) %>%
+  group_rows("BODY - HEART", 1, 2) %>%
+  group_rows("BODY - MIND", 3, 4) %>%
+  group_rows("HEART - MIND", 5, 6) %>%
+  add_header_above(c(" " = 1,
+                     "Study 1a" = 3,
+                     "Study 1b" = 3,
+                     "Study 1c" = 3))
+```
+
+```{r, include = T}
+table4.1
+```
+
+
+
+
 
 ### Study 1d
 
@@ -563,7 +547,7 @@ saveRDS(scales_efa_wdm_d1d_ad, file = "./stored/scales/scales_efa_wdm_d1d_ad")
 saveRDS(d1d_ad_scored_ad, file = "./stored/scored_data/d1d_ad_scored_ad")
 ```
 
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d1d_ad)` scales of `r scales_efa_wdm_d1d_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.1.
+Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d1d_ad)` scales of `r scales_efa_wdm_d1d_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.2.
 
 #### Visualization
 
@@ -719,20 +703,20 @@ scales_study1 <- bind_rows(scales_efa_wdm_d1a_ad %>% mutate(study = "Study 1a"),
 ```
 
 ```{r}
-table4.1 <- scales_study1 %>%
+table4.2 <- scales_study1 %>%
   mutate_at(vars(-capacity),
             funs(ifelse(is.na(.), "", "✓"))) %>%
   rename(Capacity = capacity) %>%
   kable(format = "html", 
-        caption = "Table 4.1: Scales for each of the conceptual units (factors) identified by EFA for US Adults in Studies 1a-1d (see Chapter III). A checkmark indicates that a mental capacity was included in a scale for a particular study.") %>%  
+        caption = "Table 4.2: Scales for each of the conceptual units (factors) identified by EFA for US Adults in Studies 1a-1d (see Chapter III). A checkmark indicates that a mental capacity was included in a scale for a particular study.") %>%  
   kable_styling() %>%
   group_rows("BODY scale", 1, 9) %>%
   group_rows("HEART scale", 10, 17) %>%
   group_rows("MIND scale", 18, 26)
 ```
 
-```{r table4.1, include = T}
-table4.1
+```{r table4.2, include = T}
+table4.2
 ```
 
 ```{r}
@@ -809,7 +793,7 @@ saveRDS(scales_efa_wdm_d2_ad, file = "./stored/scales/scales_efa_wdm_d2_ad")
 saveRDS(d2_ad_scored_ad, file = "./stored/scored_data/d2_ad_scored_ad")
 ```
 
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d2_ad)` scales of `r scales_efa_wdm_d2_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.2.
+Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d2_ad)` scales of `r scales_efa_wdm_d2_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.3.
 
 #### Visualization
 
@@ -1227,7 +1211,7 @@ saveRDS(scales_efa_wdm_d2_79, file = "./stored/scales/scales_efa_wdm_d2_79")
 saveRDS(d2_79_scored_79, file = "./stored/scored_data/d2_79_scored_79")
 ```
 
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d2_79)` scales of `r scales_efa_wdm_d2_79 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.2.
+Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d2_79)` scales of `r scales_efa_wdm_d2_79 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.3.
 
 #### Visualization
 
@@ -1382,7 +1366,7 @@ figure4.3 <- plot_grid(fig_d2_ad_plots_leg_title,
                        fig_d2_all_scored_ad_plots_leg_title,
                        ncol = 1)
 
-figure4.3_cap <- add_sub(figure4.3, str_wrap("Figure 4.3: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 2, scored using adults' BODY, HEART, and MIND scales (see Table 4.2). Plots are organized by sample (rows) and by pair of conceptual units (columns). (A) Adults. (B) Children (7-9y of age), scored using adults' scales. (C) A visualization of development between 7-9y and adulthood, using mean scores by character and age group. For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.3_cap <- add_sub(figure4.3, str_wrap("Figure 4.3: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 2, scored using adults' BODY, HEART, and MIND scales (see Table 4.3). Plots are organized by sample (rows) and by pair of conceptual units (columns). (A) Adults. (B) Children (7-9y of age), scored using adults' scales. (C) A visualization of development between 7-9y and adulthood, using mean scores by character and age group. For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.4}
@@ -1393,7 +1377,7 @@ ggdraw(figure4.3_cap)
 figure4.4 <- plot_grid(fig_d2_79_scored_79_plots_leg_title, 
                        ncol = 1)
 
-figure4.4_cap <- add_sub(figure4.4, str_wrap("Figure 4.4: Relationships among children's attributions of conceptual units in Study 2, scored using their own scales (see Table 4.2). Plots are organized by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.4_cap <- add_sub(figure4.4, str_wrap("Figure 4.4: Relationships among children's attributions of conceptual units in Study 2, scored using their own scales (see Table 4.3). Plots are organized by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 0.5}
@@ -1414,7 +1398,7 @@ figure4.5_plots <- plot_grid(
   ncol = 3, rel_widths = c(1, 1, 1),
   labels = "AUTO")
 
-figure4.5_cap <- add_sub(figure4.5_plots, str_wrap("Figure 4.5: Difference scores between US adults' and children's attributions of conceptual units in Study 2. this includes difference scores using adults' BODY, HEART, and MIND scales (panel B) and difference scores using children's own scales (panel C; see Table 4.2). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
+figure4.5_cap <- add_sub(figure4.5_plots, str_wrap("Figure 4.5: Difference scores between US adults' and children's attributions of conceptual units in Study 2. this includes difference scores using adults' BODY, HEART, and MIND scales (panel B) and difference scores using children's own scales (panel C; see Table 4.3). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 8, fig.asp = 0.38}
@@ -1442,7 +1426,7 @@ saveRDS(scales_efa_wdm_d3_ad, file = "./stored/scales/scales_efa_wdm_d3_ad")
 saveRDS(d3_ad_scored_ad, file = "./stored/scored_data/d3_ad_scored_ad")
 ```
 
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d3_ad)` scales of `r scales_efa_wdm_d3_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.2.
+Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d3_ad)` scales of `r scales_efa_wdm_d3_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.3.
 
 #### Visualization
 
@@ -1579,7 +1563,7 @@ summary(r_d3_ad_scored_ad_diff_HEART_MIND)
 ```{r}
 # just for table
 scales_efa_wdm_d3_79 <- scale_fun(efa_wdm_d3_79, 
-                                   factor_names = factor_names_efa_wdm_d3_79)
+                                  factor_names = factor_names_efa_wdm_d3_79)
 saveRDS(scales_efa_wdm_d3_79, file = "./stored/scales/scales_efa_wdm_d3_79")
 ```
 
@@ -2034,7 +2018,7 @@ figure4.6 <- plot_grid(fig_d3_ad_plots_leg_title,
                        fig_d3_all_scored_ad_plots_leg_title,
                        ncol = 1)
 
-figure4.6_cap <- add_sub(figure4.6, str_wrap("Figure 4.6: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using adults' BODY, HEART, and MIND scales (see Table 4.2). (A) Adults. (B) Older children (7-9y of age). (C) Younger children (4-6y of age). (D) A visualization of development between 4-9y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-C, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.6_cap <- add_sub(figure4.6, str_wrap("Figure 4.6: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using adults' BODY, HEART, and MIND scales (see Table 4.3). (A) Adults. (B) Older children (7-9y of age). (C) Younger children (4-6y of age). (D) A visualization of development between 4-9y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-C, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.8}
@@ -2059,7 +2043,7 @@ figure4.7_plots_leg <- plot_grid(figure4.7_plots,
                                  get_legend(plot_d3_ad_scored_ad_diff),
                                  ncol = 1, rel_heights = c(1, 0.1))
 
-figure4.7_cap <- add_sub(figure4.7_plots_leg, str_wrap("Figure 4.7: Difference scores between US adults' and children's attributions of conceptual units in Study 3. this includes difference scores using adults' BODY, HEART, and MIND scales (panel B) and difference scores using children's own scales (panel C; see Table 4.2). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
+figure4.7_cap <- add_sub(figure4.7_plots_leg, str_wrap("Figure 4.7: Difference scores between US adults' and children's attributions of conceptual units in Study 3. this includes difference scores using adults' BODY, HEART, and MIND scales (panel B) and difference scores using children's own scales (panel C; see Table 4.3). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 8, fig.asp = 0.38}
@@ -2088,7 +2072,7 @@ saveRDS(scales_efa_wdm_d4_ad, file = "./stored/scales/scales_efa_wdm_d4_ad")
 saveRDS(d4_ad_scored_ad, file = "./stored/scored_data/d4_ad_scored_ad")
 ```
 
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d4_ad)` scales of `r scales_efa_wdm_d4_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.2.
+Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d4_ad)` scales of `r scales_efa_wdm_d4_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.3.
 
 #### Visualization
 
@@ -2472,7 +2456,7 @@ scales_study4 <- bind_rows(scales_efa_wdm_d4_ad %>%
 ```
 
 ```{r}
-table4.2 <- scales_study2 %>% 
+table4.3 <- scales_study2 %>% 
   mutate(capacity = case_when(
     grepl("sad", capacity) ~ "feel/get sad",
     grepl("scared", capacity) ~ "feel/get scared",
@@ -2533,7 +2517,7 @@ table4.2 <- scales_study2 %>%
          `Children, 7-9y` = `Study 3: Children, 7-9y`,
          `Adults` = `Study 4: Adults`) %>%
   kable(format = "html",
-        caption = "Table 4.2: Scales for each of the conceptual units (factors) identified by EFA for US Adults in Studies 2-4 and for 7- to 9-year-old childrenin Studies 2 and 3. (See Appendix B for alternative scales based on younger children's EFA results, for Studies 3 and 4.) A checkmark indicates that a mental capacity was included in a scale for a particular sample.") %>%
+        caption = "Table 4.3: Scales for each of the conceptual units (factors) identified by EFA for US Adults in Studies 2-4 and for 7- to 9-year-old childrenin Studies 2 and 3. (See Appendix B for alternative scales based on younger children's EFA results, for Studies 3 and 4.) A checkmark indicates that a mental capacity was included in a scale for a particular sample.") %>%
   kable_styling() %>%
   add_header_above(c(" " = 1,
                      "Study 2" = 2,
@@ -2544,8 +2528,8 @@ table4.2 <- scales_study2 %>%
   group_rows("MIND scale", 20, 31)
 ```
 
-```{r table4.2, include = T}
-table4.2
+```{r table4.3, include = T}
+table4.3
 ```
 
 ```{r}
@@ -2592,7 +2576,7 @@ figure4.8 <- plot_grid(fig_d4_ad_plots_leg_title,
                        fig_d4_all_scored_ad_plots_leg_title,
                        ncol = 1)
 
-figure4.8_cap <- add_sub(figure4.8, str_wrap("Figure 4.8: Relationships among US adults' and children's attributions of conceptual units in Study 4, scored using adults' BODY, HEART, and MIND scales (see Table 4.2). (A) Adults. (B) Children (4-5y of age). (C) A visualization of development between 4-5y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.8_cap <- add_sub(figure4.8, str_wrap("Figure 4.8: Relationships among US adults' and children's attributions of conceptual units in Study 4, scored using adults' BODY, HEART, and MIND scales (see Table 4.3). (A) Adults. (B) Children (4-5y of age). (C) A visualization of development between 4-5y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.4}

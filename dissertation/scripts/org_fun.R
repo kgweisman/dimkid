@@ -180,3 +180,70 @@ diff_fun <- function(d_scored){
   
   return(d_diff)
 }
+
+# function for getting regressions on difference scores into one dataframe
+diff_reg_table_fun <- function(reg_list, pair_list, study_name,
+                               char_label = NA, agegp_label = NA){
+  
+  n_reg <- length(reg_list)
+  
+  table <- fixef(reg_list[[1]]) %>%
+    data.frame() %>%
+    rownames_to_column("param") %>%
+    mutate(pair = pair_list[[1]])
+  
+  if(n_reg > 1){
+    table <- table %>%
+      full_join(fixef(reg_list[[2]]) %>%
+                  data.frame() %>%
+                  rownames_to_column("param") %>%
+                  mutate(pair = pair_list[[2]])) %>%
+      full_join(fixef(reg_list[[3]]) %>%
+                  data.frame() %>%
+                  rownames_to_column("param") %>%
+                  mutate(pair = pair_list[[3]]))
+  }
+  
+  if(n_reg > 3){
+    table <- table %>%
+      full_join(fixef(reg_list[[4]]) %>%
+                  data.frame() %>%
+                  rownames_to_column("param") %>%
+                  mutate(pair = pair_list[[4]])) %>%
+      full_join(fixef(reg_list[[5]]) %>%
+                  data.frame() %>%
+                  rownames_to_column("param") %>%
+                  mutate(pair = pair_list[[5]])) %>%
+      full_join(fixef(reg_list[[6]]) %>%
+                  data.frame() %>%
+                  rownames_to_column("param") %>%
+                  mutate(pair = pair_list[[6]]))
+  }
+  
+  table <- table %>%
+    mutate(study = study_name,
+           CI95 = paste0("[", format(round(Q2.5, 2), nsmall = 2),
+                         ", ", format(round(Q97.5, 2), nsmall = 2), "]"),
+           nonzero = ifelse(Q2.5 * Q97.5 >= 0, "*", "")) %>%
+    rename(b = Estimate, s.e. = Est.Error)
+  
+  if(is.na(agegp_label)) {
+    table <- table %>%
+      mutate(param = case_when(param == "Intercept" ~ "Intercept",
+                               grepl("char", param) ~ char_label),
+             param = factor(param,
+                            levels = c("Intercept", char_label)))
+  } else {
+    table <- table %>%
+      mutate(param = case_when(param == "Intercept" ~ "Intercept",
+                               grepl("char", param) ~ char_label,
+                               grepl("agegp", param) ~ agegp_label),
+             param = factor(param,
+                            levels = c("Intercept", char_label, agegp_label)))
+  }
+  
+  table <- table %>% select(study, pair, param, b, s.e., CI95, nonzero) %>%
+    arrange(study, pair, param)
+  
+  return(table)
+}
