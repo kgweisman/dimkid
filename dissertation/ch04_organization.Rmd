@@ -1253,7 +1253,8 @@ These formal comparisons of difference scores among children vs. adults in Study
 table4.XX <- regtab_d2_ad79_scored_ad_diff %>%
   select(-pair, -study, -contains("s.e.")) %>%
   mutate(b = format(round(b, 2), nsmall = 2)) %>%
-  rename(Parameter = param) %>%
+  rename(Parameter = param,
+         `95% CI` = CI95) %>%
   rename_all(funs(gsub("nonzero", " ", .))) %>%
   kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
         caption = "Table 4.XX: Regression analyses of differences in difference scores between US adults and children (7-9y of age) difference scores in Study 2. The table presents results from separate Bayesian regressions of each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND). Each regression included four fixed effect parameters: (1) the intercept (for adults), which I treat as an index of the asymmetry in attributions of the two conceptual units in question among adults; (2) a difference between target characters (among adults), reported here as a difference between the robot and the grand mean (GM); (3) the overall difference between children and adults (collapsing across target characters); and (4) the interaction between this age difference and the difference between target characters. The developmental comparisons are highlighted in bold, because these are the primary parameters of interest for these analyses. For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
