@@ -167,7 +167,7 @@ diff_fun <- function(d_scored){
     d_diff$diff5 <- unlist(d_diff[factor_names[2]] -
                              d_diff[factor_names[4]]) %>% unname()
     diff_names[5] <- paste(factor_names_plot[2], "-", factor_names_plot[4])
-
+    
     d_diff$diff6 <- unlist(d_diff[factor_names[3]] -
                              d_diff[factor_names[4]]) %>% unname()
     diff_names[6] <- paste(factor_names_plot[3], "-", factor_names_plot[4])
@@ -228,23 +228,33 @@ diff_reg_table_fun <- function(reg_list, pair_list, study_name,
     rename(b = Estimate, s.e. = Est.Error)
   
   params_all <- levels(factor(table$param))
-  params_char <- params_all[grepl("char", params_all)]
+  params_interaction <- params_all[grepl(":", params_all)]
+  params_char <- params_all[grepl("char", params_all) &
+                              !(params_all %in% params_interaction)]
   if(length(params_char) > 1){
     params_char <- paste0("character", 1:length(params_char))
   }
-  params_agegp <- params_all[grepl("agegp", params_all)]
-  params_all_ord <- c("Intercept", params_char, params_agegp)
+  params_agegp <- params_all[grepl("age_group", params_all) &
+                               !(params_all %in% params_interaction)]
+  params_all_ord <- c("Intercept", params_char, params_agegp,
+                      params_interaction)
   
-  if(is.na(agegp_label)) {
+  if(is.na(params_interaction) && is.na(agegp_label)){
     table <- table %>%
-      mutate(param = factor(param, 
+      mutate(param = factor(param,
                             levels = params_all_ord,
                             labels = c("Intercept", char_label)))
-  } else {
+  } else if(is.na(params_interaction)) {
     table <- table %>%
       mutate(param = factor(param, 
                             levels = params_all_ord,
                             labels = c("Intercept", char_label, agegp_label)))
+  } else {
+    table <- table %>%
+      mutate(param = factor(param, 
+                            levels = params_all_ord,
+                            labels = c("Intercept", char_label, 
+                                       agegp_label, "Interaction")))
   }
   
   table <- table %>% select(study, pair, param, b, s.e., CI95, nonzero) %>%
