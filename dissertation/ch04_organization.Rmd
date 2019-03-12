@@ -989,7 +989,7 @@ My informal observations of the relationships among adults' endorsements of the 
 
 #### Analysis of asymmetries
 
-Here I provide a formal analysis of the asymmetries revealed by the visualizations in the previous section. As in Studies 1a-1c, for each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND), I used Bayesian regression to compare difference scores between these two conceptual units to zero, controlling for differences in assessments of the twenty-one "diverse characters" that were featured as target characters in these studies. See Figure 4.x, panel D, for visual depictions of these difference scores.
+Here I provide a formal analysis of the asymmetries revealed by the visualizations in the previous section. As in Studies 1a-1c, for each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND), I used Bayesian regression to compare difference scores between these two conceptual units to zero, controlling for differences in assessments of the two "edge cases" that were featured as target characters in these studies. See Figure 4.x, panel D, for visual depictions of these difference scores.
 
 ```{r}
 d2_ad_scored_ad_diff <- diff_fun(d2_ad_scored_ad)
@@ -1782,7 +1782,7 @@ My informal observations of the relationships among adults' endorsements of the 
 
 #### Analysis of asymmetries
 
-Here I provide a formal analysis of the asymmetries revealed by the visualizations in the previous section. For each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND), I used Bayesian regression to compare difference scores between these two conceptual units to zero, controlling for differences in assessments of the twenty-one "diverse characters" that were featured as target characters in these studies. See Figure 4.x, panel A, for visual depictions of these difference scores.
+Here I provide a formal analysis of the asymmetries revealed by the visualizations in the previous section. For each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND), I used Bayesian regression to compare difference scores between these two conceptual units to zero, controlling for differences in assessments of the nine "diverse characters" that were featured as target characters in these studies. See Figure 4.x, panel A, for visual depictions of these difference scores.
 
 ```{r}
 d3_ad_scored_ad_diff <- diff_fun(d3_ad_scored_ad)
@@ -1958,11 +1958,11 @@ An analysis of mean scores by target character reveals no evidence of the kind o
 
 ##### Interim discussion
 
-As in the comparison of adults and children in Study 2, my informal observations of the relationships among chilrden's endorsements of the the conceptual units in Study 3 are broadly similar to those of adults in this study, but dramatically attenuated: (1) These inter-unit relationships were what positive, but only somewhat; and (2) There was some evidence of asymmetries in these positive relationships, but these asymmetries were generally weaker and appeared to be highly dependent on which target character participants assessed (particularly for the BODY vs. HEART and BODY vs. MIND comparisons).
+As in the comparison of adults and children in Study 2, my informal observations of the relationships among older children's endorsements of the the conceptual units in Study 3 are broadly similar to those of adults in this study, but dramatically attenuated: (1) These inter-unit relationships were what positive, but only somewhat; and (2) There was some evidence of asymmetries in these positive relationships, but these asymmetries were generally weaker and appeared to be highly dependent on which target character participants assessed (particularly for the BODY vs. HEART and BODY vs. MIND comparisons).
 
 #### Analysis of asymmetries
 
-Here I provide a formal analysis of the asymmetries revealed by the visualizations in the previous section. For each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND), I used Bayesian regression to compare difference scores between these two conceptual units to zero, controlling for differences in assessments of the twenty-one "diverse characters" that were featured as target characters in these studies. See Figure 4.x, panel B, for visual depictions of these difference scores.
+Here I provide a formal analysis of the asymmetries revealed by the visualizations in the previous section. For each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND), I used Bayesian regression to compare difference scores between these two conceptual units to zero, controlling for differences in assessments of the nine "diverse characters" that were featured as target characters in these studies. See Figure 4.x, panel B, for visual depictions of these difference scores.
 
 ```{r}
 d3_79_scored_ad_diff <- diff_fun(d3_79_scored_ad)
@@ -2045,23 +2045,23 @@ plot_d3_79_scored_ad_diff
 
 ##### BODY vs. HEART
 
-As among adults, difference scores comparing scores on the _BODY_ and _HEART_ scales were substantially non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.x). Like adults, children's asymmetry was driven by responses to the animate beings (and was substantially more pronounced for `r nonzero_fun(regtab = regtab_d3_79_scored_ad_diff, which_pair = "BODY - HEART", pos_neg = "pos")`); among inanimate beings, difference scores hovered around (or below) zero (and were substantially less pronounced for `r nonzero_fun(regtab = regtab_d3_79_scored_ad_diff, which_pair = "BODY - HEART", pos_neg = "neg")`; see the "Target character" row for the "BODY-HEART" comparison in Table 4.x.
+As among adults, difference scores comparing scores on the _BODY_ and _HEART_ scales were substantially non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.x). Like adults, older children's asymmetry was driven by responses to the animate beings (and was substantially more pronounced for `r nonzero_fun(regtab = regtab_d3_79_scored_ad_diff, which_pair = "BODY - HEART", pos_neg = "pos")`); among inanimate beings, difference scores hovered around (or below) zero (and were substantially less pronounced for `r nonzero_fun(regtab = regtab_d3_79_scored_ad_diff, which_pair = "BODY - HEART", pos_neg = "neg")`; see the "Target character" row for the "BODY-HEART" comparison in Table 4.x.
 
 ##### BODY vs. MIND
 
-Difference scores comparing scores on the _BODY_ and _MIND_ scales were not substantially different from zero, in contrast to analyses of adults (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.x). This appears to be due to the fact that the asymmetry went in different directions for different characters: Children tended to attributed more MIND than BODY t the two technologies (robot, computer), but tended to attributed more BODY than MIND to the animate beings (particularly `r nonzero_fun(regtab = regtab_d3_79_scored_ad_diff, which_pair = "BODY - MIND", pos_neg = "pos")`); see the "Target character" row for the "BODY-MIND" comparison in Table 4.x. 
+Difference scores comparing scores on the _BODY_ and _MIND_ scales were not substantially different from zero, in contrast to analyses of adults (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.x). This appears to be due to the fact that the asymmetry went in different directions for different characters: Older children tended to attributed more MIND than BODY t the two technologies (robot, computer), but tended to attributed more BODY than MIND to the animate beings (particularly `r nonzero_fun(regtab = regtab_d3_79_scored_ad_diff, which_pair = "BODY - MIND", pos_neg = "pos")`); see the "Target character" row for the "BODY-MIND" comparison in Table 4.x. 
 
 ##### HEART vs. MIND
 
-As among adults, difference scores comparing scores on the _HEART_ and _MIND_ scales were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.x). This asymmetry appeared to hold true across the range of target characters included in this study,  and less pronounced for others; see the "Target character" row for the "HEART-MIND" comparison in Table 4.x. 
+As among adults, difference scores comparing scores on the _HEART_ and _MIND_ scales were substantially non-zero, in the direction of children endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.x). This asymmetry appeared to hold true across the range of target characters included in this study,  and less pronounced for others; see the "Target character" row for the "HEART-MIND" comparison in Table 4.x. 
 
 ##### Interim discussion
 
 These formal analyses of difference scores across the _BODY_, _HEART_, and _MIND_ scales among older children (7-9y) in Study 3 confirm my informal observations in the previous section: Older children tended to endorse both BODY and MIND more strongly than HEART, while the asymmetry between MIND and BODY was highly contingent on the type of target character under consideration.
 
-__BOOKMARK__
-
 ### Children (4-6y)
+
+XX __INSERT SECTION INTRODUCTION/TRANSITION__
 
 ```{r}
 d3_46_scored_ad <- score_fun(d3_46, scales_efa_wdm_d3_ad)
@@ -2075,122 +2075,151 @@ plots_d3_46_scored_ad <- relviz_fun(d3_46_scored_ad, colors = colors09)
 ```
 
 ```{r}
-fig_d3_46_scored_ad_plots <- plot_grid(plots_d3_46_scored_ad[[1]] + 
-                                         theme(legend.position = "none"),
-                                       plots_d3_46_scored_ad[[2]] + 
-                                         theme(legend.position = "none"),
-                                       plots_d3_46_scored_ad[[3]] + 
-                                         theme(legend.position = "none"),
-                                       labels = c("C1", "C2", "C3"), ncol = 3)
+fig_d3_46_plots <- plot_grid(plots_d3_46_scored_ad[[1]] + 
+                               theme(legend.position = "none"),
+                             plots_d3_46_scored_ad[[2]] + 
+                               theme(legend.position = "none"),
+                             plots_d3_46_scored_ad[[3]] + 
+                               theme(legend.position = "none"),
+                             labels = c("C1", "C2", "C3"), ncol = 3)
 
-fig_d3_46_scored_ad_leg <- get_legend(
+fig_d3_46_leg <- get_legend(
   plots_d3_46_scored_ad[[1]] +
     theme(legend.position = "bottom", legend.direction = "horizontal") +
-    scale_fill_manual("Target character", values = colors09,
+    scale_fill_manual("Target character", 
+                      values = colors09,
                       guide = guide_legend(title.position = "left",
                                            direction = "horizontal", 
                                            ncol = 9)) +
-    scale_color_manual("Target character", values = colors09,
+    scale_color_manual("Target character",
+                       values = colors09,
                        guide = guide_legend(title.position = "left",
                                             direction = "horizontal",
                                             ncol = 9)))
 
-fig_d3_46_scored_ad_plots_leg <- plot_grid(
-  fig_d3_46_scored_ad_plots, fig_d3_46_scored_ad_leg,
-  ncol = 1, rel_heights = c(1, 0.05))
+fig_d3_46_plots_leg <- plot_grid(fig_d3_46_plots, fig_d3_46_leg,
+                                 ncol = 1, rel_heights = c(1, 0.05))
 
-fig_d3_46_scored_ad_title <- ggdraw() + 
-  draw_label("Study 3: Children, 4-6y (scored using adults' scales)", size = 16, fontface = 'bold', x = 0, hjust = 0)
+fig_d3_46_title <- ggdraw() + 
+  draw_label("Study 3: Children, 4-6y (using adults' scales)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-fig_d3_46_scored_ad_plots_leg_title <- plot_grid(
-  fig_d3_46_scored_ad_title, fig_d3_46_scored_ad_plots_leg,
-  ncol = 1, rel_heights = c(0.12, 1))
+fig_d3_46_plots_leg_title <- plot_grid(fig_d3_46_title, fig_d3_46_plots_leg,
+                                       ncol = 1, rel_heights = c(0.12, 1))
 ```
+
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+fig_d3_46_plots_leg_title
+```
+
+Visualizations of relationships among scores on these _BODY_, _HEART_, and _MIND_ scales are provided in Figure 4.x, row C.
+
+In contrast to the visualizations of these relationships among adults and older children (7-9y of age), among younger children the relationships between BODY, HEART, and MIND (as indexed by adults' scales) all looked rather similar. In particular, for each pair of conceptual units, there appeared to be a somewhat positive relationship between scores on the two scales; this aligns with my informal observations of adults and older children. In each case (particularly in the BODY vs. HEART and BODY vs. MIND comparisons), two suites of characters emerged: A group of inanimate objects (which, in the aggregate, received moderately low scores on all scales), and a group of animate beings (which, in the aggregate, received moderately high scores on all scales).
+
+An informal inspection of these visualizations suggests only moderate asymmetries in younger children's attributions of BODY, HEART, and MIND capacities. In the case of BODY vs. HEART, younger children tended to attribute more BODY than HEART (panel C1), but this tendency was quite weak. In the case of BODY vs. MIND (panel C2), younger children's tended (again, weakly) to attribute more BODY than MIND—the opposite direction of adults and older children. In the case of HEART vs. MIND, this visualiation (panel C3) suggests no systematic asymmetry in younger children's attributions.
 
 #### Analysis of asymmetries
 
+Here I provide a formal analysis of the asymmetries (or lack thereof) revealed by the visualizations in the previous section. For each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND), I used Bayesian regression to compare difference scores between these two conceptual units to zero, controlling for differences in assessments of the nine "diverse characters" that were featured as target characters in these studies. See Figure 4.x, panel C, for visual depictions of these difference scores.
+
 ```{r}
 d3_46_scored_ad_diff <- diff_fun(d3_46_scored_ad)
+contrasts(d3_46_scored_ad_diff$character) <- contrasts_sum_dv09
+
 saveRDS(d3_46_scored_ad_diff, "./stored/diffscore_data/d3_46_scored_ad_diff")
 ```
 
 ```{r}
-plot_d3_46_scored_ad_diff <- diffplot_fun(d3_46_scored_ad_diff, colors09)
+plot_d3_46_scored_ad_diff <- diffplot_fun(d3_46_scored_ad_diff, colors = colors09)
 ```
 
 ```{r}
 # r_d3_46_scored_ad_diff_BODY_HEART <- brm(
-#   diff ~ 1 + (1 | character),
+#   diff ~ 1 + character,
 #   data = d3_46_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_dv09),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d3_46_scored_ad_diff_BODY_HEART,
+#         "./stored/brms_models/r_d3_46_scored_ad_diff_BODY_HEART")
 
-# r_d3_46_scored_ad_diff_BODY_HEART <- lmer(
-#   diff ~ 1 + (1 | character),
-#   data = d3_46_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_dv09))
-
-r_d3_46_scored_ad_diff_BODY_HEART <- lm(
-  diff ~ 1 + character,
-  data = d3_46_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-  contrasts = list(character = contrasts_sum_dv09))
-
-# r_d3_46_scored_ad_diff_BODY_HEART <- lm(
-#   diff ~ 1,
-#   data = d3_46_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+r_d3_46_scored_ad_diff_BODY_HEART <- readRDS("./stored/brms_models/r_d3_46_scored_ad_diff_BODY_HEART")
 
 summary(r_d3_46_scored_ad_diff_BODY_HEART)
 ```
 
 ```{r}
 # r_d3_46_scored_ad_diff_BODY_MIND <- brm(
-#   diff ~ 1 + (1 | character),
+#   diff ~ 1 + character,
 #   data = d3_46_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d3_46_scored_ad_diff_BODY_MIND,
+#         "./stored/brms_models/r_d3_46_scored_ad_diff_BODY_MIND")
 
-# r_d3_46_scored_ad_diff_BODY_MIND <- lmer(
-#   diff ~ 1 + (1 | character),
-#   data = d3_46_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09))
-
-r_d3_46_scored_ad_diff_BODY_MIND <- lm(
-  diff ~ 1 + character,
-  data = d3_46_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-  contrasts = list(character = contrasts_sum_dv09))
-
-# r_d3_46_scored_ad_diff_BODY_MIND <- lm(
-#   diff ~ 1,
-#   data = d3_46_scored_ad_diff %>% filter(pair == "BODY - MIND"))
+r_d3_46_scored_ad_diff_BODY_MIND <- readRDS("./stored/brms_models/r_d3_46_scored_ad_diff_BODY_MIND")
 
 summary(r_d3_46_scored_ad_diff_BODY_MIND)
 ```
 
 ```{r}
 # r_d3_46_scored_ad_diff_HEART_MIND <- brm(
-#   diff ~ 1 + (1 | character),
+#   diff ~ 1 + character,
 #   data = d3_46_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d3_46_scored_ad_diff_HEART_MIND,
+#         "./stored/brms_models/r_d3_46_scored_ad_diff_HEART_MIND")
 
-# r_d3_46_scored_ad_diff_HEART_MIND <- lmer(
-#   diff ~ 1 + (1 | character),
-#   data = d3_46_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09))
-
-r_d3_46_scored_ad_diff_HEART_MIND <- lm(
-  diff ~ 1 + character,
-  data = d3_46_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-  contrasts = list(character = contrasts_sum_dv09))
-
-# r_d3_46_scored_ad_diff_HEART_MIND <- lm(
-#   diff ~ 1,
-#   data = d3_46_scored_ad_diff %>% filter(pair == "HEART - MIND"))
+r_d3_46_scored_ad_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d3_46_scored_ad_diff_HEART_MIND")
 
 summary(r_d3_46_scored_ad_diff_HEART_MIND)
 ```
 
+```{r}
+regtab_d3_46_scored_ad_diff <- diff_reg_table_fun(
+  reg_list = list(r_d3_46_scored_ad_diff_BODY_HEART,
+                  r_d3_46_scored_ad_diff_BODY_MIND,
+                  r_d3_46_scored_ad_diff_HEART_MIND),
+  pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
+  study_name = "Children, 4-6y (using adults' scales)",
+  char_label = c("Elephant vs. GM", "Goat vs. GM", "Mouse vs. GM",
+                 "Bird vs. GM", "Beetle vs. GM", "Teddy bear vs. GM",
+                 "Doll vs. GM", "Robot vs. GM"))
+```
+
+```{r}
+# interim table for ease of writing
+regtab_d3_46_scored_ad_diff %>%
+  select(-study, -s.e.) %>%
+  filter(param == "Intercept") %>%
+  kable(digits = 2) %>%
+  kable_styling()
+```
+
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_d3_46_scored_ad_diff
+```
+
+##### BODY vs. HEART
+
+As among adults and older children, difference scores comparing scores on the _BODY_ and _HEART_ scales were substantially non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.x). As with adults and older children, this asymmetry appears to have been driven by responses to the animate beings, while difference scores for inanimate beings hovered around (or below) zero; see the "Target character" row for the "BODY-HEART" comparison in Table 4.x.
+
+##### BODY vs. MIND
+
+Difference scores comparing scores on the _BODY_ and _HEART_ scales were substantially non-zero—but in contrasts to older children and adults, among younger children this asymmetry ran in the direction of participants attributing more _BODY_ than _MIND_ (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.x). This asymmetry appears to have been driven by responses to animate beings (and was particularly pronounced for particularly `r nonzero_fun(regtab = regtab_d3_46_scored_ad_diff, which_pair = "BODY - MIND", pos_neg = "pos")`); see the "Target character" row for the "BODY-MIND" comparison in Table 4.x. 
+
+##### HEART vs. MIND
+
+In contrast to adults and older children, among younger children difference scores comparing scores on the _HEART_ and _MIND_ scales did not differ substantially from zero, and varied only subtly across target characters; see the "Target character" row for the "HEART-MIND" comparison in Table 4.x. 
+
+##### Interim discussion
+
+These formal analyses of difference scores across the _BODY_, _HEART_, and _MIND_ scales among younger children (4-6y) in Study 3 confirm my informal observations in the previous section. Like older children and adults, younger children tended to endorse BODY more strongly than HEART. However, younger children diverged from their older counterparts by systematically endorsing BODY more strongly than MIND, and by failing to show any systematic asymmetry between HEART and MIND.
+
 ### Developmental comparison
+
+__BOOKMARK__
 
 ```{r}
 # r_d3_ad7946_scored_ad_diff_BODY_HEART <- brm(
