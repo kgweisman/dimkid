@@ -1051,7 +1051,7 @@ regtab_d2_ad_scored_ad_diff <- diff_reg_table_fun(
                   r_d2_ad_scored_ad_diff_HEART_MIND),
   pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
   study_name = "Adults",
-  char_label = c("Robot vs. GM"))
+  char_label = "Robot vs. GM")
 ```
 
 ```{r}
@@ -1217,7 +1217,7 @@ regtab_d2_79_scored_ad_diff <- diff_reg_table_fun(
                   r_d2_79_scored_ad_diff_HEART_MIND),
   pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
   study_name = "Children, 7-9y (using adults' scales)",
-  char_label = c("Robot vs. GM"))
+  char_label = "Robot vs. GM")
 ```
 
 ```{r}
@@ -1363,7 +1363,8 @@ regtab_d2_ad79_scored_ad_diff <- diff_reg_table_fun(
                   r_d2_ad79_scored_ad_diff_HEART_MIND),
   pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
   study_name = "Developmental comparison",
-  char_label = c("Robot vs. GM"), agegp_label = c("Children vs. adults"))
+  char_label = "Robot vs. GM", 
+  agegp_label = "Children vs. adults")
 ```
 
 ```{r}
@@ -1572,7 +1573,7 @@ regtab_d2_79_scored_79_diff <- diff_reg_table_fun(
                   r_d2_79_scored_79_diff_HEART_MIND),
   pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
   study_name = "Children, 7-9y (using their own scales)",
-  char_label = c("Robot vs. GM"))
+  char_label = "Robot vs. GM")
 ```
 
 ```{r}
@@ -2217,133 +2218,114 @@ In contrast to adults and older children, among younger children difference scor
 
 These formal analyses of difference scores across the _BODY_, _HEART_, and _MIND_ scales among younger children (4-6y) in Study 3 confirm my informal observations in the previous section. Like older children and adults, younger children tended to endorse BODY more strongly than HEART. However, younger children diverged from their older counterparts by systematically endorsing BODY more strongly than MIND, and by failing to show any systematic asymmetry between HEART and MIND.
 
+__BOOKMARK__
+
 ### Developmental comparison
 
-__BOOKMARK__
+In the previous sections, I analyzed adults', older children's, and younger children's responses separately. Here I conduct a formal comparison of difference scores between conceptual units among these three age groups, to assess the size and robustness of these ostensive developmental differences.
+
+```{r}
+d3_ad7946_scored_ad_diff <- d3_ad_scored_ad_diff %>%
+  full_join(d3_79_scored_ad_diff) %>%
+  full_join(d3_46_scored_ad_diff) %>%
+  mutate(age_group = factor(age_group))
+contrasts(d3_ad7946_scored_ad_diff$character) <- contrasts_sum_dv09
+contrasts(d3_ad7946_scored_ad_diff$age_group) <- contrasts_dum3_agegp
+```
 
 ```{r}
 # r_d3_ad7946_scored_ad_diff_BODY_HEART <- brm(
-#   diff ~ 1 + age_group + (1 | character),
-#   data = d3_ad_scored_ad_diff %>%
-#     full_join(d3_79_scored_ad_diff) %>%
-#     full_join(d3_46_scored_ad_diff) %>%
-#     filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_dv09,
-#                    age_group = contrasts_dum3_agegp),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   diff ~ 1 + character * age_group,
+#   data = d3_ad7946_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   cores = 4)
+# 
+# saveRDS(r_d3_ad7946_scored_ad_diff_BODY_HEART,
+#         "./stored/brms_models/r_d3_ad7946_scored_ad_diff_BODY_HEART")
 
-# r_d3_ad7946_scored_ad_diff_BODY_HEART <- lmer(
-#   diff ~ 1 + age_group + (1 | character),
-#   data = d3_ad_scored_ad_diff %>%
-#     full_join(d3_79_scored_ad_diff) %>%
-#     full_join(d3_46_scored_ad_diff) %>%
-#     filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_dv09,
-#                    age_group = contrasts_dum3_agegp))
-
-r_d3_ad7946_scored_ad_diff_BODY_HEART <- lm(
-  diff ~ 1 + character * age_group,
-  data = d3_ad_scored_ad_diff %>% 
-    full_join(d3_79_scored_ad_diff) %>%
-    full_join(d3_46_scored_ad_diff) %>%
-    filter(pair == "BODY - HEART"),
-  contrasts = list(character = contrasts_sum_dv09,
-                   age_group = contrasts_dum3_agegp))
-
-# r_d3_ad7946_scored_ad_diff_BODY_HEART <- lm(
-#   diff ~ 1 + age_group,
-#   data = d3_ad_scored_ad_diff %>%
-#     full_join(d3_79_scored_ad_diff) %>%
-#     full_join(d3_46_scored_ad_diff) %>%
-#     filter(pair == "BODY - HEART"),
-#   contrasts = list(age_group = contrasts_dum3_agegp))
+r_d3_ad7946_scored_ad_diff_BODY_HEART <- readRDS("./stored/brms_models/r_d3_ad7946_scored_ad_diff_BODY_HEART")
 
 summary(r_d3_ad7946_scored_ad_diff_BODY_HEART)
 ```
 
 ```{r}
 # r_d3_ad7946_scored_ad_diff_BODY_MIND <- brm(
-#   diff ~ 1 + age_group + (1 | character),
-#   data = d3_ad_scored_ad_diff %>%
-#     full_join(d3_79_scored_ad_diff) %>%
-#     full_join(d3_46_scored_ad_diff) %>%
-#     filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09,
-#                    age_group = contrasts_dum3_agegp),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   diff ~ 1 + character * age_group,
+#   data = d3_ad7946_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   cores = 4)
+# 
+# saveRDS(r_d3_ad7946_scored_ad_diff_BODY_MIND,
+#         "./stored/brms_models/r_d3_ad7946_scored_ad_diff_BODY_MIND")
 
-# r_d3_ad7946_scored_ad_diff_BODY_MIND <- lmer(
-#   diff ~ 1 + age_group + (1 | character),
-#   data = d3_ad_scored_ad_diff %>%
-#     full_join(d3_79_scored_ad_diff) %>%
-#     full_join(d3_46_scored_ad_diff) %>%
-#     filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09,
-#                    age_group = contrasts_dum3_agegp))
-
-r_d3_ad7946_scored_ad_diff_BODY_MIND <- lm(
-  diff ~ 1 + character * age_group,
-  data = d3_ad_scored_ad_diff %>% 
-    full_join(d3_79_scored_ad_diff) %>%
-    full_join(d3_46_scored_ad_diff) %>%
-    filter(pair == "BODY - MIND"),
-  contrasts = list(character = contrasts_sum_dv09,
-                   age_group = contrasts_dum3_agegp))
-
-# r_d3_ad7946_scored_ad_diff_BODY_MIND <- lm(
-#   diff ~ 1 + age_group,
-#   data = d3_ad_scored_ad_diff %>%
-#     full_join(d3_79_scored_ad_diff) %>%
-#     full_join(d3_46_scored_ad_diff) %>%
-#     filter(pair == "BODY - MIND"),
-#   contrasts = list(age_group = contrasts_dum3_agegp))
+r_d3_ad7946_scored_ad_diff_BODY_MIND <- readRDS("./stored/brms_models/r_d3_ad7946_scored_ad_diff_BODY_MIND")
 
 summary(r_d3_ad7946_scored_ad_diff_BODY_MIND)
 ```
 
 ```{r}
 # r_d3_ad7946_scored_ad_diff_HEART_MIND <- brm(
-#   diff ~ 1 + age_group + (1 | character),
-#   data = d3_ad_scored_ad_diff %>%
-#     full_join(d3_79_scored_ad_diff) %>%
-#     full_join(d3_46_scored_ad_diff) %>%
-#     filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09,
-#                    age_group = contrasts_dum3_agegp),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   diff ~ 1 + character * age_group,
+#   data = d3_ad7946_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   cores = 4)
+# 
+# saveRDS(r_d3_ad7946_scored_ad_diff_HEART_MIND,
+#         "./stored/brms_models/r_d3_ad7946_scored_ad_diff_HEART_MIND")
 
-# r_d3_ad7946_scored_ad_diff_HEART_MIND <- lmer(
-#   diff ~ 1 + age_group + (1 | character),
-#   data = d3_ad_scored_ad_diff %>%
-#     full_join(d3_79_scored_ad_diff) %>%
-#     full_join(d3_46_scored_ad_diff) %>%
-#     filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09,
-#                    age_group = contrasts_dum3_agegp))
-
-r_d3_ad7946_scored_ad_diff_HEART_MIND <- lm(
-  diff ~ 1 + character * age_group,
-  data = d3_ad_scored_ad_diff %>% 
-    full_join(d3_79_scored_ad_diff) %>%
-    full_join(d3_46_scored_ad_diff) %>%
-    filter(pair == "HEART - MIND"),
-  contrasts = list(character = contrasts_sum_dv09,
-                   age_group = contrasts_dum3_agegp))
-
-# r_d3_ad7946_scored_ad_diff_HEART_MIND <- lm(
-#   diff ~ 1 + age_group,
-#   data = d3_ad_scored_ad_diff %>%
-#     full_join(d3_79_scored_ad_diff) %>%
-#     full_join(d3_46_scored_ad_diff) %>%
-#     filter(pair == "HEART - MIND"),
-#   contrasts = list(age_group = contrasts_dum3_agegp))
+r_d3_ad7946_scored_ad_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d3_ad7946_scored_ad_diff_HEART_MIND")
 
 summary(r_d3_ad7946_scored_ad_diff_HEART_MIND)
 ```
 
+```{r}
+regtab_d3_ad7946_scored_ad_diff <- diff_reg_table_fun(
+  reg_list = list(r_d3_ad7946_scored_ad_diff_BODY_HEART,
+                  r_d3_ad7946_scored_ad_diff_BODY_MIND,
+                  r_d3_ad7946_scored_ad_diff_HEART_MIND),
+  pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
+  study_name = "Developmental comparison",
+  char_label = c("Elephant vs. GM", "Goat vs. GM", "Mouse vs. GM",
+                 "Bird vs. GM", "Beetle vs. GM", "Teddy bear vs. GM",
+                 "Doll vs. GM", "Robot vs. GM"), 
+  agegp_label = c("Older children vs. adults", 
+                  "Younger children vs. adults"))
+```
+
+```{r}
+# interim table for ease of writing
+regtab_d3_ad7946_scored_ad_diff %>%
+  select(-study, -s.e.) %>%
+  filter(param == "Intercept" | grepl("children", tolower(param))) %>%
+  filter(!grepl("\\*", param)) %>% # remove interacations
+  kable(digits = 2) %>%
+  kable_styling()
+```
+
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_grid(plot_d3_ad_scored_ad_diff, 
+          plot_d3_79_scored_ad_diff, 
+          plot_d3_46_scored_ad_diff, 
+          ncol = 3)
+```
+
+##### BODY vs. HEART
+
+Difference scores between the _BODY_ and _HEART_ scales were substantially closer to zero among both older and younger children, as compared to adults (see the "Older vs. adults" and "Younger children vs. adults" rows for the "BODY-HEART" comparison in Table 4.x). A handful of the differences between target characters differed substantially across age groups (see the "Interaction" row for the "BODY-HEART" comparison in Table 4.x); this is outside of the scope of the current chapter.  
+
+##### BODY vs. MIND
+
+Difference scores between the _BODY_ and _MIND_ scales were not differentiable from adults among older children in this analysis, but reversed in sign among younger children (see the "Older vs. adults" and "Younger children vs. adults" rows for the "BODY-MIND" comparison in Table 4.x). Again, handful of the differences between target characters differed substantially across age groups (see the "Interaction" row for the "BODY-MIND" comparison in Table 4.x); this is outside of the scope of the current chapter.    
+
+##### HEART vs. MIND
+
+Difference scores between the _HEART_ and _MIND_ scales were substantially closer to zero among both older children and younger children, as compared to adults (see the "Older children vs. adults" and "Younger children vs. adults" rows for the "HEART-MIND" comparison in Table 4.x), Again, handful of the differences between target characters differed substantially across age groups (see the "Interaction" row for the "HEART-MIND" comparison in Table 4.x); this is outside of the scope of the current chapter.  
+
+##### Interim discussion
+
+These formal comparisons of difference scores among younger children (4-6y), older children (7-9y), and adults in Study 3 confirm my earlier observations that asymmetries were substantially attenuated among both older and especially younger children, relative to the baseline set by adults. The only exceptions to this rule were (1) The BODY vs. MIND difference scores among older children was not differentiable from those of adults (likely because this was the weakest of the asymmetries among adults); and (2) The BODY vs. MIND difference scores among younger children ran in the opposite direction to those of adults (as discussed in my earlier description of younger children's responses).
+
 ## Discussion
 
-XX
+XX __INSERT STUDY 3 DISCUSSION__
 
 ```{r}
 scales_study3 <- bind_rows(scales_efa_wdm_d3_ad %>% 
@@ -2405,8 +2387,8 @@ fig_d3_all_scored_ad_plots_leg_title <- plot_grid(
 
 ```{r}
 figure4.x <- plot_grid(fig_d3_ad_plots_leg_title, 
-                       fig_d3_79_scored_ad_plots_leg_title,
-                       fig_d3_46_scored_ad_plots_leg_title, 
+                       fig_d3_79_plots_leg_title,
+                       fig_d3_46_plots_leg_title, 
                        fig_d3_all_scored_ad_plots_leg_title,
                        ncol = 1)
 
@@ -2442,6 +2424,8 @@ figure4.x_cap <- add_sub(figure4.x_plots_leg, str_wrap("Figure 4.x: Difference s
 ggdraw(figure4.x_cap)
 ```
 
+
+__BOOKMARK__
 
 # Study 4: A focus on early childhood (4-5y)
 
