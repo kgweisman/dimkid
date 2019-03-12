@@ -3169,9 +3169,126 @@ table4.10
 ```
 
 
+# Comparison of Studies 1-4
+
+XX __INSERT SECTION INTRODUCTION__
+
+```{r}
+regtabs_all_ad <- bind_rows(regtab_d1a_ad_scored_ad_diff,
+                            regtab_d1b_ad_scored_ad_diff,
+                            regtab_d1c_ad_scored_ad_diff,
+                            regtab_d1d_ad_scored_ad_diff,
+                            regtab_d2_ad_scored_ad_diff %>%
+                              mutate(study = "Study 2"),
+                            regtab_d3_ad_scored_ad_diff %>%
+                              mutate(study = "Study 3"),
+                            regtab_d4_ad_scored_ad_diff %>%
+                              mutate(study = "Study 4")) %>%
+  mutate(age_group = "Adults",
+         CI95 = gsub("\\[", "", CI95),
+         CI95 = gsub("\\]", "", CI95)) %>%
+  separate(CI95, c("ci_lower", "ci_upper"), sep = ", ", remove = F, convert = T)
+```
+
+```{r}
+regtabs_all_79 <- bind_rows(regtab_d2_79_scored_ad_diff %>%
+                              mutate(study = "Study 2"),
+                            regtab_d3_79_scored_ad_diff %>%
+                              mutate(study = "Study 3")) %>%
+  mutate(age_group = "Children, 7-9y",
+         CI95 = gsub("\\[", "", CI95),
+         CI95 = gsub("\\]", "", CI95)) %>%
+  separate(CI95, c("ci_lower", "ci_upper"), sep = ", ", remove = F, convert = T)
+```
+
+```{r}
+regtabs_all_46 <- bind_rows(regtab_d3_46_scored_ad_diff %>%
+                              mutate(study = "Study 3"),
+                            regtab_d4_46_scored_ad_diff %>%
+                              mutate(study = "Study 4")) %>%
+  mutate(age_group = "Children, 4-6y",
+         CI95 = gsub("\\[", "", CI95),
+         CI95 = gsub("\\]", "", CI95)) %>%
+  separate(CI95, c("ci_lower", "ci_upper"), sep = ", ", remove = F, convert = T)
+```
+
+```{r}
+regtabs_all <- bind_rows(regtabs_all_ad, regtabs_all_79, regtabs_all_46) %>%
+  mutate(age_group = factor(age_group, 
+                            levels = c("Adults", 
+                                       "Children, 7-9y", 
+                                       "Children, 4-6y")),
+         design = case_when(
+           study %in% c("Study 1a", "Study 1b", "Study 2") ~ 
+             "edge case (between-Ss)",
+           study %in% c("Study 1c", "Study 4") ~ 
+             "edge case (within-Ss)",
+           study %in% c("Study 1d", "Study 3") ~ 
+             "diverse characters (between-Ss)"),
+         design = factor(design, 
+                         levels = c("edge case (between-Ss)",
+                                    "edge case (within-Ss)",
+                                    "diverse characters (between-Ss)")))
+```
+
+```{r}
+df_annot <- data.frame(pair = levels(factor(regtabs_all$pair)),
+                       pos = c("BODY without HEART",
+                               "BODY without MIND",
+                               "HEART without MIND"),
+                       neg = c("HEART without BODY",
+                               "MIND without BODY",
+                               "MIND without HEART"))
+```
+
+```{r}
+figure4.10 <- ggplot(regtabs_all %>% 
+                       filter(param == "Intercept") %>%
+                       mutate(star_pos = ifelse(b > 0, ci_upper + 0.05, 
+                                                ci_lower - 0.05)),
+                     aes(x = age_group, y = b, group = study, 
+                         color = study, shape = design)) +
+  facet_grid(~ pair) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), show.legend = F,
+                position = position_dodge(width = 0.8), width = 0) +
+  geom_point(position = position_dodge(width = 0.8), size = 2) +
+  geom_text(aes(label = nonzero, y = star_pos),
+            position = position_dodge(width = 0.8), color = "black") +
+  geom_text(data = df_annot, show.legend = F,
+            aes(x = NULL, y = NULL, group = NULL, color = NULL, shape = NULL,
+                label = pos), x = 2, y = 0.7, hjust = 0.5, vjust = 1, size = 3) +
+  geom_text(data = df_annot, show.legend = F,
+            aes(x = NULL, y = NULL, group = NULL, color = NULL, shape = NULL,
+                label = neg), x = 2, y = -0.7, hjust = 0.5, vjust = 0, size = 3) +
+  scale_color_brewer("Study", palette = "Dark2", direction = -1,
+                     guide = guide_legend(position = "horizontal", ncol = 7)) +
+  scale_shape_manual("Variant of experimental approach",
+                     values = c(19, 15, 17),
+                     guide = guide_legend(title.position = "left",
+                                          direction = "horizontal", ncol = 3)) +
+  scale_y_continuous("Parameter estimate (b)", 
+                     limits = c(-0.74, 0.74), breaks = seq(-1, 1, 0.2)) +
+  labs(# title = "Intercepts from regression analyses of difference scores",
+       # subtitle = "Error bars are 95% CIs from independent Bayesian regressions for each pair of conceptual units and each sample of participants,\naccounting for differences between characters and random intercepts for participants when appropriate (Studies 1d and 2).\nAsterisks indicate CIs that do not include zero.",
+       x = "Age group") +
+  theme(legend.position = "bottom", legend.box = "vertical",
+        legend.spacing = unit(0, "lines"))
+```
+
+```{r}
+figure4.10_cap <- add_sub(figure4.10, str_wrap("Figure 4.10: Intercepts from regression analyses of difference scores. For each pair of conceptual units, the intercept provides an index of the asymmetry in participants' attributions of these two conceptual units: If the intercept is positive participants in this sample tended to attribute the first unit more strongly than the second, and if the intercept is negative participants in this sample tended to attribute the second unit more strongly than the first. Error bars are 95% CIs from independent Bayesian regressions for each pair of conceptual units, for each sample of participants, accounting for differences between charactesr and including random intercepts for particpipants when appropriate (Studies 1d and 2). Asterisks indicate CIs that do not include zero.", 105), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 0.6}
+ggdraw(figure4.10_cap)
+```
+
+XX __INSERT DISCUSSION__
+
 # General discussion
 
-XX __INSERT GENERAL DISCUSSION_
+XX __INSERT GENERAL DISCUSSION__
 
 
 # Chapter conclusion
