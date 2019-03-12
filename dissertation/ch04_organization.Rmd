@@ -612,7 +612,7 @@ plot_d1d_ad_scored_ad_diff <- diffplot_fun(d1d_ad_scored_ad_diff, colors = color
 ```
 
 ```{r}
-regtab_d1abc <- regtab_d1a_ad_scored_ad_diff %>%
+regtab_study1abc <- regtab_d1a_ad_scored_ad_diff %>%
   full_join(regtab_d1b_ad_scored_ad_diff) %>%
   full_join(regtab_d1c_ad_scored_ad_diff) %>%
   mutate_at(vars(b, s.e.),
@@ -626,7 +626,7 @@ regtab_d1abc <- regtab_d1a_ad_scored_ad_diff %>%
 
 ```{r}
 # interim table for ease of writing
-regtab_d1abc %>%
+regtab_study1abc %>%
   select(-ends_with("s.e.")) %>%
   filter(param == "Intercept") %>%
   kable(digits = 2) %>%
@@ -698,7 +698,7 @@ ggdraw(figure4.x_cap)
 ```
 
 ```{r}
-table4.x <- regtab_d1abc %>%
+table4.x <- regtab_study1abc %>%
   select(-pair, -ends_with("_s.e.")) %>%
   rename(Parameter = param) %>%
   rename_all(funs(gsub("nz", " ", .))) %>%
@@ -829,7 +829,7 @@ regtab_d1d_ad_scored_ad_diff <- diff_reg_table_fun(
 ```
 
 ```{r}
-regtab_d1d <- regtab_d1d_ad_scored_ad_diff %>%
+regtab_study1d <- regtab_d1d_ad_scored_ad_diff %>%
   mutate_at(vars(b, s.e.),
             funs(format(round(., digits = 2), nsmall = 2))) %>%
   unite(result, b, s.e., CI95, nonzero) %>%
@@ -839,7 +839,7 @@ regtab_d1d <- regtab_d1d_ad_scored_ad_diff %>%
 
 ```{r}
 # interim table for ease of writing
-regtab_d1d %>%
+regtab_study1d %>%
   select(-ends_with("s.e.")) %>%
   filter(param == "Intercept") %>%
   kable(digits = 2) %>%
@@ -875,7 +875,7 @@ Again, this asymmetry was more pronounced for some characters (`r nonzero_fun(re
 These formal analyses of difference scores across the _BODY_, _HEART_, and _MIND_ scales in Study 1d confirm my informal observations of asymmetries described in the previous section: In this study, as in Studies 1a-1c above, participants tended to endorse MIND more strongly than BODY or HEART, and BODY more strongly than HEART.
 
 ```{r}
-table4.x <- regtab_d1d %>%
+table4.x <- regtab_study1d %>%
   select(-pair, -ends_with("_s.e.")) %>%
   rename(Parameter = param) %>%
   rename_all(funs(gsub("nz", " ", .))) %>%
