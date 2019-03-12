@@ -394,7 +394,7 @@ figure4.x <- plot_grid(fig_d1a_ad_plots_leg_title, fig_d1b_ad_plots_leg_title,
                        fig_d1c_ad_plots_leg_title, fig_d1d_ad_plots_leg_title, 
                        ncol = 1, rel_heights = c(1, 1, 1, 1.15))
 
-figure4.x_cap <- add_sub(figure4.x, str_wrap("Figure 4.x: Relationships among US adults' attributions of conceptual units in Studies 1a-1d, organized by study (rows) and pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.x_cap <- add_sub(figure4.x, str_wrap("Figure 4.x: Relationships among US adults' attributions of conceptual units in Studies 1a-1d, organized by study (rows) and pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted. Pearson correlations are reported for each pair of conceptual units.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.8}
@@ -1295,7 +1295,7 @@ figure4.x <- plot_grid(fig_d2_ad_plots_leg_title,
                        fig_d2_all_scored_ad_plots_leg_title,
                        ncol = 1)
 
-figure4.x_cap <- add_sub(figure4.x, str_wrap("Figure 4.x: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 2, scored using adults' BODY, HEART, and MIND scales (see Table 4.x). Plots are organized by sample (rows) and by pair of conceptual units (columns). (A) Adults. (B) Children (7-9y of age), scored using adults' scales. (C) A visualization of development between 7-9y and adulthood, using mean scores by character and age group. For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.x_cap <- add_sub(figure4.x, str_wrap("Figure 4.x: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 2, scored using adults' BODY, HEART, and MIND scales (see Table 4.x). Plots are organized by sample (rows) and by pair of conceptual units (columns). (A) Adults. (B) Children (7-9y of age), scored using adults' scales. (C) A visualization of development between 7-9y and adulthood, using mean scores by character and age group. For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted. Pearson correlations are reported for each pair of conceptual units.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.4}
@@ -1502,10 +1502,10 @@ My informal observations of the relationships among chilrden's endorsements of t
 figure4.x <- plot_grid(fig_d2_79_scored_79_plots_leg_title, 
                        ncol = 1)
 
-figure4.x_cap <- add_sub(figure4.x, str_wrap("Figure 4.x: Relationships among children's attributions of conceptual units in Study 2, scored using their own scales (see Table 4.x). Plots are organized by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.x_cap <- add_sub(figure4.x, str_wrap("Figure 4.x: Relationships among children's attributions of conceptual units in Study 2, scored using their own scales (see Table 4.x). Plots are organized by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted. Pearson correlations are reported for each pair of conceptual units.", 110), x = 0, hjust = 0)
 ```
 
-```{r, include = T, fig.width = 5, fig.asp = 0.5}
+```{r, include = T, fig.width = 5, fig.asp = 0.55}
 ggdraw(figure4.x_cap)
 ```
 
@@ -2390,7 +2390,7 @@ figure4.x <- plot_grid(fig_d3_ad_plots_leg_title,
                        fig_d3_all_scored_ad_plots_leg_title,
                        ncol = 1)
 
-figure4.x_cap <- add_sub(figure4.x, str_wrap("Figure 4.x: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using adults' BODY, HEART, and MIND scales (see Table 4.x). (A) Adults. (B) Older children (7-9y of age). (C) Younger children (4-6y of age). (D) A visualization of development between 4-9y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-C, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.x_cap <- add_sub(figure4.x, str_wrap("Figure 4.x: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using adults' BODY, HEART, and MIND scales (see Table 4.x). (A) Adults. (B) Older children (7-9y of age). (C) Younger children (4-6y of age). (D) A visualization of development between 4-9y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-C, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted. Pearson correlations are reported for each pair of conceptual units.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.8}
@@ -2860,7 +2860,7 @@ figure4.x <- plot_grid(fig_d4_ad_plots_leg_title,
                        fig_d4_all_scored_ad_plots_leg_title,
                        ncol = 1)
 
-figure4.x_cap <- add_sub(figure4.x, str_wrap("Figure 4.x: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 4, scored using adults' BODY, HEART, and MIND scales (see Table 4.x). Plots are organized by sample (rows) and by pair of conceptual units (columns). (A) Adults. (B) Children (4-6y of age), scored using adults' scales. (C) A visualization of development between 4-6y and adulthood, using mean scores by character and age group. For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.x_cap <- add_sub(figure4.x, str_wrap("Figure 4.x: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 4, scored using adults' BODY, HEART, and MIND scales (see Table 4.x). Plots are organized by sample (rows) and by pair of conceptual units (columns). (A) Adults. (B) Children (4-6y of age), scored using adults' scales. (C) A visualization of development between 4-6y and adulthood, using mean scores by character and age group. For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted. Pearson correlations are reported for each pair of conceptual units.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.4}
@@ -3101,7 +3101,7 @@ figure4.x <- plot_grid(fig_d4_ad_plots_leg_title,
                        fig_d4_all_scored_ad_plots_leg_title,
                        ncol = 1)
 
-figure4.x_cap <- add_sub(figure4.x, str_wrap("Figure 4.x: Relationships among US adults' and children's attributions of conceptual units in Study 4, scored using adults' BODY, HEART, and MIND scales (see Table 4.x). (A) Adults. (B) Children (4-5y of age). (C) A visualization of development between 4-5y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figure4.x_cap <- add_sub(figure4.x, str_wrap("Figure 4.x: Relationships among US adults' and children's attributions of conceptual units in Study 4, scored using adults' BODY, HEART, and MIND scales (see Table 4.x). (A) Adults. (B) Children (4-5y of age). (C) A visualization of development between 4-5y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted. Pearson correlations are reported for each pair of conceptual units.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.4}

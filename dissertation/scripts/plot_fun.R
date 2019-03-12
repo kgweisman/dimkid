@@ -95,7 +95,7 @@ heatmap_fun <- function(efa, factor_names = NA){
 }
 
 # functions for visualizing relationships between factors
-relviz_fun <- function(d_scored, jit = 0.05, add_means = T,
+relviz_fun <- function(d_scored, jit = 0.05, add_means = T, add_cor = T,
                        colors = c("#e41a1c", "#377eb8")){
   
   factor_names_plot <- levels(d_scored$factor)
@@ -149,6 +149,31 @@ relviz_fun <- function(d_scored, jit = 0.05, add_means = T,
     return(newplot)
   }
   
+  add_cor_fun <- function(plot, d_scored, facnames){
+    df_temp <- d_scored %>%
+      unite(subid_char, subid, character) %>%
+      select(subid_char, factor, score) %>%
+      filter(factor %in% facnames) %>%
+      spread(factor, score) %>%
+      data.frame() %>%
+      column_to_rownames("subid_char")
+    
+    corres <- corr.test(df_temp)
+    
+    r <- corres$r[1,2]
+    p <- corres$p[1,2]
+    p_str <- ifelse(p < 0.001, "p < 0.001",
+                    paste0("p = ", format(round(p, 3), 3)))
+    
+    cor_str <- paste0("r = ", format(round(r, 2), nsmall = 2),
+                      ", ", p_str)
+    newplot <- plot +
+      annotate("text", x = 0, y = 1, color = "black",
+               label = cor_str, hjust = 0)
+    
+    return(newplot)
+  }
+  
   plot_fun <- function(facnames, facnames_plot){
     
     newplot <- d_scored %>%
@@ -165,6 +190,7 @@ relviz_fun <- function(d_scored, jit = 0.05, add_means = T,
       scale_color_manual(name = "Target character", values = colors)
     
     if(add_means){newplot <- add_means_fun(newplot, d_scored, facnames)}
+    if(add_cor){newplot <- add_cor_fun(newplot, d_scored, facnames)}
     
     return(newplot)
   }
