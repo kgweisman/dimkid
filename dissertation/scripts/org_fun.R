@@ -239,7 +239,7 @@ diff_reg_table_fun <- function(reg_list, pair_list, study_name,
   params_all_ord <- c("Intercept", params_char, params_agegp,
                       params_interaction)
   
-  if(is.na(params_interaction) && is.na(agegp_label)){
+  if(length(params_interaction) == 0 && is.na(agegp_label)){
     table <- table %>%
       mutate(param = factor(param,
                             levels = params_all_ord,
