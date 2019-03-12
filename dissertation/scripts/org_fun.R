@@ -234,6 +234,8 @@ diff_reg_table_fun <- function(reg_list, pair_list, study_name,
                             params_interaction[grepl("yng", params_interaction)])
     interaction_label <- c(paste0("Older children vs. adults * ", char_label),
                            paste0("Younger children vs. adults * ", char_label))
+  } else {
+    interaction_label <- "Interaction"
   }
   params_char <- params_all[grepl("char", params_all) &
                               !(params_all %in% params_interaction)]

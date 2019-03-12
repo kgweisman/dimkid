@@ -612,7 +612,7 @@ plot_d1d_ad_scored_ad_diff <- diffplot_fun(d1d_ad_scored_ad_diff, colors = color
 ```
 
 ```{r}
-regtab_studies1abc <- regtab_d1a_ad_scored_ad_diff %>%
+regtab_d1abc <- regtab_d1a_ad_scored_ad_diff %>%
   full_join(regtab_d1b_ad_scored_ad_diff) %>%
   full_join(regtab_d1c_ad_scored_ad_diff) %>%
   mutate_at(vars(b, s.e.),
@@ -626,7 +626,7 @@ regtab_studies1abc <- regtab_d1a_ad_scored_ad_diff %>%
 
 ```{r}
 # interim table for ease of writing
-regtab_studies1abc %>%
+regtab_d1abc %>%
   select(-ends_with("s.e.")) %>%
   filter(param == "Intercept") %>%
   kable(digits = 2) %>%
@@ -698,7 +698,7 @@ ggdraw(figure4.x_cap)
 ```
 
 ```{r}
-table4.x <- regtab_studies1abc %>%
+table4.x <- regtab_d1abc %>%
   select(-pair, -ends_with("_s.e.")) %>%
   rename(Parameter = param) %>%
   rename_all(funs(gsub("nz", " ", .))) %>%
@@ -829,7 +829,7 @@ regtab_d1d_ad_scored_ad_diff <- diff_reg_table_fun(
 ```
 
 ```{r}
-regtab_studyd <- regtab_d1d_ad_scored_ad_diff %>%
+regtab_d1d <- regtab_d1d_ad_scored_ad_diff %>%
   mutate_at(vars(b, s.e.),
             funs(format(round(., digits = 2), nsmall = 2))) %>%
   unite(result, b, s.e., CI95, nonzero) %>%
@@ -839,7 +839,7 @@ regtab_studyd <- regtab_d1d_ad_scored_ad_diff %>%
 
 ```{r}
 # interim table for ease of writing
-regtab_studyd %>%
+regtab_d1d %>%
   select(-ends_with("s.e.")) %>%
   filter(param == "Intercept") %>%
   kable(digits = 2) %>%
@@ -875,7 +875,7 @@ Again, this asymmetry was more pronounced for some characters (`r nonzero_fun(re
 These formal analyses of difference scores across the _BODY_, _HEART_, and _MIND_ scales in Study 1d confirm my informal observations of asymmetries described in the previous section: In this study, as in Studies 1a-1c above, participants tended to endorse MIND more strongly than BODY or HEART, and BODY more strongly than HEART.
 
 ```{r}
-table4.x <- regtab_studyd %>%
+table4.x <- regtab_d1d %>%
   select(-pair, -ends_with("_s.e.")) %>%
   rename(Parameter = param) %>%
   rename_all(funs(gsub("nz", " ", .))) %>%
@@ -2218,8 +2218,6 @@ In contrast to adults and older children, among younger children difference scor
 
 These formal analyses of difference scores across the _BODY_, _HEART_, and _MIND_ scales among younger children (4-6y) in Study 3 confirm my informal observations in the previous section. Like older children and adults, younger children tended to endorse BODY more strongly than HEART. However, younger children diverged from their older counterparts by systematically endorsing BODY more strongly than MIND, and by failing to show any systematic asymmetry between HEART and MIND.
 
-__BOOKMARK__
-
 ### Developmental comparison
 
 In the previous sections, I analyzed adults', older children's, and younger children's responses separately. Here I conduct a formal comparison of difference scores between conceptual units among these three age groups, to assess the size and robustness of these ostensive developmental differences.
@@ -2425,9 +2423,9 @@ ggdraw(figure4.x_cap)
 ```
 
 
-__BOOKMARK__
-
 # Study 4: A focus on early childhood (4-5y)
+
+XX __INSERT STUDY INTRODUCTION__
 
 In Study 4, `r nrow(d4_ad_wide)/2` US adults and `r nrow(d4_46_wide)/2` US children between the ages of `r summary(d4_46$age)["Min."] %>% round(2)`-`r summary(d4_46$age)["Max."] %>% round(2)` years (median: `r summary(d4_46$age)["Median"] %>% round(2)`y) each assessed two target characters on 18 mental capacities. To make the study appropriate for children in this age range, this study employed a new set of 18 mental capacities (some but not all of which were used in Studies 1-3). In addition, participants were presented with a more child-friendly visual representation of the 3-point response scale ("no," coded as 0; "kinda," coded as 0.5, "yes," coded as 1). This study employed the "edge case" variant of the general approach, with participants assessing both a beetle or a robot in sequence (with order counterbalanced across participants). (See Chapter II for detailed methods.)
 
@@ -2452,14 +2450,12 @@ Following the steps described in "General analysis plan," above, yielded `r fact
 
 #### Visualization
 
-XX
-
 ```{r}
-plots_d4_ad_scored_ad <- relviz_fun(d4_ad_scored_ad, colors = colors02)
+plots_d4_ad_scored_ad <- relviz_fun(d4_ad_scored_ad)
 ```
 
 ```{r}
-fig_d4_ad_plots <- plot_grid(plots_d4_ad_scored_ad[[1]] + 
+fig_d4_ad_plots <- plot_grid(plots_d4_ad_scored_ad[[1]] +
                                theme(legend.position = "none"),
                              plots_d4_ad_scored_ad[[2]] + 
                                theme(legend.position = "none"),
@@ -2468,11 +2464,11 @@ fig_d4_ad_plots <- plot_grid(plots_d4_ad_scored_ad[[1]] +
                              labels = c("A1", "A2", "A3"), ncol = 3)
 
 fig_d4_ad_leg <- get_legend(
-  plots_d4_ad_scored_ad[[1]] +
+  plots_d4_ad_scored_ad[[1]] + 
     theme(legend.position = "bottom", legend.direction = "horizontal") +
     scale_fill_manual("Target character", values = colors02,
                       guide = guide_legend(title.position = "left",
-                                           direction = "horizontal", 
+                                           direction = "horizontal",
                                            ncol = 2)) +
     scale_color_manual("Target character", values = colors02,
                        guide = guide_legend(title.position = "left",
@@ -2489,90 +2485,111 @@ fig_d4_ad_plots_leg_title <- plot_grid(fig_d4_ad_title, fig_d4_ad_plots_leg,
                                        ncol = 1, rel_heights = c(0.12, 1))
 ```
 
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+fig_d4_ad_plots_leg_title
+```
+
+Visualizations of relationships among scores on these _BODY_, _HEART_, and _MIND_ scales are provided in Figure 4.x, row A.
+
+These visualizations are all extremely similar to those discussed at length in Studies 1a-1c and Study 2; I will not describe them further here.
+
 #### Analysis of asymmetries
 
-XX
+Here I provide a formal analysis of these asymmetries. As in previous studies, for each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND), I used Bayesian regression to compare difference scores between these two conceptual units to zero, controlling for differences in assessments of the two "edge cases" that were featured as target characters in these studies. As in Study 1d, I account for the within-subjects design by included maximal random effects structure (in this case, random intercepts for participants). See Figure 4.x, panel D, for visual depictions of these difference scores.
 
 ```{r}
 d4_ad_scored_ad_diff <- diff_fun(d4_ad_scored_ad)
+contrasts(d4_ad_scored_ad_diff$character) <- contrasts_sum_edge
+
 saveRDS(d4_ad_scored_ad_diff, "./stored/diffscore_data/d4_ad_scored_ad_diff")
 ```
 
 ```{r}
-plot_d4_ad_scored_ad_diff <- diffplot_fun(d4_ad_scored_ad_diff, colors02)
+plot_d4_ad_scored_ad_diff <- diffplot_fun(d4_ad_scored_ad_diff)
 ```
 
 ```{r}
 # r_d4_ad_scored_ad_diff_BODY_HEART <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
+#   diff ~ 1 + character + (1 | subid),
 #   data = d4_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d4_ad_scored_ad_diff_BODY_HEART,
+#         "./stored/brms_models/r_d4_ad_scored_ad_diff_BODY_HEART")
 
-# r_d4_ad_scored_ad_diff_BODY_HEART <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d4_ad_scored_ad_diff_BODY_HEART <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d4_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d4_ad_scored_ad_diff_BODY_HEART <- lmer(
-#   diff ~ 1 + (1 | subid),
-#   data = d4_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+r_d4_ad_scored_ad_diff_BODY_HEART <- readRDS("./stored/brms_models/r_d4_ad_scored_ad_diff_BODY_HEART")
 
 summary(r_d4_ad_scored_ad_diff_BODY_HEART)
 ```
 
 ```{r}
 # r_d4_ad_scored_ad_diff_BODY_MIND <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
+#   diff ~ 1 + character + (1 | subid),
 #   data = d4_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d4_ad_scored_ad_diff_BODY_MIND,
+#         "./stored/brms_models/r_d4_ad_scored_ad_diff_BODY_MIND")
 
-# r_d4_ad_scored_ad_diff_BODY_MIND <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d4_ad_scored_ad_diff_BODY_MIND <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d4_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d4_ad_scored_ad_diff_BODY_MIND <- lmer(
-#   diff ~ 1 + (1 | subid),
-#   data = d4_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"))
+r_d4_ad_scored_ad_diff_BODY_MIND <- readRDS("./stored/brms_models/r_d4_ad_scored_ad_diff_BODY_MIND")
 
 summary(r_d4_ad_scored_ad_diff_BODY_MIND)
 ```
 
 ```{r}
 # r_d4_ad_scored_ad_diff_HEART_MIND <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
+#   diff ~ 1 + character + (1 | subid),
 #   data = d4_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d4_ad_scored_ad_diff_HEART_MIND,
+#         "./stored/brms_models/r_d4_ad_scored_ad_diff_HEART_MIND")
 
-# r_d4_ad_scored_ad_diff_HEART_MIND <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d4_ad_scored_ad_diff_HEART_MIND <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d4_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d4_ad_scored_ad_diff_HEART_MIND <- lmer(
-#   diff ~ 1 + (1 | subid),
-#   data = d4_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"))
+r_d4_ad_scored_ad_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d4_ad_scored_ad_diff_HEART_MIND")
 
 summary(r_d4_ad_scored_ad_diff_HEART_MIND)
 ```
+
+```{r}
+regtab_d4_ad_scored_ad_diff <- diff_reg_table_fun(
+  reg_list = list(r_d4_ad_scored_ad_diff_BODY_HEART,
+                  r_d4_ad_scored_ad_diff_BODY_MIND,
+                  r_d4_ad_scored_ad_diff_HEART_MIND),
+  pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
+  study_name = "Adults",
+  char_label = "Robot vs. GM")
+```
+
+```{r}
+# interim table for ease of writing
+regtab_d4_ad_scored_ad_diff %>%
+  select(-study, -s.e.) %>%
+  # filter(param == "Intercept") %>%
+  kable(digits = 2) %>%
+  kable_styling()
+```
+
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_d4_ad_scored_ad_diff
+```
+
+##### BODY vs. HEART
+
+As in previous studies, difference scores comparing adults' scores on the _BODY_ and _HEART_ scales were substantially non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.x). Again, this difference was driven by participants' assessments of the beetle; in the aggregate, difference scores were reduced to 0 for the robot (see the "Target character" row for the "BODY-HEART" comparison in Table 4.x).  
+
+##### BODY vs. MIND
+
+As previous studies, difference scores comparing adults' scores on the _BODY_ and _MIND_ scales were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _BODY_ items (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.x). Again, this difference was driven by participants' assessments of the robot; in the aggregate, difference scores tended to be _greater_, not less, than zero for the beetle (see the "Target character" row for the "BODY-MIND" comparison in Table 4.x).
+
+##### HEART vs. MIND
+
+As in previous studies, difference scores comparing adults' scores on the _HEART_ and _MIND_ scales were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.x). Again, this difference was somewhat exaggerated in assessments of the robot, relative to the beetle (see the "Target character" row for the "HEART-MIND" comparison in Table 4.x).
+
+##### Interim discussion
+
+These formal analyses of difference scores across the _BODY_, _HEART_, and _MIND_ scales among adults in Study 4 confirm my information observations of asymmetries described in the previous section, and align quite closely with analyses of adults in Studies 1a-1c and Study 2: Across all of the studies that used the "edge case approach" to inducing variability in mental capacity attributions, adults tended to endorse MIND more strongly than BODY or HEART, and BODY more strongly than HEART.
 
 ### Children (4-5y)
 
@@ -2581,23 +2598,25 @@ d4_46_scored_ad <- score_fun(d4_46, scales_efa_wdm_d4_ad)
 saveRDS(d4_46_scored_ad, file = "./stored/scored_data/d4_46_scored_ad")
 ```
 
+XX __INSERT SECTION INTRODUCTION/TRANSITION__
+
 #### Visualization
 
 ```{r}
-plots_d4_46_scored_ad <- relviz_fun(d4_46_scored_ad, colors = colors02)
+plots_d4_46_scored_ad <- relviz_fun(d4_46_scored_ad)
 ```
 
 ```{r}
-fig_d4_46_scored_ad_plots <- plot_grid(plots_d4_46_scored_ad[[1]] + 
-                                         theme(legend.position = "none"),
-                                       plots_d4_46_scored_ad[[2]] + 
-                                         theme(legend.position = "none"),
-                                       plots_d4_46_scored_ad[[3]] + 
-                                         theme(legend.position = "none"),
-                                       labels = c("B1", "B2", "B3"), ncol = 3)
+fig_d4_46_plots <- plot_grid(plots_d4_46_scored_ad[[1]] +
+                               theme(legend.position = "none"),
+                             plots_d4_46_scored_ad[[2]] + 
+                               theme(legend.position = "none"),
+                             plots_d4_46_scored_ad[[3]] + 
+                               theme(legend.position = "none"),
+                             labels = c("B1", "B2", "B3"), ncol = 3)
 
-fig_d4_46_scored_ad_leg <- get_legend(
-  plots_d4_46_scored_ad[[1]] +
+fig_d4_46_leg <- get_legend(
+  plots_d4_46_scored_ad[[1]] + 
     theme(legend.position = "bottom", legend.direction = "horizontal") +
     scale_fill_manual("Target character", values = colors02,
                       guide = guide_legend(title.position = "left",
@@ -2608,214 +2627,286 @@ fig_d4_46_scored_ad_leg <- get_legend(
                                             direction = "horizontal",
                                             ncol = 2)))
 
-fig_d4_46_scored_ad_plots_leg <- plot_grid(fig_d4_46_scored_ad_plots,
-                                           fig_d4_46_scored_ad_leg,
-                                           ncol = 1, rel_heights = c(1, 0.05))
+fig_d4_46_plots_leg <- plot_grid(fig_d4_46_plots, fig_d4_46_leg,
+                                 ncol = 1, rel_heights = c(1, 0.05))
 
-fig_d4_46_scored_ad_title <- ggdraw() + 
+fig_d4_46_title <- ggdraw() + 
   draw_label("Study 4: Children, 4-5y (scored using adults' scales)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
-fig_d4_46_scored_ad_plots_leg_title <- plot_grid(
-  fig_d4_46_scored_ad_title, fig_d4_46_scored_ad_plots_leg,
-  ncol = 1, rel_heights = c(0.12, 1))
+fig_d4_46_plots_leg_title <- plot_grid(fig_d4_46_title, fig_d4_46_plots_leg,
+                                       ncol = 1, rel_heights = c(0.12, 1))
 ```
+
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+fig_d4_46_plots_leg_title
+```
+
+Visualizations of relationships among scores on these _BODY_, _HEART_, and _MIND_ scales are provided in Figure 4.x, row B.
+
+##### BODY vs. HEART
+
+First I will consider the relationship between BODY and HEART (Figure 4.x, panel B1). As among adults in this study (panel A1), the relationship between scores on the _BODY_ and _HEART_ scales appears to be somewhat positive, and there appear to be somewhat fewer datapoints above the line of equivalence ($y = x$, dotted diagonal line) than below it—but both of these observations are much less striking among children than they were among adults. In other words, while, like the vast majority of adults, many children attributed more BODY than HEART to the target character in question (particularly to the beetle, in red), quite a few children attributed more HEART than BODY (particularly to the robot, in blue). 
+
+##### BODY vs. MIND
+
+Next I will consider the relationship between BODY and MIND (Figure 4.x, panel B2). As among adults in this study (panel A2), the relationship between scores on the _BODY_ and _MIND_ scales appears to be somewhat positive, there is no obvious evidence of any asymmetry in children's attributions of these two conceptual units. In other words, while, like the majority of adults, some children attributed more MIND than BODY to the target character in question (particularly to the robot, in blue), other children attributed more BODY than MIND (particularly to the beetle, in red). This is reminisent of my earlier observation among older children (7-9y) in Study 2, where the relationship between _BODY_ and _MIND_ scores went in opposite directions for these two "edge cases."
+
+##### HEART vs. MIND
+
+Finally I will consider the relationship between HEART and MIND (Figure 4.x, panel B3). As among adults in this study (panel A3), the relationship between scores on the _HEART_ and _MIND_ scales appears to be positive, and there appear to be somewhat fewer datapoints below the line of equivalence ($y = x$, dotted diagonal line) than above it—but, as in the previous sections, both of these observations are much less striking among children than they were among adults. In other words, while many children attributed more MIND than HEART to the target character in question (like the vast majority of adults), quite a few children attributed more HEART than MIND. This appears to have been true for both target characters.
+
+##### Interim discussion
+
+Using a particularly child-friendly paradigm, the relationships young children's endorsements of BODY, HEART, and MIND (as defined by adults' EFA solution) appear to be slightly more resonant with the relationships observed among adults. All of these inter-unit relationships were somewaht positive—but only somewhat. There was some evidence of asymmetries in these positive relationships, but these asymmetries were generally weaker and appeared to be highly dependent on which target character participants assessed (particularly for the BODY vs. HEART and BODY vs. MIND comparisons, as was the case in Study 2 with older children).
 
 #### Analysis of asymmetries
 
+Here I provide a formal analysis of the asymmetries (or lack thereof) revealed by the visualizations in the previous section. As in previous analyses, for each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND), I used Bayesian regression to compare difference scores between these two conceptual units to zero, controlling for differences in assessments of the two "edge cases" that were featured as target characters in these studies (beetle and robot), and accounting for the within-subjects design of this study by including maximal random effects structures (in this case, random intercepts for participants). See Figure 4.XX, panel B, for visual depictions of these difference scores.
+
 ```{r}
 d4_46_scored_ad_diff <- diff_fun(d4_46_scored_ad)
+contrasts(d4_46_scored_ad_diff$character) <- contrasts_sum_edge
+
 saveRDS(d4_46_scored_ad_diff, "./stored/diffscore_data/d4_46_scored_ad_diff")
 ```
 
 ```{r}
-plot_d4_46_scored_ad_diff <- diffplot_fun(d4_46_scored_ad_diff, colors02)
+plot_d4_46_scored_ad_diff <- diffplot_fun(d4_46_scored_ad_diff)
 ```
 
 ```{r}
 # r_d4_46_scored_ad_diff_BODY_HEART <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
+#   diff ~ 1 + character + (1 | subid),
 #   data = d4_46_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d4_46_scored_ad_diff_BODY_HEART,
+#         "./stored/brms_models/r_d4_46_scored_ad_diff_BODY_HEART")
 
-# r_d4_46_scored_ad_diff_BODY_HEART <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_46_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d4_46_scored_ad_diff_BODY_HEART <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d4_46_scored_ad_diff %>% filter(pair == "BODY - HEART"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d4_46_scored_ad_diff_BODY_HEART <- lmer(
-#   diff ~ 1 + (1 | subid),
-#   data = d4_46_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+r_d4_46_scored_ad_diff_BODY_HEART <- readRDS("./stored/brms_models/r_d4_46_scored_ad_diff_BODY_HEART")
 
 summary(r_d4_46_scored_ad_diff_BODY_HEART)
 ```
 
 ```{r}
 # r_d4_46_scored_ad_diff_BODY_MIND <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
+#   diff ~ 1 + character + (1 | subid),
 #   data = d4_46_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d4_46_scored_ad_diff_BODY_MIND,
+#         "./stored/brms_models/r_d4_46_scored_ad_diff_BODY_MIND")
 
-# r_d4_46_scored_ad_diff_BODY_MIND <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_46_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d4_46_scored_ad_diff_BODY_MIND <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d4_46_scored_ad_diff %>% filter(pair == "BODY - MIND"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d4_46_scored_ad_diff_BODY_MIND <- lmer(
-#   diff ~ 1 + (1 | subid),
-#   data = d4_46_scored_ad_diff %>% filter(pair == "BODY - MIND"))
+r_d4_46_scored_ad_diff_BODY_MIND <- readRDS("./stored/brms_models/r_d4_46_scored_ad_diff_BODY_MIND")
 
 summary(r_d4_46_scored_ad_diff_BODY_MIND)
 ```
 
 ```{r}
 # r_d4_46_scored_ad_diff_HEART_MIND <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
+#   diff ~ 1 + character + (1 | subid),
 #   data = d4_46_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d4_46_scored_ad_diff_HEART_MIND,
+#         "./stored/brms_models/r_d4_46_scored_ad_diff_HEART_MIND")
 
-# r_d4_46_scored_ad_diff_HEART_MIND <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_46_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d4_46_scored_ad_diff_HEART_MIND <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d4_46_scored_ad_diff %>% filter(pair == "HEART - MIND"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d4_46_scored_ad_diff_HEART_MIND <- lmer(
-#   diff ~ 1 + (1 | subid),
-#   data = d4_46_scored_ad_diff %>% filter(pair == "HEART - MIND"))
+r_d4_46_scored_ad_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d4_46_scored_ad_diff_HEART_MIND")
 
 summary(r_d4_46_scored_ad_diff_HEART_MIND)
 ```
 
+```{r}
+regtab_d4_46_scored_ad_diff <- diff_reg_table_fun(
+  reg_list = list(r_d4_46_scored_ad_diff_BODY_HEART,
+                  r_d4_46_scored_ad_diff_BODY_MIND,
+                  r_d4_46_scored_ad_diff_HEART_MIND),
+  pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
+  study_name = "Children, 4-5y (using adults' scales)",
+  char_label = "Robot vs. GM")
+```
+
+```{r}
+# interim table for ease of writing
+regtab_d4_46_scored_ad_diff %>%
+  select(-study, -s.e.) %>%
+  # filter(param == "Intercept") %>%
+  kable(digits = 2) %>%
+  kable_styling()
+```
+
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_d4_46_scored_ad_diff
+```
+
+##### BODY vs. HEART
+
+As among adults, among children difference scores comparing scores on the _BODY_ and _HEART_ scales were significantly non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.x). However, this asymmetry was reduced to zero for assessments of the robot (see the "Target character" row for the "BODY-HEART" comparison in Table 4.x).  
+
+##### BODY vs. MIND
+
+In contrast to adults, among children difference scores comparing scores on the _BODY_ and _MIND_ scales were not differentiable from zero (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.x). This appears to be due to the fact that the asymmetry ran in different directions for the two target characters (see the "Target character" row for the "BODY-MIND" comparison in Table 4.x).  
+
+##### HEART vs. MIND
+
+As among adults, among children difference scores comparing scores on the _HEART_ and _MIND_ scales were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.x), and this difference was slightly exaggerated in assessments of the robot(see the "Target character" row for the "HEART-MIND" comparison in Table 4.x).
+
+##### Interim discussion
+
+These formal analyses of difference scores across the _BODY_, _HEART_, and _MIND_ scales among children in Study 4 confirm my informal observations that in this particularly child-friendly paradigm, young children were adult-like in their tendency to endorse BODY and MIND more strongly than HEART, while failing to show the adult-like tendency to endorse MIND more strongly than BODY for these two edge cases. Instead, like children in other studies (XX __INSERT REFERENCES__), the asymmetry between BODY and MIND appeared to depend on which target was being assessed.
+
+```{r}
+plots_agegp_d4_scored_ad <- relviz_agegp_fun(
+  d_scored = d4_ad_scored_ad %>% 
+    full_join(d4_46_scored_ad), 
+  age_groups = c("children46", "adults"),
+  age_group_labels = c("Children (4-5y)", "Adults"),
+  colors = colors02)
+```
+
+```{r}
+fig_d4_all_scored_ad_plots <- plot_grid(plots_agegp_d4_scored_ad[[1]] + 
+                                          theme(legend.position = "none"),
+                                        plots_agegp_d4_scored_ad[[2]] + 
+                                          theme(legend.position = "none"),
+                                        plots_agegp_d4_scored_ad[[3]] + 
+                                          theme(legend.position = "none"),
+                                        labels = c("C1", "C2", "C3"), ncol = 3)
+
+fig_d4_all_scored_ad_leg <- get_legend(
+  plots_agegp_d4_scored_ad[[1]] +
+    theme(legend.position = "bottom", legend.direction = "horizontal") +
+    scale_color_manual("Target character", values = colors02,
+                       na.translate = F,
+                       guide = guide_legend(title.position = "left",
+                                            direction = "horizontal",
+                                            ncol = 2)))
+
+fig_d4_all_scored_ad_plots_leg <- plot_grid(
+  fig_d4_all_scored_ad_plots, fig_d4_all_scored_ad_leg,
+  ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d4_all_scored_ad_title <- ggdraw() + 
+  draw_label("Tracking development between 4-5y and adulthood (scored using adults' scales)", size = 16, fontface = 'bold', x = 0, hjust = 0)
+
+fig_d4_all_scored_ad_plots_leg_title <- plot_grid(
+  fig_d4_all_scored_ad_title, fig_d4_all_scored_ad_plots_leg,
+  ncol = 1, rel_heights = c(0.12, 1))
+```
+
+```{r}
+figure4.x <- plot_grid(fig_d4_ad_plots_leg_title, 
+                       fig_d4_46_plots_leg_title,
+                       fig_d4_all_scored_ad_plots_leg_title,
+                       ncol = 1)
+
+figure4.x_cap <- add_sub(figure4.x, str_wrap("Figure 4.x: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 4, scored using adults' BODY, HEART, and MIND scales (see Table 4.x). Plots are organized by sample (rows) and by pair of conceptual units (columns). (A) Adults. (B) Children (4-6y of age), scored using adults' scales. (C) A visualization of development between 4-6y and adulthood, using mean scores by character and age group. For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 1.4}
+ggdraw(figure4.x_cap)
+```
+
 ### Developmental comparison
+
+In the previous sections, I analyzed adults' and children's responses separately. Here I conduct a formal comparison of difference scores between conceptual units among these two age groups, to assess the size and robustness of these ostensive developmental differences.
+
+```{r}
+d4_ad46_scored_ad_diff <- full_join(d4_ad_scored_ad_diff,
+                                    d4_46_scored_ad_diff) %>%
+  mutate(age_group = factor(age_group))
+contrasts(d4_ad46_scored_ad_diff$character) <- contrasts_sum_edge
+contrasts(d4_ad46_scored_ad_diff$age_group) <- contrasts_dum2_agegp
+```
 
 ```{r}
 # r_d4_ad46_scored_ad_diff_BODY_HEART <- brm(
-#   diff ~ 1 + age_group + (1 | character),
-#   data = d4_ad_scored_ad_diff %>%
-#     full_join(d4_46_scored_ad_diff) %>%
-#     filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_edge,
-#                    age_group = contrasts_dum2_agegp),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   diff ~ 1 + character * age_group + (1 | subid),
+#   data = d4_ad46_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   cores = 4)
+# 
+# saveRDS(r_d4_ad46_scored_ad_diff_BODY_HEART,
+#         "./stored/brms_models/r_d4_ad46_scored_ad_diff_BODY_HEART")
 
-# r_d4_ad46_scored_ad_diff_BODY_HEART <- lmer(
-#   diff ~ 1 + age_group + (1 | character),
-#   data = d4_ad_scored_ad_diff %>%
-#     full_join(d4_46_scored_ad_diff) %>%
-#     filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_edge,
-#                    age_group = contrasts_dum2_agegp))
-
-r_d4_ad46_scored_ad_diff_BODY_HEART <- lm(
-  diff ~ 1 + character * age_group,
-  data = d4_ad_scored_ad_diff %>% 
-    full_join(d4_46_scored_ad_diff) %>%
-    filter(pair == "BODY - HEART"),
-  contrasts = list(character = contrasts_sum_edge,
-                   age_group = contrasts_dum2_agegp))
-
-# r_d4_ad46_scored_ad_diff_BODY_HEART <- lm(
-#   diff ~ 1 + age_group,
-#   data = d4_ad_scored_ad_diff %>%
-#     full_join(d4_46_scored_ad_diff) %>%
-#     filter(pair == "BODY - HEART"),
-#   contrasts = list(age_group = contrasts_dum2_agegp))
+r_d4_ad46_scored_ad_diff_BODY_HEART <- readRDS("./stored/brms_models/r_d4_ad46_scored_ad_diff_BODY_HEART")
 
 summary(r_d4_ad46_scored_ad_diff_BODY_HEART)
 ```
 
 ```{r}
 # r_d4_ad46_scored_ad_diff_BODY_MIND <- brm(
-#   diff ~ 1 + age_group + (1 | character),
-#   data = d4_ad_scored_ad_diff %>%
-#     full_join(d4_46_scored_ad_diff) %>%
-#     filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_edge,
-#                    age_group = contrasts_dum2_agegp),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   diff ~ 1 + character * age_group + (1 | subid),
+#   data = d4_ad46_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   cores = 4)
+# 
+# saveRDS(r_d4_ad46_scored_ad_diff_BODY_MIND,
+#         "./stored/brms_models/r_d4_ad46_scored_ad_diff_BODY_MIND")
 
-# r_d4_ad46_scored_ad_diff_BODY_MIND <- lmer(
-#   diff ~ 1 + age_group + (1 | character),
-#   data = d4_ad_scored_ad_diff %>%
-#     full_join(d4_46_scored_ad_diff) %>%
-#     filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_edge,
-#                    age_group = contrasts_dum2_agegp))
-
-r_d4_ad46_scored_ad_diff_BODY_MIND <- lm(
-  diff ~ 1 + character * age_group,
-  data = d4_ad_scored_ad_diff %>% 
-    full_join(d4_46_scored_ad_diff) %>%
-    filter(pair == "BODY - MIND"),
-  contrasts = list(character = contrasts_sum_edge,
-                   age_group = contrasts_dum2_agegp))
-
-# r_d4_ad46_scored_ad_diff_BODY_MIND <- lm(
-#   diff ~ 1 + age_group,
-#   data = d4_ad_scored_ad_diff %>%
-#     full_join(d4_46_scored_ad_diff) %>%
-#     filter(pair == "BODY - MIND"),
-#   contrasts = list(age_group = contrasts_dum2_agegp))
+r_d4_ad46_scored_ad_diff_BODY_MIND <- readRDS("./stored/brms_models/r_d4_ad46_scored_ad_diff_BODY_MIND")
 
 summary(r_d4_ad46_scored_ad_diff_BODY_MIND)
 ```
 
 ```{r}
 # r_d4_ad46_scored_ad_diff_HEART_MIND <- brm(
-#   diff ~ 1 + age_group + (1 | character),
-#   data = d4_ad_scored_ad_diff %>%
-#     full_join(d4_46_scored_ad_diff) %>%
-#     filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_edge,
-#                    age_group = contrasts_dum2_agegp),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   diff ~ 1 + character * age_group + (1 | subid),
+#   data = d4_ad46_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   cores = 4)
+# 
+# saveRDS(r_d4_ad46_scored_ad_diff_HEART_MIND,
+#         "./stored/brms_models/r_d4_ad46_scored_ad_diff_HEART_MIND")
 
-# r_d4_ad46_scored_ad_diff_HEART_MIND <- lmer(
-#   diff ~ 1 + age_group + (1 | character),
-#   data = d4_ad_scored_ad_diff %>%
-#     full_join(d4_46_scored_ad_diff) %>%
-#     filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_edge,
-#                    age_group = contrasts_dum2_agegp))
-
-r_d4_ad46_scored_ad_diff_HEART_MIND <- lm(
-  diff ~ 1 + character * age_group,
-  data = d4_ad_scored_ad_diff %>% 
-    full_join(d4_46_scored_ad_diff) %>%
-    filter(pair == "HEART - MIND"),
-  contrasts = list(character = contrasts_sum_edge,
-                   age_group = contrasts_dum2_agegp))
-
-# r_d4_ad46_scored_ad_diff_HEART_MIND <- lm(
-#   diff ~ 1 + age_group,
-#   data = d4_ad_scored_ad_diff %>%
-#     full_join(d4_46_scored_ad_diff) %>%
-#     filter(pair == "HEART - MIND"),
-#   contrasts = list(age_group = contrasts_dum2_agegp))
+r_d4_ad46_scored_ad_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d4_ad46_scored_ad_diff_HEART_MIND")
 
 summary(r_d4_ad46_scored_ad_diff_HEART_MIND)
 ```
 
+```{r}
+regtab_d4_ad46_scored_ad_diff <- diff_reg_table_fun(
+  reg_list = list(r_d4_ad46_scored_ad_diff_BODY_HEART,
+                  r_d4_ad46_scored_ad_diff_BODY_MIND,
+                  r_d4_ad46_scored_ad_diff_HEART_MIND),
+  pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
+  study_name = "Developmental comparison",
+  char_label = "Robot vs. GM", 
+  agegp_label = "Children vs. adults")
+```
+
+```{r}
+# interim table for ease of writing
+regtab_d4_ad46_scored_ad_diff %>%
+  select(-study, -s.e.) %>%
+  # filter(param %in% c("Children vs. adults", "Interaction")) %>%
+  kable(digits = 2) %>%
+  kable_styling()
+```
+
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_grid(plot_d4_ad_scored_ad_diff, plot_d4_46_scored_ad_diff, ncol = 2)
+```
+
+##### BODY vs. HEART
+
+Difference scores between the _BODY_ and _HEART_ scales were substantially closer to zero among children, as compared to adults (see the "Children vs. adults" row for the "BODY-HEART" comparison in Table 4.x), and the difference between target characters was attenuated among children (see the "Interaction" row for the "BODY-HEART" comparison in Table 4.x).  
+
+##### BODY vs. MIND
+
+Difference scores between the _BODY_ and _MIND_ scales were substantially closer to zero among children, as compared to adults (see the "Children vs. adults" row for the "BODY-MIND" comparison in Table 4.x), and the difference between target characters was attenuated among children (see the "Interaction" row for the "BODY-MIND" comparison in Table 4.x).  
+
+##### HEART vs. MIND
+
+Difference scores between the _HEART_ and _MIND_ scales were substantially closer to zero among children, as compared to adults (see the "Children vs. adults" row for the "HEART-MIND" comparison in Table 4.x), and the difference between target characters  was attenuated among children (see the "Interaction" row for the "HEART-MIND" comparison in Table 4.x).  
+
+##### Interim discussion
+
+These formal comparisons of difference scores among children vs. adults in Study 4 confirm my earlier observations that asymmetries were substantially attenuated (and in some cases, reduced to zero) among children, relative to the baseline set by adults. In addition, among children the differences in these asymmetries between the two "edge cases" included in this study (the beetle vs. the robot) were also attenuated, relative to adults.
+
 ## Discussion
 
-XX
+XX __INSERT STUDY 4 DISCUSSION__
 
 ```{r}
 scales_study4 <- bind_rows(scales_efa_wdm_d4_ad %>% 
@@ -2948,7 +3039,7 @@ fig_d4_all_scored_ad_plots_leg_title <- plot_grid(
 
 ```{r}
 figure4.x <- plot_grid(fig_d4_ad_plots_leg_title, 
-                       fig_d4_46_scored_ad_plots_leg_title,
+                       fig_d4_46_plots_leg_title,
                        fig_d4_all_scored_ad_plots_leg_title,
                        ncol = 1)
 
@@ -2965,7 +3056,7 @@ figure4.x_plots <- plot_grid(
     labs(title = "Study 4: Adults") +
     theme(legend.position = "bottom"),
   plot_d4_46_scored_ad_diff + 
-    labs(title = "Study 4: Children, 4-6y (scored using adults' scales)") +
+    labs(title = "Study 4: Children, 4-5y (scored using adults' scales)") +
     theme(legend.position = "bottom"), 
   ncol = 2, rel_widths = c(1, 1),
   labels = "AUTO")
@@ -2980,7 +3071,7 @@ ggdraw(figure4.x_cap)
 
 # General discussion
 
-XX
+XX __INSERT GENERAL DISCUSSION_
 
 
 # Chapter conclusion
@@ -2990,31 +3081,5 @@ In this chapter, I explored a second aspect of conceptual representations of men
 As in Chapter III, I urge the reader to remember that this is not the only possible interpretation of the pattern of results presented here; additional studies—in particular, studies designed to test the hypothesis that XX— could provide converging evidence or could challenge this theoretical interpretation. Instead, the primary role of the re-analysis discussed here has been to inspire the hypothesis stated in the previous paragraph and to the foundation for future tests of this hypothesis, in turn refining a general theory of this aspect of conceptual development.  
 
 In the next chapter, I apply the same exploratory spirit to the third and final aspect of conceptual representations of mental life: the application or deployment of these conceptual units in reasoning about various kinds of beings.
-
-
-# TO DO
-
-- implement overall plan
-- study 1: adults for each sample = 4 regs total
-- study 2: adults for each sample (2); children's for child sample (1); comparison (1) = 4 regs total
-- study 3: adults for each sample (3); comparison (1) = 4 regs total
-- study 4: adults for each sample (2); comparison (1) = 3 regs total 
-- make regression tables
-- study 1 (4 regs: studies 1a-1d)
-- study 2 (3 regs: adult scales for adults, children; child scales)
-- study 2 (1 reg: developmental comparison)
-- study 3 (3 regs: adult scales for adults, older, young children)
-- study 3 (1 reg: developmental comparison)
-- study 4 (2 regs: adult scles for adults, children)
-- study 4 (1 reg: developmental comparison)
-- move to appendix
-- study 2: adults' 4-factor solution for adults? for 7-9yo?
-- study 3: 7-9yo for 7-9yo (1); 4-6yo for 4-6yo x 2 (2)
-- study 4: 4-6yo for 4-6yo x 2 (2)
-- reconsider adding to appendix
-- study 3: 7-9yo for 4-6yo?
-- all studies: comparisons across pairs of units (instead of separate regs for each unit)?
-
-
 
 
