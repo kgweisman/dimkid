@@ -223,7 +223,7 @@ nonzero_fun <- function(regtab, which_pair,
   
   newtab <- newtab %>%
     mutate(param = gsub(" vs.*$", "", tolower(param)),
-           param = gsub("pvs", "person in a persistant vegetative state (PVS)", 
+           param = gsub("pvs", "person in a persistent vegetative state (PVS)", 
                         param))
   
   output <- paste(newtab$param, collapse = ", ")
