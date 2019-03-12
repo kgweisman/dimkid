@@ -211,7 +211,7 @@ table4.x <- scales_study1 %>%
             funs(ifelse(is.na(.), "", "✓"))) %>%
   rename(Capacity = capacity) %>%
   kable(format = "html", 
-        caption = "Table 4.3: Scales for each of the conceptual units (factors) identified by EFA for US Adults in Studies 1a-1d (see Chapter III). A checkmark indicates that a mental capacity was included in a scale for a particular study.") %>%  
+        caption = "Table 4.x: Scales for each of the conceptual units (factors) identified by EFA for US Adults in Studies 1a-1d (see Chapter III). A checkmark indicates that a mental capacity was included in a scale for a particular study.") %>%  
   kable_styling() %>%
   group_rows("BODY scale", 1, 9) %>%
   group_rows("HEART scale", 10, 17) %>%
@@ -1677,7 +1677,7 @@ table4.x <- regtab_d2_ad79_scored_ad_diff %>%
   kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
         caption = "Table 4.x: Regression analyses of differences in difference scores between US adults and children (7-9y of age) difference scores in Study 2. The table presents results from separate Bayesian regressions of each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND). Each regression included four fixed effect parameters: (1) the intercept (for adults), which I treat as an index of the asymmetry in attributions of the two conceptual units in question among adults; (2) a difference between target characters (among adults), reported here as a difference between the robot and the grand mean (GM); (3) the overall difference between children and adults (collapsing across target characters); and (4) the interaction between this age difference and the difference between target characters. The developmental comparisons are highlighted in bold, because these are the primary parameters of interest for these analyses. For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
   kable_styling() %>%
-  row_spec(c(3:4, 7:8, 11:12), bold = T) %>%
+  row_spec(seq(2, 12, 2), bold = T) %>%
   group_rows("BODY - HEART", 1, 4) %>%
   group_rows("BODY - MIND", 5, 8) %>%
   group_rows("HEART - MIND", 9, 12) %>%
@@ -2422,6 +2422,64 @@ figure4.x_cap <- add_sub(figure4.x_plots_leg, str_wrap("Figure 4.x: Difference s
 ggdraw(figure4.x_cap)
 ```
 
+```{r}
+regtab_study3 <- regtab_d3_ad_scored_ad_diff %>%
+  full_join(regtab_d3_79_scored_ad_diff) %>%
+  full_join(regtab_d3_46_scored_ad_diff) %>%
+  mutate_at(vars(b, s.e.),
+            funs(format(round(., digits = 2), nsmall = 2))) %>%
+  unite(result, b, s.e., CI95, nonzero) %>%
+  spread(study, result) %>%
+  separate(`Adults`, c("s2a_b", "s2a_s.e.", "s2a_95% CI", "s2a_nz"), sep = "_") %>%
+  separate(`Children, 7-9y (using adults' scales)`, c("s2b_b", "s2b_s.e.", "s2b_95% CI", "s2b_nz"), sep = "_") %>%
+  separate(`Children, 4-6y (using adults' scales)`, c("s2c_b", "s2c_s.e.", "s2c_95% CI", "s2c_nz"), sep = "_")
+```
+
+```{r}
+table4.x <- regtab_study3 %>%
+  select(-pair, -contains("s.e.")) %>%
+  rename(Parameter = param) %>%
+  rename_all(funs(gsub("nz", " ", .))) %>%
+  rename_all(funs(gsub("s2._", "", .))) %>%
+  kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
+        caption = "Table 4.x: Regression analyses of difference scores among US adults, older children (7-9y of age), and younger children (4-6y of age) in Study 3. The table presents results from separate Bayesian regressions of each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND). Each regression included two fixed effect parameters: (1) the intercept, which I treat as an index of the asymmetry in attributions of the two conceptual units in question; and (2) a difference between target characters, reported here as a difference between the robot and the grand mean (GM). The intercepts are highlighted in bold, because these are the primary parameters of interest for these analyses. For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
+  kable_styling() %>%
+  row_spec(c(1, 10, 19), bold = T) %>%
+  group_rows("BODY - HEART", 1, 9) %>%
+  group_rows("BODY - MIND", 10, 18) %>%
+  group_rows("HEART - MIND", 19, 27) %>%
+  add_header_above(c(" " = 1,
+                     "Adults" = 3,
+                     "Children, 7-9y (using adults' scales)" = 3,
+                     "Children, 4-6y (using adults' scales)" = 3))
+```
+
+```{r, include = T}
+table4.x
+```
+
+```{r}
+table4.x <- regtab_d3_ad7946_scored_ad_diff %>%
+  select(-pair, -study, -contains("s.e.")) %>%
+  mutate(b = format(round(b, 2), nsmall = 2)) %>%
+  rename(Parameter = param,
+         `95% CI` = CI95) %>%
+  rename_all(funs(gsub("nonzero", " ", .))) %>%
+  kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
+        caption = "Table 4.x: Regression analyses of differences in difference scores between US adults and both older children (7-9y of age) and younger children (4-6y of age) in Study 3. The table presents results from separate Bayesian regressions of each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND). Each regression included four fixed effect parameters: (1) the intercept (for adults), which I treat as an index of the asymmetry in attributions of the two conceptual units in question among adults; (2) a difference between target characters (among adults), reported here as a difference between the robot and the grand mean (GM); (3) the overall difference between children and adults (collapsing across target characters); and (4) the interaction between this age difference and the difference between target characters. The developmental comparisons of the intercepts are highlighted in bold, because these are the primary parameters of interest for these analyses. For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
+  kable_styling() %>%
+  row_spec(c(1, 28, 55), bold = T) %>%
+  group_rows("BODY - HEART", 1, 27) %>%
+  group_rows("BODY - MIND", 28, 54) %>%
+  group_rows("HEART - MIND", 55, 81) %>%
+  add_header_above(c(" " = 1,
+                     "Developmental comparison" = 3))
+```
+
+```{r, include = T}
+table4.x
+```
+
 
 # Study 4: A focus on early childhood (4-5y)
 
@@ -3066,6 +3124,61 @@ figure4.x_cap <- add_sub(figure4.x_plots, str_wrap("Figure 4.x: Difference score
 
 ```{r, include = T, fig.width = 8, fig.asp = 0.38}
 ggdraw(figure4.x_cap)
+```
+
+```{r}
+regtab_study4 <- regtab_d4_ad_scored_ad_diff %>%
+  full_join(regtab_d4_46_scored_ad_diff) %>%
+  mutate_at(vars(b, s.e.),
+            funs(format(round(., digits = 2), nsmall = 2))) %>%
+  unite(result, b, s.e., CI95, nonzero) %>%
+  spread(study, result) %>%
+  separate(`Adults`, c("s4a_b", "s4a_s.e.", "s4a_95% CI", "s4a_nz"), sep = "_") %>%
+  separate(`Children, 4-5y (using adults' scales)`, c("s4b_b", "s4b_s.e.", "s4b_95% CI", "s4b_nz"), sep = "_")
+```
+
+```{r}
+table4.x <- regtab_study4 %>%
+  select(-pair, -contains("s.e.")) %>%
+  rename(Parameter = param) %>%
+  rename_all(funs(gsub("nz", " ", .))) %>%
+  rename_all(funs(gsub("s4._", "", .))) %>%
+  kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
+        caption = "Table 4.x: Regression analyses of difference scores among US adults and children (4-5y of age) in Study 4. The table presents results from separate Bayesian regressions of each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND). Each regression included two fixed effect parameters: (1) the intercept, which I treat as an index of the asymmetry in attributions of the two conceptual units in question; and (2) a difference between target characters, reported here as a difference between the robot and the grand mean (GM). The intercepts are highlighted in bold, because these are the primary parameters of interest for these analyses. For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
+  kable_styling() %>%
+  row_spec(c(1, 3, 5), bold = T) %>%
+  group_rows("BODY - HEART", 1, 2) %>%
+  group_rows("BODY - MIND", 3, 4) %>%
+  group_rows("HEART - MIND", 5, 6) %>%
+  add_header_above(c(" " = 1,
+                     "Adults" = 3,
+                     "Children, 4-6y (using adults' scales)" = 3))
+```
+
+```{r, include = T}
+table4.x
+```
+
+```{r}
+table4.x <- regtab_d4_ad46_scored_ad_diff %>%
+  select(-pair, -study, -contains("s.e.")) %>%
+  mutate(b = format(round(b, 2), nsmall = 2)) %>%
+  rename(Parameter = param,
+         `95% CI` = CI95) %>%
+  rename_all(funs(gsub("nonzero", " ", .))) %>%
+  kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
+        caption = "Table 4.x: Regression analyses of differences in difference scores between US adults and children (4-5y of age) difference scores in Study 4. The table presents results from separate Bayesian regressions of each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND). Each regression included four fixed effect parameters: (1) the intercept (for adults), which I treat as an index of the asymmetry in attributions of the two conceptual units in question among adults; (2) a difference between target characters (among adults), reported here as a difference between the robot and the grand mean (GM); (3) the overall difference between children and adults (collapsing across target characters); and (4) the interaction between this age difference and the difference between target characters. The developmental comparisons are highlighted in bold, because these are the primary parameters of interest for these analyses. For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
+  kable_styling() %>%
+  row_spec(seq(2, 12, 2), bold = T) %>%
+  group_rows("BODY - HEART", 1, 4) %>%
+  group_rows("BODY - MIND", 5, 8) %>%
+  group_rows("HEART - MIND", 9, 12) %>%
+  add_header_above(c(" " = 1,
+                     "Developmental comparison" = 3))
+```
+
+```{r, include = T}
+table4.x
 ```
 
 
