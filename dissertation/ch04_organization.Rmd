@@ -629,6 +629,14 @@ regtab_studies1abc <- regtab_d1a_ad_scored_ad_diff %>%
 regtab_studies1abc
 ```
 
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_grid(plot_d1a_ad_scored_ad_diff, 
+          plot_d1b_ad_scored_ad_diff, 
+          plot_d1c_ad_scored_ad_diff,
+          ncol = 3)
+```
+
 ##### BODY vs. HEART
 
 These regression analyses confirmed that, across Studies 1a-1c, difference scores comparing scores on the _BODY_ and _HEART_ scales were substantially non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.x). As I speculated in the previous section, in all studies this difference was driven by participants' assessments of the beetle; in the aggregate, difference scores were reduced to 0 for the robot (see the "Target character" row for the "BODY-HEART" comparison in Table 4.x).  
@@ -828,6 +836,11 @@ regtab_studyd <- regtab_d1d_ad_scored_ad_diff %>%
 ```{r}
 # interim table for ease of writing
 regtab_studyd
+```
+
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_d1d_ad_scored_ad_diff
 ```
 
 ##### BODY vs. HEART
@@ -1038,6 +1051,11 @@ regtab_d2_ad_scored_ad_diff <- diff_reg_table_fun(
 regtab_d2_ad_scored_ad_diff
 ```
 
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_d2_ad_scored_ad_diff
+```
+
 ##### BODY vs. HEART
 
 As in Study 1, among adults in Study 2, difference scores comparing scores on the _BODY_ and _HEART_ scales were substantially non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.x). As I speculated earlier, this difference was driven by participants' assessments of the beetle; in the aggregate, difference scores were reduced to 0 for the robot (see the "Target character" row for the "BODY-HEART" comparison in Table 4.x).  
@@ -1195,6 +1213,11 @@ regtab_d2_79_scored_ad_diff <- diff_reg_table_fun(
 regtab_d2_79_scored_ad_diff
 ```
 
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_d2_79_scored_ad_diff
+```
+
 ##### BODY vs. HEART
 
 In contrast to analyses of adults, among children in Study 2 difference scores comparing scores on the _BODY_ and _HEART_ scales were not differentiable from zero (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.x), and the direction of difference varied substantially across target characters (see the "Target character" row for the "BODY-HEART" comparison in Table 4.x).  
@@ -1330,6 +1353,11 @@ regtab_d2_ad79_scored_ad_diff <- diff_reg_table_fun(
 ```{r}
 # interim table for ease of writing
 regtab_d2_ad79_scored_ad_diff
+```
+
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_grid(plot_d2_ad_scored_ad_diff, plot_d2_79_scored_ad_diff, ncol = 2)
 ```
 
 ##### BODY vs. HEART
@@ -1530,6 +1558,11 @@ regtab_d2_79_scored_79_diff <- diff_reg_table_fun(
 ```{r}
 # interim table for ease of writing
 regtab_d2_79_scored_79_diff
+```
+
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_d2_79_scored_79_diff
 ```
 
 ##### BODY vs. HEART
@@ -1797,38 +1830,26 @@ regtab_d3_ad_scored_ad_diff <- diff_reg_table_fun(
 regtab_d3_ad_scored_ad_diff
 ```
 
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_d3_ad_scored_ad_diff
+```
+
 ##### BODY vs. HEART
 
-As in Study 1, among adults in Study 2, difference scores comparing scores on the _BODY_ and _HEART_ scales were substantially non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.x). As I speculated earlier, this difference was driven by participants' assessments of the beetle; in the aggregate, difference scores were reduced to 0 for the robot (see the "Target character" row for the "BODY-HEART" comparison in Table 4.x).
-
-[1d] This asymmetry was more pronounced for some characters (`r nonzero_fun(regtab = regtab_d2_ad_scored_ad_diff, which_pair = "BODY - HEART", pos_neg = "pos")`), and less pronounced for others (`r nonzero_fun(regtab = regtab_d2_ad_scored_ad_diff, which_pair = "BODY - HEART", pos_neg = "neg")`; see the "Target character" row for the "BODY-HEART" comparison in Table 4.x). A full discussion of the differences between target characters is beyond the scope of this chapter.
-
+As in Studies 1 and 2, difference scores comparing scores on the _BODY_ and _HEART_ scales were substantially non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.x). This asymmetry was driven by responses to the animate beings (and was substantially more pronounced for `r nonzero_fun(regtab = regtab_d3_ad_scored_ad_diff, which_pair = "BODY - HEART", pos_neg = "pos")`); among inanimate beings, difference scores hovered around zero (and were substantially less pronounced for `r nonzero_fun(regtab = regtab_d3_ad_scored_ad_diff, which_pair = "BODY - HEART", pos_neg = "neg")`; see the "Target character" row for the "BODY-HEART" comparison in Table 4.x.
 
 ##### BODY vs. MIND
 
-As in Studies 1a-1c (which featured the same "edge cases" as target characters), among adults in Study 2, difference scores comparing scores on the _BODY_ and _MIND_ scales were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _BODY_ items (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.x). This difference was driven by participants' assessments of the robot; in the aggregate, difference scores were reduced to 0 for the beetle (see the "Target character" row for the "BODY-MIND" comparison in Table 4.x).
-
-[1d] Again, this asymmetry was more pronounced for some characters (`r nonzero_fun(regtab = regtab_d2_ad_scored_ad_diff, which_pair = "BODY - MIND", pos_neg = "pos")`), and less pronounced for others (`r nonzero_fun(regtab = regtab_d2_ad_scored_ad_diff, which_pair = "BODY - MIND", pos_neg = "neg")`; see the "Target character" row for the "BODY-MIND" comparison in Table 4.x). A full discussion of the differences between target characters is beyond the scope of this chapter.
-
+As in Studies 1 and 2, on the whole, difference scores comparing scores on the _BODY_ and _MIND_ scales were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _BODY_ items (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.x). However, this asymmetry was driven by responses to the two technologies (particularly the `r nonzero_fun(regtab = regtab_d3_ad_scored_ad_diff, which_pair = "BODY - MIND", pos_neg = "neg")`). It was much less pronounced—and in some cases ran in the opposite direction—for other characters (particularly `r nonzero_fun(regtab = regtab_d3_ad_scored_ad_diff, which_pair = "BODY - MIND", pos_neg = "pos")`); see the "Target character" row for the "BODY-MIND" comparison in Table 4.x. 
 
 ##### HEART vs. MIND
 
-As in Study 1, among adults in Study 2, difference scores comparing scores on the _HEART_ and _MIND_ scales were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.x). As in Studies 1a-1c, this difference was somewhat exaggerated in assessments of the robot, relative to the beetle (see the "Target character" row for the "HEART-MIND" comparison in Table 4.x).
-
-[1d] Again, this asymmetry was more pronounced for some characters (`r nonzero_fun(regtab = regtab_d2_ad_scored_ad_diff, which_pair = "HEART - MIND", pos_neg = "pos")`), and less pronounced for others (`r nonzero_fun(regtab = regtab_d2_ad_scored_ad_diff, which_pair = "HEART - MIND", pos_neg = "neg")`; see the "Target character" row for the "HEART-MIND" comparison in Table 4.x). A full discussion of the differences between target characters is beyond the scope of this chapter.
-
+As in Studies 1 and 2, among adults in Study 2, difference scores comparing scores on the _HEART_ and _MIND_ scales were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.x). Again, this asymmetry was more pronounced for some characters (`r nonzero_fun(regtab = regtab_d3_ad_scored_ad_diff, which_pair = "HEART - MIND", pos_neg = "neg")`), and less pronounced for others (namely, the two inert toys: `r nonzero_fun(regtab = regtab_d3_ad_scored_ad_diff, which_pair = "HEART - MIND", pos_neg = "pos")`; see the "Target character" row for the "HEART-MIND" comparison in Table 4.x). 
 
 ##### Interim discussion
 
-These formal analyses of difference scores across the _BODY_, _HEART_, and _MIND_ scales among adults in Study 2 confirm my information observations of asymmetries described in the previous section, and align quite closely with analyses of adults in Studies 1a-1c: Across all of these studies, participants tended to endorse MIND more strongly than BODY or HEART, and BODY more strongly than HEART.
-
-
-
-
-
-
-
-
+These formal analyses of difference scores across the _BODY_, _HEART_, and _MIND_ scales among adults in Study 3 confirm my information observations of asymmetries described in the previous section, echoing the analyses of adults in Studies 1 and 2: Across all of these studies, participants tended to endorse both BODY and MIND more strongly than HEART, while the asymmetry between MIND and BODY was contingent on the type of target character under consideration.
 
 ### Children (7-9y)
 
