@@ -3169,7 +3169,7 @@ table4.10
 ```
 
 
-# Comparison of Studies 1-4
+# General discussion
 
 XX __INSERT SECTION INTRODUCTION__
 
@@ -3286,9 +3286,26 @@ ggdraw(figure4.10_cap)
 
 XX __INSERT DISCUSSION__
 
-# General discussion
+outline: 
 
-XX __INSERT GENERAL DISCUSSION__
+- adults:
+    - BODY and (especially) MIND more basic than HEART
+    - MIND perhaps more basic than BODY, but more contingent on characters: strongest for between-Ss comparisons of edge cases (Studies 1a-1c and Study 2), weaker in within-Ss version (Study 4), weakest for diverse characters (Studies 1d and Study 3)
+    - ["threshold" model?]
+- older children:
+    - like adults, MIND more basic than HEART
+    - BODY perhaps more basic than HEART (like adults), but only in diverse characters approach (Study 3), not edge cases (Study 2) - perhaps because of developmental diffs in assessments of the robot? (revisit in ch05)
+    - like adults, MIND perhaps more basic than BODY, but only in edge case approach (Study 2), not diverse characters (Study 3)
+    - generally, all asymmetries weaker
+    - [no evidence of "threshold" model]
+- younger children:
+    - like adults, BODY more basic than HEART (more "adult-like" than older children are!)
+    - MIND perhaps more basic than HEART (like adults/older children), but only in edge case approach (Study 4), not diverse characters (Study 3) - why? perhaps because of robot?
+    - _unlike_ adults/older children, BODY perhaps more basic than MIND, but only in diverse characters approach (Study 3), not edge cases (Study 4) - why?
+    - generally, all asymmetries weaker, even compared to older children
+    - [no evidence of "threshold" model]
+
+XX __INSERT DISCUSSION OF IMPLICATIONS__
 
 
 # Chapter conclusion
