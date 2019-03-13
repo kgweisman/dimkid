@@ -1750,10 +1750,6 @@ Finally I consider the relationship between HEART and MIND (Figure 4.6, panel A3
 
 Visual inspection of mean scores by target character further reveals that, in the aggregate, characters that received low _MIND_ scores (the two inert toys: a teddy bear and a doll) also received low mean _HEART_ scores, while characters that received relatively high _MIND_ scores (e.g., the robot and all of the animate beings) varied in their mean _HEART_ scores. Again, this echoes the intriguing possibility, raised by Study 1d, that attributions of HEART and MIND may have been governed by some sort of "threshold" model, in which attributions of any substantial amount of HEART depend on the target character having a certain degree of MIND. (Again, this will not be explored further in the current dissertation.)
 
-##### Interim discussion
-
-My informal observations of the relationships among adults' endorsements of the conceptual units in Study 3 are very similar to those for adults in Studies 1 and 2 (particularly Study 1d, which also employed the "diverse characters" approach taken here): (1) All of these inter-unit relationships were positive, such that the more strongly a participant endorsed one conceptual unit, the more strongly they tended to endorse the others; and (2) There were robust asymmetries in these positive relationships, such that participants tended to endorse either BODY or MIND more strongly than HEART. As in Study 1d, the relationship between BODY vs. MIND appears to be more variable across participants and across target characters than the generally asymmetrical relationship (with participants tending to attribute more MIND than BODY) that emerged in studies that used the "edge case" approach (Studies 1a-1c and Study 2).
-
 #### Analysis of asymmetries
 
 Here I provide a formal analysis of the asymmetries revealed by the visualizations in the previous section. For each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND), I conduct a Bayesian regression to compare difference scores between these two conceptual units to zero, controlling for differences in assessments of the nine "diverse characters" that were featured as target characters in these studies. See Figure 4.7, panel A, for visual depictions of these difference scores.
@@ -1849,7 +1845,11 @@ As in Studies 1 and 2, on the whole, difference scores comparing the _BODY_ and 
 
 As in Studies 1 and 2, difference scores comparing the _HEART_ and _MIND_ scales were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.6). Again, this asymmetry was more pronounced for some characters (`r nonzero_fun(regtab = regtab_d3_ad_scored_ad_diff, which_pair = "HEART - MIND", pos_neg = "neg")`), and less pronounced for others (namely, the two inert toys: `r nonzero_fun(regtab = regtab_d3_ad_scored_ad_diff, which_pair = "HEART - MIND", pos_neg = "pos")`; see the various comparisons of target characters to the grand mean for the "HEART-MIND" comparison in Table 4.6). 
 
-##### Interim discussion
+#### Interim discussion
+
+XX __REWORK/COMBINE__
+
+My informal observations of the relationships among adults' endorsements of the conceptual units in Study 3 are very similar to those for adults in Studies 1 and 2 (particularly Study 1d, which also employed the "diverse characters" approach taken here): (1) All of these inter-unit relationships were positive, such that the more strongly a participant endorsed one conceptual unit, the more strongly they tended to endorse the others; and (2) There were robust asymmetries in these positive relationships, such that participants tended to endorse either BODY or MIND more strongly than HEART. As in Study 1d, the relationship between BODY vs. MIND appears to be more variable across participants and across target characters than the generally asymmetrical relationship (with participants tending to attribute more MIND than BODY) that emerged in studies that used the "edge case" approach (Studies 1a-1c and Study 2).
 
 These formal analyses of difference scores across the _BODY_, _HEART_, and _MIND_ scales among adults in Study 3 confirm my informal observations of asymmetries described in the previous section, echoing the analyses of adults in Studies 1 and 2: Across all of these studies, participants tended to endorse both BODY and MIND more strongly than HEART, while the asymmetry between MIND and BODY was contingent on the type of target character under consideration.
 
@@ -1929,10 +1929,6 @@ Next I consider the relationship between BODY and MIND (Figure 4.6, panel B2). A
 
 Finally I consider the relationship between HEART and MIND (Figure 4.6, panel B3). As among adults in this study (panel A3), the relationship between scores on the _HEART_ and _MIND_ scales appears to be somewhat positive, and there appear to be somewhat fewer datapoints below the line of equivalence ($y = x$, dotted diagonal line) than above it—but again both of these observations are much less striking among children than they were among adults. In other words, while many children attributed more MIND than HEART to the target character in question (like the vast majority of adults), quite a few children attributed more HEART than MIND. 
 Visual inspection of mean scores by target character reveals no evidence of the kind of "threshold" model discussed for adults.
-
-##### Interim discussion
-
-As in the comparison of adults and children in Study 2, my informal observations of the relationships among older children's endorsements of the conceptual units in Study 3 are broadly similar to those of adults in this study, but dramatically attenuated: (1) These inter-unit relationships were what positive, but only somewhat; and (2) There was some evidence of asymmetries in these positive relationships, but these asymmetries were generally weaker and appeared to be highly dependent on which target character participants assessed (particularly for the BODY vs. HEART and BODY vs. MIND comparisons).
 
 #### Analysis of asymmetries
 
@@ -2029,7 +2025,11 @@ difference scores comparing the _BODY_ and _MIND_ scales were not substantially 
 
 As among adults, difference scores comparing the _HEART_ and _MIND_ scales were substantially non-zero, in the direction of children endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.6). This asymmetry appeared to hold true across the range of target characters included in this study,  and less pronounced for others; see the various comparisons of target characters to the grand mean for the "HEART-MIND" comparison in Table 4.6. 
 
-##### Interim discussion
+#### Interim discussion
+
+XX __REWORK/COMBINE__
+
+As in the comparison of adults and children in Study 2, my informal observations of the relationships among older children's endorsements of the conceptual units in Study 3 are broadly similar to those of adults in this study, but dramatically attenuated: (1) These inter-unit relationships were what positive, but only somewhat; and (2) There was some evidence of asymmetries in these positive relationships, but these asymmetries were generally weaker and appeared to be highly dependent on which target character participants assessed (particularly for the BODY vs. HEART and BODY vs. MIND comparisons).
 
 These formal analyses of difference scores across the _BODY_, _HEART_, and _MIND_ scales among older children (7-9y) in Study 3 confirm my informal observations in the previous section: Older children tended to endorse both BODY and MIND more strongly than HEART, while the asymmetry between MIND and BODY was highly contingent on the type of target character under consideration.
 
@@ -2187,7 +2187,9 @@ difference scores comparing the _BODY_ and _HEART_ scales were substantially non
 
 In contrast to adults and older children, among younger children difference scores comparing the _HEART_ and _MIND_ scales did not differ substantially from zero, and varied only subtly across target characters; see the various comparisons of target characters to the grand mean for the "HEART-MIND" comparison in Table 4.6. 
 
-##### Interim discussion
+#### Interim discussion
+
+XX __REWORK/COMBINE WITH INFORMAL OBSERVATIONS__
 
 These formal analyses of difference scores across the _BODY_, _HEART_, and _MIND_ scales among younger children (4-6y) in Study 3 confirm my informal observations in the previous section. Like older children and adults, younger children tended to endorse BODY more strongly than HEART. However, younger children diverged from their older counterparts by systematically endorsing BODY more strongly than MIND, and by failing to show any systematic asymmetry between HEART and MIND.
 
@@ -2630,7 +2632,9 @@ As previous studies, difference scores comparing adults' scores on the _BODY_ an
 
 As in previous studies, difference scores comparing adults' scores on the _HEART_ and _MIND_ scales were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.8). Again, this difference was somewhat exaggerated in assessments of the robot, relative to the beetle (see the "Robot vs. GM" row for the "HEART-MIND" comparison in Table 4.8).
 
-##### Interim discussion
+#### Interim discussion
+
+XX __REWORK/COMBINE WITH INFORMAL OBSERVATIONS__
 
 These formal analyses of difference scores across the _BODY_, _HEART_, and _MIND_ scales among adults in Study 4 confirm my informal observations of asymmetries described in the previous section, and align quite closely with analyses of adults in Studies 1a-1c and Study 2: Across all of the studies that used the "edge case approach" to inducing variability in mental capacity attributions, adults tended to endorse MIND more strongly than BODY or HEART, and BODY more strongly than HEART.
 
@@ -2699,9 +2703,11 @@ Next I consider the relationship between BODY and MIND (Figure 4.8, panel B2). A
 
 Finally I consider the relationship between HEART and MIND (Figure 4.8, panel B3). As among adults in this study (panel A3), the relationship between scores on the _HEART_ and _MIND_ scales appears to be positive, and there appear to be somewhat fewer datapoints below the line of equivalence ($y = x$, dotted diagonal line) than above it—but, as in the previous sections, both of these observations are much less striking among children than they were among adults. In other words, while many children attributed more MIND than HEART to the target character in question (like the vast majority of adults), quite a few children attributed more HEART than MIND. This appears to have been true for both target characters.
 
-##### Interim discussion
+##### General observations about development
 
-Using a particularly child-friendly paradigm, the relationships young children's endorsements of BODY, HEART, and MIND (as defined by adults' EFA solution) appear to be slightly more resonant with the relationships observed among adults. All of these inter-unit relationships were somewhat positive—but only somewhat. There was some evidence of asymmetries in these positive relationships, but these asymmetries were generally weaker and appeared to be highly dependent on which target character participants assessed (particularly for the BODY vs. HEART and BODY vs. MIND comparisons, as was the case in Study 2 with older children).
+XX __CONVERT FROM STUDY 2 WRITE-UP, PASTED BELOW__
+
+For each pair conceptual units, these visualizations suggest that children's responses were generally less asymmetrical than those of adults. This is perhaps easiest to observe in Figure 4.3, row D, which presents (hypothetical) "movement" between the mean placement for a target character among children (beginning of arrow) and the mean placement for a target character among adults (arrowhead), for each pair of conceptual units. In each case, this "movement" either maintains a similar distance from the line of equivalence ($y = x$) (as with mean assessments of the robot in the BODY vs. HEART space, panel C1; and the beetle in the BODY vs. MIND space, panel C2) or moves away from the line of equivalence toward the upper left and lower right corners of the plot (as with mean assessments of the beetle in the BODY vs. HEART space, panel C1; the robot in the BODY vs. MIND space, panel C2; and both characters in the HEART vs. MIND space, panel C3). Analysis of changes in _absolute_ attributions of BODY, HEART, and MIND, is pursued in Chapter V; for the purposes of the current chapter, the primary observation of interest is that these "shifts" between child and adult assessments of these characters generally point in the direction of stable or increasing (not decreasing) asymmetries over developmental time.
 
 #### Analysis of asymmetries
 
@@ -2796,7 +2802,11 @@ In contrast to adults, among children difference scores comparing the _BODY_ and
 
 As among adults, among children difference scores comparing the _HEART_ and _MIND_ scales were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.8), and this difference was slightly exaggerated in assessments of the robot (see the "Robot vs. GM" row for the "HEART-MIND" comparison in Table 4.8).
 
-##### Interim discussion
+#### Interim discussion
+
+XX __REWORK/COMBINE__
+
+Using a particularly child-friendly paradigm, the relationships young children's endorsements of BODY, HEART, and MIND (as defined by adults' EFA solution) appear to be slightly more resonant with the relationships observed among adults. All of these inter-unit relationships were somewhat positive—but only somewhat. There was some evidence of asymmetries in these positive relationships, but these asymmetries were generally weaker and appeared to be highly dependent on which target character participants assessed (particularly for the BODY vs. HEART and BODY vs. MIND comparisons, as was the case in Study 2 with older children).
 
 These formal analyses of difference scores across the _BODY_, _HEART_, and _MIND_ scales among children in Study 4 confirm my informal observations that in this particularly child-friendly paradigm, young children were adult-like in their tendency to endorse BODY and MIND more strongly than HEART, while failing to show the adult-like tendency to endorse MIND more strongly than BODY for these two edge cases. Instead, like children in other studies (XX __INSERT REFERENCES__), the asymmetry between BODY and MIND appeared to depend on which target was being assessed.
 
