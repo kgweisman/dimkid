@@ -925,7 +925,7 @@ saveRDS(d2_ad_scored_ad, file = "./stored/scored_data/d2_ad_scored_ad")
 # big table for scales located at study 4
 ```
 
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d2_ad)` scales of `r scales_efa_wdm_d2_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.8.
+Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d2_ad)` scales of `r scales_efa_wdm_d2_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.10.
 
 #### Visualization
 
@@ -1295,7 +1295,7 @@ figure4.3 <- plot_grid(fig_d2_ad_plots_leg_title,
                        fig_d2_all_scored_ad_plots_leg_title,
                        ncol = 1)
 
-figure4.3_cap <- add_sub(figure4.3, str_wrap("Figure 4.3: Relationships among US adults' and children's attributions of conceptual units in Study 2, scored using adults' BODY, HEART, and MIND scales (see Table 4.8). Plots are organized by sample (rows) and by pair of conceptual units (columns). (A) Adults. (B) Children (7-9y of age), scored using adults' scales. (C) A visualization of development between 7-9y and adulthood, using mean scores by character and age group. For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted. Pearson correlations are reported for each pair of conceptual units.", 110), x = 0, hjust = 0)
+figure4.3_cap <- add_sub(figure4.3, str_wrap("Figure 4.3: Relationships among US adults' and children's attributions of conceptual units in Study 2, scored using adults' BODY, HEART, and MIND scales (see Table 4.10). Plots are organized by sample (rows) and by pair of conceptual units (columns). (A) Adults. (B) Children (7-9y of age), scored using adults' scales. (C) A visualization of development between 7-9y and adulthood, using mean scores by character and age group. For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted. Pearson correlations are reported for each pair of conceptual units.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.4}
@@ -1434,7 +1434,7 @@ scales_study2 <- bind_rows(scales_efa_wdm_d2_ad %>%
 # big table for scales located at study 4
 ```
 
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d2_79)` scales of `r scales_efa_wdm_d2_79 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.8.
+Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d2_79)` scales of `r scales_efa_wdm_d2_79 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.10.
 
 #### Visualization
 
@@ -1502,7 +1502,7 @@ My informal observations of the relationships among children's endorsements of t
 figure4.4 <- plot_grid(fig_d2_79_scored_79_plots_leg_title, 
                        ncol = 1)
 
-figure4.4_cap <- add_sub(figure4.4, str_wrap("Figure 4.4: Relationships among children's attributions of conceptual units in Study 2, scored using their own scales (see Table 4.8). Plots are organized by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted. Pearson correlations are reported for each pair of conceptual units.", 110), x = 0, hjust = 0)
+figure4.4_cap <- add_sub(figure4.4, str_wrap("Figure 4.4: Relationships among children's attributions of conceptual units in Study 2, scored using their own scales (see Table 4.10). Plots are organized by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted. Pearson correlations are reported for each pair of conceptual units.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 0.55}
@@ -1620,7 +1620,7 @@ figure4.5_plots <- plot_grid(
   ncol = 3, rel_widths = c(1, 1, 1),
   labels = "AUTO")
 
-figure4.5_cap <- add_sub(figure4.5_plots, str_wrap("Figure 4.5: Difference scores between US adults' and children's attributions of conceptual units in Study 2. this includes difference scores using adults' BODY, HEART, and MIND scales (panel B) and difference scores using children's own scales (panel C; see Table 4.8). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
+figure4.5_cap <- add_sub(figure4.5_plots, str_wrap("Figure 4.5: Difference scores between US adults' and children's attributions of conceptual units in Study 2. this includes difference scores using adults' BODY, HEART, and MIND scales (panel B) and difference scores using children's own scales (panel C; see Table 4.10). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 8, fig.asp = 0.38}
@@ -1713,7 +1713,7 @@ saveRDS(scales_efa_wdm_d3_ad, file = "./stored/scales/scales_efa_wdm_d3_ad")
 saveRDS(d3_ad_scored_ad, file = "./stored/scored_data/d3_ad_scored_ad")
 ```
 
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d3_ad)` scales of `r scales_efa_wdm_d3_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.8.
+Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d3_ad)` scales of `r scales_efa_wdm_d3_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.10.
 
 #### Visualization
 
@@ -2390,7 +2390,7 @@ figure4.6 <- plot_grid(fig_d3_ad_plots_leg_title,
                        fig_d3_all_scored_ad_plots_leg_title,
                        ncol = 1)
 
-figure4.6_cap <- add_sub(figure4.6, str_wrap("Figure 4.6: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using adults' BODY, HEART, and MIND scales (see Table 4.8). (A) Adults. (B) Older children (7-9y of age). (C) Younger children (4-6y of age). (D) A visualization of development between 4-9y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-C, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted. Pearson correlations are reported for each pair of conceptual units.", 110), x = 0, hjust = 0)
+figure4.6_cap <- add_sub(figure4.6, str_wrap("Figure 4.6: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using adults' BODY, HEART, and MIND scales (see Table 4.10). (A) Adults. (B) Older children (7-9y of age). (C) Younger children (4-6y of age). (D) A visualization of development between 4-9y and adulthood, using mean scores by character and age group. Plots are organized by sample (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. In panels A-C, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted. Pearson correlations are reported for each pair of conceptual units.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.8}
@@ -2415,7 +2415,7 @@ figure4.7_plots_leg <- plot_grid(figure4.7_plots,
                                  get_legend(plot_d3_ad_scored_ad_diff),
                                  ncol = 1, rel_heights = c(1, 0.1))
 
-figure4.7_cap <- add_sub(figure4.7_plots_leg, str_wrap("Figure 4.7: Difference scores between US adults' and children's attributions of conceptual units in Study 3. this includes difference scores using adults' BODY, HEART, and MIND scales (panel B) and difference scores using children's own scales (panel C; see Table 4.8). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
+figure4.7_cap <- add_sub(figure4.7_plots_leg, str_wrap("Figure 4.7: Difference scores between US adults' and children's attributions of conceptual units in Study 3. this includes difference scores using adults' BODY, HEART, and MIND scales (panel B) and difference scores using children's own scales (panel C; see Table 4.10). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 8, fig.asp = 0.38}
@@ -2504,7 +2504,21 @@ saveRDS(scales_efa_wdm_d4_ad, file = "./stored/scales/scales_efa_wdm_d4_ad")
 saveRDS(d4_ad_scored_ad, file = "./stored/scored_data/d4_ad_scored_ad")
 ```
 
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d4_ad)` scales of `r scales_efa_wdm_d4_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.8.
+```{r}
+scales_study4 <- bind_rows(scales_efa_wdm_d4_ad %>% 
+                             mutate(study = "Study 4: Adults")) %>%
+  select(-c(loading, order)) %>%
+  distinct() %>%
+  spread(study, factor) %>%
+  mutate(ur_factor = `Study 4: Adults`) %>%
+  left_join(scales_efa_wdm_d4_ad %>% 
+              select(capacity, order) %>% rename(order_ad = order)) %>%
+  arrange(ur_factor, order_ad) %>%
+  select(-ur_factor) #%>%
+# select(-starts_with("order"))
+```
+
+Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d4_ad)` scales of `r scales_efa_wdm_d4_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.10.
 
 #### Visualization
 
@@ -2635,15 +2649,15 @@ plot_d4_ad_scored_ad_diff
 
 ##### BODY vs. HEART
 
-As in previous studies, difference scores comparing adults' scores on the _BODY_ and _HEART_ scales were substantially non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.9). Again, this difference was driven by participants' assessments of the beetle; in the aggregate, difference scores were reduced to 0 for the robot (see the "Robot vs. GM" row for the "BODY-HEART" comparison in Table 4.9).  
+As in previous studies, difference scores comparing adults' scores on the _BODY_ and _HEART_ scales were substantially non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.8). Again, this difference was driven by participants' assessments of the beetle; in the aggregate, difference scores were reduced to 0 for the robot (see the "Robot vs. GM" row for the "BODY-HEART" comparison in Table 4.8).  
 
 ##### BODY vs. MIND
 
-As previous studies, difference scores comparing adults' scores on the _BODY_ and _MIND_ scales were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _BODY_ items (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.9). Again, this difference was driven by participants' assessments of the robot; in the aggregate, difference scores tended to be _greater_, not less, than zero for the beetle (see the "Robot vs. GM" row for the "BODY-MIND" comparison in Table 4.9).
+As previous studies, difference scores comparing adults' scores on the _BODY_ and _MIND_ scales were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _BODY_ items (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.8). Again, this difference was driven by participants' assessments of the robot; in the aggregate, difference scores tended to be _greater_, not less, than zero for the beetle (see the "Robot vs. GM" row for the "BODY-MIND" comparison in Table 4.8).
 
 ##### HEART vs. MIND
 
-As in previous studies, difference scores comparing adults' scores on the _HEART_ and _MIND_ scales were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.9). Again, this difference was somewhat exaggerated in assessments of the robot, relative to the beetle (see the "Robot vs. GM" row for the "HEART-MIND" comparison in Table 4.9).
+As in previous studies, difference scores comparing adults' scores on the _HEART_ and _MIND_ scales were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.8). Again, this difference was somewhat exaggerated in assessments of the robot, relative to the beetle (see the "Robot vs. GM" row for the "HEART-MIND" comparison in Table 4.8).
 
 ##### Interim discussion
 
@@ -2801,15 +2815,15 @@ plot_d4_46_scored_ad_diff
 
 ##### BODY vs. HEART
 
-As among adults, among children difference scores comparing scores on the _BODY_ and _HEART_ scales were significantly non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.9). However, this asymmetry was reduced to zero for assessments of the robot (see the "Robot vs. GM" row for the "BODY-HEART" comparison in Table 4.9).  
+As among adults, among children difference scores comparing scores on the _BODY_ and _HEART_ scales were significantly non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.8). However, this asymmetry was reduced to zero for assessments of the robot (see the "Robot vs. GM" row for the "BODY-HEART" comparison in Table 4.8).  
 
 ##### BODY vs. MIND
 
-In contrast to adults, among children difference scores comparing scores on the _BODY_ and _MIND_ scales were not differentiable from zero (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.9). This appears to be due to the fact that the asymmetry ran in different directions for the two target characters (see the "Robot vs. GM" row for the "BODY-MIND" comparison in Table 4.9).  
+In contrast to adults, among children difference scores comparing scores on the _BODY_ and _MIND_ scales were not differentiable from zero (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.8). This appears to be due to the fact that the asymmetry ran in different directions for the two target characters (see the "Robot vs. GM" row for the "BODY-MIND" comparison in Table 4.8).  
 
 ##### HEART vs. MIND
 
-As among adults, among children difference scores comparing scores on the _HEART_ and _MIND_ scales were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.9), and this difference was slightly exaggerated in assessments of the robot (see the "Robot vs. GM" row for the "HEART-MIND" comparison in Table 4.9).
+As among adults, among children difference scores comparing scores on the _HEART_ and _MIND_ scales were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.8), and this difference was slightly exaggerated in assessments of the robot (see the "Robot vs. GM" row for the "HEART-MIND" comparison in Table 4.8).
 
 ##### Interim discussion
 
@@ -2860,7 +2874,7 @@ figure4.8 <- plot_grid(fig_d4_ad_plots_leg_title,
                        fig_d4_all_scored_ad_plots_leg_title,
                        ncol = 1)
 
-figure4.8_cap <- add_sub(figure4.8, str_wrap("Figure 4.8: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 4, scored using adults' BODY, HEART, and MIND scales (see Table 4.8). Plots are organized by sample (rows) and by pair of conceptual units (columns). (A) Adults. (B) Children (4-6y of age), scored using adults' scales. (C) A visualization of development between 4-6y and adulthood, using mean scores by character and age group. For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted. Pearson correlations are reported for each pair of conceptual units.", 110), x = 0, hjust = 0)
+figure4.8_cap <- add_sub(figure4.8, str_wrap("Figure 4.8: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 4, scored using adults' BODY, HEART, and MIND scales (see Table 4.10). Plots are organized by sample (rows) and by pair of conceptual units (columns). (A) Adults. (B) Children (4-6y of age), scored using adults' scales. (C) A visualization of development between 4-6y and adulthood, using mean scores by character and age group. For each conceptual unit, scores could range from 0-1. In panels A-B, individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted. Pearson correlations are reported for each pair of conceptual units.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.4}
@@ -2948,15 +2962,15 @@ plot_grid(plot_d4_ad_scored_ad_diff, plot_d4_46_scored_ad_diff, ncol = 2)
 
 ##### BODY vs. HEART
 
-Difference scores between the _BODY_ and _HEART_ scales were substantially closer to zero among children, as compared to adults (see the "Children vs. adults" row for the "BODY-HEART" comparison in Table 4.10), and the difference between target characters was attenuated among children (see the "Interaction" row for the "BODY-HEART" comparison in Table 4.10).  
+Difference scores between the _BODY_ and _HEART_ scales were substantially closer to zero among children, as compared to adults (see the "Children vs. adults" row for the "BODY-HEART" comparison in Table 4.9), and the difference between target characters was attenuated among children (see the "Interaction" row for the "BODY-HEART" comparison in Table 4.9).  
 
 ##### BODY vs. MIND
 
-Difference scores between the _BODY_ and _MIND_ scales were substantially closer to zero among children, as compared to adults (see the "Children vs. adults" row for the "BODY-MIND" comparison in Table 4.10), and the difference between target characters was attenuated among children (see the "Interaction" row for the "BODY-MIND" comparison in Table 4.10).  
+Difference scores between the _BODY_ and _MIND_ scales were substantially closer to zero among children, as compared to adults (see the "Children vs. adults" row for the "BODY-MIND" comparison in Table 4.9), and the difference between target characters was attenuated among children (see the "Interaction" row for the "BODY-MIND" comparison in Table 4.9).  
 
 ##### HEART vs. MIND
 
-Difference scores between the _HEART_ and _MIND_ scales were substantially closer to zero among children, as compared to adults (see the "Children vs. adults" row for the "HEART-MIND" comparison in Table 4.10), and the difference between target characters  was attenuated among children (see the "Interaction" row for the "HEART-MIND" comparison in Table 4.10).  
+Difference scores between the _HEART_ and _MIND_ scales were substantially closer to zero among children, as compared to adults (see the "Children vs. adults" row for the "HEART-MIND" comparison in Table 4.9), and the difference between target characters  was attenuated among children (see the "Interaction" row for the "HEART-MIND" comparison in Table 4.9).  
 
 ##### Interim discussion
 
@@ -2965,97 +2979,6 @@ These formal comparisons of difference scores among children vs. adults in Study
 ## Discussion
 
 XX __INSERT STUDY 4 DISCUSSION__
-
-```{r}
-scales_study4 <- bind_rows(scales_efa_wdm_d4_ad %>% 
-                             mutate(study = "Study 4: Adults")) %>%
-  select(-c(loading, order)) %>%
-  distinct() %>%
-  spread(study, factor) %>%
-  mutate(ur_factor = `Study 4: Adults`) %>%
-  left_join(scales_efa_wdm_d4_ad %>% 
-              select(capacity, order) %>% rename(order_ad = order)) %>%
-  arrange(ur_factor, order_ad) %>%
-  select(-ur_factor) #%>%
-# select(-starts_with("order"))
-```
-
-```{r}
-table4.8 <- scales_study2 %>% 
-  mutate(capacity = case_when(
-    grepl("sad", capacity) ~ "feel/get sad",
-    grepl("scared", capacity) ~ "feel/get scared",
-    grepl("hear", capacity) ~ "hear [sounds]",
-    grepl("see", capacity) ~ "see [things]",
-    grepl("hungry", capacity) ~ "get/feel hungry",
-    grepl("sick", capacity) ~ "get/feel sick[...]",
-    grepl("thoughts", capacity) | grepl("think", capacity) ~ "have thoughts/think",
-    grepl("figure", capacity) ~ "figure out how to do things/figure things out",
-    grepl("love" ,capacity) ~ "feel love/love someone",
-    grepl("guilt", capacity) | grepl("sorry", capacity) ~ "feel guilty/sorry",
-    TRUE ~ capacity)) %>%
-  rename(order_ad_s2 = order_ad,
-         order_79_s2 = order_79) %>%
-  full_join(scales_study3 %>%
-              mutate(capacity = case_when(
-                grepl("sad", capacity) ~ "feel/get sad",
-                grepl("scared", capacity) ~ "feel/get scared",
-                grepl("hear", capacity) ~ "hear [sounds]",
-                grepl("see", capacity) ~ "see [things]",
-                grepl("hungry", capacity) ~ "get/feel hungry",
-                grepl("sick", capacity) ~ "get/feel sick[...]",
-                grepl("thoughts", capacity) | grepl("think", capacity) ~ "have thoughts/think",
-                grepl("figure", capacity) ~ "figure out how to do things/figure things out",
-                grepl("love", capacity) ~ "feel love/love someone",
-                grepl("guilt", capacity) | grepl("sorry", capacity) ~ "feel guilty/sorry",
-                TRUE ~ capacity)) %>%
-              rename(order_ad_s3 = order_ad,
-                     order_79_s3 = order_79)) %>%
-  full_join(scales_study4 %>%
-              mutate(capacity = case_when(
-                grepl("sad", capacity) ~ "feel/get sad",
-                grepl("scared", capacity) ~ "feel/get scared",
-                grepl("hear", capacity) ~ "hear [sounds]",
-                grepl("see", capacity) ~ "see [things]",
-                grepl("hungry", capacity) ~ "get/feel hungry",
-                grepl("sick", capacity) ~ "get/feel sick[...]",
-                grepl("thoughts", capacity) | grepl("think", capacity) ~ "have thoughts/think",
-                grepl("figure", capacity) ~ "figure out how to do things/figure things out",
-                grepl("love", capacity) ~ "feel love/love someone",
-                grepl("guilt", capacity) | grepl("sorry", capacity) ~ "feel guilty/sorry",
-                TRUE ~ capacity)) %>%
-              rename(order_ad_s4 = order_ad)) %>%
-  mutate(ur_factor = case_when(
-    !is.na(`Adults`) ~ `Adults`,
-    !is.na(`Children, 7-9y`) ~ `Children, 7-9y`,
-    !is.na(`Study 3: Adults`) ~ `Study 3: Adults`,
-    !is.na(`Study 3: Children, 7-9y`) ~ `Study 3: Children, 7-9y`,
-    !is.na(`Study 4: Adults`) ~ `Study 4: Adults`,
-    TRUE ~ NA_integer_)) %>%
-  mutate(ur_factor = factor(ur_factor, levels = c("BODY", "HEART", "MIND"))) %>%
-  arrange(ur_factor, order_ad_s2, order_79_s2, order_ad_s3, order_ad_s4) %>%
-  select(-ur_factor, -starts_with("order")) %>%
-  mutate_at(vars(-capacity),
-            funs(ifelse(is.na(.), "", "✓"))) %>%
-  rename(Capacity = capacity,
-         `Adults` = `Study 3: Adults`,
-         `Children, 7-9y` = `Study 3: Children, 7-9y`,
-         `Adults` = `Study 4: Adults`) %>%
-  kable(format = "html",
-        caption = "Table 4.8: Scales for each of the conceptual units (factors) identified by EFA for US Adults in Studies 2-4 and for 7- to 9-year-old childrenin Studies 2 and 3. (See Appendix B for alternative scales based on younger children's EFA results, for Studies 3 and 4.) A checkmark indicates that a mental capacity was included in a scale for a particular sample.") %>%
-  kable_styling() %>%
-  add_header_above(c(" " = 1,
-                     "Study 2" = 2,
-                     "Study 3" = 2,
-                     "Study 4" = 1)) %>%
-  group_rows("BODY scale", 1, 9) %>%
-  group_rows("HEART scale", 10, 19) %>%
-  group_rows("MIND scale", 20, 31)
-```
-
-```{r, include = T}
-table4.8
-```
 
 ```{r}
 plots_agegp_d4_scored_ad <- relviz_agegp_fun(
@@ -3125,13 +3048,13 @@ regtab_study4 <- regtab_d4_ad_scored_ad_diff %>%
 ```
 
 ```{r}
-table4.9 <- regtab_study4 %>%
+table4.8 <- regtab_study4 %>%
   select(-pair, -contains("s.e.")) %>%
   rename(Parameter = param) %>%
   rename_all(funs(gsub("nz", " ", .))) %>%
   rename_all(funs(gsub("s4._", "", .))) %>%
   kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
-        caption = "Table 4.9: Regression analyses of difference scores among US adults and children (4-5y of age) in Study 4. The table presents results from separate Bayesian regressions of each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND). Each regression included two fixed effect parameters: (1) the intercept, which I treat as an index of the asymmetry in attributions of the two conceptual units in question; and (2) a difference between target characters, reported here as a difference between the robot and the grand mean (GM). The intercepts are highlighted in bold, because these are the primary parameters of interest for these analyses. For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
+        caption = "Table 4.8: Regression analyses of difference scores among US adults and children (4-5y of age) in Study 4. The table presents results from separate Bayesian regressions of each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND). Each regression included two fixed effect parameters: (1) the intercept, which I treat as an index of the asymmetry in attributions of the two conceptual units in question; and (2) a difference between target characters, reported here as a difference between the robot and the grand mean (GM). The intercepts are highlighted in bold, because these are the primary parameters of interest for these analyses. For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
   kable_styling() %>%
   row_spec(c(1, 3, 5), bold = T) %>%
   group_rows("BODY - HEART", 1, 2) %>%
@@ -3143,18 +3066,18 @@ table4.9 <- regtab_study4 %>%
 ```
 
 ```{r, include = T}
-table4.9
+table4.8
 ```
 
 ```{r}
-table4.10 <- regtab_d4_ad46_scored_ad_diff %>%
+table4.9 <- regtab_d4_ad46_scored_ad_diff %>%
   select(-pair, -study, -contains("s.e.")) %>%
   mutate(b = format(round(b, 2), nsmall = 2)) %>%
   rename(Parameter = param,
          `95% CI` = CI95) %>%
   rename_all(funs(gsub("nonzero", " ", .))) %>%
   kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
-        caption = "Table 4.10: Regression analyses of differences in difference scores between US adults and children (4-5y of age) difference scores in Study 4. The table presents results from separate Bayesian regressions of each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND). Each regression included four fixed effect parameters: (1) the intercept (for adults), which I treat as an index of the asymmetry in attributions of the two conceptual units in question among adults; (2) a difference between target characters (among adults), reported here as a difference between the robot and the grand mean (GM); (3) the overall difference between children and adults (collapsing across target characters); and (4) the interaction between this age difference and the difference between target characters. The developmental comparisons are highlighted in bold, because these are the primary parameters of interest for these analyses. For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
+        caption = "Table 4.9: Regression analyses of differences in difference scores between US adults and children (4-5y of age) difference scores in Study 4. The table presents results from separate Bayesian regressions of each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND). Each regression included four fixed effect parameters: (1) the intercept (for adults), which I treat as an index of the asymmetry in attributions of the two conceptual units in question among adults; (2) a difference between target characters (among adults), reported here as a difference between the robot and the grand mean (GM); (3) the overall difference between children and adults (collapsing across target characters); and (4) the interaction between this age difference and the difference between target characters. The developmental comparisons are highlighted in bold, because these are the primary parameters of interest for these analyses. For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
   kable_styling() %>%
   row_spec(seq(2, 12, 2), bold = T) %>%
   group_rows("BODY - HEART", 1, 4) %>%
@@ -3162,6 +3085,83 @@ table4.10 <- regtab_d4_ad46_scored_ad_diff %>%
   group_rows("HEART - MIND", 9, 12) %>%
   add_header_above(c(" " = 1,
                      "Developmental comparison" = 3))
+```
+
+```{r, include = T}
+table4.9
+```
+
+```{r}
+table4.10 <- scales_study2 %>% 
+  mutate(capacity = case_when(
+    grepl("sad", capacity) ~ "feel/get sad",
+    grepl("scared", capacity) ~ "feel/get scared",
+    grepl("hear", capacity) ~ "hear [sounds]",
+    grepl("see", capacity) ~ "see [things]",
+    grepl("hungry", capacity) ~ "get/feel hungry",
+    grepl("sick", capacity) ~ "get/feel sick[...]",
+    grepl("thoughts", capacity) | grepl("think", capacity) ~ "have thoughts/think",
+    grepl("figure", capacity) ~ "figure out how to do things/figure things out",
+    grepl("love" ,capacity) ~ "feel love/love someone",
+    grepl("guilt", capacity) | grepl("sorry", capacity) ~ "feel guilty/sorry",
+    TRUE ~ capacity)) %>%
+  rename(order_ad_s2 = order_ad,
+         order_79_s2 = order_79) %>%
+  full_join(scales_study3 %>%
+              mutate(capacity = case_when(
+                grepl("sad", capacity) ~ "feel/get sad",
+                grepl("scared", capacity) ~ "feel/get scared",
+                grepl("hear", capacity) ~ "hear [sounds]",
+                grepl("see", capacity) ~ "see [things]",
+                grepl("hungry", capacity) ~ "get/feel hungry",
+                grepl("sick", capacity) ~ "get/feel sick[...]",
+                grepl("thoughts", capacity) | grepl("think", capacity) ~ "have thoughts/think",
+                grepl("figure", capacity) ~ "figure out how to do things/figure things out",
+                grepl("love", capacity) ~ "feel love/love someone",
+                grepl("guilt", capacity) | grepl("sorry", capacity) ~ "feel guilty/sorry",
+                TRUE ~ capacity)) %>%
+              rename(order_ad_s3 = order_ad,
+                     order_79_s3 = order_79)) %>%
+  full_join(scales_study4 %>%
+              mutate(capacity = case_when(
+                grepl("sad", capacity) ~ "feel/get sad",
+                grepl("scared", capacity) ~ "feel/get scared",
+                grepl("hear", capacity) ~ "hear [sounds]",
+                grepl("see", capacity) ~ "see [things]",
+                grepl("hungry", capacity) ~ "get/feel hungry",
+                grepl("sick", capacity) ~ "get/feel sick[...]",
+                grepl("thoughts", capacity) | grepl("think", capacity) ~ "have thoughts/think",
+                grepl("figure", capacity) ~ "figure out how to do things/figure things out",
+                grepl("love", capacity) ~ "feel love/love someone",
+                grepl("guilt", capacity) | grepl("sorry", capacity) ~ "feel guilty/sorry",
+                TRUE ~ capacity)) %>%
+              rename(order_ad_s4 = order_ad)) %>%
+  mutate(ur_factor = case_when(
+    !is.na(`Adults`) ~ `Adults`,
+    !is.na(`Children, 7-9y`) ~ `Children, 7-9y`,
+    !is.na(`Study 3: Adults`) ~ `Study 3: Adults`,
+    !is.na(`Study 3: Children, 7-9y`) ~ `Study 3: Children, 7-9y`,
+    !is.na(`Study 4: Adults`) ~ `Study 4: Adults`,
+    TRUE ~ NA_integer_)) %>%
+  mutate(ur_factor = factor(ur_factor, levels = c("BODY", "HEART", "MIND"))) %>%
+  arrange(ur_factor, order_ad_s2, order_79_s2, order_ad_s3, order_ad_s4) %>%
+  select(-ur_factor, -starts_with("order")) %>%
+  mutate_at(vars(-capacity),
+            funs(ifelse(is.na(.), "", "✓"))) %>%
+  rename(Capacity = capacity,
+         `Adults` = `Study 3: Adults`,
+         `Children, 7-9y` = `Study 3: Children, 7-9y`,
+         `Adults` = `Study 4: Adults`) %>%
+  kable(format = "html",
+        caption = "Table 4.10: Scales for each of the conceptual units (factors) identified by EFA for US Adults in Studies 2-4 and for 7- to 9-year-old childrenin Studies 2 and 3. (See Appendix B for alternative scales based on younger children's EFA results, for Studies 3 and 4.) A checkmark indicates that a mental capacity was included in a scale for a particular sample.") %>%
+  kable_styling() %>%
+  add_header_above(c(" " = 1,
+                     "Study 2" = 2,
+                     "Study 3" = 2,
+                     "Study 4" = 1)) %>%
+  group_rows("BODY scale", 1, 9) %>%
+  group_rows("HEART scale", 10, 19) %>%
+  group_rows("MIND scale", 20, 31)
 ```
 
 ```{r, include = T}
@@ -3355,7 +3355,7 @@ figure4.10 <- plot_grid(plot_diffscores_all +
 figure4.10_cap <- add_sub(figure4.10, str_wrap("Figure 4.10: Summaries of the asymmetries in participants' attributions of BODY, HEART, and MIND for all studies. (A) Difference scores for each pair of conceptual units (ignoring target characters). Positive difference scores correspond to participants who attributed the first conceptual unit more strongly than the second; negative difference scores correspond to participants who attributed the second conceptual unit more strongly than the first. (B) Intercepts from independent Bayesian regression analyses for each pair of conceptual units and each sample of participants, accounting for differences between target characters and including random intercepts for particpipants when appropriate (Studies 1d and 2). Positive intercepts indicate samples in which participants tended to attribute the first conceptual unit more strongly than the second; negative intercepts indicate samples in which participants tended to attribute the second conceptual unit more strongly than the first. For both panels, error bars are 95% CIs and asterisks indicate CIs that do not include zero.", 115), x = 0, hjust = 0)
 ```
 
-```{r, fig.width = 5, fig.asp = 1}
+```{r, include = T, fig.width = 5, fig.asp = 1}
 ggdraw(figure4.10_cap)
 ```
 
