@@ -981,3 +981,164 @@ figure4.15_cap <- add_sub(figure4.15_plots, str_wrap("Figure 4.15: Difference sc
 ggdraw(figure4.15_cap)
 ```
 
+
+# Difference scores across age
+
+XX __CONVERT TO BRMS__
+
+## Study 2
+
+```{r}
+d2_79_scored_ad_diff %>% 
+  left_join(d2_79 %>% distinct(subid, age)) %>%
+  ggplot(aes(x = age, y = diff, color = character)) +
+  geom_hline(yintercept = 0, lty = 2) +
+  facet_wrap(~ pair) +
+  geom_point(alpha = 0.5) +
+  geom_pointrange(data = d2_ad_scored_ad_diff %>%
+                    group_by(pair) %>%
+                    multi_boot_standard(col = "diff") %>%
+                    ungroup() %>%
+                    mutate(age = 11),
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  color = "black", shape = "diamond") +
+  scale_color_manual(values = colors02) +
+  scale_x_continuous(breaks = c(7:11), minor_breaks = NULL,
+                     labels = c(paste0(7:10, "y"), "Adults")) +
+  geom_smooth(color = "black", method = "lm") +
+  labs(title = "Study 2: Difference scores over age",
+       x = "Age (y)", y = "Difference score", color = "Target character") +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+```{r}
+temp_d2_BH <- lm(diff ~ 1 + character * age,
+                 data = d2_79_scored_ad_diff %>%
+                   filter(pair == "BODY - HEART") %>%
+                   left_join(d2_79 %>% distinct(subid, age)) %>%
+                   mutate(age = scale(age, scale = F)))
+summary(temp_d2_BH)$coefficients %>% kable(digits = 2) %>% kable_styling()
+
+temp_d2_BM <- lm(diff ~ 1 + character * age,
+                 data = d2_79_scored_ad_diff %>%
+                   filter(pair == "BODY - MIND") %>%
+                   left_join(d2_79 %>% distinct(subid, age)) %>%
+                   mutate(age = scale(age, scale = F)))
+summary(temp_d2_BM)$coefficients %>% kable(digits = 2) %>% kable_styling()
+
+temp_d2_HM <- lm(diff ~ 1 + character * age,
+                 data = d2_79_scored_ad_diff %>%
+                   filter(pair == "HEART - MIND") %>%
+                   left_join(d2_79 %>% distinct(subid, age)) %>%
+                   mutate(age = scale(age, scale = F)))
+summary(temp_d2_HM)$coefficients %>% kable(digits = 2) %>% kable_styling()
+```
+
+## Study 3
+
+```{r}
+d3_79_scored_ad_diff %>% 
+  left_join(d3_79 %>% distinct(subid, age)) %>%
+  full_join(d3_46_scored_ad_diff %>%
+              left_join(d3_46 %>% distinct(subid, age))) %>%
+  # NOTE: MISSING 35 AGES!!
+  ggplot(aes(x = age, y = diff, color = character)) +
+  geom_hline(yintercept = 0, lty = 2) +
+  facet_wrap(~ pair) +
+  geom_point(alpha = 0.5) +
+  geom_pointrange(data = d3_ad_scored_ad_diff %>%
+                    group_by(pair) %>%
+                    multi_boot_standard(col = "diff") %>%
+                    ungroup() %>%
+                    mutate(age = 11),
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  color = "black", shape = "diamond") +
+  scale_color_manual(values = colors09) +
+  scale_x_continuous(breaks = c(4:11), minor_breaks = NULL,
+                     labels = c(paste0(4:10, "y"), "Adults")) +
+  geom_smooth(color = "black", method = "lm") +
+  labs(title = "Study 3: Difference scores over age",
+       x = "Age (y)", y = "Difference score", color = "Target character") +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+```{r}
+temp_d3_BH <- lm(diff ~ 1 + character * age,
+                 data = d3_79_scored_ad_diff %>%
+                   left_join(d3_79 %>% distinct(subid, age)) %>%
+                   full_join(d3_46_scored_ad_diff %>%
+                               left_join(d3_46 %>% distinct(subid, age))) %>%
+                   filter(pair == "BODY - HEART") %>%
+                   mutate(age = scale(age, scale = F)))
+summary(temp_d3_BH)$coefficients %>% kable(digits = 2) %>% kable_styling()
+
+temp_d3_BM <- lm(diff ~ 1 + character * age,
+                 data = d3_79_scored_ad_diff %>%
+                   left_join(d3_79 %>% distinct(subid, age)) %>%
+                   full_join(d3_46_scored_ad_diff %>%
+                               left_join(d3_46 %>% distinct(subid, age))) %>%
+                   filter(pair == "BODY - MIND") %>%
+                   mutate(age = scale(age, scale = F)))
+summary(temp_d3_BM)$coefficients %>% kable(digits = 2) %>% kable_styling()
+
+temp_d3_HM <- lm(diff ~ 1 + character * age,
+                 data = d3_79_scored_ad_diff %>%
+                   left_join(d3_79 %>% distinct(subid, age)) %>%
+                   full_join(d3_46_scored_ad_diff %>%
+                               left_join(d3_46 %>% distinct(subid, age))) %>%
+                   filter(pair == "HEART - MIND") %>%
+                   mutate(age = scale(age, scale = F)))
+summary(temp_d3_HM)$coefficients %>% kable(digits = 2) %>% kable_styling()
+```
+
+## Study 4
+
+```{r}
+d4_46_scored_ad_diff %>% 
+  left_join(d4_46 %>% distinct(subid, age)) %>%
+  ggplot(aes(x = age, y = diff, color = character)) +
+  geom_hline(yintercept = 0, lty = 2) +
+  facet_wrap(~ pair) +
+  geom_point(alpha = 0.5) +
+  geom_pointrange(data = d4_ad_scored_ad_diff %>%
+                    group_by(pair) %>%
+                    multi_boot_standard(col = "diff") %>%
+                    ungroup() %>%
+                    mutate(age = 6),
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  color = "black", shape = "diamond") +
+  scale_color_manual(values = colors02) +
+  scale_x_continuous(breaks = c(4:6), minor_breaks = NULL,
+                     labels = c(paste0(4:5, "y"), "Adults")) +
+  geom_smooth(color = "black", method = "lm") +
+  labs(title = "Study 4: Difference scores over age",
+       x = "Age (y)", y = "Difference score", color = "Target character") +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+```{r}
+temp_d4_BH <- lmer(diff ~ 1 + character * age + (1 | subid),
+                   data = d4_46_scored_ad_diff %>%
+                     filter(pair == "BODY - HEART") %>%
+                     left_join(d4_46 %>% distinct(subid, age)) %>%
+                     mutate(age = scale(age, scale = F)))
+summary(temp_d4_BH)$coefficients %>% kable(digits = 2) %>% kable_styling()
+
+temp_d4_BM <- lmer(diff ~ 1 + character * age + (1 | subid),
+                   data = d4_46_scored_ad_diff %>%
+                     filter(pair == "BODY - MIND") %>%
+                     left_join(d4_46 %>% distinct(subid, age)) %>%
+                     mutate(age = scale(age, scale = F)))
+summary(temp_d4_BM)$coefficients %>% kable(digits = 2) %>% kable_styling()
+
+temp_d4_HM <- lmer(diff ~ 1 + character * age + (1 | subid),
+                   data = d4_46_scored_ad_diff %>%
+                     filter(pair == "HEART - MIND") %>%
+                     left_join(d4_46 %>% distinct(subid, age)) %>%
+                     mutate(age = scale(age, scale = F)))
+summary(temp_d4_HM)$coefficients %>% kable(digits = 2) %>% kable_styling()
+```
+
