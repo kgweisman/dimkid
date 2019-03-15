@@ -230,3 +230,16 @@ nonzero_fun <- function(regtab, which_pair,
   
   return(output)
 }
+
+# function for getting % modal responding for diffscores
+modal_percent_fun <- function(table = diffscores_tab, which_pair, which_age_group){
+  sum_tab <- table %>%
+    filter(pair == which_pair, age_group == which_age_group) %>%
+    summarise(min = min(modal), max = max(modal))
+  
+  min <- round(sum_tab$min, 2) * 100
+  max <- round(sum_tab$max, 2) * 100
+  str <- paste0(min, "-", max, "%")
+  
+  return(str)
+}

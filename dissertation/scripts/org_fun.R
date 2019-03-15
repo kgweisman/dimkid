@@ -276,3 +276,21 @@ diff_reg_table_fun <- function(reg_list, pair_list, study_name,
   
   return(table)
 }
+
+# function for getting correlations among scores
+score_cor_fun <- function(df_scored){
+  df_temp <- df_scored %>%
+    unite(subid_character, subid, character) %>%
+    select(subid_character, factor, score) %>%
+    spread(factor, score) %>%
+    data.frame() %>%
+    column_to_rownames("subid_character")
+  
+  res_cor <- corr.test(df_temp)$ci %>%
+    data.frame() %>%
+    rownames_to_column("pair") %>%
+    mutate(pair = gsub("-", " vs. ", pair)) %>%
+    rename(ci_lower = lower, ci_upper = upper)
+
+  return(res_cor)
+}

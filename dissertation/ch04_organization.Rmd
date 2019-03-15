@@ -46,7 +46,7 @@ In this chapter, I focus on the second of my three key questions about the devel
 
 ## High-level overview
 
-My goal in this chapter is to examine the relationships among the "conceptual units" identified in Chapter III. How does a participant's assessment of one conceptual unit for a particular target character (e.g., the degree to which he or she indicates that a beetle is capable of the physiological sensations of the BODY) affect that participant's assessments of other conceptual units for that target character (e.g., his or her assessment of the beetle's capacities in the domains of HEART or MIND)?
+In this chapter, I examine the relationships among the "conceptual units" identified in Chapter III. How does a participant's assessment of one conceptual unit for a particular target character (e.g., the degree to which he or she indicates that a beetle is capable of the physiological sensations of the BODY) affect that participant's assessments of other conceptual units for that target character (e.g., his or her assessment of the beetle's capacities in the domains of HEART or MIND)?
 
 I focus in particular on the possibility that the mental capacity attributions documented by the studies included in this dissertation—re-analyzed as indicators of the broader "conceptual units" identified in Chapter III—might shed light on the _hierarchical organization_ of these conceptual units, i.e., which conceptual units might be more basic or fundamental vs. more complex, and whether any of these conceptual units might or might not be considered to depend on the presence of others. In Chapter II, I illustrated this with the following example: If many participants endorse capacities associated with Conceptual Unit A without endorsing capacities associated with Conceptual Unit B, but very few participants do the reverse (endorsing capacities associated with Conceptual Unit B but not Conceptual Unit A), this provides some evidence that Conceptual Unit A is more basic or fundamental than Conceptual Unit B, or that Conceptual Unit B somehow depends on (perhaps requires) Conceptual Unit A. 
 
@@ -3118,7 +3118,7 @@ table4.10
 
 # General discussion
 
-XX __INSERT SECTION INTRODUCTION__
+In this chapter, I focused on a second aspect of the development of conceptual representations of mental life: the relationships among the "conceptual units" identified among US adults in the previous chapter: BODY, HEART, and MIND. I focused in particular whether the mental capacity attributions documented by the studies included in this dissertation bring to light possible _hierarchical relations_ among BODY, HEART, and MIND: Do these studies provide any evidence about which of these conceptual units might be more "basic" vs. more complex, or whether any of these conceptual units might be considered to depend on the presence of others? How might this conceptual organization change over development?
 
 ```{r}
 # dataframe for annotating summary plots
@@ -3289,31 +3289,168 @@ plot_regtabs_all <- ggplot(regtabs_all %>%
 ```
 
 ```{r}
+score_cores_all <- bind_rows(score_cor_fun(d1a_ad_scored_ad) %>%
+                               mutate(study = "Study 1a",
+                                      age_group = "adults"),
+                             score_cor_fun(d1b_ad_scored_ad) %>%
+                               mutate(study = "Study 1b",
+                                      age_group = "adults"),
+                             score_cor_fun(d1c_ad_scored_ad) %>%
+                               mutate(study = "Study 1c",
+                                      age_group = "adults"),
+                             score_cor_fun(d1d_ad_scored_ad) %>%
+                               mutate(study = "Study 1d",
+                                      age_group = "adults"),
+                             score_cor_fun(d2_ad_scored_ad) %>%
+                               mutate(study = "Study 2",
+                                      age_group = "adults"),
+                             score_cor_fun(d2_79_scored_ad) %>%
+                               mutate(study = "Study 2",
+                                      age_group = "children79"),
+                             score_cor_fun(d3_ad_scored_ad) %>%
+                               mutate(study = "Study 3",
+                                      age_group = "adults"),
+                             score_cor_fun(d3_79_scored_ad) %>%
+                               mutate(study = "Study 3",
+                                      age_group = "children79"),
+                             score_cor_fun(d3_46_scored_ad) %>%
+                               mutate(study = "Study 3",
+                                      age_group = "children46"),
+                             score_cor_fun(d4_ad_scored_ad) %>%
+                               mutate(study = "Study 4",
+                                      age_group = "adults"),
+                             score_cor_fun(d4_46_scored_ad) %>%
+                               mutate(study = "Study 4",
+                                      age_group = "children46")) %>%
+  mutate(nonzero = ifelse(ci_lower  * ci_upper > 0, "*", ""),
+         age_group = factor(age_group, 
+                            levels = c("adults", "children79", "children46")),
+         design = case_when(
+           study %in% c("Study 1a", "Study 1b", "Study 2") ~ 
+             "edge case (between-Ss)",
+           study %in% c("Study 1c", "Study 4") ~ 
+             "edge case (within-Ss)",
+           study %in% c("Study 1d", "Study 3") ~ 
+             "diverse characters (between-Ss)"),
+         design = factor(design, 
+                         levels = c("edge case (between-Ss)",
+                                    "edge case (within-Ss)",
+                                    "diverse characters (between-Ss)"))) %>%
+  arrange(pair, age_group, study)
+```
+
+```{r}
+plot_score_cores_all <- score_cores_all %>%
+  mutate(star_pos = ifelse(r > 0, ci_upper + 0.05,
+                           ci_lower - 0.05),
+         star_vjust = ifelse(r > 0, 0.5, 1)) %>%
+  ggplot(aes(x = age_group, y = r, group = study,
+             color = study, shape = design)) +
+  facet_grid(~ pair) +
+  annotate("rect", fill = "gray", alpha = 0.2,
+           xmin = -Inf, xmax = Inf, ymin = sqrt(.1), ymax = sqrt(.5)) +
+  geom_hline(yintercept = 0, lty = 2) +
+  geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper), width = 0,
+                position = position_dodge(width = 0.8), show.legend = F) + 
+  geom_point(position = position_dodge(width = 0.8), size = 2) +
+  geom_text(aes(label = nonzero, y = star_pos, vjust = star_vjust),
+            position = position_dodge(width = 0.8), color = "black") +
+  scale_color_brewer("Study", palette = "Dark2", direction = -1,
+                     guide = guide_legend(position = "horizontal", ncol = 7)) +
+  scale_shape_manual("Variant of experimental approach",
+                     values = c(16, 15, 17),
+                     guide = guide_legend(title.position = "left",
+                                          direction = "horizontal", ncol = 3)) +
+  scale_x_discrete("Age group", 
+                   labels = c("Adults", "Children, 7-9y", "Children, 4-6y")) +
+  scale_y_continuous("Correlation between scores (Pearson's r)", 
+                     limits = c(NA, 1),
+                     # limits = c(-1, 1), 
+                     breaks = seq(-1, 1, 0.25)) +
+  theme(legend.position = "bottom", legend.box = "vertical",
+        legend.spacing = unit(0, "lines"))
+```
+
+```{r}
 figure4.10 <- plot_grid(plot_diffscores_all + 
                           theme(legend.position = "none"), 
                         plot_regtabs_all + 
                           theme(legend.position = "none"),
+                        plot_score_cores_all + 
+                          theme(legend.position = "none"),
                         get_legend(plot_regtabs_all),
-                        ncol = 1, rel_heights = c(1, 1, 0.2),
-                        labels = c("A", "B", ""))
+                        ncol = 1, rel_heights = c(1, 1, 1, 0.2),
+                        labels = c("A", "B", "C", ""))
 ```
 
 ```{r}
-figure4.10_cap <- add_sub(figure4.10, str_wrap("Figure 4.10: Summaries of the asymmetries in participants' attributions of BODY, HEART, and MIND for all studies. (A) Difference scores for each pair of conceptual units (ignoring target characters). Positive difference scores correspond to participants who attributed the first conceptual unit more strongly than the second; negative difference scores correspond to participants who attributed the second conceptual unit more strongly than the first. (B) Intercepts from independent Bayesian regression analyses for each pair of conceptual units and each sample of participants, accounting for differences between target characters and including random intercepts for particpipants when appropriate (Studies 1d and 2). Positive intercepts indicate samples in which participants tended to attribute the first conceptual unit more strongly than the second; negative intercepts indicate samples in which participants tended to attribute the second conceptual unit more strongly than the first. For both panels, error bars are 95% CIs and asterisks indicate CIs that do not include zero.", 115), x = 0, hjust = 0)
+figure4.10_cap <- add_sub(figure4.10, str_wrap("Figure 4.10: Summaries of the relationships between attributions of BODY, HEART, and MIND for all studies. (A) Difference scores for each pair of conceptual units (ignoring target characters). Positive difference scores correspond to participants who attributed the first conceptual unit more strongly than the second; negative difference scores correspond to participants who attributed the second conceptual unit more strongly than the first. (B) Intercepts from independent Bayesian regression analyses for each pair of conceptual units and each sample of participants, accounting for differences between target characters and including random intercepts for particpipants when appropriate (Studies 1d and 2). Positive intercepts indicate samples in which participants tended to attribute the first conceptual unit more strongly than the second; negative intercepts indicate samples in which participants tended to attribute the second conceptual unit more strongly than the first. (C) Pearson correlations between scores on each of the scales (theoretical range: -1 to +1). Positive correlations indicate that higher scores in one scale were associated with higher scores in the other scale. To assist the reader in assessing effect size, the shaded area highlights values of r that correspond to scores in one scale accounting for between 10-50% of the variance of scores in the other scale. For all panels, error bars are 95% CIs and asterisks indicate CIs that do not include zero.", 115), x = 0, hjust = 0)
 ```
 
-```{r, include = T, fig.width = 5, fig.asp = 1}
+```{r, include = T, fig.width = 5, fig.asp = 1.4}
 ggdraw(figure4.10_cap)
 ```
+
+```{r}
+diffscores_tab <- diffscores_all %>% 
+  mutate(diff_sign = case_when(diff > 0 ~ "positive",
+                               diff == 0 ~ "zero",
+                               diff < 0 ~ "negative",
+                               TRUE ~ NA_character_)) %>%
+  count(pair, age_group, study, diff_sign) %>%
+  group_by(pair, age_group, study) %>%
+  mutate(prop = n/sum(n)) %>%
+  select(-n) %>%
+  ungroup() %>%
+  spread(diff_sign, prop) %>%
+  mutate(modal = case_when(pair == "BODY - HEART" ~ positive + zero,
+                           pair == "BODY - MIND" ~ negative + zero,
+                           pair == "HEART - MIND" ~ negative + zero))
+```
+
+```{r}
+ table4.11 <- diffscores_tab %>%
+  mutate_at(vars(negative, positive, zero, modal),
+            funs(paste0(round(., 2) * 100, "%"))) %>%
+  select(age_group, study, negative, zero, positive, modal) %>% 
+  rename(`Age group` = age_group, 
+         Study = study,
+         # `< 0` = negative, `0` = zero, `> 0` = positive,
+         `Modal adult tendency` = modal) %>%
+  kable(digits = 2,
+        caption = "Table 4.11: Percentage of difference scores that were negative, zero, or positive for each pair of conceptual units across all studies and samples. For each sample, the final column gives the percentage of target character assessments that were either zero or went in the modal direction of asymmetry among adults for that pair of conceptual units (positive or BODY - HEART; negative for BODY - MIND and HEART - MIND).") %>%
+  kable_styling() %>%
+  collapse_rows(1) %>%
+  group_rows("BODY - HEART", 1, 11) %>%
+  group_rows("BODY - MIND", 12, 22) %>%
+  group_rows("HEART - MIND", 23, 33) %>%
+  add_header_above(c(" " = 2, "Direction of asymmetry" = 3, " " = 1))
+```
+
+```{r, include = T}
+table4.11
+```
+
+Studies with adults using different experimental approaches (asking participants to assess the mental lives of edge cases or a diverse range of target characters), their between- vs. within-subjects design, the number and range of mental capacities included, and the response options available to participants all converged to suggest a robust hierarchical structure among BODY, HEART, and MIND among US adults: BODY and MIND appear to be more fundamental or "basic" conceptual units than HEART in adults' representations of mental life. 
+
+My evidence for this claim is that, across all seven studies with adults, individual participants endorsed the physiological sensations of the BODY and the perceptual-cognitive abilities of the MIND at least as strongly, often more strongly, and almost never less strongly, than the social-emotional abilities of the HEART. See Figure 4.10 for a summary of difference scores in all studies (panel A) and intercepts from regression models comparing these difference scores to zero (paenl B).
+
+These tendencies were strong and strikingly reliable: Across studies, `r modal_percent_fun(table = diffscores_tab, which_pair = "BODY - HEART", which_age_group = "adults")` of individual adults' assessments of target characters yielded _BODY_ scores that were at least as high or higher than _HEART_ scores, and fully `r modal_percent_fun(table = diffscores_tab, which_pair = "HEART - MIND", which_age_group = "adults")` yielded _MIND_ scores that were at least as high or higher than _HEART_ scores (see Table 4.11, "BODY - HEART" and "HEART - MIND" sections; see also Figure 4.10, panel A, leftmost and rightmost columns). This is a remarkable level of consistency across participants and studies: Even though participants were responding to questions about individual mental capacities presented in a random order, with no explicit indication of which capacities would be grouped together to form "scales" in these analyses, and even though different participants were assessing different target characters and brining their own personal experiences with and beliefs about these characters to bear on their assessments, virtually _no_ participants answered these questions in such a way as to indicate that any of the target characters included in these studies had more in the way of social-emotional abilities (HEART) than physiological sensations (BODY) or perceptual-cognitive abilities. I take these robust asymmetries to be strong evidence of a hierarchical organization of conceptual units: Among US adults, BODY and MIND appear to function as more "basic" or "fundamental" components of mental life than HEART. 
+
+In contrast to the robust asymmetries in adults' attributions of BODY vs. HEART and MIND vs. HEART, their attributions of the two more "basic" conceptual units—BODY and MIND—were less robustly asymmetrical. On the whole, most assessments of target characters yielded _MIND_ scores that were at least as high or higher than _BODY_ scores—but in contrast to this modal response accounting for the vast majority of data in the other comparisons of conceptual units, this was true in only `r modal_percent_fun(table = diffscores_tab, which_pair = "BODY - MIND", which_age_group = "adults")` across studies (see Table 4.11, "BODY - MIND" section; see also Figure 4.10, panel A, center column). In studies that featured "edge cases" as target characters (Studies 1a-1c, 2, and 4), this asymmetry (MIND more than BODY) tended to be limited to assessments of the robot; there was a fair degree of variability in whether individual participants attributed more BODY or more MIND to the beetle, and in one case (Study 4) the mean _BODY_ score was actually higher than the mean _MIND_ score for the beetle (see Figure 4.2, panels A-C; Figure 4.5, panel A; and Figure 4.9, panel A). Likewise, in studies that featured a wider range of "diverse characters" (Study 1d and Study 3), only technological "beings" reliably received higher _MIND_ than _BODY_ scores from adult participants, and certain other beings (e.g., immature humans, some non-human animals) tended to receive higher _BODY_ than _MIND_ scores (see Figure 4.2, panel D; and Figure 4.7, panel A). Taken together, I consider these findings to indicate that there is no general hierarchical relationship between BODY and MIND in US adults' conceptual representations of mental life: Instead, adults appear to assess a being's capacity for physiological sensation somewhat independently of its capacities for perception and cognition, and consider it quite plausible for different beings in the world to have relatively more or less of either of these aspects of mental life.
+
+XX __INSERT DISCUSSION OF POSSIBLE THRESHOLD MODEL__
+
+Of course, none of these conceptual units appears to be assessed _completely_ independently of the others: Attributions of mental capacities in each of these domains were at least moderately correlated with each other (see Figure 4.10, panel C). For every pair of conceptual units, correlations between scores on the two relevant scales were almost always positive in adult samples (with the single exception of the adult sample in Study 2). The correlations between scores on the _BODY_ and _HEART_ scales appear to have been particularly strong (and reliable across studies) among adults; this privileged relationship between BODY and HEART might have its roots in early childhood—a point in development when children in this cultural context fail to draw a sharp distinction between physiological sensations and social-emotional abiltiies (as revealed by the analyses presented in Chapter III; see also Appendix A for an alternative set of exploratory factor analyses using an oblique rotation, which allows for an assessment of the correlations _between factors themselves_ rather than an assessment of correlations between participants' scores on these factors). More generally, the ubiquitous positive relationships between attributions of BODY, HEART, and MIND are, in my view, evidence that BODY, HEART, and MIND are indeed part of the same "concept" of mental life.
+
+It would be fascinating to explore the nature and implications of the hierarchical relationships between BODY, HEART, and MIND in future work. In particular, do adults' assessments reflect their perceptions of the co-occurence of mental capacities in the world, or might they reflect something deeper about their understanding of the causal systems that give rise to different aspects of mental life? In other words, do adults think it is impossible, or simply unlikely, for a being to have social-emotional abilities without being instantiated in a physiological body (BODY), or without having abilities to perceive and represent the environment (MIND)? How might such intuitive theories inform, or be informed by, people's understanding of exceptional beings such as "social" technologies or spiritual/supernatural beings (who lack biological bodies)? One intriguing possibility is that adults consider the abilities subsumed under BODY and MIND to be _prerequisites_ for the social-emotional abilities associated with HEART, and might have intuitive theories that specify how and why BODY and MIND abilities contribute to emotional experiences and social interactions, and inform adults' beliefs about the existence, abiliites, and limitations of such exceptional entities as "social" technologies and spiritual or supernatural beings. I consider this to be an especially interesting line of inquiry for future work.
+
+
 
 XX __INSERT DISCUSSION__
 
 outline: 
 
-- adults:
-    - BODY and (especially) MIND more basic than HEART
-    - MIND perhaps more basic than BODY, but more contingent on characters: strongest for between-Ss comparisons of edge cases (Studies 1a-1c and Study 2), weaker in within-Ss version (Study 4), weakest for diverse characters (Studies 1d and Study 3)
-    - ["threshold" model?]
 - older children:
     - like adults, MIND more basic than HEART
     - BODY perhaps more basic than HEART (like adults), but only in diverse characters approach (Study 3), not edge cases (Study 2) - perhaps because of developmental diffs in assessments of the robot? (revisit in ch05)
