@@ -1142,3 +1142,29 @@ temp_d4_HM <- lmer(diff ~ 1 + character * age + (1 | subid),
 summary(temp_d4_HM)$coefficients %>% kable(digits = 2) %>% kable_styling()
 ```
 
+# BOTH BODY AND MIND OR IS JUST ONE ENOUGH?
+
+```{r, fig.width = 6, fig.asp = 0.55}
+bind_rows(d1a_ad_scored_ad, d1b_ad_scored_ad, d1c_ad_scored_ad, d1d_ad_scored_ad,
+          d2_ad_scored_ad, d2_79_scored_ad,
+          d3_ad_scored_ad, d3_79_scored_ad, d3_46_scored_ad,
+          d4_ad_scored_ad, d4_46_scored_ad) %>%
+  mutate(study = gsub(":.*$", "", study),
+         age_group = recode_factor(age_group,
+                                   "adults" = "Adults",
+                                   "children79" = "Children, 7-9y",
+                                   "children46" = "Children, 4-6y")) %>%
+  # group_by(study, age_group) %>% # standardize scores within sample (part 1 of 2)
+  # mutate(score = scale(score)) %>% # standardize scores within sample (part 2 of 2)
+  spread(factor, score) %>%
+  # filter(BODY != 0, MIND != 0, HEART != 0) %>% # omit any participant with any score of 0
+  arrange(HEART) %>% # put highest HEART on top
+  ggplot(aes(x = BODY, y = MIND, color = HEART)) +
+  facet_grid(age_group ~ study) +
+  geom_jitter(width = 0.05, height = 0.05, alpha = 0.5, size = 3) +
+  scale_color_distiller(palette = "Spectral", 
+                        guide = guide_colorbar(barwidth = 20)) +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
