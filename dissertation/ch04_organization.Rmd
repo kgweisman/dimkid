@@ -1763,7 +1763,7 @@ Much like the BODY-HEART comparison, these regression results also suggest that 
 
 Among adults in Study 3, both informal observations and formal analyses revealed very similar results to Studies 1 and 2—namely, positive relationships between conceptual units that were further characterized by systematic asymmetries, with participants endorsing BODY and MIND at least as strongly, and often more strongly, than HEART. As in Study 1d—the only other study that employed the "diverse characters" approach employed in Study 3—the asymmetry between BODY vs. MIND appeared to be somewhat weaker and more variable across participants and target characters.
 
-### Children (7-9y)
+### Older children (7-9y)
 
 Among children in Study 2, the asymmetrical relationships among BODY, HEART, and MIND appeared to be similar in direction but weaker in strength to those of adults—with the possible exception of the BODY vs. HEART comparison, for which children's responses revealed no systematic asymmetry. Study 3 provides an opportunity to reassess these relationships in a new sample of 7- to 9-year-old children (using a slightly different experimental paradigm).
 
@@ -1930,7 +1930,7 @@ As in Study 2, the relationships among BODY, HEART, and MIND among 7- to 9-year-
 
 In Study 3, the asymmetry in 7- to 9-year-old children's _BODY_ vs. _HEART_ scores was strong enough to be differentiable from zero (in contrast to this age group in Study 2). Interestingly, however, children in this study diverged from this general response pattern in their assessments of the robot, endorsing _HEART_ items more strongly than _BODY_ items for this unusual "social" partner. Together with the results of Study 2, this suggests that 7- to 9-year-old children have an adult-like intuition that beings might have physiological sensations (BODY) without social-emotional abilities (HEART) but not social-emotional abilities without physiological sensations—but may make an exception to this general rule for certain exceptional entities. 
 
-### Children (4-6y)
+### Younger children (4-6y)
 
 In addition to building on the results of Studies 1 and 2 in re-assessing conceptual representations among adults and 7- to 9-year-old children, Study 3 also provided an initial foray into this aspect of conceptual representations among younger children (4-6y of age). In Chapter III, EFA suggested that 4- to 6-year-old children have only a nascent understanding of the suites of physiological sensations, social-emotional abilities, and perceptual-cognitive capacities that I have argued form the "conceptual units" of adults' representations. Nonetheless, children in this age range may share other aspects of adults' representations of this conceptual space. How do younger children's representations of the relationships among BODY, HEART, and MIND compare to those of older children and adults? 
 
@@ -2086,7 +2086,7 @@ Both informal observations and formal analyses of difference scores suggested th
 
 General developmental trends across these three age groups are perhaps easiest to observe in Figure 4.6, row D, which presents (hypothetical) "movement" between the mean placement for a target character among younger children (beginning of arrow), among older children (middle "joint" of arrow), and among adults (arrowhead), for each pair of conceptual units. In each case, this "movement" either maintains a similar distance from the line of equivalence ($y = x$) (as with mean assessments of the inert objects and technologies in the BODY vs. HEART space, panel D1; and the inert objects and animate beings in the BODY vs. MIND space, panel D2; and the inert objects in the HEART vs. MIND space, panel D3) or moves away from the line of equivalence toward the upper left and lower right corners of the plot (as with mean assessments of the animate beings in the BODY vs. HEART space, panel D1; the technologies in the BODY vs. MIND space, panel D2; and the technologies and animate beings in the HEART vs. MIND space, panel D3). Analysis of changes in _absolute_ attributions of BODY, HEART, and MIND, is pursued in Chapter V; for the purposes of the current chapter, the primary observation of interest is that these "shifts" between child and adult assessments of these characters generally point in the direction of stable or increasing (not decreasing) asymmetries over developmental time. This aligns quite well with my observations of "movement" between 7-9y and adulthood in Study 2.
 
-To assess the size and robustness of these apparent developmental differences, I conducted formal comparisons of difference scores between conceptual units among these two age groups. For each pair of conceptual units, I pooled data from the three age groups and modified my regression analyses to include a main effect of age group (comparing both older and younger children's difference scores to the baseline set by adults) and an interaction between age group and target character (assessing whether the observed differences between characters varied by age group).
+To assess the size and robustness of these apparent developmental differences, I conducted formal comparisons of difference scores between conceptual units among these three age groups. For each pair of conceptual units, I pooled data across age groups and modified my regression analyses to include a main effect of age group (comparing both older and younger children's difference scores to the baseline set by adults) and an interaction between age group and target character (assessing whether the observed differences between characters varied by age group).
 
 ```{r}
 d3_ad7946_scored_ad_diff <- d3_ad_scored_ad_diff %>%
@@ -2183,7 +2183,7 @@ Study 3 provides yet more confirmation of the robustness of the asymmetric relat
 
 This study also supports and extends the developmental story that began in Study 2. Study 3 provides even stronger evidence than Study 2 that, by middle childhood (7-9y of age), children hold weak but otherwise adult-like intuitions about the asymmetrical relationships among BODY, HEART, and MIND: Among this sample of 7- to 9-year-old children, these relationships all appeared similar in direction to those documented among adults, although they were generally attenuated in strength. In particular, the use of a diverse range of target characters in Study 3 shed light on the failure of 7- to 9-year-old children in Study 2 to demonstrate an adult-like pattern of endorsing BODY more strongly than HEART to the "edge cases" featured in that study (the beetle and the robot): In Study 3 older children's responses suggested that children in this age range _do_ in fact appear to share this tendency with adults when confronted with most target characters, but may treat robots as a a particular exception to this general rule.
 
-In fact, this particular leg of the adult pattern of asymmetrical relationships among BODY, HEART, and MIND—a tendency to endorse BODY more strongly than HEART—appeared to be emergent even among the sample of younger children (4-6y of age) in this study. However, these younger children showed no sign of systematically endorsing MIND more strongly than HEART—and actually showed the opposite of the adult tendency in the case of BODY vs. MIND, endorsing BODY more strongly than MIND for most target characters.
+In fact, this particular aspect of the adult pattern of asymmetrical relationships among BODY, HEART, and MIND—a tendency to endorse BODY more strongly than HEART—appeared to be emergent even among the sample of younger children (4-6y of age) in this study. However, these younger children showed no sign of systematically endorsing MIND more strongly than HEART—and actually showed the opposite of the adult tendency in the case of BODY vs. MIND, endorsing BODY more strongly than MIND for most target characters.
 
 ```{r}
 scales_study3 <- bind_rows(scales_efa_wdm_d3_ad %>% 
@@ -2378,7 +2378,7 @@ scales_study4 <- bind_rows(scales_efa_wdm_d4_ad %>%
 
 Following the steps described in the "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d4_ad)` scales of `r scales_efa_wdm_d4_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.10.
 
-#### Visualization
+#### Visualization and analysis of asymmetries
 
 ```{r}
 plots_d4_ad_scored_ad <- relviz_fun(d4_ad_scored_ad)
@@ -2419,12 +2419,6 @@ fig_d4_ad_plots_leg_title <- plot_grid(fig_d4_ad_title, fig_d4_ad_plots_leg,
 # interim plot for ease of writing
 fig_d4_ad_plots_leg_title
 ```
-
-Visualizations of relationships among scores on these _BODY_, _HEART_, and _MIND_ scales are provided in Figure 4.8, row A. These visualizations are all extremely similar to those discussed at length in previous studies featuring these "edge case" target characters (Studies 1a-1c, Study 2); I will not describe them further here.
-
-#### Analysis of asymmetries
-
-Here I provide a formal analysis of the asymmetries between endorsements of BODY, HEART, and MIND. As in previous studies, for each pair of conceptual units, I conduct a Bayesian regression to compare difference scores between these two conceptual units to zero, controlling for differences in assessments of the two "edge cases" that were featured as target characters in these studies. As in Study 1d, I account for the within-subjects design by including maximal random effects structures (in this case, random intercepts for participants). See Figure 4.9, panel D, for visual depictions of these difference scores.
 
 ```{r}
 d4_ad_scored_ad_diff <- diff_fun(d4_ad_scored_ad)
@@ -2503,17 +2497,21 @@ regtab_d4_ad_scored_ad_diff %>%
 plot_d4_ad_scored_ad_diff
 ```
 
+Visualizations of relationships among scores on these _BODY_, _HEART_, and _MIND_ scales are provided in Figure 4.8, row A. These visualizations are all extremely similar to those discussed at length in previous studies featuring these "edge case" target characters (Studies 1a-1c, Study 2).
+
+As in previous studies, for each pair of conceptual units, I conducted a Bayesian regression to compare difference scores between these two conceptual units to zero, controlling for differences in assessments of the two "edge cases" that were featured as target characters in these studies. As in Study 1d, I accounted for the within-subjects design of Study 4 by including random intercepts for participants. See Figure 4.9, panel D, for visual depictions of these difference scores.
+
 ##### BODY vs. HEART
 
-As in previous studies, adults' _BODY_ vs. _HEART_ difference scores were substantially non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.8), and this asymmetry was driven primarily by participants' assessments of the beetle. (See Figure 4.9, panel A, and the "Robot vs. GM" row for the "BODY-HEART" comparison in Table 4.8.)
+As in previous adult samples, adults' _BODY_ vs. _HEART_ difference scores were positively related (`r score_cor_print_fun(d4_ad_scored_ad, "BODY vs. HEART")`) and were substantially non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.8), and this asymmetry was driven primarily by participants' assessments of the beetle 9see Figure 4.9, panel A, and the "Robot vs. GM" row for the "BODY-HEART" comparison in Table 4.8).
 
 ##### BODY vs. MIND
 
-As in previous studies, adults' _BODY_ vs. _MIND_ difference scores were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _BODY_ items (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.8), and this asymmetry was driven primarily by participants' assessments of the robot. Indeed, in this study, this asymmetry actually tended to go in the _opposite_ direction for participants' assessments of the beetle (BODY endorsements stronger than MIND endorsements), echoing children's response patterns in previous studies. (See Figure 4.9, panel A, and the "Robot vs. GM" row for the "BODY-MIND" comparison in Table 4.8.)
+As in previous adult samples, adults' _BODY_ vs. _MIND_ difference scores were were positively related (`r score_cor_print_fun(d4_ad_scored_ad, "BODY vs. MIND")`) and substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _BODY_ items (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.8), and this asymmetry was driven primarily by participants' assessments of the robot. Indeed, in this study, this asymmetry actually tended to go in the _opposite_ direction for participants' assessments of the beetle (BODY endorsements stronger than MIND endorsements), echoing children's response patterns in previous studies. (See Figure 4.9, panel A, and the "Robot vs. GM" row for the "BODY-MIND" comparison in Table 4.8.)
 
 ##### HEART vs. MIND
 
-As in previous studies, adults' _HEART_ vs. _MIND_ difference scores were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.8), and this asymmetry was somewhat exaggerated in assessments of the robot. (See Figure 4.9, panel A, and the "Robot vs. GM" row for the "HEART-MIND" comparison in Table 4.8.)
+As in previous adult samples, adults' _HEART_ vs. _MIND_ difference scores were were positively related (`r score_cor_print_fun(d4_ad_scored_ad, "HEART vs. MIND")`) and were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.8), and this asymmetry was somewhat exaggerated in assessments of the robot (see Figure 4.9, panel A, and the "Robot vs. GM" row for the "HEART-MIND" comparison in Table 4.8).
 
 #### Interim discussion
 
@@ -2528,7 +2526,7 @@ saveRDS(d4_46_scored_ad, file = "./stored/scored_data/d4_46_scored_ad")
 
 Study 4 was expressly designed to provide the best chance of observing adult-like conceptual representations among 4- to 5-year-old children. What did the relationships among BODY, HEART, and MIND look like in this age group under these circumstances?
 
-#### Visualization
+#### Visualization and analysis of asymmetries
 
 ```{r}
 plots_d4_46_scored_ad <- relviz_fun(d4_46_scored_ad)
@@ -2569,28 +2567,6 @@ fig_d4_46_plots_leg_title <- plot_grid(fig_d4_46_title, fig_d4_46_plots_leg,
 # interim plot for ease of writing
 fig_d4_46_plots_leg_title
 ```
-
-Visualizations of relationships among scores on adults' _BODY_, _HEART_, and _MIND_ scales are provided in Figure 4.8, row B.
-
-##### BODY vs. HEART
-
-First I consider the relationship between BODY and HEART (Figure 4.8, panel B1). As among adults in this study (panel A1), the relationship between scores on the _BODY_ and _HEART_ scales appears to be somewhat positive, and there appear to be somewhat fewer datapoints above the line of equivalence ($y = x$, dotted diagonal line) than below it—but both of these observations are much less striking among children than they were among adults. While, like the vast majority of adults, many children attributed more BODY than HEART to the target character in question (particularly to the beetle, in red), quite a few children attributed more HEART than BODY (particularly to the robot, in blue). 
-
-##### BODY vs. MIND
-
-Next I consider the relationship between BODY and MIND (Figure 4.8, panel B2). As among adults in this study (panel A2), the relationship between scores on the _BODY_ and _MIND_ scales appears to be somewhat positive. However, there was no obvious evidence of any asymmetry in children's attributions of these two conceptual units. In other words, while, like the majority of adults, some children attributed more MIND than BODY to the target character in question (particularly to the robot, in blue), other children attributed more BODY than MIND (particularly to the beetle, in red).
-
-##### HEART vs. MIND
-
-Finally I consider the relationship between HEART and MIND (Figure 4.8, panel B3). As among adults in this study (panel A3), the relationship between scores on the _HEART_ and _MIND_ scales appears to be positive, and there appear to be somewhat fewer datapoints below the line of equivalence ($y = x$, dotted diagonal line) than above it—but, as in the previous sections, both of these observations are much less striking among children than they were among adults. In other words, while many children attributed more MIND than HEART to the target character in question (like the vast majority of adults), quite a few children attributed at least slightly more HEART than MIND. This appears to have been true for both target characters.
-
-##### General observations about development
-
-For each pair of conceptual units, these visualizations suggest that children's responses were generally less asymmetrical than those of adults. This is perhaps easiest to observe in Figure 4.8, row D, which presents (hypothetical) "movement" between the mean placement for a target character among children (beginning of arrow) and the mean placement for a target character among adults (arrowhead), for each pair of conceptual units. In each case, this "movement" either maintains a similar distance from the line of equivalence ($y = x$) (as with mean assessments of the robot in the BODY vs. HEART space, panel D1; and the beetle in the BODY vs. MIND space, panel D2) or moves away from the line of equivalence toward the upper left and lower right corners of the plot (as with mean assessments of the beetle in the BODY vs. HEART space, panel D1; the robot in the BODY vs. MIND space, panel D2; and both characters in the HEART vs. MIND space, panel D3). Analysis of changes in _absolute_ attributions of BODY, HEART, and MIND, is pursued in Chapter V; for the purposes of the current chapter, the primary observation of interest is that these "shifts" between child and adult assessments of these characters generally point in the direction of stable or increasing (not decreasing) asymmetries over developmental time.
-
-#### Analysis of asymmetries
-
-Here I provide a formal analysis of these asymmetries among conceptual units, controlling for differences in assessments of the two "edge cases" that were featured as target characters in these studies (beetle and robot), and accounting for the within-subjects design of this study by including maximal random effects structures (in this case, random intercepts for participants). See Figure 4.9, panel B, for visual depictions of these difference scores.
 
 ```{r}
 d4_46_scored_ad_diff <- diff_fun(d4_46_scored_ad)
@@ -2669,21 +2645,23 @@ regtab_d4_46_scored_ad_diff %>%
 plot_d4_46_scored_ad_diff
 ```
 
+Visualizations of relationships among 4- to 5-year-old children's scores on the _BODY_, _HEART_, and _MIND_ scales are provided in Figure 4.8, row B. Here I combine my informal descriptions of these visualizations with formal analyses of difference scores between conceptual units, controlling for differences in assessments of the nine "diverse characters" that were featured as target characters in these studies and accounting for the within-subjects design of Study 4 by including random intercepts for participants. See Figure 4.9, panel B, for visual depictions of these difference scores, and Table 4.8 for the full results of these Bayesian regression analyses.
+
 ##### BODY vs. HEART
 
-As among adults, among children _BODY_ vs. _HEART_ difference scores were significantly non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.8). However, this asymmetry was reduced to zero for assessments of the robot (see Figure 4.9, panel B, and the "Robot vs. GM" row for the "BODY-HEART" comparison in Table 4.8).  
+As among adults in this study, the relationship between children's scores on the _BODY_ and _HEART_ scales was positive (`r score_cor_print_fun(d4_46_scored_ad, "BODY vs. HEART")`), and children's _BODY_ vs. _HEART_ difference scores were significantly non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.8). However, yet again, this asymmetry was much less striking among children than it was among adults (Figure 4.8, panel B1): While, like the vast majority of adults, many children attributed more BODY than HEART to the target character in question (particularly to the beetle, in red), quite a few children attributed more HEART than BODY (particularly to the robot, in blue). The results of the regression analysis confirmed that the BODY vs. HEART asymmetry varied substantially across target characters in this age group (see Figure 4.9, panel B, and the "Robot vs. GM" row for the "BODY-HEART" comparison in Table 4.8).
 
 ##### BODY vs. MIND
 
-In contrast to adults, among children _BODY_ vs. _MIND_ difference scores were not differentiable from zero (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.8). This appears to be due to the fact that the asymmetry ran in different directions for the two target characters (see Figure 4.9, panel B, and the "Robot vs. GM" row for the "BODY-MIND" comparison in Table 4.8).  
+As among adults in this study, the relationship between children's scores on the _BODY_ and _MIND_ scales was positive (`r score_cor_print_fun(d4_46_scored_ad, "BODY vs. MIND")`). However, there was no obvious evidence of any asymmetry in children's attributions of these two conceptual units: children's _BODY_ vs. _MIND_ difference scores were not differentiable from zero (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.8). This appears to be due to the fact that the asymmetry ran in different directions for the two target characters (see Figure 4.9, panel B): for the robot (in blue) many children endorse _MIND_ items more strongly than _BODY_ items, but for the beetle (in red) many children endorsed BODY more strongly than MIND. The results of the regression analysis confirmed that the BODY vs. MIND asymmetry varied substantially across target characters in this age group (see Figure 4.9, panel B, and the "Robot vs. GM" row for the "BODY-MIND" comparison in Table 4.8).
 
 ##### HEART vs. MIND
 
-As among adults, among children _HEART_ vs. _MIND_ difference scores were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.8); this difference did not vary across target characters (see the "Robot vs. GM" row for the "HEART-MIND" comparison in Table 4.8).
+As among adults in this study, the relationship between children's scores on the _HEART_ and _MIND_ scales was positive (`r score_cor_print_fun(d4_46_scored_ad, "HEART vs. MIND")`), and children's _HEART_ vs. _MIND_ difference scores were significantly non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.8). However, yet again, this asymmetry was much less striking among children than it was among adults (Figure 4.8, panel B3): While, like the vast majority of adults, many children attributed more MIND than HEART to the target character in question, quite a few children attributed more HEART than MIND. The direction and strength of the asymmetry did not vary systematically across target characters (see the "Robot vs. GM" row for the "HEART-MIND" comparison in Table 4.8)
 
 #### Interim discussion
 
-Using a particularly child-friendly paradigm, 4- to 5-year-old children were relatively "adult-like"" in their tendencies to endorse BODY and MIND more strongly than HEART, but failed to show the adult-like tendency to endorse MIND more strongly than BODY for these two edge cases. Instead, like older children in Studies 2 and 3, the asymmetry between BODY and MIND appeared to be highly contingent on which target was being assessed.
+Using a particularly child-friendly paradigm, 4- to 5-year-old children were relatively "adult-like" than their 4- to 6-year-old peers in Study 2 in their tendencies to endorse BODY and MIND more strongly than HEART. However, children failed to show the adult-like tendency to endorse MIND more strongly than BODY for these two edge cases; instead, like older children in Studies 2 and 3, the asymmetry between BODY and MIND appeared to be highly contingent on which target was being assessed.
 
 ```{r}
 plots_agegp_d4_scored_ad <- relviz_agegp_fun(
@@ -2739,7 +2717,9 @@ ggdraw(figure4.8_cap)
 
 ### Developmental comparison
 
-In the previous sections, I analyzed adults' and children's responses separately. Here I conduct a formal comparison of difference scores between conceptual units among these two age groups, to assess the size and robustness of these ostensive developmental differences. I pooled data from both age groups and modified my regression analyses to include a main effect of age group (comparing children's difference scores to the baseline set by adults) and an interaction between age group and target character (assessing whether the observed differences between characters varied by age group).
+The visualizations and analyses described in the previous section suggest that children's responses were generally less asymmetrical than those of adults. This is perhaps easiest to observe in Figure 4.8, row D, which presents (hypothetical) "movement" between the mean placement for a target character among children (beginning of arrow) and the mean placement for a target character among adults (arrowhead), for each pair of conceptual units. In each case, this "movement" either maintains a similar distance from the line of equivalence ($y = x$) (as with mean assessments of the robot in the BODY vs. HEART space, panel D1; and the beetle in the BODY vs. MIND space, panel D2) or moves away from the line of equivalence toward the upper left and lower right corners of the plot (as with mean assessments of the beetle in the BODY vs. HEART space, panel D1; the robot in the BODY vs. MIND space, panel D2; and both characters in the HEART vs. MIND space, panel D3). Analysis of changes in _absolute_ attributions of BODY, HEART, and MIND, is pursued in Chapter V; for the purposes of the current chapter, the primary observation of interest is that these "shifts" between child and adult assessments of these characters generally point in the direction of stable or increasing (not decreasing) asymmetries over developmental time.
+
+To assess the size and robustness of these apparent developmental differences, I conducted formal comparisons of difference scores between conceptual units among these two age groups. I pooled data from both age groups and modified my regression analyses to include a main effect of age group (comparing children's difference scores to the baseline set by adults) and an interaction between age group and target character (assessing whether the observed differences between characters varied by age group).
 
 ```{r}
 d4_ad46_scored_ad_diff <- full_join(d4_ad_scored_ad_diff,
@@ -2820,9 +2800,9 @@ For each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, HEART vs. MIND
 
 ## Discussion
 
-Study 4 provides yet more confirmation of the robustness of the asymmetric relationships among conceptual units in adults' representations of mental life as revealed by Studies 1-3 (using yet another set of mental capacities and a within-subjects design): Yet again, adults systematically endorsed both BODY and MIND at least as strongly, and often more strongly, than HEART regardless of which target character they assessed, while the relationship between BODY and MIND was contingent on the target character under evaluation.
+Study 4 provides yet more confirmation of the robustness of the asymmetric relationships among conceptual units in adults' representations of mental life as revealed by Studies 1-3 (using yet another set of mental capacities and a within-subjects design): Again, adults systematically endorsed both BODY and MIND at least as strongly, and often more strongly, than HEART regardless of which target character they assessed, while the relationship between BODY and MIND was contingent on the target character under evaluation.
 
-This study also supports and extends the developmental story that unfolded through Studies 2 and 3. As in Study 3, the young children (4-5y of age) in this study showed an adult-like tendency to endorse BODY more strongly than HEART. Morever, in this particularly child-friendly experimental paradigm, these children also showed an emergent adult-like tendency to endorse MIND more strongly than HEART, though this asymmetry was much weaker among children than among adults. In contrast to the un-adult-like tendency among "younger" (4- to 6-year-old) children in Study 3 to endorse BODY more strongly than MIND, in Study 3 the relationship between BODY and MIND among the young children in this sample varied by target character, much as it did among adults. In sum, in all respects the 4- to 5-year-old children in this study demonstrated a more adult-like (albeit attenuated) sense of the relationships among BODY, HEART, and MIND than their similar-aged peers in Study 3.
+This study also supports and extends the developmental story that unfolded through Studies 2 and 3. As in Study 3, the young children in this study (4-5y of age) showed an adult-like tendency to endorse BODY more strongly than HEART. Morever, in this particularly child-friendly experimental paradigm, these children also showed an emergent adult-like tendency to endorse MIND more strongly than HEART, though this asymmetry was much weaker among children than among adults. The relationship between BODY and MIND among the young children in this sample varied by target character, to a greater degree than it did among adults. But in most respects the 4- to 5-year-old children in this study demonstrated a more adult-like (albeit attenuated) sense of the relationships among BODY, HEART, and MIND than their similar-aged peers in Study 3.
 
 ```{r}
 plots_agegp_d4_scored_ad <- relviz_agegp_fun(
