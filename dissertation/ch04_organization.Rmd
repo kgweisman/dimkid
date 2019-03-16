@@ -359,15 +359,15 @@ The visualizations of relationships among scores on these _BODY_, _HEART_, and _
 
 ##### BODY vs. HEART
 
-First I consider the relationship between BODY and HEART (Figure 4.1, leftmost column: panels A1, B1, and C1). To my eyes, the most striking features of these visualizations are that (1) there is a positive relationship between scores on the _BODY_ and _HEART_ scales; and (2) there are virtually no datapoints above the line of equivalence ($y = x$, dotted diagonal line), and certainly no datapoints in the upper left corner of the plot of these plots. Individual participants tended to endorse the mental capacity items included in the _BODY_ scale at least as strongly, and often more strongly, than they endorsed items included in the _HEART_ scale—in other words, that many participants attributed more BODY than HEART to the target character in question, but virtually no participants attribute more HEART than BODY. This asymmetry appears to have been driven primarily by participants' assessments of the beetle (in red); for the robot (in blue), _BODY_ and _HEART_ scores appear to have been more similar (close to the dotted line), and were generally quite low. 
+First I consider the relationship between BODY and HEART (Figure 4.1, leftmost column: panels A1, B1, and C1). To my eyes, the most striking features of these visualizations are that (1) there is a positive relationship between scores on the _BODY_ and _HEART_ scales (an observation confirmed by significantly positive Pearson correlations; Study 1a: `r score_cor_print_fun(d1a_ad_scored_ad, "BODY vs. HEART")`; Study 1b: `r score_cor_print_fun(d1b_ad_scored_ad, "BODY vs. HEART")`; Study 1c: Study 1c: `r score_cor_print_fun(d1c_ad_scored_ad, "BODY vs. HEART")`); and (2) there are virtually no datapoints above the line of equivalence ($y = x$, dotted diagonal line), and certainly no datapoints in the upper left corner of the plot of these plots. Individual participants tended to endorse the mental capacity items included in the _BODY_ scale at least as strongly, and often more strongly, than they endorsed items included in the _HEART_ scale—in other words, that many participants attributed more BODY than HEART to the target character in question, but virtually no participants attribute more HEART than BODY. This asymmetry appears to have been driven primarily by participants' assessments of the beetle (in red); for the robot (in blue), _BODY_ and _HEART_ scores appear to have been more similar (close to the dotted line), and were generally quite low. 
 
 ##### BODY vs. MIND
 
-Next I consider the relationship between BODY and MIND (Figure 4.1, center column: panels A2, B2, and C2). Similar to the BODY vs. HEART comparison, two notable features of these visualizations are that (1) there is a positive relationship between scores on the _BODY_ and _MIND_ scales; and (2) there are fewer datapoints below the line of equivalence ($y = x$, dotted diagonal line) than above it, and no datapoints in the lower right corner of the plot of these plots. Most participants tended to endorse the mental capacity items included in the _MIND_ scale roughly as strongly, and sometimes more strongly, than they endorsed items included in the _BODY_ scale, while relatively few participants endorsed _MIND_ items less strongly than _BODY_ items. However, visual inspection suggests that this asymmetry was less extreme than the asymmetry between _BODY_ and _HEART_ scores just described. In this case, the asymmetry between _BODY_ and _MIND_ appears to have been driven primarily by participants' assessments of the robot (in blue); for the beetle (in red), _BODY_ and _MIND_ scores appear to have been more similar (close to the dotted line). 
+Next I consider the relationship between BODY and MIND (Figure 4.1, center column: panels A2, B2, and C2). Similar to the BODY vs. HEART comparison, two notable features of these visualizations are that (1) there is a positive relationship between scores on the _BODY_ and _MIND_ scales (an observation confirmed by significantly positive Pearson correlations; Study 1a: `r score_cor_print_fun(d1a_ad_scored_ad, "BODY vs. MIND")`; Study 1b: `r score_cor_print_fun(d1b_ad_scored_ad, "BODY vs. MIND")`; Study 1c: Study 1c: `r score_cor_print_fun(d1c_ad_scored_ad, "BODY vs. MIND")`); and (2) there are fewer datapoints below the line of equivalence ($y = x$, dotted diagonal line) than above it, and no datapoints in the lower right corner of the plot of these plots. Most participants tended to endorse the mental capacity items included in the _MIND_ scale roughly as strongly, and sometimes more strongly, than they endorsed items included in the _BODY_ scale, while relatively few participants endorsed _MIND_ items less strongly than _BODY_ items. However, visual inspection suggests that this asymmetry was less extreme than the asymmetry between _BODY_ and _HEART_ scores just described. In this case, the asymmetry between _BODY_ and _MIND_ appears to have been driven primarily by participants' assessments of the robot (in blue); for the beetle (in red), _BODY_ and _MIND_ scores appear to have been more similar (close to the dotted line). 
 
 ##### HEART vs. MIND
 
-Finally I consider the relationship between HEART and MIND (Figure 4.1, rightmost column: panels A3, B3, and C3). Again, two features of these visualizations are particularly striking: (1) There is a positive relationship between scores on the _MIND_ and _HEART_ scales; and (2) there are virtually _no_ datapoints below the line of equivalence ($y = x$, dotted diagonal line). The asymmetry between _MIND_ and _HEART_ scores appears to have been particularly extreme: Almost _all_ participants endorsed the mental capacity items included in the _MIND_ scale more strongly than the items included in the _HEART_ scale. In this case, this asymmetry appears to be born out for both target characters, but perhaps more exaggerated for the beetle (in red) than the robot (in blue).
+Finally I consider the relationship between HEART and MIND (Figure 4.1, rightmost column: panels A3, B3, and C3). Again, two features of these visualizations are particularly striking: (1) There is a positive relationship between scores on the _MIND_ and _HEART_ scales (an observation confirmed by significantly positive Pearson correlations; Study 1a: `r score_cor_print_fun(d1a_ad_scored_ad, "HEART vs. MIND")`; Study 1b: `r score_cor_print_fun(d1b_ad_scored_ad, "HEART vs. MIND")`; Study 1c: Study 1c: `r score_cor_print_fun(d1c_ad_scored_ad, "HEART vs. MIND")`); and (2) there are virtually _no_ datapoints below the line of equivalence ($y = x$, dotted diagonal line). The asymmetry between _MIND_ and _HEART_ scores appears to have been particularly extreme: Almost _all_ participants endorsed the mental capacity items included in the _MIND_ scale more strongly than the items included in the _HEART_ scale. In this case, this asymmetry appears to be born out for both target characters, but perhaps more exaggerated for the beetle (in red) than the robot (in blue).
 
 ```{r}
 figure4.1 <- plot_grid(fig_d1a_ad_plots_leg_title, fig_d1b_ad_plots_leg_title,
@@ -725,17 +725,17 @@ Visualizations of relationships among scores on these _BODY_, _HEART_, and _MIND
 
 ##### BODY vs. HEART
 
-First I consider the relationship between BODY and HEART (Figure 4.1, panel D1). Much as in Studies 1a-1c (rows A-C), the most striking features of this visualization are that (1) there is a positive relationship between scores on the _BODY_ and _HEART_ scales; and (2) there are virtually no datapoints above the line of equivalence ($y = x$, dotted diagonal line), and certainly no datapoints in the upper left corner of the plot. Individual participants tended to endorse the mental capacity items included in the _BODY_ scale at least as strongly, and often more strongly, than they endorsed items included in the _HEART_ scale—in other words, many participants attributed more BODY than HEART to the target character in question, but virtually no participants attributed more HEART than BODY. 
+First I consider the relationship between BODY and HEART (Figure 4.1, panel D1). Much as in Studies 1a-1c (rows A-C), the most striking features of this visualization are that (1) there is a positive relationship between scores on the _BODY_ and _HEART_ scales (`r score_cor_print_fun(d1d_ad_scored_ad, "BODY vs. HEART")`); and (2) there are virtually no datapoints above the line of equivalence ($y = x$, dotted diagonal line), and certainly no datapoints in the upper left corner of the plot. Individual participants tended to endorse the mental capacity items included in the _BODY_ scale at least as strongly, and often more strongly, than they endorsed items included in the _HEART_ scale—in other words, many participants attributed more BODY than HEART to the target character in question, but virtually no participants attributed more HEART than BODY. 
 
 Visual inspection of mean scores by target character further reveals that, in the aggregate, characters that received relatively low _BODY_ scores (e.g., inert objects, technologies, the fetus, the person in a persistent vegetative state, and such "lower" lifeforms as a microbe) received universally low mean _HEART_ scores, while characters that received relatively high _BODY_ scores (e.g., "higher" lifeforms like animals and typical humans) varied in their mean _HEART_ scores. This raises the intriguing possibility that attributions of BODY and HEART may have been governed by some sort of "threshold" model, in which attributions of any substantial amount of HEART depend on the target character having a certain degree of BODY.
 
 ##### BODY vs. MIND
 
-Next I consider the relationship between BODY and MIND (Figure 4.1, panel D2). As in Studies 1a-1c, two notable features of this visualization are that (1) there is a positive relationship between scores on the _BODY_ and _MIND_ scales; and (2) there are datapoints in the upper left but not the lower right corner of the plots. However, while participants who assessed certain target characters (namely, the technologies) tended to endorse the mental capacity items included in the _MIND_ scale roughly as strongly, and sometimes more strongly, than they endorsed items included in the _BODY_ scale, participants who assessed other target characters, if anything, appear to have shown the reverse pattern, endorsing _MIND_ items slightly less strongly than _BODY_ items. In other words, there appears to be a less consistency in the "asymmetry" between BODY and MIND in Study 1d than there was in Studies 1a-1c.
+Next I consider the relationship between BODY and MIND (Figure 4.1, panel D2). As in Studies 1a-1c, two notable features of this visualization are that (1) there is a positive relationship between scores on the _BODY_ and _MIND_ scales (`r score_cor_print_fun(d1d_ad_scored_ad, "BODY vs. MIND")`); and (2) there are datapoints in the upper left but not the lower right corner of the plots. However, while participants who assessed certain target characters (namely, the technologies) tended to endorse the mental capacity items included in the _MIND_ scale roughly as strongly, and sometimes more strongly, than they endorsed items included in the _BODY_ scale, participants who assessed other target characters, if anything, appear to have shown the reverse pattern, endorsing _MIND_ items slightly less strongly than _BODY_ items. In other words, there appears to be a less consistency in the "asymmetry" between BODY and MIND in Study 1d than there was in Studies 1a-1c.
 
 ##### HEART vs. MIND
 
-Finally I consider the relationship between HEART and MIND (Figure 4.1, panel D1). Much as in Studies 1a-1c (rows A-C), the most striking features of this visualization are that (1) there is a positive relationship between scores on the _HEART_ and _MIND_ scales; and (2) there are virtually no datapoints below the line of equivalence ($y = x$, dotted diagonal line), and certainly no datapoints in the lower right corner of the plot. Individual participants tended to endorse the mental capacity items included in the _MIND_ scale at least as strongly, and often more strongly, than they endorsed items included in the _HEART_ scale—in other words, many participants attributed more MIND than HEART to the target character in question, but virtually no participants attributed more HEART than MIND. 
+Finally I consider the relationship between HEART and MIND (Figure 4.1, panel D1). Much as in Studies 1a-1c (rows A-C), the most striking features of this visualization are that (1) there is a positive relationship between scores on the _HEART_ and _MIND_ scales (`r score_cor_print_fun(d1d_ad_scored_ad, "HEART vs. MIND")`); and (2) there are virtually no datapoints below the line of equivalence ($y = x$, dotted diagonal line), and certainly no datapoints in the lower right corner of the plot. Individual participants tended to endorse the mental capacity items included in the _MIND_ scale at least as strongly, and often more strongly, than they endorsed items included in the _HEART_ scale—in other words, many participants attributed more MIND than HEART to the target character in question, but virtually no participants attributed more HEART than MIND. 
 
 Visual inspection of mean scores by target character further reveals that, in the aggregate, characters that received relatively low _MIND_ scores (e.g., inert objects, the fetus, and such "lower" lifeforms as a microbe) received universally low mean _HEART_ scores, while characters that received relatively high _MIND_ scores (e.g., more sophisticated technologies as well as "higher" lifeforms like animals and typical humans) varied in their mean _HEART_ scores. As in the BODY vs. HEART comparison discussed earlier, this raises the intriguing possibility that attributions of HEART and MIND may have been governed by some sort of "threshold" model, in which attributions of any substantial amount of HEART depend on the target character having a certain degree of MIND.
 
@@ -908,7 +908,7 @@ saveRDS(d2_ad_scored_ad, file = "./stored/scored_data/d2_ad_scored_ad")
 
 Following the steps described in the "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d2_ad)` scales of `r scales_efa_wdm_d2_ad %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.10.
 
-#### Visualization
+#### Visualization and analysis of asymmetries
 
 ```{r}
 plots_d2_ad_scored_ad <- relviz_fun(d2_ad_scored_ad)
@@ -950,25 +950,7 @@ fig_d2_ad_plots_leg_title <- plot_grid(fig_d2_ad_title, fig_d2_ad_plots_leg,
 fig_d2_ad_plots_leg_title
 ```
 
-Visualizations of relationships among scores on these _BODY_, _HEART_, and _MIND_ scales are provided in Figure 4.3, row A.
-
-##### BODY vs. HEART
-
-First I consider the relationship between BODY and HEART (Figure 4.3, panel A1). Much as in Study 1, the most striking features of this visualization are that (1) there is a positive relationship between scores on the _BODY_ and _HEART_ scales; and (2) there are very few datapoints above the line of equivalence ($y = x$, dotted diagonal line), and certainly no datapoints in the upper left corner of the plot. Individual participants tended to endorse the mental capacity items included in the _BODY_ scale at least as strongly, and often more strongly, than they endorsed items included in the _HEART_ scale—in other words, many participants attributed more BODY than HEART to the target character in question, but virtually no participants attributed more HEART than BODY. As in Studies 1a-1c (which also featured these two "edge cases" as target characters), this asymmetry appears to have been driven primarily by assessments of the beetle (in red), rather than the robot (in blue).
-
-##### BODY vs. MIND
-
-Next I consider the relationship between BODY and MIND (Figure 4.3, panel A2). As in Study 1, there are fewer datapoints below the line of equivalence ($y = x$, dotted diagonal line) than above it, and no datapoints in the lower right corner of the plot. In other words, most participants tended to endorse the mental capacity items included in the _MIND_ scale roughly as strongly, and sometimes more strongly, than they endorsed items included in the _BODY_ scale, while relatively few participants endorsed _MIND_ items less strongly than _BODY_ items. As in previous studies, this asymmetry appears to have been less extreme than the asymmetry between _BODY_ and _HEART_ scores (documented in the previous paragraph), and seems to have been driven primarily by participants' assessments of the robot (in blue), rather than the beetle (in red). 
-
-Unlike previous studies, the relationship between scores on these two scales was not significantly positive; see correlation reported in Figure 4.3, panel A2.
-
-##### HEART vs. MIND
-
-Finally I consider the relationship between HEART and MIND (Figure 4.3, panel A1). As in Study 1, the most striking features of this visualization are that (1) there is a positive relationship between scores on the _HEART_ and _MIND_ scales; and (2) there are virtually no datapoints below the line of equivalence ($y = x$, dotted diagonal line), and certainly no datapoints in the lower right corner of the plot. In other words, many participants attributed more MIND than HEART to the target character in question, but virtually no participants attributed more HEART than MIND. As in Study 1, this asymmetry appears to have been particularly extreme. Again, this asymmetry appears to be born out for both target characters, but perhaps more exaggerated for the beetle (in red) than the robot (in blue).
-
-#### Analysis of asymmetries
-
-Here I provide a formal analysis of the asymmetries revealed by the visualizations in the previous section, controlling for differences in assessments of the two "edge cases" that were featured as target characters in these studies. See Figure 4.5, panel D, for visual depictions of these difference scores.
+Visualizations of relationships among scores on these _BODY_, _HEART_, and _MIND_ scales are provided in Figure 4.3, row A. Here I combine my informal descriptions of these visualizations with formal analyses of difference scores between conceptual units, controlling for differences in assessments of the two "edge cases" that were featured as target characters in these studies. See Figure 4.5, panel A, for visual depictions of these difference scores, and Table 4.4 for the full results of these Bayesian regression analyses.
 
 ```{r}
 d2_ad_scored_ad_diff <- diff_fun(d2_ad_scored_ad)
@@ -1049,15 +1031,15 @@ plot_d2_ad_scored_ad_diff
 
 ##### BODY vs. HEART
 
-As in Study 1, adults' _BODY_ vs. _HEART_ difference scores were substantially non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.4), and this asymmetry was driven primarily by participants' assessments of the beetle (see the "Robot vs. GM" row for the "BODY-HEART" comparison in Table 4.4).  
+As in Study 1, among adults in Study 2 there was a was a positive relationship between scores on the _BODY_ and _HEART_ scales (`r score_cor_print_fun(d2_ad_scored_ad, "BODY vs. HEART")`). The visualization of this relationship (Figure 4.3, panel A1) featured very few datapoints above the line of equivalence ($y = x$, dotted diagonal line)—an asymmetry which appeared to have been driven primarily by assessments of the beetle (in red). A regression analysis confirmed that adults' _BODY_ vs. _HEART_ difference scores were substantially non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.4), and this asymmetry was driven primarily by participants' assessments of the beetle (see the "Robot vs. GM" row for the "BODY-HEART" comparison in Table 4.4).
 
 ##### BODY vs. MIND
 
-As in Study 1, adults' _BODY_ vs. _MIND_ difference scores were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _BODY_ items (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.4), and this asymmetry was driven primarily by participants' assessments of the robot (see the "Robot vs. GM" row for the "BODY-MIND" comparison in Table 4.4).
+Unlike Study 1, among adults in Study 2 the relationship between scores on the _BODY_ and _MIND_ scales was not significantly positive (`r score_cor_print_fun(d2_ad_scored_ad, "BODY vs. MIND")`). As in Study 1, the visualization of this relationship (Figure 4.3, panel A2) featured fewer datapoints below the line of equivalence ($y = x$, dotted diagonal line) than above it, and no datapoints in the lower right corner of the plot—an asymmetry which appeared to have been driven primarily by assessments of the robot (in blue) and which generally appeared to be less extreme than the other two comparisons. A regression analysis confirmed that adults' _BODY_ vs. _MIND_ difference scores were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _BODY_ items (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.4), and this asymmetry was driven primarily by participants' assessments of the robot (see the "Robot vs. GM" row for the "BODY-MIND" comparison in Table 4.4).
 
 ##### HEART vs. MIND
 
-As in Study 1, adults' _HEART_ vs. _MIND_ difference scores were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.4), and this asymmetry was somewhat exaggerated in assessments of the robot, relative to the beetle (see the "Robot vs. GM" row for the "HEART-MIND" comparison in Table 4.4).
+As in Study 1, among adults in Study 2 there was a positive relationship between scores on the _HEART_ and _MIND_ scales (`r score_cor_print_fun(d2_ad_scored_ad, "HEART vs. MIND")`). As in Study 1, the visualization of this relationship (Figure 4.3, panel A3) featured virtually no datapoints below the line of equivalence ($y = x$, dotted diagonal line)—an asymmetry which appeared to have been especially extreme. A regression analysis confirmed that adults' _HEART_ vs. _MIND_ difference scores were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.4); this asymmetry was somewhat exaggerated in assessments of the robot (see the "Robot vs. GM" row for the "HEART-MIND" comparison in Table 4.4).
 
 #### Interim discussion
 
@@ -1076,7 +1058,9 @@ d2_79_scored_ad <- score_fun(d2_79, scales_efa_wdm_d2_ad)
 saveRDS(d2_79_scored_ad, file = "./stored/scored_data/d2_79_scored_ad")
 ```
 
-#### Visualization
+#### Visualization and analysis of asymmetries
+
+Visualizations of relationships among scores on these _BODY_, _HEART_, and _MIND_ scales are provided in Figure 4.3, row B. Here I combine my informal descriptions of these visualizations with formal analyses of difference scores between conceptual units, controlling for differences in assessments of the two "edge cases" that were featured as target characters in these studies. See Figure 4.5, panel B, for visual depictions of these difference scores, and Table 4.4 for the full results of these Bayesian regression analyses.
 
 ```{r}
 plots_d2_79_scored_ad <- relviz_fun(d2_79_scored_ad)
@@ -1117,34 +1101,6 @@ fig_d2_79_plots_leg_title <- plot_grid(fig_d2_79_title, fig_d2_79_plots_leg,
 # interim plot for ease of writing
 fig_d2_79_plots_leg_title
 ```
-
-Visualizations of relationships among scores on the (adult) _BODY_, _HEART_, and _MIND_ scales are provided in Figure 4.3, row B.
-
-##### BODY vs. HEART
-
-First I consider the relationship between BODY and HEART (Figure 4.3, panel B1). As among adults in this study (panel A1), the relationship between scores on the _BODY_ and _HEART_ scales appears to be somewhat positive, and there appear to be somewhat fewer datapoints above the line of equivalence ($y = x$, dotted diagonal line) than below it—but both of these observations are much less striking among children than they were among adults. In other words, while many children attributed more BODY than HEART to the target character in question (like the vast majority of adults), quite a few children attributed more HEART than BODY. 
-
-Furthermore, a visual inspection of this plot suggests that the asymmetry may have actually gone in opposite directions for the two target characters, with children tending to attribute more BODY than HEART to the beetle (in red) but, if anything, more HEART than BODY to the robot (in blue).
-
-##### BODY vs. MIND
-
-Next I consider the relationship between BODY and MIND (Figure 4.3, panel B2). As among adults in this study (panel A2), there appear to be somewhat fewer datapoints below the line of equivalence ($y = x$, dotted diagonal line) than above it—but, again, both of these observations are much less striking among children than they were among adults. In other words, while many children attributed more MIND than BODY to the target character in question (like the vast majority of adults), quite a few children attributed more BODY than MIND. 
-
-Moreover, as with the BODY vs. HEART relationship described in the previous section, a visual inspection of this plot suggests that the asymmetry may have actually gone in opposite directions for the two target characters, with children tending to attribute more MIND than BODY to the robot (in blue) but, if anything, more BODY than MIND to the beetle (in red).
-
-As among adults in this study, the relationship between scores on the _BODY_ and _MIND_ scales was not significantly positive (see correlation reported in Figure 4.3, B2).
-
-##### HEART vs. MIND
-
-Finally I consider the relationship between HEART and MIND (Figure 4.3, panel B3). As among adults in this study (panel A3), the relationship between scores on the _HEART_ and _MIND_ scales appears to be somewhat positive, and there appear to be somewhat fewer datapoints below the line of equivalence ($y = x$, dotted diagonal line) than above it—but, as in the previous sections, both of these observations are much less striking among children than they were among adults. In other words, while many children attributed more MIND than HEART to the target character in question (like the vast majority of adults), quite a few children attributed more HEART than MIND. This appears to have been true for both target characters.
-
-##### General observations about development
-
-For each pair conceptual units, these visualizations suggest that children's responses were generally less asymmetrical than those of adults. This is perhaps easiest to observe in Figure 4.3, row D, which presents (hypothetical) "movement" between the mean placement for a target character among children (beginning of arrow) and the mean placement for a target character among adults (arrowhead), for each pair of conceptual units. In each case, this "movement" either maintains a similar distance from the line of equivalence ($y = x$) (as with mean assessments of the robot in the BODY vs. HEART space, panel C1; and the beetle in the BODY vs. MIND space, panel C2) or moves away from the line of equivalence toward the upper left and lower right corners of the plot (as with mean assessments of the beetle in the BODY vs. HEART space, panel C1; the robot in the BODY vs. MIND space, panel C2; and both characters in the HEART vs. MIND space, panel C3). Analysis of changes in _absolute_ attributions of BODY, HEART, and MIND, is pursued in Chapter V; for the purposes of the current chapter, the primary observation of interest is that these "shifts" between child and adult assessments of these characters generally point in the direction of stable or increasing (not decreasing) asymmetries over developmental time.
-
-#### Analysis of asymmetries
-
-Here I provide a formal analysis of the asymmetries revealed by the visualizations in the previous section, controlling for differences in assessments of the two "edge cases" that were featured as target characters in these studies (beetle and robot). See Figure 4.5, panel B, for visual depictions of these difference scores.
 
 ```{r}
 d2_79_scored_ad_diff <- diff_fun(d2_79_scored_ad)
@@ -1225,15 +1181,15 @@ plot_d2_79_scored_ad_diff
 
 ##### BODY vs. HEART
 
-In contrast to adults, children's BODY vs. HEART difference scores were not differentiable from zero; the lower bound of the 95% credible interval was zero (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.4). The direction of difference varied substantially across target characters (see the "Robot vs. GM" row for the "BODY-HEART" comparison in Table 4.4).  
+As among adults in this study (Figure 4.3, panel A1), the relationship between children's scores on the _BODY_ and _HEART_ scales (panel B1) was positive (`r score_cor_print_fun(d2_79_scored_ad, "BODY vs. HEART")`), and there appear to be somewhat fewer datapoints above the line of equivalence ($y = x$, dotted diagonal line) than below it. However, this asymmetry is less striking among children than it was among adults: While many children attributed more BODY than HEART to the target character in question (like the vast majority of adults), quite a few children attributed more HEART than BODY. Indeed, a regression analysis revealed that children's BODY vs. HEART difference scores were not quite differentiable from zero (the lower bound of the 95% credible interval was effectively zero; see the "Intercept" row for the "BODY-HEART" comparison in Table 4.4). Moreover, the direction of difference varied substantially across target characters (see the "Robot vs. GM" row for the "BODY-HEART" comparison in Table 4.4), with children tending to attribute more BODY than HEART to the beetle but, if anything, more HEART than BODY to the robot.
 
 ##### BODY vs. MIND
 
-As among adults, children's BODY vs. MIND difference scores were substantially non-zero, in the direction of children endorsing _MIND_ items more strongly than _BODY_ items (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.4), and this difference was exaggerated in assessments of the robot (see the "Robot vs. GM" row for the "BODY-MIND" comparison in Table 4.4).  
+As among adults in this study (Figure 4.3, panel A2), there was no significant relationship between children's scores on the _BODY_ and _MIND_ scales (panel B3; `r score_cor_print_fun(d2_79_scored_ad, "BODY vs. MIND")`). In the visualization of children's scores there appear to be somewhat fewer datapoints below the line of equivalence ($y = x$, dotted diagonal line) than above it, but this asymmetry is less striking among children than it was among adults: While many children attributed more MIND than BODY to the target character in question (like the vast majority of adults), quite a few children attributed more BODY than MIND. A regression analysis confirmed that, on the whole, children's BODY vs. MIND difference scores were substantially non-zero, in the direction of children endorsing _MIND_ items more strongly than _BODY_ items (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.4), but this difference varied substantially across target characters (see the "Robot vs. GM" row for the "BODY-MIND" comparison in Table 4.4), with children tending to attribute more MIND than BODY to the robot but, if anything, more BODY than MIND to the beetle.
 
 ##### HEART vs. MIND
 
-As among adults, children's HEART vs. MIND difference scores were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.4), and this difference was exaggerated in assessments of the robot(see the "Robot vs. GM" row for the "HEART-MIND" comparison in Table 4.4).
+As among adults in this study (Figure 4.3, panel A3), the relationship between children's scores on the _HEART_ and _MIND_ scales (panel B3) was positive (`r score_cor_print_fun(d2_79_scored_ad, "HEART vs. MIND")`), and there appear to be somewhat fewer datapoints below the line of equivalence ($y = x$, dotted diagonal line) than above it. However, as in the BODY vs. HEART and BODY vs. MIND comparisons just discussed, this asymmetry is less striking among children than it was among adults: While many children attributed more MIND than HEART to the target character in question (like the vast majority of adults), quite a few children attributed more HEART than MIND. A regression analysis confirmed that, on the whole, children's HEART vs. MIND difference scores were substantially non-zero, in the direction of children endorsing _MIND_ items more strongly than __BODY__HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.4); this difference was present for both target characters, but exaggerated in assessments of the robot (see the "Robot vs. GM" row for the "BODY-MIND" comparison in Table 4.4).  
 
 ```{r}
 plots_agegp_d2_scored_ad <- relviz_agegp_fun(
@@ -1289,7 +1245,9 @@ ggdraw(figure4.3_cap)
 
 ### Developmental comparison
 
-In the previous sections, I analyzed adults' and children's responses separately. Here I conduct a formal comparison of difference scores between conceptual units among these two age groups, to assess the size and robustness of these ostensive developmental differences. I pool data from both age groups and modify my regression analyses to include a main effect of age group (comparing children's difference scores to the baseline set by adults) and an interaction between age group and target character (assessing whether the observed differences between characters varied by age group).
+The preceding visualizations and analyses all suggested that children's responses were generally less asymmetrical than those of adults. This is perhaps easiest to observe in Figure 4.3, row D, which presents (hypothetical) "movement" between the mean placement for a target character among children (beginning of arrow) and the mean placement for a target character among adults (arrowhead), for each pair of conceptual units. In each case, this "movement" either maintains a similar distance from the line of equivalence ($y = x$) (as with mean assessments of the robot in the BODY vs. HEART space, panel C1; and the beetle in the BODY vs. MIND space, panel C2) or moves away from the line of equivalence toward the upper left and lower right corners of the plot (as with mean assessments of the beetle in the BODY vs. HEART space, panel C1; the robot in the BODY vs. MIND space, panel C2; and both characters in the HEART vs. MIND space, panel C3). Analysis of changes in _absolute_ attributions of BODY, HEART, and MIND, is pursued in Chapter V; for the purposes of the current chapter, the primary observation of interest is that these "shifts" between child and adult assessments of these characters generally point in the direction of stable or increasing (not decreasing) asymmetries over developmental time.
+
+To assess the size and robustness of these apparent developmental different, I conducted formal comparisons of difference scores between conceptual units among these two age groups. For each pair of conceptual units, I pool data from both age groups and modify my regression analyses to include a main effect of age group (comparing children's difference scores to the baseline set by adults) and an interaction between age group and target character (assessing whether the observed differences between characters varied by age group).
 
 ```{r}
 d2_ad79_scored_ad_diff <- full_join(d2_ad_scored_ad_diff,
@@ -1366,23 +1324,11 @@ regtab_d2_ad79_scored_ad_diff %>%
 plot_grid(plot_d2_ad_scored_ad_diff, plot_d2_79_scored_ad_diff, ncol = 2)
 ```
 
-##### BODY vs. HEART
+These analyses confirmed that difference scores for all three pairs of conceptual units were substantially closer to zero among children, as compared to adults (see the "Children vs. adults" rows for each comparison in Table 4.5). The difference between target characters was attenuated among children in the BODY vs. MIND comparison, but not in other comparisons (see the "Robot vs. GM" rows in Table 4.5).
 
-Difference scores between the _BODY_ and _HEART_ scales were substantially closer to zero among children, as compared to adults (see the "Children vs. adults" row for the "BODY-HEART" comparison in Table 4.5). The difference between target characters did not differ substantially across age groups (see the "Interaction" row for the "BODY-HEART" comparison in Table 4.5).  
-
-##### BODY vs. MIND
-
-Difference scores between the _BODY_ and _MIND_ scales were substantially closer to zero among children, as compared to adults (see the "Children vs. adults" row for the "BODY-MIND" comparison in Table 4.5), and the difference between target characters was attenuated among children (see the "Interaction" row for the "BODY-MIND" comparison in Table 4.5).  
-
-##### HEART vs. MIND
-
-Difference scores between the _HEART_ and _MIND_ scales were substantially closer to zero among children, as compared to adults (see the "Children vs. adults" row for the "HEART-MIND" comparison in Table 4.5), The difference between target characters did not differ substantially across age groups (see the "Interaction" row for the "HEART-MIND" comparison in Table 4.5).  
-
-#### Interim discussion
+### Interim discussion
 
 Both visual inspection and formal analyses of the relationships among BODY, HEART, and MIND suggest that the the asymmetries in relationships among 7- to 9-year-old children's endorsements of these conceptual units were similar in direction—but substantially attenuated in size—relative to the baseline set by adults. This suggests that the proposed hierarchical relationships between these conceptual units are nascent in this age group, but may not be fully robust or "mature."
-
-In particular, a formal comparison of difference scores among children vs. adults revealed that the differences between target characters varied across age groups. This appears to be due to the fact that asymmetries in endorsements of conceptual units sometimes reversed in direction across the two target characters included in this study (see Figure 4.3, row B). This suggests that one place in which 7- to 9-year-old children may still have "room to grow" in their representations of mental life is in the stability of the hierarchical relationships among BODY, HEART, and MIND across the different kinds of target characters. 
 
 ### Children (7-9y), using children's own scales
 
@@ -1421,9 +1367,9 @@ scales_study2 <- bind_rows(scales_efa_wdm_d2_ad %>%
 # big table for scales located at study 4
 ```
 
-Following the steps described in the "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d2_79)` scales of `r scales_efa_wdm_d2_79 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each. Notably, these scales were very similar to the _BODY_, _HEART_, and _MIND_ scales derived from adults in this study, differing by only one item for the _BODY_ and _HEART_ scales and three items for the _MIND_ scale; see Table 4.10.
+Following the steps described in the "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d2_79)` scales of `r scales_efa_wdm_d2_79 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each. Notably, children's _BODY_ and _HEART_ scales were very similar to the _BODY_ and _HEART_ scales derived from adults in this study, differing by only one item each. The _MIND_ scales for children vs. adults had three items in common, and differed by three items; see Table 4.10.
 
-#### Visualization
+#### Visualization and analysis of asymmetries
 
 ```{r}
 plots_d2_79_scored_79 <- relviz_fun(d2_79_scored_79)
@@ -1467,8 +1413,6 @@ fig_d2_79_scored_79_plots_leg_title <- plot_grid(fig_d2_79_scored_79_title,
 fig_d2_79_scored_79_plots_leg_title
 ```
 
-Visualizations of relationships among scores on these _BODY_, _HEART_, and _MIND_ scales are provided in Figure 4.4. These visualizations were all quite similar to those produced using adults' scales (Figure 4.3, row B), and will not be discussed here.
-
 ```{r}
 figure4.4 <- plot_grid(fig_d2_79_scored_79_plots_leg_title, 
                        ncol = 1)
@@ -1479,10 +1423,6 @@ figure4.4_cap <- add_sub(figure4.4, str_wrap("Figure 4.4: Relationships among ch
 ```{r, include = T, fig.width = 5, fig.asp = 0.55}
 ggdraw(figure4.4_cap)
 ```
-
-#### Analysis of asymmetries
-
-Here I provide a formal analysis of difference scores between pairs of conceptual units, controlling for differences in assessments of the two "edge cases" that were featured as target characters in these studies (beetle and robot). See Figure 4.5, panel C, for visual depictions of these difference scores.
 
 ```{r}
 d2_79_scored_79_diff <- diff_fun(d2_79_scored_79)
@@ -1561,21 +1501,7 @@ regtab_d2_79_scored_79_diff %>%
 plot_d2_79_scored_79_diff
 ```
 
-##### BODY vs. HEART
-
-As in the previous analysis, difference scores between _BODY_ and _HEART_ were not differentiable from zero (see the "Intercept" row for the "BODY-HEART" comparison in Table 4.5), and the direction of difference varied substantially across target characters (see the "Robot vs. GM" row for the "BODY-HEART" comparison in Table 4.5).  
-
-##### BODY vs. MIND
-
-As in the previous analysis, difference scores between _BODY_ and _MIND_ were substantially non-zero, in the direction of children endorsing _MIND_ items more strongly than _BODY_ items (see the "Intercept" row for the "BODY-MIND" comparison in Table 4.5), and this difference was exaggerated in assessments of the robot (see the "Robot vs. GM" row for the "BODY-MIND" comparison in Table 4.5).  
-
-##### HEART vs. MIND
-
-As in the previous analysis, difference scores between _HEART_ and _MIND_ were substantially non-zero, in the direction of children endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.5), and this difference was exaggerated in assessments of the robot (see the "Robot vs. GM" row for the "HEART-MIND" comparison in Table 4.5).  
-
-##### Interim discussion
-
-Using children's own _BODY_, _HEART_, and _MIND_ scales to assess asymmetries in their endorsements of these conceptual units revealed the same pattern of results obtained when using adults' scales: Children generally showed similar patterns of asymmetries to adults, but all of these patterns were attenuated. This suggests that this attenuation of asymmetries across pairs of conceptual units was not merely due to the operationalization of BODY, HEART, and MIND using adults' rather than children's EFA solutions; these developmental differences were observed regardless of whether these conceptual units were indexed by scales designed to capture adults' or children's construals of BODY, HEART, and MIND. 
+Visualizations of relationships among scores on these child-based _BODY_, _HEART_, and _MIND_ scales are provided in Figure 4.4, and difference scores between pairs of conceptual units are depicted in Figure 4.5, panel C. As these plots illustrate, the pattern of results using these child-based scales was virtually identical to the pattern of results using the adult-based scales as discussed in the previous section; see Table 4.5 for a juxtaposition of the regression analyses. This suggests that this attenuation of asymmetries across pairs of conceptual units was not merely due to the operationalization of BODY, HEART, and MIND using adults' rather than children's EFA solutions; these developmental differences were observed regardless of whether these conceptual units were indexed by scales designed to capture adults' or children's construals of BODY, HEART, and MIND. 
 
 ```{r}
 figure4.5_plots <- plot_grid(
@@ -1602,7 +1528,9 @@ ggdraw(figure4.5_cap)
 
 Study 2 provides further confirmation of the robustness of the asymmetric relationships among conceptual units in adults' representations of mental life as revealed by Study 1. Using a modified experimental paradigm, a slightly different set of mental capacities, and a three-point (rather than seven-point) response scale revealed the same pattern of asymmetries in adults' endorsements of BODY, HEART, and MIND: Regardless of which of the two "edge cases" they assessed, adults systematically endorsed both BODY and MIND at least as strongly, and often more strongly, than HEART, while the relationship between BODY and MIND was more contingent on the target character under evaluation.
 
-Study 2 also affords the first glimpse into the development of this aspect of conceptual representations of mental life among 7- to 9-year-old children. A variety of visualizations and analyses converge to suggest that, on the whole, the _directions_ of these relationships among conceptual units are in place by this point in development, but these asymmetries are not nearly as pronounced or robust among children as they appear to be among adults.  
+Study 2 also affords the first glimpse into the development of this aspect of conceptual representations of mental life among 7- to 9-year-old children. A variety of visualizations and analyses converge to suggest that, on the whole, the _directions_ of these relationships among conceptual units are in place by this point in development, but these asymmetries are not nearly as pronounced or robust among children as they appear to be among adults. 
+
+There are some hints from Study 2 that the asymmetry between BODY vs. HEART may be a point of particular immaturity for 7- to 9-year-old children: While very few adults in this study (or in any previous study) endorsed _HEART_ capacities more strongly than _BODY_ capacities for any target character, quite a lot of children did—particularly if they happened to assess the robot. Indeed, on the whole, children in this study showed no systematic asymmetry between these two conceptual units.
 
 ```{r}
 regtab_study2 <- regtab_d2_ad_scored_ad_diff %>%

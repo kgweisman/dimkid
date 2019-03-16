@@ -231,6 +231,30 @@ nonzero_fun <- function(regtab, which_pair,
   return(output)
 }
 
+# function for printing correlations between scores
+score_cor_print_fun <- function(df_scored, which_pair, which_res = "both"){
+  cor_tab <- score_cor_fun(df_scored) %>%
+    filter(pair == which_pair) %>%
+    mutate_at(vars(ci_lower, r, ci_upper),
+              funs(format(round(., 2), nsmall = 2))) %>%
+    mutate(p = format(round(p, 3), nsmall = 3))
+
+  p_res <- ifelse(cor_tab$p < 0.001, "p < 0.001",
+                  paste0("p = ", cor_tab$p))
+  
+  if(which_res == "CI"){
+    res <- paste0("r = ", cor_tab$r, "; 95% CI: [", 
+                  cor_tab$ci_lower, ", ", cor_tab$ci_upper, "]")
+  } else if(which_res == "p"){
+    res <- paste0("r = ", cor_tab$r, "; ", p_res)
+  } else if(which_res == "both"){
+    res <- paste0("r = ", cor_tab$r, "; ", p_res, "; 95% CI: [", 
+                  cor_tab$ci_lower, ", ", cor_tab$ci_upper, "]")
+  }
+  
+  return(res)
+}
+
 # function for getting % modal responding for diffscores
 modal_percent_fun <- function(table = diffscores_tab, which_pair, which_age_group){
   sum_tab <- table %>%
@@ -243,3 +267,4 @@ modal_percent_fun <- function(table = diffscores_tab, which_pair, which_age_grou
   
   return(str)
 }
+
