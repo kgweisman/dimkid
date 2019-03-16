@@ -890,12 +890,3 @@ figureA.15_cap <- add_sub(figureA.15, str_wrap("Figure A.15: Factor loadings fro
 ggdraw(figureA.15_cap)
 ```
 
-
-# TO DO LIST
-
-- reconsider additions to appendix A: 
-    - left-right position (study 1c)
-    - first-second (study 4)
-    - beetle-robot (studies 1a-1c, study 2, study 4)
-    - analysis of scale use across age groups
-
