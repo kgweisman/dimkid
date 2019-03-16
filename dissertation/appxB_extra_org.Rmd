@@ -19,7 +19,7 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 #   word_document:
 #     reference_docx: "./word-styles-reference.docx"
 # always_allow_html: yes
-   
+
 # # for knitting to .nb.html 
 # output:
 #   html_notebook:
@@ -31,7 +31,7 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 ```{r}
 # run ur-setup script (which runs other scripts)
 source("./scripts/_SETUP.R")
- 
+
 # load in EFAs & names from Chapters III & IV
 source("./scripts/stored_ch03.R")
 source("./scripts/stored_ch04.R")
@@ -39,168 +39,174 @@ source("./scripts/stored_ch04.R")
 
 # Appendix overview
 
-In this appendix, I report additional exploratory analyses of the organization of the sets of "conceptual units" that were excluded from the main text of Chapter IV, including: (a) Analyses using children's own scales to assess organization among older children (7-9y of age) and younger children (4-6y of age) in Study 3 and among children (4-5y of age) in Study 4; and (b) XX.
+In this appendix, I report additional exploratory analyses of the organization of the sets of "conceptual units" that were excluded from the main text of Chapter IV, including: (a) Visualizations and analyses of the relationships among conceptual units using scales derived from EFA of children's own responses, rather than adults' responses, for 7- to 9-year-old children in Study 3, 4- to 6-year-old children in Study 3, and 4- to 5-year-old children in Study 4; (b) Visualizations and analyses of age-related changes in difference scores between conceptual units (scored using adults' scales) for 7- to 9-year-old children in Study 2, 4- to 9-year-old children in Study 3, and 4- to 5-year-old children in Study 4; and (c) Visualizations of the joint dependency of HEART on both BODY and MIND.
 
 
-# Using children's own scales
+# Relationships among conceptual units using scales derived from children's EFAs
 
 In Chapter IV, I used adults' EFA solution to construct BODY, HEART, and MIND scales and used these scales to assess the organization of these adult-like conceptual units among both adult and child samples. For Study 2, I also used 7- to 9-year-old children's own EFA solution to construct a separate set of scales based on children's own conceptual units and conducted a separate set of analyses of the organization of these "child-like" conceptual units. Here I present a parallel set of analyses using children's own EFA solutions (rather than adults') to assess the organization of conceptual units among both older children (7-9y of age) and younger children (4-6y of age) in Study 3, as well as among children (4-5y of age) in Study 4.
 
 ## Study 3
 
-### Older children, using their own scales
+### Older children (7-9y), using their own scales
 
 #### Scale construction
 
 ```{r}
 # done in ch04_organization.Rmd
-# scales_efa_wdm_d3_79 <- readRDS(file = "./stored/scales/scales_efa_wdm_d3_79")
+scales_efa_wdm_d3_79 <- readRDS(file = "./stored/scales/scales_efa_wdm_d3_79")
 
 d3_79_scored_79 <- score_fun(d3_79, scales_efa_wdm_d3_79)
 saveRDS(d3_79_scored_79, file = "./stored/scored_data/d3_79_scored_79")
 ```
 
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d3_79)` scales of `r scales_efa_wdm_d3_79 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.3.
+Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d3_79)` scales of `r scales_efa_wdm_d3_79 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table B.1.
 
-#### Visualization
+#### Visualization and analysis of asymmetries
 
 ```{r}
 plots_d3_79_scored_79 <- relviz_fun(d3_79_scored_79, colors = colors09)
 ```
 
 ```{r}
-fig_d3_79_scored_79_plots <- plot_grid(plots_d3_79_scored_79[[1]] + 
-                                         theme(legend.position = "none"),
-                                       plots_d3_79_scored_79[[2]] + 
-                                         theme(legend.position = "none"),
-                                       plots_d3_79_scored_79[[3]] + 
-                                         theme(legend.position = "none"),
-                                       labels = c("A1", "A2", "A3"), ncol = 3)
+fig_d3_79_scored_79_plots <- plot_grid(
+  plots_d3_79_scored_79[[1]] + 
+    theme(legend.position = "none"),
+  plots_d3_79_scored_79[[2]] + 
+    theme(legend.position = "none"),
+  plots_d3_79_scored_79[[3]] + 
+    theme(legend.position = "none"),
+  labels = c("A1", "A2", "A3"), ncol = 3)
 
 fig_d3_79_scored_79_leg <- get_legend(
   plots_d3_79_scored_79[[1]] +
     theme(legend.position = "bottom", legend.direction = "horizontal") +
-    scale_fill_manual("Target character", values = colors09,
+    scale_fill_manual("Target character", 
+                      values = colors09,
                       guide = guide_legend(title.position = "left",
                                            direction = "horizontal", 
                                            ncol = 9)) +
-    scale_color_manual("Target character", values = colors09,
+    scale_color_manual("Target character",
+                       values = colors09,
                        guide = guide_legend(title.position = "left",
                                             direction = "horizontal",
                                             ncol = 9)))
 
-fig_d3_79_scored_79_plots_leg <- plot_grid(
-  fig_d3_79_scored_79_plots, fig_d3_79_scored_79_leg,
-  ncol = 1, rel_heights = c(1, 0.05))
+fig_d3_79_scored_79_plots_leg <- plot_grid(fig_d3_79_scored_79_plots, fig_d3_79_scored_79_leg,
+                                           ncol = 1, rel_heights = c(1, 0.05))
 
 fig_d3_79_scored_79_title <- ggdraw() + 
-  draw_label("Study 3: Children, 7-9y (scored using their own scales)", size = 16, fontface = 'bold', x = 0, hjust = 0)
+  draw_label("Study 3: Children, 7-9y (using their own scales)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
 fig_d3_79_scored_79_plots_leg_title <- plot_grid(
   fig_d3_79_scored_79_title, fig_d3_79_scored_79_plots_leg,
   ncol = 1, rel_heights = c(0.12, 1))
 ```
 
-#### Analysis of asymmetries
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+fig_d3_79_scored_79_plots_leg_title
+```
 
 ```{r}
 d3_79_scored_79_diff <- diff_fun(d3_79_scored_79)
+contrasts(d3_79_scored_79_diff$character) <- contrasts_sum_dv09
+
 saveRDS(d3_79_scored_79_diff, "./stored/diffscore_data/d3_79_scored_79_diff")
 ```
 
 ```{r}
-plot_d3_79_scored_79_diff <- diffplot_fun(d3_79_scored_79_diff, colors09)
+plot_d3_79_scored_79_diff <- diffplot_fun(d3_79_scored_79_diff, colors = colors09)
 ```
 
 ```{r}
 # r_d3_79_scored_79_diff_BODY_HEART <- brm(
-#   diff ~ 1 + (1 | character),
+#   diff ~ 1 + character,
 #   data = d3_79_scored_79_diff %>% filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_dv09),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d3_79_scored_79_diff_BODY_HEART,
+#         "./stored/brms_models/r_d3_79_scored_79_diff_BODY_HEART")
 
-# r_d3_79_scored_79_diff_BODY_HEART <- lmer(
-#   diff ~ 1 + (1 | character),
-#   data = d3_79_scored_79_diff %>% filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_dv09))
-
-r_d3_79_scored_79_diff_BODY_HEART <- lm(
-  diff ~ 1 + character,
-  data = d3_79_scored_79_diff %>% filter(pair == "BODY - HEART"),
-  contrasts = list(character = contrasts_sum_dv09))
-
-# r_d3_79_scored_79_diff_BODY_HEART <- lm(
-#   diff ~ 1,
-#   data = d3_79_scored_79_diff %>% filter(pair == "BODY - HEART"))
+r_d3_79_scored_79_diff_BODY_HEART <- readRDS("./stored/brms_models/r_d3_79_scored_79_diff_BODY_HEART")
 
 summary(r_d3_79_scored_79_diff_BODY_HEART)
 ```
 
 ```{r}
 # r_d3_79_scored_79_diff_BODY_MIND <- brm(
-#   diff ~ 1 + (1 | character),
+#   diff ~ 1 + character,
 #   data = d3_79_scored_79_diff %>% filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d3_79_scored_79_diff_BODY_MIND,
+#         "./stored/brms_models/r_d3_79_scored_79_diff_BODY_MIND")
 
-# r_d3_79_scored_79_diff_BODY_MIND <- lmer(
-#   diff ~ 1 + (1 | character),
-#   data = d3_79_scored_79_diff %>% filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09))
-
-r_d3_79_scored_79_diff_BODY_MIND <- lm(
-  diff ~ 1 + character,
-  data = d3_79_scored_79_diff %>% filter(pair == "BODY - MIND"),
-  contrasts = list(character = contrasts_sum_dv09))
-
-# r_d3_79_scored_79_diff_BODY_MIND <- lm(
-#   diff ~ 1,
-#   data = d3_79_scored_79_diff %>% filter(pair == "BODY - MIND"))
+r_d3_79_scored_79_diff_BODY_MIND <- readRDS("./stored/brms_models/r_d3_79_scored_79_diff_BODY_MIND")
 
 summary(r_d3_79_scored_79_diff_BODY_MIND)
 ```
 
 ```{r}
 # r_d3_79_scored_79_diff_HEART_MIND <- brm(
-#   diff ~ 1 + (1 | character),
+#   diff ~ 1 + character,
 #   data = d3_79_scored_79_diff %>% filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d3_79_scored_79_diff_HEART_MIND,
+#         "./stored/brms_models/r_d3_79_scored_79_diff_HEART_MIND")
 
-# r_d3_79_scored_79_diff_HEART_MIND <- lmer(
-#   diff ~ 1 + (1 | character),
-#   data = d3_79_scored_79_diff %>% filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09))
-
-r_d3_79_scored_79_diff_HEART_MIND <- lm(
-  diff ~ 1 + character,
-  data = d3_79_scored_79_diff %>% filter(pair == "HEART - MIND"),
-  contrasts = list(character = contrasts_sum_dv09))
-
-# r_d3_79_scored_79_diff_HEART_MIND <- lm(
-#   diff ~ 1,
-#   data = d3_79_scored_79_diff %>% filter(pair == "HEART - MIND"))
+r_d3_79_scored_79_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d3_79_scored_79_diff_HEART_MIND")
 
 summary(r_d3_79_scored_79_diff_HEART_MIND)
 ```
 
-### Younger children, using their own scales (three-factor solution)
+```{r}
+regtab_d3_79_scored_79_diff <- diff_reg_table_fun(
+  reg_list = list(r_d3_79_scored_79_diff_BODY_HEART,
+                  r_d3_79_scored_79_diff_BODY_MIND,
+                  r_d3_79_scored_79_diff_HEART_MIND),
+  pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
+  study_name = "Children, 7-9y (using their own scales)",
+  char_label = c("Elephant vs. GM", "Goat vs. GM", "Mouse vs. GM",
+                 "Bird vs. GM", "Beetle vs. GM", "Teddy bear vs. GM",
+                 "Doll vs. GM", "Robot vs. GM"))
+```
 
-XX suggested by WDM
+```{r}
+# interim table for ease of writing
+regtab_d3_79_scored_79_diff %>%
+  select(-study, -s.e.) %>%
+  filter(param == "Intercept") %>%
+  kable(digits = 2) %>%
+  kable_styling()
+```
+
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_d3_79_scored_79_diff
+```
+
+Visualizations of relationships among 7- to 9-year-old children's scores on the _BODY_, _HEART_, and _MIND_ scales are provided in Figure B.xx, row A. The results of Bayesian regressions comparing difference scores between conceptual units to zero, controlling for differences in assessments of the nine "diverse characters" that were featured as target characters in these studies, are provided in Table B.xx.
+
+On the whole, these results (using _BODY_, _HEART_, and _MIND_ scales derived from EFA 7- to 9-year-old children's responses) are very similar to those presented in the main text of Chapter IV (using adults' _BODY_, _HEART_, and _MIND_ scales): Children systematically endorsed _BODY_ and _MIND_ items more strongly than _HEART_ items, but showed no systematic asymmetry between BODY and MIND. This is unsurprising, since children's and adults' scales were so similar to each other (see Table B.xx).
+
+### Younger children (4-6y), using their own scales (three-factor solution)
 
 #### Scale construction
 
 ```{r}
 scales_efa_wdm_d3_46 <- scale_fun(efa_wdm_d3_46, 
-                                   factor_names = factor_names_efa_wdm_d3_46)
-d3_46_scored_46_wdm <- score_fun(d3_46, scales_efa_wdm_d3_46)
+                                  factor_names = factor_names_efa_wdm_d3_46)
 saveRDS(scales_efa_wdm_d3_46, file = "./stored/scales/scales_efa_wdm_d3_46")
+
+d3_46_scored_46_wdm <- score_fun(d3_46, scales_efa_wdm_d3_46)
 saveRDS(d3_46_scored_46_wdm, file = "./stored/scored_data/d3_46_scored_46_wdm")
 ```
 
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d3_46)` scales of `r scales_efa_wdm_d3_46 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.3.
+Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d3_46)` scales of `r scales_efa_wdm_d3_46 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table B.1.
 
-#### Visualization
+#### Visualization and analysis of asymmetries
 
 ```{r}
 plots_d3_46_scored_46_wdm <- relviz_fun(d3_46_scored_46_wdm, colors = colors09)
@@ -213,133 +219,139 @@ fig_d3_46_scored_46_wdm_plots <- plot_grid(plots_d3_46_scored_46_wdm[[1]] +
                                              theme(legend.position = "none"),
                                            plots_d3_46_scored_46_wdm[[3]] + 
                                              theme(legend.position = "none"),
-                                           labels = c("B1", "B2", "B3"),
-                                           ncol = 3)
+                                           labels = c("B1", "B2", "B3"), ncol = 3)
 
 fig_d3_46_scored_46_wdm_leg <- get_legend(
   plots_d3_46_scored_46_wdm[[1]] +
     theme(legend.position = "bottom", legend.direction = "horizontal") +
-    scale_fill_manual("Target character", values = colors09,
+    scale_fill_manual("Target character", 
+                      values = colors09,
                       guide = guide_legend(title.position = "left",
                                            direction = "horizontal", 
                                            ncol = 9)) +
-    scale_color_manual("Target character", values = colors09,
+    scale_color_manual("Target character",
+                       values = colors09,
                        guide = guide_legend(title.position = "left",
                                             direction = "horizontal",
                                             ncol = 9)))
 
-fig_d3_46_scored_46_wdm_plots_leg <- plot_grid(
-  fig_d3_46_scored_46_wdm_plots, fig_d3_46_scored_46_wdm_leg,
-  ncol = 1, rel_heights = c(1, 0.05))
+fig_d3_46_scored_46_wdm_plots_leg <- plot_grid(fig_d3_46_scored_46_wdm_plots, fig_d3_46_scored_46_wdm_leg,
+                                               ncol = 1, rel_heights = c(1, 0.05))
 
 fig_d3_46_scored_46_wdm_title <- ggdraw() + 
-  draw_label("Study 3: Children, 4-6y (scored using their own scales, 3-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
+  draw_label("Study 3: Children, 4-6y (using their own scales, 3-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
 fig_d3_46_scored_46_wdm_plots_leg_title <- plot_grid(
   fig_d3_46_scored_46_wdm_title, fig_d3_46_scored_46_wdm_plots_leg,
   ncol = 1, rel_heights = c(0.12, 1))
 ```
 
-#### Analysis of asymmetries
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+fig_d3_46_scored_46_wdm_plots_leg_title
+```
 
 ```{r}
 d3_46_scored_46_wdm_diff <- diff_fun(d3_46_scored_46_wdm)
+contrasts(d3_46_scored_46_wdm_diff$character) <- contrasts_sum_dv09
+
 saveRDS(d3_46_scored_46_wdm_diff, "./stored/diffscore_data/d3_46_scored_46_wdm_diff")
 ```
 
 ```{r}
-plot_d3_46_scored_46_wdm_diff <- diffplot_fun(d3_46_scored_46_wdm_diff, colors09)
+plot_d3_46_scored_46_wdm_diff <- diffplot_fun(d3_46_scored_46_wdm_diff, colors = colors09)
 ```
 
 ```{r}
 # r_d3_46_scored_46_wdm_diff_BODY_HEART <- brm(
-#   diff ~ 1 + (1 | character),
+#   diff ~ 1 + character,
 #   data = d3_46_scored_46_wdm_diff %>% filter(pair == "BODY* - HEART*"),
-#   contrasts = list(character = contrasts_sum_dv09),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d3_46_scored_46_wdm_diff_BODY_HEART,
+#         "./stored/brms_models/r_d3_46_scored_46_wdm_diff_BODY_HEART")
 
-# r_d3_46_scored_46_wdm_diff_BODY_HEART <- lmer(
-#   diff ~ 1 + (1 | character),
-#   data = d3_46_scored_46_wdm_diff %>% filter(pair == "BODY* - HEART*"),
-#   contrasts = list(character = contrasts_sum_dv09))
-
-r_d3_46_scored_46_wdm_diff_BODY_HEART <- lm(
-  diff ~ 1 + character,
-  data = d3_46_scored_46_wdm_diff %>% filter(pair == "BODY* - HEART*"),
-  contrasts = list(character = contrasts_sum_dv09))
-
-# r_d3_46_scored_46_wdm_diff_BODY_HEART <- lm(
-#   diff ~ 1,
-#   data = d3_46_scored_46_wdm_diff %>% filter(pair == "BODY* - HEART*"))
+r_d3_46_scored_46_wdm_diff_BODY_HEART <- readRDS("./stored/brms_models/r_d3_46_scored_46_wdm_diff_BODY_HEART")
 
 summary(r_d3_46_scored_46_wdm_diff_BODY_HEART)
 ```
 
 ```{r}
 # r_d3_46_scored_46_wdm_diff_BODY_MIND <- brm(
-#   diff ~ 1 + (1 | character),
+#   diff ~ 1 + character,
 #   data = d3_46_scored_46_wdm_diff %>% filter(pair == "BODY* - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d3_46_scored_46_wdm_diff_BODY_MIND,
+#         "./stored/brms_models/r_d3_46_scored_46_wdm_diff_BODY_MIND")
 
-# r_d3_46_scored_46_wdm_diff_BODY_MIND <- lmer(
-#   diff ~ 1 + (1 | character),
-#   data = d3_46_scored_46_wdm_diff %>% filter(pair == "BODY* - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09))
-
-r_d3_46_scored_46_wdm_diff_BODY_MIND <- lm(
-  diff ~ 1 + character,
-  data = d3_46_scored_46_wdm_diff %>% filter(pair == "BODY* - MIND"),
-  contrasts = list(character = contrasts_sum_dv09))
-
-# r_d3_46_scored_46_wdm_diff_BODY_MIND <- lm(
-#   diff ~ 1,
-#   data = d3_46_scored_46_wdm_diff %>% filter(pair == "BODY* - MIND"))
+r_d3_46_scored_46_wdm_diff_BODY_MIND <- readRDS("./stored/brms_models/r_d3_46_scored_46_wdm_diff_BODY_MIND")
 
 summary(r_d3_46_scored_46_wdm_diff_BODY_MIND)
 ```
 
 ```{r}
 # r_d3_46_scored_46_wdm_diff_HEART_MIND <- brm(
-#   diff ~ 1 + (1 | character),
+#   diff ~ 1 + character,
 #   data = d3_46_scored_46_wdm_diff %>% filter(pair == "HEART* - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d3_46_scored_46_wdm_diff_HEART_MIND,
+#         "./stored/brms_models/r_d3_46_scored_46_wdm_diff_HEART_MIND")
 
-# r_d3_46_scored_46_wdm_diff_HEART_MIND <- lmer(
-#   diff ~ 1 + (1 | character),
-#   data = d3_46_scored_46_wdm_diff %>% filter(pair == "HEART* - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09))
-
-r_d3_46_scored_46_wdm_diff_HEART_MIND <- lm(
-  diff ~ 1 + character,
-  data = d3_46_scored_46_wdm_diff %>% filter(pair == "HEART* - MIND"),
-  contrasts = list(character = contrasts_sum_dv09))
-
-# r_d3_46_scored_46_wdm_diff_HEART_MIND <- lm(
-#   diff ~ 1,
-#   data = d3_46_scored_46_wdm_diff %>% filter(pair == "HEART* - MIND"))
+r_d3_46_scored_46_wdm_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d3_46_scored_46_wdm_diff_HEART_MIND")
 
 summary(r_d3_46_scored_46_wdm_diff_HEART_MIND)
 ```
 
-### Younger children, using their own scales (two-factor solution)
+```{r}
+regtab_d3_46_scored_46_wdm_diff <- diff_reg_table_fun(
+  reg_list = list(r_d3_46_scored_46_wdm_diff_BODY_HEART,
+                  r_d3_46_scored_46_wdm_diff_BODY_MIND,
+                  r_d3_46_scored_46_wdm_diff_HEART_MIND),
+  pair_list = c("BODY* - HEART*", "BODY* - MIND", "HEART* - MIND"),
+  study_name = "Children, 4-6y (using their own scales, 3-factor solution)",
+  char_label = c("Elephant vs. GM", "Goat vs. GM", "Mouse vs. GM",
+                 "Bird vs. GM", "Beetle vs. GM", "Teddy bear vs. GM",
+                 "Doll vs. GM", "Robot vs. GM"))
+```
+
+```{r}
+# interim table for ease of writing
+regtab_d3_46_scored_46_wdm_diff %>%
+  select(-study, -s.e.) %>%
+  filter(param == "Intercept") %>%
+  kable(digits = 2) %>%
+  kable_styling()
+```
+
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_d3_46_scored_46_wdm_diff
+```
+
+Visualizations of relationships among 4- to 6-year-old children's scores on the _BODY\*_, _HEART\*_, and _MIND_ scales are provided in Figure B.xx, row B. The results of Bayesian regressions comparing difference scores between conceptual units to zero, controlling for differences in assessments of the nine "diverse characters" that were featured as target characters in these studies, are provided in Table B.xx.
+
+As in the results presented in the main text of Chapter IV (using adults' _BODY_, _HEART_, and _MIND_ scales), 4- to 6-year-old children systematically endorsed _BODY\*_ items more strongly than _MIND_ items. This is further evidence of a markedly un-adult-like intuition that BODY may be a more basic conceptual unit than MIND.
+
+In contrast to the results presented in the main text of Chapter IV, 4- to 6-year-old children's _BODY\*_ vs. _HEART\*_ difference scores were indistinguishable from zero, and they systematically endorsed _HEART\*_ items more strongly than _MIND_ items. Both of these observations render 4- to 6-year-old children's conceptual organizations even less adult-like than those reported in Chapter IV.
+
+### Younger children (4-6y), using their own scales (two-factor solution)
 
 #### Scale construction
 
-XX suggested by parallel analysis
-
 ```{r}
-scales_efa_par_d3_46 <- scale_fun(efa_par_d3_46,
+scales_efa_par_d3_46 <- scale_fun(efa_par_d3_46, 
                                   factor_names = factor_names_efa_par_d3_46)
+saveRDS(scales_efa_par_d3_46, file = "./stored/scales/scales_efa_par_d3_46")
+
 d3_46_scored_46_par <- score_fun(d3_46, scales_efa_par_d3_46)
-saveRDS(scales_efa_wdm_d3_46, file = "./stored/scales/scales_efa_par_d3_46")
 saveRDS(d3_46_scored_46_par, file = "./stored/scored_data/d3_46_scored_46_par")
 ```
 
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_par_d3_46)` scales of `r scales_efa_par_d3_46 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.3.
+Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_par_d3_46)` scales of `r scales_efa_par_d3_46 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table B.1.
 
-#### Visualization
+#### Visualization and analysis of asymmetries
 
 ```{r}
 plots_d3_46_scored_46_par <- relviz_fun(d3_46_scored_46_par, colors = colors09)
@@ -353,73 +365,98 @@ fig_d3_46_scored_46_par_plots <- plot_grid(plots_d3_46_scored_46_par[[1]] +
 fig_d3_46_scored_46_par_leg <- get_legend(
   plots_d3_46_scored_46_par[[1]] +
     theme(legend.position = "bottom", legend.direction = "horizontal") +
-    scale_fill_manual("Target character", values = colors09,
+    scale_fill_manual("Target character", 
+                      values = colors09,
                       guide = guide_legend(title.position = "left",
                                            direction = "horizontal", 
                                            ncol = 9)) +
-    scale_color_manual("Target character", values = colors09,
+    scale_color_manual("Target character",
+                       values = colors09,
                        guide = guide_legend(title.position = "left",
                                             direction = "horizontal",
                                             ncol = 9)))
 
-fig_d3_46_scored_46_par_plots_leg <- plot_grid(
-  fig_d3_46_scored_46_par_plots, fig_d3_46_scored_46_par_leg,
-  ncol = 1, rel_heights = c(1, 0.05))
+fig_d3_46_scored_46_par_plots_leg <- plot_grid(fig_d3_46_scored_46_par_plots, fig_d3_46_scored_46_par_leg,
+                                               ncol = 1, rel_heights = c(1, 0.05))
 
 fig_d3_46_scored_46_par_title <- ggdraw() + 
-  draw_label("Study 3: Children, 4-6y (scored using their own scales, 2-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
+  draw_label("Study 3: Children, 4-6y (using their own scales, 2-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
 fig_d3_46_scored_46_par_plots_leg_title <- plot_grid(
   fig_d3_46_scored_46_par_title, fig_d3_46_scored_46_par_plots_leg,
   ncol = 1, rel_heights = c(0.12, 1))
 ```
 
-#### Analysis of asymmetries
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+fig_d3_46_scored_46_par_plots_leg_title
+```
 
 ```{r}
 d3_46_scored_46_par_diff <- diff_fun(d3_46_scored_46_par)
+contrasts(d3_46_scored_46_par_diff$character) <- contrasts_sum_dv09
+
 saveRDS(d3_46_scored_46_par_diff, "./stored/diffscore_data/d3_46_scored_46_par_diff")
 ```
 
 ```{r}
-plot_d3_46_scored_46_par_diff <- diffplot_fun(d3_46_scored_46_par_diff, colors09)
+plot_d3_46_scored_46_par_diff <- diffplot_fun(d3_46_scored_46_par_diff, colors = colors09)
 ```
 
 ```{r}
 # r_d3_46_scored_46_par_diff_BODYHEART_MIND <- brm(
-#   diff ~ 1 + (1 | character),
+#   diff ~ 1 + character,
 #   data = d3_46_scored_46_par_diff %>% filter(pair == "BODY-HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d3_46_scored_46_par_diff_BODYHEART_MIND,
+#         "./stored/brms_models/r_d3_46_scored_46_par_diff_BODYHEART_MIND")
 
-# r_d3_46_scored_46_par_diff_BODYHEART_MIND <- lmer(
-#   diff ~ 1 + (1 | character),
-#   data = d3_46_scored_46_par_diff %>% filter(pair == "BODY-HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_dv09))
-
-r_d3_46_scored_46_par_diff_BODYHEART_MIND <- lm(
-  diff ~ 1 + character,
-  data = d3_46_scored_46_par_diff %>% filter(pair == "BODY-HEART - MIND"),
-  contrasts = list(character = contrasts_sum_dv09))
-
-# r_d3_46_scored_46_par_diff_BODYHEART_MIND <- lm(
-#   diff ~ 1,
-#   data = d3_46_scored_46_par_diff %>% filter(pair == "BODY-HEART - MIND"))
+r_d3_46_scored_46_par_diff_BODYHEART_MIND <- readRDS("./stored/brms_models/r_d3_46_scored_46_par_diff_BODYHEART_MIND")
 
 summary(r_d3_46_scored_46_par_diff_BODYHEART_MIND)
 ```
 
+```{r}
+regtab_d3_46_scored_46_par_diff <- diff_reg_table_fun(
+  reg_list = list(r_d3_46_scored_46_par_diff_BODYHEART_MIND),
+  pair_list = "BODY-HEART - MIND",
+  study_name = "Children, 4-6y (using their own scales, 2-factor solution)",
+  char_label = c("Elephant vs. GM", "Goat vs. GM", "Mouse vs. GM",
+                 "Bird vs. GM", "Beetle vs. GM", "Teddy bear vs. GM",
+                 "Doll vs. GM", "Robot vs. GM"))
+```
+
+```{r}
+# interim table for ease of writing
+regtab_d3_46_scored_46_par_diff %>%
+  select(-study, -s.e.) %>%
+  filter(param == "Intercept") %>%
+  kable(digits = 2) %>%
+  kable_styling()
+```
+
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_d3_46_scored_46_par_diff
+```
+
+Visualizations of relationships among 4- to 6-year-old children's scores on the _BODY-HEART_ and _MIND_ scales are provided in Figure B.xx, row B. The results of a Bayesian regression comparing difference scores between conceptual units to zero, controlling for differences in assessments of the nine "diverse characters" that were featured as target characters in these studies, are provided in Table B.xx.
+
+The main take-away of this analysis is that 4- to 6-year-old children reliably endorsed _BODY-HEART_ items more strongly than _MIND_ items.
+
 ### Discussion
 
 ```{r}
-scales_study3 <- bind_rows(scales_efa_wdm_d3_ad %>% 
-                             mutate(study = "Adults"),
-                           scales_efa_wdm_d3_79 %>% 
-                             mutate(study = "Older children, 7-9y"),
-                           scales_efa_wdm_d3_46 %>%
-                             mutate(study = "Younger children, 4-6y (3-factor solution)"),
-                           scales_efa_par_d3_46 %>%
-                             mutate(study = "Younger children, 4-6y (2-factor solution)")) %>%
+altscales_study3 <- bind_rows(
+  scales_efa_wdm_d3_ad %>% 
+    mutate(study = "Adults"),
+  scales_efa_wdm_d3_79 %>% 
+    mutate(study = "Older children, 7-9y"),
+  scales_efa_wdm_d3_46 %>%
+    mutate(study = "Younger children, 4-6y (3-factor solution)"),
+  scales_efa_par_d3_46 %>%
+    mutate(study = "Younger children, 4-6y (2-factor solution)")) %>%
   select(-c(loading, order)) %>%
   distinct() %>%
   mutate(study = factor(study,
@@ -444,7 +481,7 @@ scales_study3 <- bind_rows(scales_efa_wdm_d3_ad %>%
 ```
 
 ```{r}
-table4.3 <- scales_study3 %>%
+tableB.1 <- altscales_study3 %>%
   mutate_all(as.character) %>%
   # deal with younger children, 2-factor solution
   mutate(temp1 = `Younger children, 4-6y (2-factor solution)`,
@@ -475,7 +512,7 @@ table4.3 <- scales_study3 %>%
          `3-factor solution` = `Younger children, 4-6y (3-factor solution)`,
          `2-factor solution` = `Younger children, 4-6y (2-factor solution)`) %>%
   kable(format = "html",
-        caption = "Table 4.3: Scales for each of the conceptual units (factors) identified by EFA for US Adults, older children, and younger children in Study 3 (see Chapter III). For younger children, this includes scales for both three- and two-factor EFA solutions. A checkmark indicates that a mental capacity was included in a scale for a particular sample. The conceptual units of younger children differed substantially from those of older children and adults, such that some mental capacities were included in different scales across age groups (e.g., feel scared was part of the BODY scale for older children and adults, but part of the HEART* scale for younger children). In these cases, the name of the scale is provided (rather than a checkmark).") %>%
+        caption = "Table B.1: Scales for each of the conceptual units (factors) identified by EFA for US Adults, older children, and younger children in Study 3 (see Chapter III). For younger children, this includes scales for both three- and two-factor EFA solutions. A checkmark indicates that a mental capacity was included in a scale for a particular sample. The conceptual units of younger children differed substantially from those of older children and adults, such that some mental capacities were included in different scales across age groups (e.g., feel scared was part of the BODY scale for older children and adults, but part of the HEART* scale for younger children). In these cases, the name of the scale is provided (rather than a checkmark).") %>%
   kable_styling() %>%
   group_rows("BODY scale", 1, 7) %>%
   group_rows("HEART scale", 8, 14) %>%
@@ -484,25 +521,25 @@ table4.3 <- scales_study3 %>%
                      "Younger children, 4-6y" = 2))
 ```
 
-```{r table4.3, include = T}
-table4.3
+```{r tableB.1, include = T}
+tableB.1
 ```
 
 ```{r}
-figure4.9 <- plot_grid(fig_d3_79_scored_79_plots_leg_title, 
+figureB.1 <- plot_grid(fig_d3_79_scored_79_plots_leg_title, 
                        fig_d3_46_scored_46_wdm_plots_leg_title,
                        fig_d3_46_scored_46_par_plots_leg_title,
                        ncol = 1)
 
-figure4.9_cap <- add_sub(figure4.9, str_wrap("Figure 4.9: Relationships among older and younger children's attributions of conceptual units in Study 3, scored using their own scales (see Table 4.3). For younger children (4-6y of age), two sets of scores are presented: using a three-factor EFA solution (B1-B3) and using a two-factor EFA solution (C1-C3). Plots are organized by sample and scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figureB.1_cap <- add_sub(figureB.1, str_wrap("Figure B.1: Relationships among older and younger children's attributions of conceptual units in Study 3, scored using their own scales (see Table B.1). For younger children (4-6y of age), two sets of scores are presented: using a three-factor EFA solution (B1-B3) and using a two-factor EFA solution (C1). Plots are organized by sample and scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.4}
-ggdraw(figure4.9_cap)
+ggdraw(figureB.1_cap)
 ```
 
 ```{r}
-figure4.11_plots <- plot_grid(
+figureB.2_plots <- plot_grid(
   plot_d3_79_scored_79_diff +
     labs(title = "Study 3: Children, 7-9y\n(scored using their own scales)") +
     theme(legend.position = "none"),
@@ -515,198 +552,57 @@ figure4.11_plots <- plot_grid(
   ncol = 3, rel_widths = c(1, 1, 0.8),
   labels = "AUTO")
 
-figure4.11_plots_leg <- plot_grid(figure4.11_plots,
-                                  get_legend(plot_d3_79_scored_79_diff),
-                                  ncol = 1, rel_heights = c(1, 0.1))
+figureB.2_plots_leg <- plot_grid(figureB.2_plots,
+                                 get_legend(plot_d3_79_scored_79_diff),
+                                 ncol = 1, rel_heights = c(1, 0.1))
 
-figure4.11_cap <- add_sub(figure4.11_plots_leg, str_wrap("Figure 4.11: Difference scores between 7- to 9-year-old children's and 4- to 6-year-old children's attributions of conceptual units in Study 3, using their own scales. For younger children (4-6y of age), this includes difference scores using the three-factor EFA solution (panel B) and difference scores using the two-factor solution (panel C; see Table 4.3). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
+figureB.2_cap <- add_sub(figureB.2_plots_leg, str_wrap("Figure B.2: Difference scores between 7- to 9-year-old children's and 4- to 6-year-old children's attributions of conceptual units in Study 3, using their own scales. For younger children (4-6y of age), this includes difference scores using the three-factor EFA solution (panel B) and difference scores using the two-factor solution (panel C; see Table B.1). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 8, fig.asp = 0.38}
-ggdraw(figure4.11_cap)
+ggdraw(figureB.2_cap)
 ```
 
 ## Study 4
 
-### Children, using their own scales (three-factor solution)
+### Younger children (4-6y), using their own scales (three-factor solution)
 
 #### Scale construction
 
 ```{r}
-scales_efa_par_d4_46 <- scale_fun(efa_par_d4_46,
+scales_efa_par_d4_46 <- scale_fun(efa_par_d4_46, 
                                   factor_names = factor_names_efa_par_d4_46)
-d4_46_scored_46_par <- score_fun(d4_46, scales_efa_par_d4_46)
 saveRDS(scales_efa_par_d4_46, file = "./stored/scales/scales_efa_par_d4_46")
+
+d4_46_scored_46_par <- score_fun(d4_46, scales_efa_par_d4_46)
 saveRDS(d4_46_scored_46_par, file = "./stored/scored_data/d4_46_scored_46_par")
 ```
 
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_par_d4_46)` scales of `r scales_efa_par_d4_46 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.4.
+Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_par_d4_46)` scales of `r scales_efa_par_d4_46 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table B.1.
 
-#### Visualization
+#### Visualization and analysis of asymmetries
 
 ```{r}
 plots_d4_46_scored_46_par <- relviz_fun(d4_46_scored_46_par, colors = colors02)
 ```
 
 ```{r}
-fig_d4_46_scored_46_par_plots <- plot_grid(plots_d4_46_scored_46_par[[1]] + 
-                                             theme(legend.position = "none"),
-                                           plots_d4_46_scored_46_par[[2]] + 
-                                             theme(legend.position = "none"),
-                                           plots_d4_46_scored_46_par[[3]] + 
-                                             theme(legend.position = "none"),
-                                           labels = c("A1", "A2", "A3"), ncol = 3)
+fig_d4_46_scored_46_par_plots <- plot_grid(
+  plots_d4_46_scored_46_par[[1]] + 
+    theme(legend.position = "none"),
+  plots_d4_46_scored_46_par[[2]] + 
+    theme(legend.position = "none"),
+  plots_d4_46_scored_46_par[[3]] + 
+    theme(legend.position = "none"),
+  labels = c("A1", "A2", "A3"), ncol = 3)
 
 fig_d4_46_scored_46_par_leg <- get_legend(
   plots_d4_46_scored_46_par[[1]] +
     theme(legend.position = "bottom", legend.direction = "horizontal") +
-    scale_fill_manual("Target character", values = colors02,
+    scale_fill_manual("Target character", 
+                      values = colors02,
                       guide = guide_legend(title.position = "left",
-                                           direction = "horizontal",
-                                           ncol = 2)) +
-    scale_color_manual("Target character", values = colors02,
-                       guide = guide_legend(title.position = "left",
-                                            direction = "horizontal", 
-                                            ncol = 2)))
-
-fig_d4_46_scored_46_par_plots_leg <- plot_grid(
-  fig_d4_46_scored_46_par_plots, fig_d4_46_scored_46_par_leg,
-  ncol = 1, rel_heights = c(1, 0.05))
-
-fig_d4_46_scored_46_par_title <- ggdraw() + 
-  draw_label("Study 4: Children, 4-5y (scored using their own scales, 3-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
-
-fig_d4_46_scored_46_par_plots_leg_title <- plot_grid(
-  fig_d4_46_scored_46_par_title, fig_d4_46_scored_46_par_plots_leg,
-  ncol = 1, rel_heights = c(0.12, 1))
-```
-
-#### Analysis of asymmetries
-
-```{r}
-d4_46_scored_46_par_diff <- diff_fun(d4_46_scored_46_par)
-saveRDS(d4_46_scored_46_par_diff, "./stored/diffscore_data/d4_46_scored_46_par_diff")
-```
-
-```{r}
-plot_d4_46_scored_46_par_diff <- diffplot_fun(d4_46_scored_46_par_diff, colors02)
-```
-
-```{r}
-# r_d4_46_scored_46_par_diff_BODY_HEART <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
-
-# r_d4_46_scored_46_par_diff_BODY_HEART <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - HEART"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d4_46_scored_46_par_diff_BODY_HEART <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - HEART"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d4_46_scored_46_par_diff_BODY_HEART <- lmer(
-#   diff ~ 1 + (1 | subid),
-#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - HEART"))
-
-summary(r_d4_46_scored_46_par_diff_BODY_HEART)
-```
-
-```{r}
-# r_d4_46_scored_46_par_diff_BODY_MIND <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
-
-# r_d4_46_scored_46_par_diff_BODY_MIND <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - MIND"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d4_46_scored_46_par_diff_BODY_MIND <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - MIND"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d4_46_scored_46_par_diff_BODY_MIND <- lmer(
-#   diff ~ 1 + (1 | subid),
-#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - MIND"))
-
-summary(r_d4_46_scored_46_par_diff_BODY_MIND)
-```
-
-```{r}
-# r_d4_46_scored_46_par_diff_HEART_MIND <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_46_scored_46_par_diff %>% filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
-
-# r_d4_46_scored_46_par_diff_HEART_MIND <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_46_scored_46_par_diff %>% filter(pair == "HEART - MIND"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d4_46_scored_46_par_diff_HEART_MIND <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d4_46_scored_46_par_diff %>% filter(pair == "HEART - MIND"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d4_46_scored_46_par_diff_HEART_MIND <- lmer(
-#   diff ~ 1 + (1 | subid),
-#   data = d4_46_scored_46_par_diff %>% filter(pair == "HEART - MIND"))
-
-summary(r_d4_46_scored_46_par_diff_HEART_MIND)
-```
-
-### Children, using their own scales (four-factor solution)
-
-#### Scale construction
-
-```{r}
-scales_efa_wdm_d4_46 <- scale_fun(efa_wdm_d4_46, 
-                                   factor_names = factor_names_efa_wdm_d4_46)
-d4_46_scored_46_wdm <- score_fun(d4_46, scales_efa_wdm_d4_46)
-saveRDS(scales_efa_wdm_d4_46, file = "./stored/scales/scales_efa_wdm_d4_46")
-saveRDS(d4_46_scored_46_wdm, file = "./stored/scored_data/d4_46_scored_46_wdm")
-```
-
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d4_46)` scales of `r scales_efa_wdm_d4_46 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table 4.4.
-
-#### Visualization
-
-```{r}
-plots_d4_46_scored_46_wdm <- relviz_fun(d4_46_scored_46_wdm, colors = colors02)
-```
-
-```{r}
-fig_d4_46_scored_46_wdm_plots <- plot_grid(plots_d4_46_scored_46_wdm[[1]] + 
-                                             theme(legend.position = "none"),
-                                           plots_d4_46_scored_46_wdm[[2]] + 
-                                             theme(legend.position = "none"),
-                                           plots_d4_46_scored_46_wdm[[3]] + 
-                                             theme(legend.position = "none"),
-                                           plots_d4_46_scored_46_wdm[[4]] + 
-                                             theme(legend.position = "none"),
-                                           plots_d4_46_scored_46_wdm[[5]] + 
-                                             theme(legend.position = "none"),
-                                           plots_d4_46_scored_46_wdm[[6]] + 
-                                             theme(legend.position = "none"),
-                                           labels = c("B1", "B2", "B3", 
-                                                      "B4", "B5", "B6"), 
-                                           ncol = 3)
-
-fig_d4_46_scored_46_wdm_leg <- get_legend(
-  plots_d4_46_scored_46_wdm[[1]] +
-    theme(legend.position = "bottom", legend.direction = "horizontal") +
-    scale_fill_manual("Target character", values = colors02,
-                      guide = guide_legend(title.position = "left",
-                                           direction = "horizontal",
+                                           direction = "horizontal", 
                                            ncol = 2)) +
     scale_color_manual("Target character",
                        values = colors02,
@@ -714,275 +610,411 @@ fig_d4_46_scored_46_wdm_leg <- get_legend(
                                             direction = "horizontal",
                                             ncol = 2)))
 
-fig_d4_46_scored_46_wdm_plots_leg <- plot_grid(fig_d4_46_scored_46_wdm_plots,
-                                               fig_d4_46_scored_46_wdm_leg,
-                                               ncol = 1, rel_heights = c(1, 0.05))
+fig_d4_46_scored_46_par_plots_leg <- plot_grid(
+  fig_d4_46_scored_46_par_plots, fig_d4_46_scored_46_par_leg,
+  ncol = 1, rel_heights = c(1, 0.05))
+
+fig_d4_46_scored_46_par_title <- ggdraw() + 
+  draw_label("Study 4: Children, 4-6y (using their own scales, 3-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
+
+fig_d4_46_scored_46_par_plots_leg_title <- plot_grid(
+  fig_d4_46_scored_46_par_title, fig_d4_46_scored_46_par_plots_leg,
+  ncol = 1, rel_heights = c(0.12, 1))
+```
+
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+fig_d4_46_scored_46_par_plots_leg_title
+```
+
+```{r}
+d4_46_scored_46_par_diff <- diff_fun(d4_46_scored_46_par)
+contrasts(d4_46_scored_46_par_diff$character) <- contrasts_sum_edge
+
+saveRDS(d4_46_scored_46_par_diff, "./stored/diffscore_data/d4_46_scored_46_par_diff")
+```
+
+```{r}
+plot_d4_46_scored_46_par_diff <- diffplot_fun(d4_46_scored_46_par_diff, colors = colors02)
+```
+
+```{r}
+# r_d4_46_scored_46_par_diff_BODY_HEART <- brm(
+#   diff ~ 1 + character,
+#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - HEART"),
+#   cores = 4)
+# 
+# saveRDS(r_d4_46_scored_46_par_diff_BODY_HEART,
+#         "./stored/brms_models/r_d4_46_scored_46_par_diff_BODY_HEART")
+
+r_d4_46_scored_46_par_diff_BODY_HEART <- readRDS("./stored/brms_models/r_d4_46_scored_46_par_diff_BODY_HEART")
+
+summary(r_d4_46_scored_46_par_diff_BODY_HEART)
+```
+
+```{r}
+# r_d4_46_scored_46_par_diff_BODY_MIND <- brm(
+#   diff ~ 1 + character,
+#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - MIND"),
+#   cores = 4)
+# 
+# saveRDS(r_d4_46_scored_46_par_diff_BODY_MIND,
+#         "./stored/brms_models/r_d4_46_scored_46_par_diff_BODY_MIND")
+
+r_d4_46_scored_46_par_diff_BODY_MIND <- readRDS("./stored/brms_models/r_d4_46_scored_46_par_diff_BODY_MIND")
+
+summary(r_d4_46_scored_46_par_diff_BODY_MIND)
+```
+
+```{r}
+# r_d4_46_scored_46_par_diff_HEART_MIND <- brm(
+#   diff ~ 1 + character,
+#   data = d4_46_scored_46_par_diff %>% filter(pair == "HEART - MIND"),
+#   cores = 4)
+# 
+# saveRDS(r_d4_46_scored_46_par_diff_HEART_MIND,
+#         "./stored/brms_models/r_d4_46_scored_46_par_diff_HEART_MIND")
+
+r_d4_46_scored_46_par_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d4_46_scored_46_par_diff_HEART_MIND")
+
+summary(r_d4_46_scored_46_par_diff_HEART_MIND)
+```
+
+```{r}
+regtab_d4_46_scored_46_par_diff <- diff_reg_table_fun(
+  reg_list = list(r_d4_46_scored_46_par_diff_BODY_HEART,
+                  r_d4_46_scored_46_par_diff_BODY_MIND,
+                  r_d4_46_scored_46_par_diff_HEART_MIND),
+  pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
+  study_name = "Children, 4-6y (using their own scales, 3-factor solution)",
+  char_label = c("Robot vs. GM"))
+```
+
+```{r}
+# interim table for ease of writing
+regtab_d4_46_scored_46_par_diff %>%
+  select(-study, -s.e.) %>%
+  filter(param == "Intercept") %>%
+  kable(digits = 2) %>%
+  kable_styling()
+```
+
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_d4_46_scored_46_par_diff
+```
+
+Visualizations of relationships among 4- to 6-year-old children's scores on the _BODY_, _HEART_, and _MIND_ scales are provided in Figure B.xx, row A. The results of Bayesian regressions comparing difference scores between conceptual units to zero, controlling for differences in assessments of the two "edge cases" that were featured as target characters in these studies, are provided in Table B.xx.
+
+In these regressions, none of the asymmetries between conceptual units were reliably distinguishable from zero.
+
+### Younger children (4-6y), using their own scales (four-factor solution)
+
+#### Scale construction
+
+```{r}
+scales_efa_wdm_d4_46 <- scale_fun(efa_wdm_d4_46, 
+                                  factor_names = factor_names_efa_wdm_d4_46)
+saveRDS(scales_efa_wdm_d4_46, file = "./stored/scales/scales_efa_wdm_d4_46")
+
+d4_46_scored_46_wdm <- score_fun(d4_46, scales_efa_wdm_d4_46)
+saveRDS(d4_46_scored_46_wdm, file = "./stored/scored_data/d4_46_scored_46_wdm")
+```
+
+Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d4_46)` scales of `r scales_efa_wdm_d4_46 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table B.1.
+
+#### Visualization and analysis of asymmetries
+
+```{r}
+plots_d4_46_scored_46_wdm <- relviz_fun(d4_46_scored_46_wdm, colors = colors02)
+```
+
+```{r}
+fig_d4_46_scored_46_wdm_plots <- plot_grid(
+  plots_d4_46_scored_46_wdm[[1]] + 
+    theme(legend.position = "none"),
+  plots_d4_46_scored_46_wdm[[2]] + 
+    theme(legend.position = "none"),
+  plots_d4_46_scored_46_wdm[[3]] + 
+    theme(legend.position = "none"),
+  plots_d4_46_scored_46_wdm[[4]] + 
+    theme(legend.position = "none"),
+  plots_d4_46_scored_46_wdm[[5]] + 
+    theme(legend.position = "none"),
+  plots_d4_46_scored_46_wdm[[6]] + 
+    theme(legend.position = "none"),
+  labels = paste0("C", 1:6), ncol = 3)
+
+fig_d4_46_scored_46_wdm_leg <- get_legend(
+  plots_d4_46_scored_46_wdm[[1]] +
+    theme(legend.position = "bottom", legend.direction = "horizontal") +
+    scale_fill_manual("Target character", 
+                      values = colors02,
+                      guide = guide_legend(title.position = "left",
+                                           direction = "horizontal", 
+                                           ncol = 2)) +
+    scale_color_manual("Target character",
+                       values = colors02,
+                       guide = guide_legend(title.position = "left",
+                                            direction = "horizontal",
+                                            ncol = 2)))
+
+fig_d4_46_scored_46_wdm_plots_leg <- plot_grid(
+  fig_d4_46_scored_46_wdm_plots, fig_d4_46_scored_46_wdm_leg,
+  ncol = 1, rel_heights = c(1, 0.05))
 
 fig_d4_46_scored_46_wdm_title <- ggdraw() + 
-  draw_label("Study 4: Children, 4-5y (scored using their own scales, 4-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
+  draw_label("Study 4: Children, 4-6y (using their own scales, 4-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
 fig_d4_46_scored_46_wdm_plots_leg_title <- plot_grid(
   fig_d4_46_scored_46_wdm_title, fig_d4_46_scored_46_wdm_plots_leg,
   ncol = 1, rel_heights = c(0.12, 1))
 ```
 
-#### Analysis of asymmetries
+```{r, fig.width = 5, fig.asp = 0.7}
+# interim plot for ease of writing
+fig_d4_46_scored_46_wdm_plots_leg_title
+```
 
 ```{r}
 d4_46_scored_46_wdm_diff <- diff_fun(d4_46_scored_46_wdm)
+contrasts(d4_46_scored_46_wdm_diff$character) <- contrasts_sum_edge
+
 saveRDS(d4_46_scored_46_wdm_diff, "./stored/diffscore_data/d4_46_scored_46_wdm_diff")
 ```
 
 ```{r}
-plot_d4_46_scored_46_wdm_diff <- diffplot_fun(d4_46_scored_46_wdm_diff, colors02)
+plot_d4_46_scored_46_wdm_diff <- diffplot_fun(d4_46_scored_46_wdm_diff, colors = colors02)
 ```
 
 ```{r}
 # r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
+#   diff ~ 1 + character,
 #   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - BODY (other)"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother,
+#         "./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother")
 
-# r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - BODY (other)"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - BODY (other)"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother <- lmer(
-#   diff ~ 1 + (1 | subid),
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - BODY (other)"))
+r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother <- readRDS("./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother")
 
 summary(r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother)
 ```
 
 ```{r}
 # r_d4_46_scored_46_wdm_diff_BODYnausea_HEART <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
+#   diff ~ 1 + character,
 #   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - HEART*"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d4_46_scored_46_wdm_diff_BODYnausea_HEART,
+#         "./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYnausea_HEART")
 
-# r_d4_46_scored_46_wdm_diff_BODYnausea_HEART <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - HEART*"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d4_46_scored_46_wdm_diff_BODYnausea_HEART <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - HEART*"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d4_46_scored_46_wdm_diff_BODYnausea_HEART <- lmer(
-#   diff ~ 1 + (1 | subid),
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - HEART*"))
+r_d4_46_scored_46_wdm_diff_BODYnausea_HEART <- readRDS("./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYnausea_HEART")
 
 summary(r_d4_46_scored_46_wdm_diff_BODYnausea_HEART)
 ```
 
 ```{r}
 # r_d4_46_scored_46_wdm_diff_BODYother_HEART <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
+#   diff ~ 1 + character,
 #   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - HEART*"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d4_46_scored_46_wdm_diff_BODYother_HEART,
+#         "./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYother_HEART")
 
-# r_d4_46_scored_46_wdm_diff_BODYother_HEART <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - HEART*"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d4_46_scored_46_wdm_diff_BODYother_HEART <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - HEART*"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d4_46_scored_46_wdm_diff_BODYother_HEART <- lmer(
-#   diff ~ 1 + (1 | subid),
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - HEART*"))
+r_d4_46_scored_46_wdm_diff_BODYother_HEART <- readRDS("./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYother_HEART")
 
 summary(r_d4_46_scored_46_wdm_diff_BODYother_HEART)
 ```
 
 ```{r}
 # r_d4_46_scored_46_wdm_diff_BODYnausea_MIND <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
+#   diff ~ 1 + character,
 #   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - MIND*"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d4_46_scored_46_wdm_diff_BODYnausea_MIND,
+#         "./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYnausea_MIND")
 
-# r_d4_46_scored_46_wdm_diff_BODYnausea_MIND <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - MIND*"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d4_46_scored_46_wdm_diff_BODYnausea_MIND <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - MIND*"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d4_46_scored_46_wdm_diff_BODYnausea_MIND <- lmer(
-#   diff ~ 1 + (1 | subid),
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - MIND*"))
+r_d4_46_scored_46_wdm_diff_BODYnausea_MIND <- readRDS("./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYnausea_MIND")
 
 summary(r_d4_46_scored_46_wdm_diff_BODYnausea_MIND)
 ```
 
 ```{r}
 # r_d4_46_scored_46_wdm_diff_BODYother_MIND <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
+#   diff ~ 1 + character,
 #   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - MIND*"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d4_46_scored_46_wdm_diff_BODYother_MIND,
+#         "./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYother_MIND")
 
-# r_d4_46_scored_46_wdm_diff_BODYother_MIND <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - MIND*"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d4_46_scored_46_wdm_diff_BODYother_MIND <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - MIND*"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d4_46_scored_46_wdm_diff_BODYother_MIND <- lmer(
-#   diff ~ 1 + (1 | subid),
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - MIND*"))
+r_d4_46_scored_46_wdm_diff_BODYother_MIND <- readRDS("./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYother_MIND")
 
 summary(r_d4_46_scored_46_wdm_diff_BODYother_MIND)
 ```
 
 ```{r}
 # r_d4_46_scored_46_wdm_diff_HEART_MIND <- brm(
-#   diff ~ 1 + (1 | character) + (1 | subid),
+#   diff ~ 1 + character,
 #   data = d4_46_scored_46_wdm_diff %>% filter(pair == "HEART* - MIND*"),
-#   contrasts = list(character = contrasts_sum_edge),
-#   cores = 4, control = list(adapt_delta = 0.999))
+#   cores = 4)
+# 
+# saveRDS(r_d4_46_scored_46_wdm_diff_HEART_MIND,
+#         "./stored/brms_models/r_d4_46_scored_46_wdm_diff_HEART_MIND")
 
-# r_d4_46_scored_46_wdm_diff_HEART_MIND <- lmer(
-#   diff ~ 1 + (1 | character) + (1 | subid),
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "HEART* - MIND*"),
-#   contrasts = list(character = contrasts_sum_edge))
-
-r_d4_46_scored_46_wdm_diff_HEART_MIND <- lmer(
-  diff ~ 1 + character + (1 | subid),
-  data = d4_46_scored_46_wdm_diff %>% filter(pair == "HEART* - MIND*"),
-  contrasts = list(character = contrasts_sum_edge))
-
-# r_d4_46_scored_46_wdm_diff_HEART_MIND <- lmer(
-#   diff ~ 1 + (1 | subid),
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "HEART* - MIND*"))
+r_d4_46_scored_46_wdm_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d4_46_scored_46_wdm_diff_HEART_MIND")
 
 summary(r_d4_46_scored_46_wdm_diff_HEART_MIND)
 ```
 
+```{r}
+regtab_d4_46_scored_46_wdm_diff <- diff_reg_table_fun(
+  reg_list = list(r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother,
+                  r_d4_46_scored_46_wdm_diff_BODYnausea_HEART,
+                  r_d4_46_scored_46_wdm_diff_BODYother_HEART,
+                  r_d4_46_scored_46_wdm_diff_BODYnausea_MIND,
+                  r_d4_46_scored_46_wdm_diff_BODYother_MIND,
+                  r_d4_46_scored_46_wdm_diff_HEART_MIND),
+  pair_list = c("BODY (nausea) - BODY (other)",
+                "BODY (nausea) - HEART*", "BODY (other) - HEART*",
+                "BODY (nausea) - MIND", "BODY (other) - MIND",
+                "HEART* - MIND"),
+  study_name = "Children, 4-6y (using their own scales, 4-factor solution)",
+  char_label = c("Robot vs. GM"))
+```
+
+```{r}
+# interim table for ease of writing
+regtab_d4_46_scored_46_wdm_diff %>%
+  select(-study, -s.e.) %>%
+  filter(param == "Intercept") %>%
+  kable(digits = 2) %>%
+  kable_styling()
+```
+
+```{r, fig.width = 5, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_d4_46_scored_46_wdm_diff
+```
+
+Visualizations of relationships among 4- to 6-year-old children's scores on the _BODY\*_, _HEART\*_, and _MIND_ scales are provided in Figure B.xx, row B. The results of Bayesian regressions comparing difference scores between conceptual units to zero, controlling for differences in assessments of the nine "diverse characters" that were featured as target characters in these studies, are provided in Table B.xx.
+
+The main take-aways of this analysis are that 4- to 6-year-old children reliably endorsed _BODY (other)_ items more strongly than any other items, but showed no reliable asymmetries between the remaining conceptual units (_BODY (nausea)_, _HEART\*_, and _MIND_).
 
 ### Discussion
 
 ```{r}
-scales_study4 <- bind_rows(scales_efa_wdm_d4_ad %>% 
-                             mutate(study = "Adults"),
-                           scales_efa_par_d4_46 %>%
-                             mutate(study = "Children, 4-5y (3-factor solution)"),
-                           scales_efa_wdm_d4_46 %>%
-                             mutate(study = "Children, 4-5y (4-factor solution)")) %>%
+altscales_study3 <- bind_rows(
+  scales_efa_wdm_d4_ad %>% 
+    mutate(study = "Adults"),
+  scales_efa_par_d4_46 %>%
+    mutate(study = "Younger children, 4-6y (3-factor solution)"),
+  scales_efa_wdm_d4_46 %>%
+    mutate(study = "Younger children, 4-6y (4-factor solution)")) %>%
   select(-c(loading, order)) %>%
   distinct() %>%
   mutate(study = factor(study,
                         levels = c("Adults",
-                                   "Children, 4-5y (3-factor solution)",
-                                   "Children, 4-5y (4-factor solution)"))) %>%
+                                   "Younger children, 4-6y (3-factor solution)",
+                                   "Younger children, 4-6y (4-factor solution)"))) %>%
   spread(study, factor) %>%
   mutate(ur_factor = ifelse(!is.na(`Adults`), 
-                            `Adults`,
-                            ifelse(is.na(`Children, 4-5y (3-factor solution)`),
-                                   `Children, 4-5y (3-factor solution)`,
-                                   `Children, 4-5y (4-factor solution)`))) %>%
+                            `Adults`, 
+                            ifelse(!is.na(`Younger children, 4-6y (3-factor solution)`),
+                                   `Younger children, 4-6y (3-factor solution)`,
+                                   `Younger children, 4-6y (4-factor solution)`))) %>%
   left_join(scales_efa_wdm_d4_ad %>% 
               select(capacity, order) %>% rename(order_ad = order)) %>%
-  arrange(ur_factor, order_ad) %>%
+  left_join(scales_efa_par_d4_46 %>% 
+              select(capacity, order) %>% rename(order_46_par = order)) %>%
+  left_join(scales_efa_wdm_d4_46 %>% 
+              select(capacity, order) %>% rename(order_46_wdm = order)) %>%
+  arrange(ur_factor, order_ad, order_46_par, order_46_wdm) %>%
   select(-c(ur_factor, starts_with("order")))
 ```
 
 ```{r}
-table4.4 <- scales_study4 %>%
+tableB.3 <- altscales_study3 %>%
   mutate_all(as.character) %>%
-  # deal with Children, 4-factor solution
-  mutate(temp1 = `Children, 4-5y (4-factor solution)`,
+  # deal with younger children, 3-factor solution
+  mutate(temp1 = `Younger children, 4-6y (3-factor solution)`,
          temp2 = gsub("\\*", "", temp1),
          temp3 = case_when(
            temp2 == `Adults` ~ "✓",
            is.na(temp2) ~ "",
            TRUE ~ temp1)) %>%
-  mutate(`Children, 4-5y (4-factor solution)` = temp3) %>%
+  mutate(`Younger children, 4-6y (3-factor solution)` = temp3) %>%
   select(-starts_with("temp")) %>%
-  # deal with Children, 3-factor solution
-  mutate(temp1 = `Children, 4-5y (3-factor solution)`,
+  # deal with younger children, 4-factor solution
+  mutate(temp1 = `Younger children, 4-6y (4-factor solution)`,
          temp2 = gsub("\\*", "", temp1),
          temp3 = case_when(
-           temp2 == `Adults` ~ "✓",
+           temp2 == `Adults` | 
+             temp2 == `Younger children, 4-6y (3-factor solution)` |
+             (is.na(`Adults`) & is.na(`Younger children, 4-6y (3-factor solution)`)) ~ "✓",
            is.na(temp2) ~ "",
            TRUE ~ temp1)) %>%
-  mutate(`Children, 4-5y (3-factor solution)` = temp3) %>%
+  mutate(`Younger children, 4-6y (4-factor solution)` = temp3) %>%
   select(-starts_with("temp")) %>%
   mutate_at(vars(`Adults`),
             funs(ifelse(is.na(.), "", "✓"))) %>%
-  mutate_at(vars(starts_with("Younger")),
-            funs(ifelse(is.na(.), "", .))) %>%
   rename(Capacity = capacity,
-         `3-factor solution` = `Children, 4-5y (3-factor solution)`,
-         `4-factor solution` = `Children, 4-5y (4-factor solution)`) %>%
+         `4-factor solution` = `Younger children, 4-6y (4-factor solution)`,
+         `3-factor solution` = `Younger children, 4-6y (3-factor solution)`) %>%
   kable(format = "html",
-        caption = "Table 4.4: Scales for each of the conceptual units (factors) identified by EFA for US Adults and children in Study 4 (see Chapter III). For children, this includes scales for both three- and four-factor EFA solutions. A checkmark indicates that a mental capacity was included in a scale for a particular sample. The conceptual units of younger children differed substantially from those of adults, such that some mental capacities were included in different scales across age groups (e.g., love someone was part of the HEART scale for adults, but part of the MIND* scale in the four-factor solution for younger children). In these cases, the name of the scale is provided (rather than a checkmark).") %>%
+        caption = "Table B.3: Scales for each of the conceptual units (factors) identified by EFA for US Adults and younger children in Study 4 (see Chapter III). For younger children, this includes scales for both three- and four-factor EFA solutions. A checkmark indicates that a mental capacity was included in a scale for a particular sample. The conceptual units of younger children in the four-factor solution differed substantially from those of adults, such that some mental capacities were included in different scales across age groups. In these cases, the name of the scale is provided (rather than a checkmark).") %>%
   kable_styling() %>%
   group_rows("BODY scale", 1, 5) %>%
   group_rows("HEART scale", 6, 10) %>%
   group_rows("MIND scale", 11, 15) %>%
   add_header_above(c(" " = 2,
-                     "Children, 4-5y" = 2))
+                     "Younger children, 4-6y" = 2))
 ```
 
-```{r table4.4, include = T}
-table4.4
-```
-
-```{r}
-figure4.13 <- plot_grid(fig_d4_46_scored_46_par_plots_leg_title, 
-                        fig_d4_46_scored_46_wdm_plots_leg_title,
-                        ncol = 1, rel_heights = c(1, 2))
-
-figure4.13_cap <- add_sub(figure4.13, str_wrap("Figure 4.13: Relationships among US adults', older children's, and younger children's attributions of conceptual units in Study 3, scored using their own scales scales (see Table 4.4). Ttwo sets of scores are presented: using a three-factor EFA solution (A1-A3) and using a four-factor EFA solution (B1-B6). Plots are organized by scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
-```
-
-```{r, include = T, fig.width = 5, fig.asp = 1.35}
-ggdraw(figure4.13_cap)
+```{r tableB.3, include = T}
+tableB.3
 ```
 
 ```{r}
-figure4.15_plots <- plot_grid(
+figureB.3 <- plot_grid(fig_d4_46_scored_46_par_plots_leg_title,
+                       fig_d4_46_scored_46_wdm_plots_leg_title,
+                       rel_heights = c(1, 2), ncol = 1)
+
+figureB.3_cap <- add_sub(figureB.3, str_wrap("Figure B.3: Relationships among younger children's attributions of conceptual units in Study 4, scored using their own scales (see Table B.3). Two sets of scores are presented: using a three-factor EFA solution (A1-A3) and using a four-factor EFA solution (B1-B6). Plots are organized by sample and scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 1.4}
+ggdraw(figureB.3_cap)
+```
+
+```{r}
+figureB.4_plots <- plot_grid(
   plot_d4_46_scored_46_par_diff + 
     labs(title = "Study 4: Children, 4-6y\n(scored using their own scales, 3-factor solution)") +
-    theme(legend.position = "bottom"), 
+    theme(legend.position = "none"), 
   plot_d4_46_scored_46_wdm_diff + 
     labs(title = "Study 4: Children, 4-6y\n(scored using their own scales, 4-factor solution)") +
-    theme(legend.position = "bottom"), 
+    theme(legend.position = "none"), 
   ncol = 2, rel_widths = c(1, 2),
   labels = "AUTO")
 
-figure4.15_cap <- add_sub(figure4.15_plots, str_wrap("Figure 4.15: Difference scores between 4- to 5-year-old children's attributions of conceptual units in Study 4, using their own scales. This includes difference scores using the three-factor EFA solution (panel A) and difference scores using the four-factor solution (panel B; see Table 4.4). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
+figureB.4_plots_leg <- plot_grid(figureB.4_plots,
+                                 get_legend(plot_d4_46_scored_46_par_diff),
+                                 ncol = 1, rel_heights = c(1, 0.1))
+
+figureB.4_cap <- add_sub(figureB.4_plots_leg, str_wrap("Figure B.4: Difference scores between 4- to 6-year-old children's attributions of conceptual units in Study 4, using their own scales. This includes difference scores using the four-factor EFA solution (panel A) and difference scores using the three-factor solution (panel B; see Table B.3). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 8, fig.asp = 0.38}
-ggdraw(figure4.15_cap)
+ggdraw(figureB.4_cap)
 ```
 
 
-# Difference scores across age
+# Age-related changes in difference scores between conceptual units
 
 XX __CONVERT TO BRMS__
 
@@ -1142,13 +1174,20 @@ temp_d4_HM <- lmer(diff ~ 1 + character * age + (1 | subid),
 summary(temp_d4_HM)$coefficients %>% kable(digits = 2) %>% kable_styling()
 ```
 
-# BOTH BODY AND MIND OR IS JUST ONE ENOUGH?
+# The joint dependency of HEART on both BODY and MIND
 
-```{r, fig.width = 6, fig.asp = 0.55}
-bind_rows(d1a_ad_scored_ad, d1b_ad_scored_ad, d1c_ad_scored_ad, d1d_ad_scored_ad,
-          d2_ad_scored_ad, d2_79_scored_ad,
-          d3_ad_scored_ad, d3_79_scored_ad, d3_46_scored_ad,
-          d4_ad_scored_ad, d4_46_scored_ad) %>%
+A particularly robust and reliable finding reported in the main text of Chapter IV was that US adults virtually never endorsed HEART more strongly than either BODY or MIND. (US children between the ages of 4-9y also demonstrated increasingly adult-like asymmetries in their BODY, HEART, and MIND attributions with age.) I argued in that chapter that this pattern of findings is consitent with the possibility that adults' mental capacity attributions are governed by an intuitive theory of mental life specifying that, in order for a being to have the social-emotional abilities of the HEART, it must also have the physiological sensations of the BODY _and_ the perceptual-cognitive abilities of the mind.
+
+Here, I provide some preliminary evidence for the "and" in that claim, by way of a re-visualization of participants' _BODY_, _HEART_, and _MIND_ scores. The logic here is that if, as a group, a sample of participants holds the theory that HEART requires a combination of BODY _and_ MIND, then strong endorsements of _HEART_ abilities (depicted here in oranges and reds) should only occur among participants who also gave strong endorsements of _both_ _BODY_ and _MIND_ abilities (plotted here in the upper right corner of each plot).
+
+This is, indeed, what I observe among adults across Studies 1-4 (see Figure B.xx, top row). This tendency is less clear among 7- to 9-year-old children (middle row) and 4- to 6-year-old children (bottom row).
+
+```{r}
+figureB.xx_plot <- bind_rows(
+  d1a_ad_scored_ad, d1b_ad_scored_ad, d1c_ad_scored_ad, d1d_ad_scored_ad,
+  d2_ad_scored_ad, d2_79_scored_ad,
+  d3_ad_scored_ad, d3_79_scored_ad, d3_46_scored_ad,
+  d4_ad_scored_ad, d4_46_scored_ad) %>%
   mutate(study = gsub(":.*$", "", study),
          age_group = recode_factor(age_group,
                                    "adults" = "Adults",
@@ -1163,8 +1202,17 @@ bind_rows(d1a_ad_scored_ad, d1b_ad_scored_ad, d1c_ad_scored_ad, d1d_ad_scored_ad
   facet_grid(age_group ~ study) +
   geom_jitter(width = 0.05, height = 0.05, alpha = 0.5, size = 3) +
   scale_color_distiller(palette = "Spectral", 
-                        guide = guide_colorbar(barwidth = 20)) +
+                        guide = guide_colorbar(barwidth = 30,
+                                               barheight = 1)) +
+  labs(x = "BODY score", y = "MIND score", color = "HEART score") +
   theme(legend.position = "bottom",
         axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 ```
 
+```{r}
+figureB.xx_cap <- add_sub(figureB.xx_plot, str_wrap("Figure B.xx: Participants' endorsements of HEART as a function of their joint BODY and MIND endorsements. Results from all samples, in all studies, are plotted here, using adults' BODY, HEART, and MIND scales for all samples. For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. If endorsements of HEART depend jointly on endorsements of both BODY and MIND, then red dots (strong HEART endorsements) should occur only in the upper right corner of each plot.", 120), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 6, fig.asp = 0.65}
+ggdraw(figureB.xx_cap)
+```
