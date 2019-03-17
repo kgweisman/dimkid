@@ -1020,7 +1020,7 @@ XX __CONVERT TO BRMS__
 
 ## Study 2
 
-```{r}
+```{r, include = T}
 d2_79_scored_ad_diff %>% 
   left_join(d2_79 %>% distinct(subid, age)) %>%
   ggplot(aes(x = age, y = diff, color = character)) +
@@ -1069,7 +1069,7 @@ summary(temp_d2_HM)$coefficients %>% kable(digits = 2) %>% kable_styling()
 
 ## Study 3
 
-```{r}
+```{r, include = T}
 d3_79_scored_ad_diff %>% 
   left_join(d3_79 %>% distinct(subid, age)) %>%
   full_join(d3_46_scored_ad_diff %>%
@@ -1127,7 +1127,7 @@ summary(temp_d3_HM)$coefficients %>% kable(digits = 2) %>% kable_styling()
 
 ## Study 4
 
-```{r}
+```{r, include = T}
 d4_46_scored_ad_diff %>% 
   left_join(d4_46 %>% distinct(subid, age)) %>%
   ggplot(aes(x = age, y = diff, color = character)) +
