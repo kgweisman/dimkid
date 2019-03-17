@@ -938,7 +938,7 @@ altscales_study3 <- bind_rows(
 ```
 
 ```{r}
-tableB.3 <- altscales_study3 %>%
+tableB.2 <- altscales_study3 %>%
   mutate_all(as.character) %>%
   # deal with younger children, 3-factor solution
   mutate(temp1 = `Younger children, 4-6y (3-factor solution)`,
@@ -966,7 +966,7 @@ tableB.3 <- altscales_study3 %>%
          `4-factor solution` = `Younger children, 4-6y (4-factor solution)`,
          `3-factor solution` = `Younger children, 4-6y (3-factor solution)`) %>%
   kable(format = "html",
-        caption = "Table B.3: Scales for each of the conceptual units (factors) identified by EFA for US Adults and younger children in Study 4 (see Chapter III). For younger children, this includes scales for both three- and four-factor EFA solutions. A checkmark indicates that a mental capacity was included in a scale for a particular sample. The conceptual units of younger children in the four-factor solution differed substantially from those of adults, such that some mental capacities were included in different scales across age groups. In these cases, the name of the scale is provided (rather than a checkmark).") %>%
+        caption = "Table B.2: Scales for each of the conceptual units (factors) identified by EFA for US Adults and younger children in Study 4 (see Chapter III). For younger children, this includes scales for both three- and four-factor EFA solutions. A checkmark indicates that a mental capacity was included in a scale for a particular sample. The conceptual units of younger children in the four-factor solution differed substantially from those of adults, such that some mental capacities were included in different scales across age groups. In these cases, the name of the scale is provided (rather than a checkmark).") %>%
   kable_styling() %>%
   group_rows("BODY scale", 1, 5) %>%
   group_rows("HEART scale", 6, 10) %>%
@@ -975,8 +975,8 @@ tableB.3 <- altscales_study3 %>%
                      "Younger children, 4-6y" = 2))
 ```
 
-```{r tableB.3, include = T}
-tableB.3
+```{r tableB.2, include = T}
+tableB.2
 ```
 
 ```{r}
@@ -984,7 +984,7 @@ figureB.3 <- plot_grid(fig_d4_46_scored_46_par_plots_leg_title,
                        fig_d4_46_scored_46_wdm_plots_leg_title,
                        rel_heights = c(1, 2), ncol = 1)
 
-figureB.3_cap <- add_sub(figureB.3, str_wrap("Figure B.3: Relationships among younger children's attributions of conceptual units in Study 4, scored using their own scales (see Table B.3). Two sets of scores are presented: using a three-factor EFA solution (A1-A3) and using a four-factor EFA solution (B1-B6). Plots are organized by sample and scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+figureB.3_cap <- add_sub(figureB.3, str_wrap("Figure B.3: Relationships among younger children's attributions of conceptual units in Study 4, scored using their own scales (see Table B.2). Two sets of scores are presented: using a three-factor EFA solution (A1-A3) and using a four-factor EFA solution (B1-B6). Plots are organized by sample and scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.4}
@@ -1006,7 +1006,7 @@ figureB.4_plots_leg <- plot_grid(figureB.4_plots,
                                  get_legend(plot_d4_46_scored_46_par_diff),
                                  ncol = 1, rel_heights = c(1, 0.1))
 
-figureB.4_cap <- add_sub(figureB.4_plots_leg, str_wrap("Figure B.4: Difference scores between 4- to 6-year-old children's attributions of conceptual units in Study 4, using their own scales. This includes difference scores using the four-factor EFA solution (panel A) and difference scores using the three-factor solution (panel B; see Table B.3). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
+figureB.4_cap <- add_sub(figureB.4_plots_leg, str_wrap("Figure B.4: Difference scores between 4- to 6-year-old children's attributions of conceptual units in Study 4, using their own scales. This includes difference scores using the four-factor EFA solution (panel A) and difference scores using the three-factor solution (panel B; see Table B.2). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 8, fig.asp = 0.38}
@@ -1176,43 +1176,172 @@ summary(temp_d4_HM)$coefficients %>% kable(digits = 2) %>% kable_styling()
 
 # The joint dependency of HEART on both BODY and MIND
 
-A particularly robust and reliable finding reported in the main text of Chapter IV was that US adults virtually never endorsed HEART more strongly than either BODY or MIND. (US children between the ages of 4-9y also demonstrated increasingly adult-like asymmetries in their BODY, HEART, and MIND attributions with age.) I argued in that chapter that this pattern of findings is consitent with the possibility that adults' mental capacity attributions are governed by an intuitive theory of mental life specifying that, in order for a being to have the social-emotional abilities of the HEART, it must also have the physiological sensations of the BODY _and_ the perceptual-cognitive abilities of the mind.
+A particularly robust and reliable finding reported in the main text of Chapter IV was that US adults virtually never endorsed HEART more strongly than either BODY or MIND. (US children between the ages of 4-9y also demonstrated increasingly adult-like asymmetries in their BODY, HEART, and MIND attributions with age.) I argued in that chapter that this pattern of findings is consitent with the possibility that adults' mental capacity attributions are governed by an intuitive theory of mental life specifying that, in order for a being to have the social-emotional abilities of the HEART, it must also have the physiological sensations of the BODY _and_ the perceptual-cognitive abilities of the mind. 
 
-Here, I provide some preliminary evidence for the "and" in that claim, by way of a re-visualization of participants' _BODY_, _HEART_, and _MIND_ scores. The logic here is that if, as a group, a sample of participants holds the theory that HEART requires a combination of BODY _and_ MIND, then strong endorsements of _HEART_ abilities (depicted here in oranges and reds) should only occur among participants who also gave strong endorsements of _both_ _BODY_ and _MIND_ abilities (plotted here in the upper right corner of each plot).
+I illustrated support for this hypothesis with a visualization of participants' _BODY_, _HEART_, and _MIND_ scores, which demonstrated that, among adults in Studies 1-4, strong endorsements of _HEART_ abilities only occurred among participants who also gave strong endorsements of _both_ _BODY_ and _MIND_ abilities (see Figure 4.11, top row). These tendencies appeared to be weaker among children (middle and bottom rows).
 
-This is, indeed, what I observe among adults across Studies 1-4 (see Figure B.xx, top row). This tendency is less clear among 7- to 9-year-old children (middle row) and 4- to 6-year-old children (bottom row).
+Here I provide a formal analysis of joint dependency in each age group separately, and a formal comparison of these tendencies across age groups. These analyses were conducted using data pooled across all samples (i.e., Studies 1-4 for adults, Studies 2 and 3 for 7- to 9-year-old children, and Studies 3 and 4 for 4- to 6-year-old children). The primary parameter of interest in these analyses is the interaction between _BODY_ and _MIND_ scores: If attributions of HEART are jointly dependent on attributions of both BODY and MIND, then the interaction between _BODY_ and _MIND_ scores should be a strong predictor of _HEART_ scores, above and beyond either _BODY_ scores or _MIND_ scores on their own. In addition to using _BODY_ scores (when _MIND_ scores are at zero), _MIND_ scores (when _BODY_ scores are at zero), and the interaction between _BODY_ and _MIND_ scores to predict _HEART_ scores, these models also include random intercepts for participants, nested within studies, and random intercepts for target characters.
+
+Among adults, the interaction between _BODY_ and _MIND_ scores was clearly differentiable from zero, lending further support to the claim that HEART is jointly dependent on both BODY and MIND among US adults. In contrast, the interaction between _BODY_ and _MIND_ scores was not differentiable from zero among either 7- to 9-year-old or 4- to 6-year-old children (see "BODY \* MIND" row in Table B.3), suggesting that this joint dependency is not present in the aggregate for either of these age groups. A formal comparison across age groups further confirmed these apparent developmental differences: The interactive effect was substantially attenuated among both older children and younger children, relative to adults (see "BODY & MIND" rows in Table B.4).
 
 ```{r}
-figureB.xx_plot <- bind_rows(
-  d1a_ad_scored_ad, d1b_ad_scored_ad, d1c_ad_scored_ad, d1d_ad_scored_ad,
-  d2_ad_scored_ad, d2_79_scored_ad,
-  d3_ad_scored_ad, d3_79_scored_ad, d3_46_scored_ad,
-  d4_ad_scored_ad, d4_46_scored_ad) %>%
-  mutate(study = gsub(":.*$", "", study),
-         age_group = recode_factor(age_group,
-                                   "adults" = "Adults",
-                                   "children79" = "Children, 7-9y",
-                                   "children46" = "Children, 4-6y")) %>%
-  # group_by(study, age_group) %>% # standardize scores within sample (part 1 of 2)
-  # mutate(score = scale(score)) %>% # standardize scores within sample (part 2 of 2)
-  spread(factor, score) %>%
-  # filter(BODY != 0, MIND != 0, HEART != 0) %>% # omit any participant with any score of 0
-  arrange(HEART) %>% # put highest HEART on top
-  ggplot(aes(x = BODY, y = MIND, color = HEART)) +
-  facet_grid(age_group ~ study) +
-  geom_jitter(width = 0.05, height = 0.05, alpha = 0.5, size = 3) +
-  scale_color_distiller(palette = "Spectral", 
-                        guide = guide_colorbar(barwidth = 30,
-                                               barheight = 1)) +
-  labs(x = "BODY score", y = "MIND score", color = "HEART score") +
-  theme(legend.position = "bottom",
-        axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+# r_jointdep <- brm(HEART ~ BODY * MIND * age_group +
+#                     (1 | character) + (1 | study/subid),
+#                   data = scores_all %>% spread(factor, score),
+#                   cores = 4)
+# saveRDS(r_jointdep, "./stored/brms_models/r_jointdep")
+
+r_jointdep <- readRDS("./stored/brms_models/r_jointdep")
+
+summary(r_jointdep)
 ```
 
 ```{r}
-figureB.xx_cap <- add_sub(figureB.xx_plot, str_wrap("Figure B.xx: Participants' endorsements of HEART as a function of their joint BODY and MIND endorsements. Results from all samples, in all studies, are plotted here, using adults' BODY, HEART, and MIND scales for all samples. For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. If endorsements of HEART depend jointly on endorsements of both BODY and MIND, then red dots (strong HEART endorsements) should occur only in the upper right corner of each plot.", 120), x = 0, hjust = 0)
+# r_jointdep_ad <- brm(HEART ~ BODY * MIND + (1 | character) + (1 | study/subid),
+#                      data = scores_all %>% spread(factor, score) %>%
+#                        filter(age_group == "Adults"),
+#                      cores = 4)
+# saveRDS(r_jointdep_ad, "./stored/brms_models/r_jointdep_ad")
+
+r_jointdep_ad <- readRDS("./stored/brms_models/r_jointdep_ad")
+
+summary(r_jointdep_ad)
 ```
 
-```{r, include = T, fig.width = 6, fig.asp = 0.65}
-ggdraw(figureB.xx_cap)
+```{r}
+# r_jointdep_79 <- brm(HEART ~ BODY * MIND + (1 | character) + (1 | study),
+#                      data = d2_79_scored_ad %>% 
+#                        full_join(d3_79_scored_ad) %>%
+#                        spread(factor, score),
+#                      cores = 4, iter = 2000,
+#                      control = list(adapt_delta = 0.999))
+# saveRDS(r_jointdep_79, "./stored/brms_models/r_jointdep_79")
+
+r_jointdep_79 <- readRDS("./stored/brms_models/r_jointdep_79")
+
+summary(r_jointdep_79)
 ```
+
+```{r}
+# r_jointdep_46 <- brm(HEART ~ BODY * MIND + (1 | character) + (1 | study/subid),
+#                      data = d3_46_scored_ad %>%
+#                        full_join(d4_46_scored_ad) %>%
+#                        spread(factor, score),
+#                      cores = 4, iter = 2000,
+#                      control = list(adapt_delta = 0.999))
+# saveRDS(r_jointdep_46, "./stored/brms_models/r_jointdep_46")
+
+r_jointdep_46 <- readRDS("./stored/brms_models/r_jointdep_46")
+
+summary(r_jointdep_46)
+```
+
+```{r}
+regtab_jointdep_byagegroup <- bind_rows(
+  fixef(r_jointdep_ad) %>%
+    data.frame() %>%
+    rownames_to_column("param") %>%
+    mutate(age_group = "Adults"),
+  fixef(r_jointdep_79) %>%
+    data.frame() %>%
+    rownames_to_column("param") %>%
+    mutate(age_group = "Children, 7-9y"),
+  fixef(r_jointdep_46) %>%
+    data.frame() %>%
+    rownames_to_column("param") %>%
+    mutate(age_group = "Children, 4-6y")) %>%
+  rename(b = Estimate, s.e. = Est.Error) %>%
+  mutate(param = factor(param,
+                        levels = c("Intercept", "BODY", "MIND", "BODY:MIND")),
+         b = format(round(b, 2), nsmall = 2),
+         s.e. = format(round(s.e., 2), nsmall = 2),
+         CI95 = paste0("[", format(round(Q2.5, 2), nsmall = 2),
+                       ", ", format(round(Q97.5, 2), nsmall = 2), "]"),
+         nonzero = ifelse(Q2.5 * Q97.5 >= 0, "*", "")) %>%
+  select(-starts_with("Q")) %>%
+  select(-starts_with("s.e.")) %>%
+  gather(key, value, -c(age_group, param)) %>%
+  mutate(key = case_when(age_group == "Adults" ~ paste0("ad_", key),
+                         age_group == "Children, 7-9y" ~ paste0("ch01_", key),
+                         age_group == "Children, 4-6y" ~ paste0("ch02_", key))) %>%
+  select(-age_group) %>%
+  spread(key, value) %>%
+  arrange(param)
+```
+
+```{r}
+tableB.3 <- regtab_jointdep_byagegroup %>%
+  select(-contains("s.e.")) %>%
+  rename(Parameter = param,
+         b = ad_b, b = ch01_b, b = ch02_b,
+         `95% CI` = ad_CI95, `95% CI` = ch01_CI95, `95% CI` = ch02_CI95,
+         " " = ad_nonzero, " " = ch01_nonzero, " " = ch02_nonzero) %>%
+  kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
+        caption = "Table B.3: Regression analyses of the joint dependency of HEART on both BODY and MIND. The table presents results from a series of Bayesian regressions using pooled data from all samples within an age group (i.e., Studies 1-4 for adults, Studies 2 and 3 for 7- to 9-year-old children, and Studies 3 and 4 for 4 - to 6-year-old children. These regressions each included 4 fixed effect parameters: (1) the intercept, which is an index of HEART scores when BODY and MIND scores were both zero; (2) the effect of BODY scores on HEART scores (when MIND scores were zero); (3) the effect of MIND scores on HEART scores (when BODY scores were zero); and (4) the interactive effect of BODY and MIND scores on HEART scores. This last effect is highlighted in bold, because it is the primary parameter of interest for these analyses. In addition to the fixed effects listed here, these regressions included random intercepts for participants, nested within studies, for adults and for 4- to 6-year-old children; random intercepts for studies for 7- to 9-year-old children (since neither study with this age group featured a within-subjects design); and random intercepts for target characters (n = 21 for adults, n = 9 for both 7- to 9-year-old and 4- to 6-year-old children). For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
+  kable_styling() %>%
+  row_spec(4, bold = T) %>%
+  add_header_above(c(" " = 1,
+                     "Adults" = 3, "Children, 7-9y" = 3, "Children, 4-6y" = 3))
+```
+
+```{r, include = T}
+tableB.3
+```
+
+```{r}
+regtab_jointdep_devcomp <- fixef(r_jointdep) %>%
+  data.frame() %>%
+  rownames_to_column("param") %>%
+  mutate(CI95 = paste0("[", format(round(Q2.5, 2), nsmall = 2),
+                       ", ", format(round(Q97.5, 2), nsmall = 2), "]"),
+         nonzero = ifelse(Q2.5 * Q97.5 >= 0, "*", "")) %>%
+  rename(b = Estimate, s.e. = Est.Error) %>%
+  mutate(param = factor(param,
+                        levels = c("Intercept", 
+                                   "age_group_old", 
+                                   "age_group_yng",
+                                   "BODY", 
+                                   "BODY:age_group_old", 
+                                   "BODY:age_group_yng",
+                                   "MIND", "MIND:age_group_old", 
+                                   "MIND:age_group_yng",
+                                   "BODY:MIND", 
+                                   "BODY:MIND:age_group_old", 
+                                   "BODY:MIND:age_group_yng"),
+                        labels = c("Intercept",
+                                   "Older children vs. adults",
+                                   "Younger children vs. adults",
+                                   "BODY",
+                                   "BODY * Older children vs. adults",
+                                   "BODY * Younger children vs. adults",
+                                   "MIND",
+                                   "MIND * Older children vs. adults",
+                                   "MIND * Younger children vs. adults",
+                                   "BODY * MIND",
+                                   "BODY * MIND * Older children vs. adults",
+                                   "BODY * MIND * Younger children vs. adults"))) %>%
+  select(param, b, s.e., CI95, nonzero) %>%
+  arrange(param)
+```
+
+```{r}
+tableB.4 <- regtab_jointdep_devcomp %>%
+  select(-contains("s.e.")) %>%
+  mutate(b = format(round(b, 2), nsmall = 2)) %>%
+  rename(Parameter = param,
+         `95% CI` = CI95) %>%
+  rename_all(funs(gsub("nonzero", " ", .))) %>%
+  kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
+        caption = "Table B.3: Developmental comparisons of the joint dependency of HEART on both BODY and MIND. The table presents results from a single Bayesian regression using pooled data from all samples in all studies. This regression included 12 fixed effect parameters: (1) the intercept (for adults), which is an index of HEART scores among adults when BODY and MIND scores were both zero; (2-3) the differences between older children vs. adults and younger children vs. adults in their HEART scores when BODY and MIND scores were both zero; (4-6) the effect of BODY scores on HEART scores for adults, and differences from adults in this effect for older and younger children; (7-9) the effect of MIND scores on HEART scores for adults, and differences from adults in this effect for older and younger children; (10-11) the interactive effect of BODY and MIND scores on HEART scores for adults, and differences from adults in this interactive effect for older and younger children. These last three effects  are highlighted in bold, because these are the primary parameters of interest for these analyses. In addition to the fixed effects listed here, the regression included random intercepts for participants, nested within studies, and random intercepts for characters (n = 24). For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
+  kable_styling() %>%
+  row_spec(c(10:12), bold = T) %>%
+  group_rows("HEART scores when BODY scores and MIND scores = 0", 1, 3) %>%
+  group_rows("The effect of BODY scores on HEART scores when MIND scores = 0", 4, 6) %>%
+  group_rows("The effect of MIND scores on HEART scores when BODY scores = 0", 7, 9) %>%
+  group_rows("The interactive effect of BODY scores and MIND scores on HEART scores", 10, 12)
+```
+
+```{r, include = T}
+tableB.4
+```
+
