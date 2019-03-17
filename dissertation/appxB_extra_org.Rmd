@@ -1016,12 +1016,16 @@ ggdraw(figureB.4_cap)
 
 # Age-related changes in difference scores between conceptual units
 
-XX __CONVERT TO BRMS__
+In Chapter IV, I conducted separate analyses of difference scores for different age groups, as well as formal comparisons across age groups. These analyses aligned with the "snapshot" approach that I utilized in Chapter III to identify conceptual units at different points in development, and allowed for the kinds of visualizations of visualizations of relationships among _BODY_, _HEART_, and _MIND_ scores that anchored my analyses and discussion of the organization of conceptual units in Chapter IV. This approach suggested that across the three age groups under consideration in this study (roughly, 4-6y of age, 7-9y of age, and adulthood), the asymmetries in participants' responses grew increasingly stronger, more reliable across studies and participants, and generally more "adult-like."
+
+Here, I supplement this "snapshot" approach to studying development with one that respects how development actually unfolds: continuously. For Studies 2, 3, and 4, I present Bayesian regressions of difference scores—modeled exactly on the analyses presented in Chapter IV—that include exact age and interactions with age as predictors.
 
 ## Study 2
 
-```{r, include = T}
-d2_79_scored_ad_diff %>% 
+In Study 2, children ranged in age from `r summary(d2_79$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d2_79$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d2_79$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y; mean: `r summary(d2_79$age)["Mean"] %>% round(2) %>% format(nsmall = 2)`y). As a group, these children tended to endorse _BODY_ and _MIND_ items more strongly than _HEART_ items, and _MIND_ items more strongly than _BODY_ items—but all of these asymmetries were weaker among children than among adults in this study. Here, I re-analyze children's difference scores, including exact age (centered at the mean) and interactions with age as predictors.
+
+```{r}
+plot_d2_79age_scored_ad_diff <- d2_79_scored_ad_diff %>% 
   left_join(d2_79 %>% distinct(subid, age)) %>%
   ggplot(aes(x = age, y = diff, color = character)) +
   geom_hline(yintercept = 0, lty = 2) +
@@ -1032,49 +1036,131 @@ d2_79_scored_ad_diff %>%
                     multi_boot_standard(col = "diff") %>%
                     ungroup() %>%
                     mutate(age = 11),
-                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, 
+                      color = NULL),
                   color = "black", shape = "diamond") +
   scale_color_manual(values = colors02) +
   scale_x_continuous(breaks = c(7:11), minor_breaks = NULL,
                      labels = c(paste0(7:10, "y"), "Adults")) +
   geom_smooth(color = "black", method = "lm") +
-  labs(title = "Study 2: Difference scores over age",
+  labs(title = "Study 2: Children, 7-9y",
        x = "Age (y)", y = "Difference score", color = "Target character") +
   theme(legend.position = "bottom",
         axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 ```
 
 ```{r}
-temp_d2_BH <- lm(diff ~ 1 + character * age,
-                 data = d2_79_scored_ad_diff %>%
-                   filter(pair == "BODY - HEART") %>%
-                   left_join(d2_79 %>% distinct(subid, age)) %>%
-                   mutate(age = scale(age, scale = F)))
-summary(temp_d2_BH)$coefficients %>% kable(digits = 2) %>% kable_styling()
-
-temp_d2_BM <- lm(diff ~ 1 + character * age,
-                 data = d2_79_scored_ad_diff %>%
-                   filter(pair == "BODY - MIND") %>%
-                   left_join(d2_79 %>% distinct(subid, age)) %>%
-                   mutate(age = scale(age, scale = F)))
-summary(temp_d2_BM)$coefficients %>% kable(digits = 2) %>% kable_styling()
-
-temp_d2_HM <- lm(diff ~ 1 + character * age,
-                 data = d2_79_scored_ad_diff %>%
-                   filter(pair == "HEART - MIND") %>%
-                   left_join(d2_79 %>% distinct(subid, age)) %>%
-                   mutate(age = scale(age, scale = F)))
-summary(temp_d2_HM)$coefficients %>% kable(digits = 2) %>% kable_styling()
+d2_79age_scored_ad_diff <- d2_79_scored_ad_diff %>%
+  left_join(d2_79 %>% distinct(subid, age)) %>%
+  mutate(age_centered = scale(age, scale = F))
+contrasts(d2_79age_scored_ad_diff$character) <- contrasts_sum_edge
 ```
+
+```{r}
+# r_d2_79age_scored_ad_diff_BODY_HEART <- brm(
+#   diff ~ 1 + character * age_centered,
+#   data = d2_79age_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   cores = 4)
+# 
+# saveRDS(r_d2_79age_scored_ad_diff_BODY_HEART,
+#         "./stored/brms_models/r_d2_79age_scored_ad_diff_BODY_HEART")
+
+r_d2_79age_scored_ad_diff_BODY_HEART <- readRDS("./stored/brms_models/r_d2_79age_scored_ad_diff_BODY_HEART")
+
+summary(r_d2_79age_scored_ad_diff_BODY_HEART)
+```
+
+```{r}
+# r_d2_79age_scored_ad_diff_BODY_MIND <- brm(
+#   diff ~ 1 + character * age_centered,
+#   data = d2_79age_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   cores = 4)
+# 
+# saveRDS(r_d2_79age_scored_ad_diff_BODY_MIND,
+#         "./stored/brms_models/r_d2_79age_scored_ad_diff_BODY_MIND")
+
+r_d2_79age_scored_ad_diff_BODY_MIND <- readRDS("./stored/brms_models/r_d2_79age_scored_ad_diff_BODY_MIND")
+
+summary(r_d2_79age_scored_ad_diff_BODY_MIND)
+```
+
+```{r}
+# r_d2_79age_scored_ad_diff_HEART_MIND <- brm(
+#   diff ~ 1 + character * age_centered,
+#   data = d2_79age_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   cores = 4)
+# 
+# saveRDS(r_d2_79age_scored_ad_diff_HEART_MIND,
+#         "./stored/brms_models/r_d2_79age_scored_ad_diff_HEART_MIND")
+
+r_d2_79age_scored_ad_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d2_79age_scored_ad_diff_HEART_MIND")
+
+summary(r_d2_79age_scored_ad_diff_HEART_MIND)
+```
+
+```{r}
+regtab_d2_79age_scored_ad_diff <- diff_reg_table_fun(
+  reg_list = list(r_d2_79age_scored_ad_diff_BODY_HEART,
+                  r_d2_79age_scored_ad_diff_BODY_MIND,
+                  r_d2_79age_scored_ad_diff_HEART_MIND),
+  pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
+  study_name = "Study 2: Children, 7-9y",
+  char_label = "Robot vs. GM",
+  age_label = "Exact age (centered)")
+```
+
+```{r}
+tableB.3 <- regtab_d2_79age_scored_ad_diff %>%
+  select(-c(study, pair, s.e.)) %>%
+  rename(Parameter = param,
+         `95% CI` = CI95,
+         " " = nonzero) %>%
+  kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
+        digits = 2,
+        caption = "Table B.3: Regression analyses of difference scores among children (7-9y of age) in Study 2, including effects of exact age. The table presents results from separate Bayesian regressions of each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND). Each regression included four fixed effect parameters: (1) the intercept, which I treat as an index of the asymmetry in attributions of the two conceptual units in question; (2) the exact age of participants (centered at the mean); (3) the difference between target characters (in this case, the difference between the robot and the grand mean, 'GM'); and (4) the interaction between age and target character. Effects having to do with age are highlighted in bold, because these are the primary parameters of interest for these analyses. For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%
+  kable_styling() %>%
+  row_spec(seq(2, 12, 2), bold = T) %>%
+  group_rows("BODY vs. HEART", 1, 4) %>%
+  group_rows("BODY vs. MIND", 5, 8) %>%
+  group_rows("HEART vs. MIND", 9, 12)
+```
+
+```{r, include = T}
+tableB.3
+```
+
+```{r, fig.width = 4, fig.asp = 0.5}
+# interim plot for ease of writing
+plot_d2_79age_scored_ad_diff
+```
+
+The main take-aways of these analyses are that, among 7- to 9-year-old children in Study 2, _BODY_ vs. _HEART_ difference scores did not vary systematically with age, but both _BODY_ vs. _MIND_ and _HEART_ vs. _MIND_ difference scores became increasingly adult-like with age. See "Exact age (centered)" rows in Table B.3, and see Figure B.5, row A, for a visualization of difference scores over age.
 
 ## Study 3
 
-```{r, include = T}
-d3_79_scored_ad_diff %>% 
-  left_join(d3_79 %>% distinct(subid, age)) %>%
-  full_join(d3_46_scored_ad_diff %>%
-              left_join(d3_46 %>% distinct(subid, age))) %>%
-  # NOTE: MISSING 35 AGES!!
+```{r}
+d3_4679age_scored_ad_diff <- full_join(
+  d3_79_scored_ad_diff %>% 
+    left_join(d3_79 %>% distinct(subid, age)) %>%
+    mutate(subid = paste0("age79_", subid)),
+  d3_46_scored_ad_diff %>% 
+    left_join(d3_46 %>% distinct(subid, age)) %>%
+    mutate(subid = paste0("age46_", subid)))
+
+d3_age_missing <- d3_4679age_scored_ad_diff %>%
+  filter(is.na(age))
+  
+d3_4679age_scored_ad_diff <- d3_4679age_scored_ad_diff %>%
+  filter(!is.na(age)) %>% # to speed up regressions
+  mutate(age_centered = scale(age, scale = F))
+
+contrasts(d3_4679age_scored_ad_diff$character) <- contrasts_sum_dv09
+```
+
+In Study 3, children ranged in age from `r summary(d3_4679age_scored_ad_diff$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d3_4679age_scored_ad_diff$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d3_4679age_scored_ad_diff$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y; mean: `r summary(d3_4679age_scored_ad_diff$age)["Mean"] %>% round(2) %>% format(nsmall = 2)`y). As a group, the older children in this study (7-9y of age) tended to endorse _BODY_ and _MIND_ items more strongly than _HEART_ items—but both of these asymmetries were weaker among children than among adults in this study. Meanwhile, the younger children (4-6y) tended to endorse _BODY_ items more strongly than both _HEART_ and _MIND_ items. Here, I combine these two age groups and re-analyze children's difference scores, including exact age (centered at the mean) and interactions with age as predictors. (Note: At the time of writing, exact age was missing for `r nrow(d3_age_missing)` children in Study 3.)
+
+```{r}
+plot_d3_4679age_scored_ad_diff <- d3_4679age_scored_ad_diff %>% 
   ggplot(aes(x = age, y = diff, color = character)) +
   geom_hline(yintercept = 0, lty = 2) +
   facet_wrap(~ pair) +
@@ -1084,51 +1170,109 @@ d3_79_scored_ad_diff %>%
                     multi_boot_standard(col = "diff") %>%
                     ungroup() %>%
                     mutate(age = 11),
-                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, 
+                      color = NULL),
                   color = "black", shape = "diamond") +
-  scale_color_manual(values = colors09) +
+  scale_color_manual(values = colors09,
+                     guide = guide_legend(position = "horizontal",
+                                          ncol = 9)) +
   scale_x_continuous(breaks = c(4:11), minor_breaks = NULL,
                      labels = c(paste0(4:10, "y"), "Adults")) +
   geom_smooth(color = "black", method = "lm") +
-  labs(title = "Study 3: Difference scores over age",
+  labs(title = "Study 3: Children, 4-9y",
        x = "Age (y)", y = "Difference score", color = "Target character") +
   theme(legend.position = "bottom",
         axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 ```
 
 ```{r}
-temp_d3_BH <- lm(diff ~ 1 + character * age,
-                 data = d3_79_scored_ad_diff %>%
-                   left_join(d3_79 %>% distinct(subid, age)) %>%
-                   full_join(d3_46_scored_ad_diff %>%
-                               left_join(d3_46 %>% distinct(subid, age))) %>%
-                   filter(pair == "BODY - HEART") %>%
-                   mutate(age = scale(age, scale = F)))
-summary(temp_d3_BH)$coefficients %>% kable(digits = 2) %>% kable_styling()
+# r_d3_4679age_scored_ad_diff_BODY_HEART <- brm(
+#   diff ~ 1 + character * age_centered,
+#   data = d3_4679age_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   cores = 4)
+# 
+# saveRDS(r_d3_4679age_scored_ad_diff_BODY_HEART,
+#         "./stored/brms_models/r_d3_4679age_scored_ad_diff_BODY_HEART")
 
-temp_d3_BM <- lm(diff ~ 1 + character * age,
-                 data = d3_79_scored_ad_diff %>%
-                   left_join(d3_79 %>% distinct(subid, age)) %>%
-                   full_join(d3_46_scored_ad_diff %>%
-                               left_join(d3_46 %>% distinct(subid, age))) %>%
-                   filter(pair == "BODY - MIND") %>%
-                   mutate(age = scale(age, scale = F)))
-summary(temp_d3_BM)$coefficients %>% kable(digits = 2) %>% kable_styling()
+r_d3_4679age_scored_ad_diff_BODY_HEART <- readRDS("./stored/brms_models/r_d3_4679age_scored_ad_diff_BODY_HEART")
 
-temp_d3_HM <- lm(diff ~ 1 + character * age,
-                 data = d3_79_scored_ad_diff %>%
-                   left_join(d3_79 %>% distinct(subid, age)) %>%
-                   full_join(d3_46_scored_ad_diff %>%
-                               left_join(d3_46 %>% distinct(subid, age))) %>%
-                   filter(pair == "HEART - MIND") %>%
-                   mutate(age = scale(age, scale = F)))
-summary(temp_d3_HM)$coefficients %>% kable(digits = 2) %>% kable_styling()
+summary(r_d3_4679age_scored_ad_diff_BODY_HEART)
 ```
+
+```{r}
+# r_d3_4679age_scored_ad_diff_BODY_MIND <- brm(
+#   diff ~ 1 + character * age_centered,
+#   data = d3_4679age_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   cores = 4)
+# 
+# saveRDS(r_d3_4679age_scored_ad_diff_BODY_MIND,
+#         "./stored/brms_models/r_d3_4679age_scored_ad_diff_BODY_MIND")
+
+r_d3_4679age_scored_ad_diff_BODY_MIND <- readRDS("./stored/brms_models/r_d3_4679age_scored_ad_diff_BODY_MIND")
+
+summary(r_d3_4679age_scored_ad_diff_BODY_MIND)
+```
+
+```{r}
+# r_d3_4679age_scored_ad_diff_HEART_MIND <- brm(
+#   diff ~ 1 + character * age_centered,
+#   data = d3_4679age_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   cores = 4)
+# 
+# saveRDS(r_d3_4679age_scored_ad_diff_HEART_MIND,
+#         "./stored/brms_models/r_d3_4679age_scored_ad_diff_HEART_MIND")
+
+r_d3_4679age_scored_ad_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d3_4679age_scored_ad_diff_HEART_MIND")
+
+summary(r_d3_4679age_scored_ad_diff_HEART_MIND)
+```
+
+```{r}
+regtab_d3_4679age_scored_ad_diff <- diff_reg_table_fun(
+  reg_list = list(r_d3_4679age_scored_ad_diff_BODY_HEART,
+                  r_d3_4679age_scored_ad_diff_BODY_MIND,
+                  r_d3_4679age_scored_ad_diff_HEART_MIND),
+  pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
+  study_name = "Study 3: Children, 4-9y",
+  char_label = c("Elephant vs. GM", "Goat vs. GM", "Mouse vs. GM",
+                 "Bird vs. GM", "Beetle vs. GM", "Teddy bear vs. GM",
+                 "Doll vs. GM", "Robot vs. GM"),
+  age_label = "Exact age (centered)")
+```
+
+```{r}
+tableB.4 <- regtab_d3_4679age_scored_ad_diff %>%
+  select(-c(study, pair, s.e.)) %>%
+  rename(Parameter = param,
+         `95% CI` = CI95,
+         " " = nonzero) %>%
+  kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
+        digits = 2,
+        caption = "Table B.4: Regression analyses of difference scores among children (4-9y of age) in Study 3, including effects of exact age. The table presents results from separate Bayesian regressions of each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND). Each regression included 18 fixed effect parameters: (1) the intercept, which I treat as an index of the asymmetry in attributions of the two conceptual units in question; (2) the exact age of participants (centered at the mean); (3-10) the difference between target characters and the grand mean ('GM'); and (11-18) the interactions between age and target character. Effects having to do with age are highlighted in bold, because these are the primary parameters of interest for these analyses. For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%
+  kable_styling() %>%
+  row_spec(c(2, 11:18, 20, 29:36, 38, 47:54), bold = T) %>%
+  group_rows("BODY vs. HEART", 1, 18) %>%
+  group_rows("BODY vs. MIND", 19, 36) %>%
+  group_rows("HEART vs. MIND", 37, 54)
+```
+
+```{r, include = T}
+tableB.4
+```
+
+```{r, fig.width = 4, fig.asp = 0.5}
+# interim plot for ease of writing
+plot_d3_4679age_scored_ad_diff
+```
+
+The main take-aways of these analyses are that, among 4- to 9-year-old children in Study 3, all three difference scores (_BODY_ vs. _HEART_, _BODY_ vs. _MIND_, and _HEART_ vs. _MIND_) became increasingly adult-like with age. See "Exact age (centered)" rows in Table B.B, and see Figure B.5, row A, for a visualization of difference scores over age.
 
 ## Study 4
 
-```{r, include = T}
-d4_46_scored_ad_diff %>% 
+In Study 4, children ranged in age from `r summary(d4_46$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d4_46$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d4_46$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y; mean: `r summary(d4_46$age)["Mean"] %>% round(2) %>% format(nsmall = 2)`y). As a group, these children tended to endorsed _BODY_ items more strongly than _HEART_ items, and (unlike adults) _HEART_ items more strongly than _MIND_ items, but showed no systematic asymmetry in their endorsement of _BODY_ vs. _MIND_ items. Here, I re-analyze children's difference scores, including exact age (centered at the mean) and interactions with age as predictors, and random intercepts for participants to account for the within-subjects design of this study.
+
+```{r}
+plot_d4_46age_scored_ad_diff <- d4_46_scored_ad_diff %>% 
   left_join(d4_46 %>% distinct(subid, age)) %>%
   ggplot(aes(x = age, y = diff, color = character)) +
   geom_hline(yintercept = 0, lty = 2) +
@@ -1139,40 +1283,121 @@ d4_46_scored_ad_diff %>%
                     multi_boot_standard(col = "diff") %>%
                     ungroup() %>%
                     mutate(age = 6),
-                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, 
+                      color = NULL),
                   color = "black", shape = "diamond") +
   scale_color_manual(values = colors02) +
   scale_x_continuous(breaks = c(4:6), minor_breaks = NULL,
                      labels = c(paste0(4:5, "y"), "Adults")) +
   geom_smooth(color = "black", method = "lm") +
-  labs(title = "Study 4: Difference scores over age",
+  labs(title = "Study 4: Children, 4-5y",
        x = "Age (y)", y = "Difference score", color = "Target character") +
   theme(legend.position = "bottom",
         axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 ```
 
 ```{r}
-temp_d4_BH <- lmer(diff ~ 1 + character * age + (1 | subid),
-                   data = d4_46_scored_ad_diff %>%
-                     filter(pair == "BODY - HEART") %>%
-                     left_join(d4_46 %>% distinct(subid, age)) %>%
-                     mutate(age = scale(age, scale = F)))
-summary(temp_d4_BH)$coefficients %>% kable(digits = 2) %>% kable_styling()
-
-temp_d4_BM <- lmer(diff ~ 1 + character * age + (1 | subid),
-                   data = d4_46_scored_ad_diff %>%
-                     filter(pair == "BODY - MIND") %>%
-                     left_join(d4_46 %>% distinct(subid, age)) %>%
-                     mutate(age = scale(age, scale = F)))
-summary(temp_d4_BM)$coefficients %>% kable(digits = 2) %>% kable_styling()
-
-temp_d4_HM <- lmer(diff ~ 1 + character * age + (1 | subid),
-                   data = d4_46_scored_ad_diff %>%
-                     filter(pair == "HEART - MIND") %>%
-                     left_join(d4_46 %>% distinct(subid, age)) %>%
-                     mutate(age = scale(age, scale = F)))
-summary(temp_d4_HM)$coefficients %>% kable(digits = 2) %>% kable_styling()
+d4_46age_scored_ad_diff <- d4_46_scored_ad_diff %>%
+  left_join(d4_46 %>% distinct(subid, age)) %>%
+  mutate(age_centered = scale(age, scale = F))
+contrasts(d4_46age_scored_ad_diff$character) <- contrasts_sum_edge
 ```
+
+```{r}
+# r_d4_46age_scored_ad_diff_BODY_HEART <- brm(
+#   diff ~ 1 + character * age_centered + (1 | subid),
+#   data = d4_46age_scored_ad_diff %>% filter(pair == "BODY - HEART"),
+#   cores = 4)
+# 
+# saveRDS(r_d4_46age_scored_ad_diff_BODY_HEART,
+#         "./stored/brms_models/r_d4_46age_scored_ad_diff_BODY_HEART")
+
+r_d4_46age_scored_ad_diff_BODY_HEART <- readRDS("./stored/brms_models/r_d4_46age_scored_ad_diff_BODY_HEART")
+
+summary(r_d4_46age_scored_ad_diff_BODY_HEART)
+```
+
+```{r}
+# r_d4_46age_scored_ad_diff_BODY_MIND <- brm(
+#   diff ~ 1 + character * age_centered + (1 | subid),
+#   data = d4_46age_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   cores = 4)
+# 
+# saveRDS(r_d4_46age_scored_ad_diff_BODY_MIND,
+#         "./stored/brms_models/r_d4_46age_scored_ad_diff_BODY_MIND")
+
+r_d4_46age_scored_ad_diff_BODY_MIND <- readRDS("./stored/brms_models/r_d4_46age_scored_ad_diff_BODY_MIND")
+
+summary(r_d4_46age_scored_ad_diff_BODY_MIND)
+```
+
+```{r}
+# r_d4_46age_scored_ad_diff_HEART_MIND <- brm(
+#   diff ~ 1 + character * age_centered + (1 | subid),
+#   data = d4_46age_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   cores = 4)
+# 
+# saveRDS(r_d4_46age_scored_ad_diff_HEART_MIND,
+#         "./stored/brms_models/r_d4_46age_scored_ad_diff_HEART_MIND")
+
+r_d4_46age_scored_ad_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d4_46age_scored_ad_diff_HEART_MIND")
+
+summary(r_d4_46age_scored_ad_diff_HEART_MIND)
+```
+
+```{r}
+regtab_d4_46age_scored_ad_diff <- diff_reg_table_fun(
+  reg_list = list(r_d4_46age_scored_ad_diff_BODY_HEART,
+                  r_d4_46age_scored_ad_diff_BODY_MIND,
+                  r_d4_46age_scored_ad_diff_HEART_MIND),
+  pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
+  study_name = "Study 4: Children, 4-5y",
+  char_label = "Robot vs. GM",
+  age_label = "Exact age (centered)")
+```
+
+```{r}
+tableB.5 <- regtab_d4_46age_scored_ad_diff %>%
+  select(-c(study, pair, s.e.)) %>%
+  rename(Parameter = param,
+         `95% CI` = CI95,
+         " " = nonzero) %>%
+  kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
+        digits = 2,
+        caption = "Table B.5: Regression analyses of difference scores among children (4-5y of age) in Study 4, including effects of exact age. The table presents results from separate Bayesian regressions of each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND). Each regression included four fixed effect parameters: (1) the intercept, which I treat as an index of the asymmetry in attributions of the two conceptual units in question; (2) the exact age of participants (centered at the mean); (3) the difference between target characters (in this case, the difference between the robot and the grand mean, 'GM'); and (4) the interaction between age and target character. Effects having to do with age are highlighted in bold, because these are the primary parameters of interest for these analyses. For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%
+  kable_styling() %>%
+  row_spec(seq(2, 12, 2), bold = T) %>%
+  group_rows("BODY vs. HEART", 1, 4) %>%
+  group_rows("BODY vs. MIND", 5, 8) %>%
+  group_rows("HEART vs. MIND", 9, 12)
+```
+
+```{r, include = T}
+tableB.5
+```
+
+```{r, fig.width = 4, fig.asp = 0.5}
+# interim plot for ease of writing
+plot_d4_46age_scored_ad_diff
+```
+
+The main take-aways of these analyses are that, among 4- to 5-year-old children in Study 4, difference scores did not vary systematically with age. This is not entirely surprising given the smaller sample size and more restricted age range included in this study. See "Exact age (centered)" rows in Table B.5, and see Figure B.5, row A, for a visualization of difference scores over age.
+
+```{r}
+figureB.5_plots <- plot_grid(plot_d2_79age_scored_ad_diff,
+                             plot_d3_4679age_scored_ad_diff,
+                             plot_d4_46age_scored_ad_diff,
+                             ncol = 1)
+```
+
+```{r}
+figureB.5_cap <- add_sub(figureB.5_plots, str_wrap("Figure B.5: Changes in difference scores with age among (A) 7- to 9-year-old children in Study 2, (B) 4- to 9-year-old children in Study 3, and (C) 4- to 5-year-old children in Study 4. Plots are organized by sample and scale used (rows) and by pair of conceptual units (columns). All difference scored were calculating using adults' scales for that study; adults' mean difference score (collapsing across target characters) is plotted on the far right of each plot (error bars are 95% bootstrapped confidence intervals).", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 1.4}
+ggdraw(figureB.5_cap)
+```
+
 
 # The joint dependency of HEART on both BODY and MIND
 
@@ -1182,7 +1407,7 @@ I illustrated support for this hypothesis with a visualization of participants' 
 
 Here I provide a formal analysis of joint dependency in each age group separately, and a formal comparison of these tendencies across age groups. These analyses were conducted using data pooled across all samples (i.e., Studies 1-4 for adults, Studies 2 and 3 for 7- to 9-year-old children, and Studies 3 and 4 for 4- to 6-year-old children). The primary parameter of interest in these analyses is the interaction between _BODY_ and _MIND_ scores: If attributions of HEART are jointly dependent on attributions of both BODY and MIND, then the interaction between _BODY_ and _MIND_ scores should be a strong predictor of _HEART_ scores, above and beyond either _BODY_ scores or _MIND_ scores on their own. In addition to using _BODY_ scores (when _MIND_ scores are at zero), _MIND_ scores (when _BODY_ scores are at zero), and the interaction between _BODY_ and _MIND_ scores to predict _HEART_ scores, these models also include random intercepts for participants, nested within studies, and random intercepts for target characters.
 
-Among adults, the interaction between _BODY_ and _MIND_ scores was clearly differentiable from zero, lending further support to the claim that HEART is jointly dependent on both BODY and MIND among US adults. In contrast, the interaction between _BODY_ and _MIND_ scores was not differentiable from zero among either 7- to 9-year-old or 4- to 6-year-old children (see "BODY \* MIND" row in Table B.3), suggesting that this joint dependency is not present in the aggregate for either of these age groups. A formal comparison across age groups further confirmed these apparent developmental differences: The interactive effect was substantially attenuated among both older children and younger children, relative to adults (see "BODY & MIND" rows in Table B.4).
+Among adults, the interaction between _BODY_ and _MIND_ scores was clearly differentiable from zero, lending further support to the claim that HEART is jointly dependent on both BODY and MIND among US adults. In contrast, the interaction between _BODY_ and _MIND_ scores was not differentiable from zero among either 7- to 9-year-old or 4- to 6-year-old children (see "BODY \* MIND" row in Table B.6), suggesting that this joint dependency is not present in the aggregate for either of these age groups. A formal comparison across age groups further confirmed these apparent developmental differences: The interactive effect was substantially attenuated among both older children and younger children, relative to adults (see "BODY & MIND" rows in Table B.7).
 
 ```{r}
 # r_jointdep <- brm(HEART ~ BODY * MIND * age_group +
@@ -1270,14 +1495,14 @@ regtab_jointdep_byagegroup <- bind_rows(
 ```
 
 ```{r}
-tableB.3 <- regtab_jointdep_byagegroup %>%
+tableB.6 <- regtab_jointdep_byagegroup %>%
   select(-contains("s.e.")) %>%
   rename(Parameter = param,
          b = ad_b, b = ch01_b, b = ch02_b,
          `95% CI` = ad_CI95, `95% CI` = ch01_CI95, `95% CI` = ch02_CI95,
          " " = ad_nonzero, " " = ch01_nonzero, " " = ch02_nonzero) %>%
   kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
-        caption = "Table B.3: Regression analyses of the joint dependency of HEART on both BODY and MIND. The table presents results from a series of Bayesian regressions using pooled data from all samples within an age group (i.e., Studies 1-4 for adults, Studies 2 and 3 for 7- to 9-year-old children, and Studies 3 and 4 for 4 - to 6-year-old children. These regressions each included 4 fixed effect parameters: (1) the intercept, which is an index of HEART scores when BODY and MIND scores were both zero; (2) the effect of BODY scores on HEART scores (when MIND scores were zero); (3) the effect of MIND scores on HEART scores (when BODY scores were zero); and (4) the interactive effect of BODY and MIND scores on HEART scores. This last effect is highlighted in bold, because it is the primary parameter of interest for these analyses. In addition to the fixed effects listed here, these regressions included random intercepts for participants, nested within studies, for adults and for 4- to 6-year-old children; random intercepts for studies for 7- to 9-year-old children (since neither study with this age group featured a within-subjects design); and random intercepts for target characters (n = 21 for adults, n = 9 for both 7- to 9-year-old and 4- to 6-year-old children). For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
+        caption = "Table B.6: Regression analyses of the joint dependency of HEART on both BODY and MIND. The table presents results from a series of Bayesian regressions using pooled data from all samples within an age group (i.e., Studies 1-4 for adults, Studies 2 and 3 for 7- to 9-year-old children, and Studies 3 and 4 for 4 - to 6-year-old children. These regressions each included 4 fixed effect parameters: (1) the intercept, which is an index of HEART scores when BODY and MIND scores were both zero; (2) the effect of BODY scores on HEART scores (when MIND scores were zero); (3) the effect of MIND scores on HEART scores (when BODY scores were zero); and (4) the interactive effect of BODY and MIND scores on HEART scores. This last effect is highlighted in bold, because it is the primary parameter of interest for these analyses. In addition to the fixed effects listed here, these regressions included random intercepts for participants, nested within studies, for adults and for 4- to 6-year-old children; random intercepts for studies for 7- to 9-year-old children (since neither study with this age group featured a within-subjects design); and random intercepts for target characters (n = 21 for adults, n = 9 for both 7- to 9-year-old and 4- to 6-year-old children). For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
   kable_styling() %>%
   row_spec(4, bold = T) %>%
   add_header_above(c(" " = 1,
@@ -1285,7 +1510,7 @@ tableB.3 <- regtab_jointdep_byagegroup %>%
 ```
 
 ```{r, include = T}
-tableB.3
+tableB.6
 ```
 
 ```{r}
@@ -1325,14 +1550,14 @@ regtab_jointdep_devcomp <- fixef(r_jointdep) %>%
 ```
 
 ```{r}
-tableB.4 <- regtab_jointdep_devcomp %>%
+tableB.7 <- regtab_jointdep_devcomp %>%
   select(-contains("s.e.")) %>%
   mutate(b = format(round(b, 2), nsmall = 2)) %>%
   rename(Parameter = param,
          `95% CI` = CI95) %>%
   rename_all(funs(gsub("nonzero", " ", .))) %>%
   kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
-        caption = "Table B.3: Developmental comparisons of the joint dependency of HEART on both BODY and MIND. The table presents results from a single Bayesian regression using pooled data from all samples in all studies. This regression included 12 fixed effect parameters: (1) the intercept (for adults), which is an index of HEART scores among adults when BODY and MIND scores were both zero; (2-3) the differences between older children vs. adults and younger children vs. adults in their HEART scores when BODY and MIND scores were both zero; (4-6) the effect of BODY scores on HEART scores for adults, and differences from adults in this effect for older and younger children; (7-9) the effect of MIND scores on HEART scores for adults, and differences from adults in this effect for older and younger children; (10-11) the interactive effect of BODY and MIND scores on HEART scores for adults, and differences from adults in this interactive effect for older and younger children. These last three effects  are highlighted in bold, because these are the primary parameters of interest for these analyses. In addition to the fixed effects listed here, the regression included random intercepts for participants, nested within studies, and random intercepts for characters (n = 24). For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
+        caption = "Table B.7: Developmental comparisons of the joint dependency of HEART on both BODY and MIND. The table presents results from a single Bayesian regression using pooled data from all samples in all studies. This regression included 12 fixed effect parameters: (1) the intercept (for adults), which is an index of HEART scores among adults when BODY and MIND scores were both zero; (2-3) the differences between older children vs. adults and younger children vs. adults in their HEART scores when BODY and MIND scores were both zero; (4-6) the effect of BODY scores on HEART scores for adults, and differences from adults in this effect for older and younger children; (7-9) the effect of MIND scores on HEART scores for adults, and differences from adults in this effect for older and younger children; (10-11) the interactive effect of BODY and MIND scores on HEART scores for adults, and differences from adults in this interactive effect for older and younger children. These last three effects  are highlighted in bold, because these are the primary parameters of interest for these analyses. In addition to the fixed effects listed here, the regression included random intercepts for participants, nested within studies, and random intercepts for characters (n = 24). For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
   kable_styling() %>%
   row_spec(c(10:12), bold = T) %>%
   group_rows("HEART scores when BODY scores and MIND scores = 0", 1, 3) %>%
@@ -1342,6 +1567,6 @@ tableB.4 <- regtab_jointdep_devcomp %>%
 ```
 
 ```{r, include = T}
-tableB.4
+tableB.7
 ```
 

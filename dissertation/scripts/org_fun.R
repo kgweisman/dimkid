@@ -183,7 +183,7 @@ diff_fun <- function(d_scored){
 
 # function for getting regressions on difference scores into one dataframe
 diff_reg_table_fun <- function(reg_list, pair_list, study_name,
-                               char_label = NA, agegp_label = NA){
+                               char_label = NA, age_label = NA){
   
   n_reg <- length(reg_list)
   
@@ -228,26 +228,50 @@ diff_reg_table_fun <- function(reg_list, pair_list, study_name,
     rename(b = Estimate, s.e. = Est.Error)
   
   params_all <- levels(factor(table$param))
+  
   params_interaction <- params_all[grepl(":", params_all)]
   if(length(params_interaction) > 1){
-    params_interaction <- c(params_interaction[grepl("old", params_interaction)],
-                            params_interaction[grepl("yng", params_interaction)])
-    interaction_label <- c(paste0("Older children vs. adults * ", char_label),
-                           paste0("Younger children vs. adults * ", char_label))
+    if(length(grepl("old", params_interaction)[
+      grepl("old", params_interaction)]) == 0){
+      
+      interaction_label <- paste0("Age * ", char_label)
+      
+    } else {
+      
+      params_interaction <- c(
+        params_interaction[grepl("old", params_interaction)],
+        params_interaction[grepl("yng", params_interaction)])
+      
+      interaction_label <- c(
+        paste0("Older children vs. adults * ", char_label),
+        paste0("Younger children vs. adults * ", char_label))
+      
+    }
+    
   } else {
     interaction_label <- "Interaction"
   }
+  
   params_char <- params_all[grepl("char", params_all) &
                               !(params_all %in% params_interaction)]
   if(length(params_char) > 1){
     params_char <- paste0("character", 1:length(params_char))
   }
+  
   params_agegp <- params_all[grepl("age_group", params_all) &
                                !(params_all %in% params_interaction)]
-  params_all_ord <- c("Intercept", params_agegp, params_char, 
-                      params_interaction)
+  params_agecent <- params_all[grepl("age_centered", params_all) &
+                                 !(params_all %in% params_interaction)]
+  params_age <- if(length(params_agegp) == 0){
+    params_age <- params_agecent
+  } else {
+    params_age <- params_agegp
+  }
   
-  if(length(params_interaction) == 0 && is.na(agegp_label)){
+  params_all_ord <- c("Intercept", params_age,
+                      params_char, params_interaction)
+  
+  if(length(params_interaction) == 0 && is.na(age_label)){
     table <- table %>%
       mutate(param = factor(param,
                             levels = params_all_ord,
@@ -256,18 +280,18 @@ diff_reg_table_fun <- function(reg_list, pair_list, study_name,
     table <- table %>%
       mutate(param = factor(param, 
                             levels = params_all_ord,
-                            labels = c("Intercept", agegp_label, char_label)))
+                            labels = c("Intercept", age_label, char_label)))
   } else if(length(params_interaction) == 0) {
     table <- table %>%
       mutate(param = factor(param, 
                             levels = params_all_ord,
-                            labels = c("Intercept", agegp_label, 
+                            labels = c("Intercept", age_label, 
                                        char_label, "Interaction")))
   } else {
     table <- table %>%
       mutate(param = factor(param, 
                             levels = params_all_ord,
-                            labels = c("Intercept", agegp_label, 
+                            labels = c("Intercept", age_label, 
                                        char_label, interaction_label)))
   }
   
@@ -291,6 +315,6 @@ score_cor_fun <- function(df_scored){
     rownames_to_column("pair") %>%
     mutate(pair = gsub("-", " vs. ", pair)) %>%
     rename(ci_lower = lower, ci_upper = upper)
-
+  
   return(res_cor)
 }

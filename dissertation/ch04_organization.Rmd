@@ -1187,7 +1187,7 @@ As among adults in this study (Figure 4.3, panel A2), there was no significant r
 
 ##### HEART vs. MIND
 
-As among adults in this study (Figure 4.3, panel A3), the relationship between children's scores on the _HEART_ and _MIND_ scales (panel B3) was positive (`r score_cor_print_fun(d2_79_scored_ad, "HEART vs. MIND")`), and there appear to be somewhat fewer datapoints below the line of equivalence ($y = x$, dotted diagonal line) than above it. However, as in the BODY vs. HEART and BODY vs. MIND comparisons just discussed, this asymmetry is less striking among children than it was among adults: While many children attributed more MIND than HEART to the target character in question (like the vast majority of adults), quite a few children attributed more HEART than MIND. A regression analysis confirmed that, on the whole, children's HEART vs. MIND difference scores were substantially non-zero, in the direction of children endorsing _MIND_ items more strongly than __BODY__HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.4); this difference was present for both target characters, but exaggerated in assessments of the robot (see the "Robot vs. GM" row for the "BODY-MIND" comparison in Table 4.4).  
+As among adults in this study (Figure 4.3, panel A3), the relationship between children's scores on the _HEART_ and _MIND_ scales (panel B3) was positive (`r score_cor_print_fun(d2_79_scored_ad, "HEART vs. MIND")`), and there appear to be somewhat fewer datapoints below the line of equivalence ($y = x$, dotted diagonal line) than above it. However, as in the BODY vs. HEART and BODY vs. MIND comparisons just discussed, this asymmetry is less striking among children than it was among adults: While many children attributed more MIND than HEART to the target character in question (like the vast majority of adults), quite a few children attributed more HEART than MIND. A regression analysis confirmed that, on the whole, children's HEART vs. MIND difference scores were substantially non-zero, in the direction of children endorsing _MIND_ items more strongly than _HEART_ items (see the "Intercept" row for the "HEART-MIND" comparison in Table 4.4); this difference was present for both target characters, but exaggerated in assessments of the robot (see the "Robot vs. GM" row for the "BODY-MIND" comparison in Table 4.4).  
 
 ```{r}
 plots_agegp_d2_scored_ad <- relviz_agegp_fun(
@@ -1305,7 +1305,7 @@ regtab_d2_ad79_scored_ad_diff <- diff_reg_table_fun(
   pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
   study_name = "Developmental comparison",
   char_label = "Robot vs. GM", 
-  agegp_label = "Children vs. adults")
+  age_label = "Children vs. adults")
 ```
 
 ```{r}
@@ -2147,8 +2147,8 @@ regtab_d3_ad7946_scored_ad_diff <- diff_reg_table_fun(
   char_label = c("Elephant vs. GM", "Goat vs. GM", "Mouse vs. GM",
                  "Bird vs. GM", "Beetle vs. GM", "Teddy bear vs. GM",
                  "Doll vs. GM", "Robot vs. GM"), 
-  agegp_label = c("Older children vs. adults", 
-                  "Younger children vs. adults"))
+  age_label = c("Older children vs. adults", 
+                "Younger children vs. adults"))
 ```
 
 ```{r}
@@ -2777,7 +2777,7 @@ regtab_d4_ad46_scored_ad_diff <- diff_reg_table_fun(
   pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
   study_name = "Developmental comparison",
   char_label = "Robot vs. GM", 
-  agegp_label = "Children vs. adults")
+  age_label = "Children vs. adults")
 ```
 
 ```{r}
