@@ -1,8 +1,10 @@
 ---
 title: "Chapter IV: Changes in organization of conceptual units"
 output:
-  word_document:
-    reference_docx: "./stored/word-styles-reference.docx"
+  html_notebook:
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
 always_allow_html: yes
 ---
 
@@ -15,7 +17,7 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 # # for knitting to .docx
 # output:
 #   word_document:
-#     reference_docx: "./stored/word-styles-reference.docx"
+#     reference_docx: "./word-styles-reference.docx"
 # always_allow_html: yes
 
 # # for knitting to .nb.html 
