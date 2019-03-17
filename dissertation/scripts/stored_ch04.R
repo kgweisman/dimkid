@@ -40,6 +40,9 @@ d3_46_scored_ad <- readRDS("./stored/scored_data/d3_46_scored_ad")
 d4_ad_scored_ad <- readRDS("./stored/scored_data/d4_ad_scored_ad")
 d4_46_scored_ad <- readRDS("./stored/scored_data/d4_46_scored_ad")
 
+# all samples
+scores_all <- readRDS("./stored/scored_data/scores_all")
+
 
 # load in diffscore data
 # study 1
