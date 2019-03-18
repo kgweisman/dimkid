@@ -9,7 +9,7 @@ colors09 <- colorRampPalette(c("#e31a1c", "#ff7f00", "#33a02c",
 colors21 <- colorRampPalette(c("#e31a1c", "#ff7f00", "#33a02c", 
                                "#1f78b4", "#6a3d9a"),
                              space = "Lab")(21)
-colorsAI <- c("#de2d26", "#2a4166")
+colorsAI <- c("#EE4D16", "#2a4166")
 
 # function for generating heatmap of factor loadings
 heatmap_fun <- function(efa, factor_names = NA){
@@ -666,16 +666,19 @@ character_multiplot <- function(df_scored, show_anim_by_subj = F,
                           multi_boot_standard(col = "score", na.rm = T) %>%
                           ungroup(),
                         aes(y = mean, ymin = ci_lower, ymax = ci_upper),
-                        color = "black", shape = "diamond", show.legend = F)
+                        color = "black", shape = "diamond", 
+                        fatten = 6, show.legend = F)
+    } else {
+      plotB <- plotB +
+        geom_pointrange(data = . %>%
+                          group_by(anim_inan, factor) %>%
+                          multi_boot_standard(col = "score", na.rm = T) %>%
+                          ungroup(),
+                        aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                        shape = "diamond", show.legend = F, fatten = 6)
     }
     
     plotB <- plotB +
-      geom_pointrange(data = . %>%
-                        group_by(anim_inan, factor) %>%
-                        multi_boot_standard(col = "score", na.rm = T) %>%
-                        ungroup(),
-                      aes(y = mean, ymin = ci_lower, ymax = ci_upper),
-                      shape = "diamond", show.legend = F, fatten = 6) +
       scale_color_manual(values = colorsAI) +
       scale_y_continuous(limits = c(0, 1)) +
       labs(title = "Scores by animacy status", 
@@ -698,6 +701,9 @@ character_multiplot <- function(df_scored, show_anim_by_subj = F,
                        labels = str_pad(format(seq(0, 1, 0.25), nsmall = 2),
                                         width = maxlength_characters,
                                         pad = " ")) +
+    scale_y_continuous(limits = c(0, df_scored %>% 
+                                    distinct(subid, character) %>% 
+                                    nrow())) +
     labs(title = "Distribution of scores",
          x = "Score", y = "Count") +
     theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))

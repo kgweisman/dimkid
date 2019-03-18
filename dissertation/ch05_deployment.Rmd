@@ -121,7 +121,7 @@ plots_d1c_title <- plot_grid(
 ```
 
 ```{r}
-plots_d1d <- character_multiplot(d1d_ad_scored_ad, 
+plots_d1d <- character_multiplot(d1d_ad_scored_ad, show_anim_by_subj = T,
                                  plot_labels = c("D1", "D2", "D3"))
 
 plots_d1d_title <- plot_grid(
@@ -138,8 +138,12 @@ figure5.1_plots <- plot_grid(
   plots_d1d_title, ncol = 1)
 ```
 
-```{r, include = T, fig.width = 9, fig.asp = 0.7}
-figure5.1_plots
+```{r}
+figure5.1_plots_cap <- add_sub(figure5.1_plots, str_wrap("Figure 5.1: US adults' attributions of BODY, HEART, and MIND in (A) Study 1a, (B) Study 1b, (C) Study 1c, and (D) Study 1d. For each conceptual unit, scores could range from 0-1. Plots include scores by target character (panels A1, B1, C1, and D1), scores by animacy status (when not redundant with target character: panel D2), and distributions of scores (panels A2, B2, C2, and D3). Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals.", 205), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 9, fig.asp = 0.8}
+ggdraw(figure5.1_plots_cap)
 ```
 
 
@@ -192,8 +196,12 @@ figure5.2_plots <- plot_grid(plots_d2_ad_title, plots_d2_79_title,
                              ncol = 2)
 ```
 
-```{r, include = T, fig.width = 6, fig.asp = 0.5}
-figure5.2_plots
+```{r}
+figure5.2_plots_cap <- add_sub(figure5.2_plots, str_wrap("Figure 5.2: Attributions of BODY, HEART, and MIND among (A) adults and (B) 7- to 9-year-old children in Study 2. For each conceptual unit, scores could range from 0-1. Plots include scores by target character (panels A1 and B1) and distributions of scores (panels A2 and B2). Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals.", 135), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 6, fig.asp = 0.6}
+ggdraw(figure5.2_plots_cap)
 ```
 
 XX __INSERT DEVELOPMENTAL TRAJECTORY PLOT (figure5.3)__
@@ -222,7 +230,7 @@ As in Study 2, to facilitate comparison between the three age groups included in
 ## Discussion
 
 ```{r}
-plots_d3_ad <- character_multiplot(d3_ad_scored_ad, 
+plots_d3_ad <- character_multiplot(d3_ad_scored_ad, show_anim_by_subj = T,
                                    plot_labels = c("A1", "A2"))
 
 plots_d3_ad_title <- plot_grid(
@@ -234,7 +242,7 @@ plots_d3_ad_title <- plot_grid(
 ```
 
 ```{r}
-plots_d3_79 <- character_multiplot(d3_79_scored_ad, 
+plots_d3_79 <- character_multiplot(d3_79_scored_ad, show_anim_by_subj = T,
                                    plot_labels = c("B1", "B2"))
 
 plots_d3_79_title <- plot_grid(
@@ -246,7 +254,7 @@ plots_d3_79_title <- plot_grid(
 ```
 
 ```{r}
-plots_d3_46 <- character_multiplot(d3_46_scored_ad, 
+plots_d3_46 <- character_multiplot(d3_46_scored_ad, show_anim_by_subj = T,
                                    plot_labels = c("C1", "C2"))
 
 plots_d3_46_title <- plot_grid(
@@ -264,8 +272,12 @@ figure5.4_plots <- plot_grid(plots_d3_ad_title,
                              ncol = 1)
 ```
 
-```{r, include = T, fig.width = 5, fig.asp = 1.5}
-figure5.4_plots
+```{r}
+figure5.4_plots_cap <- add_sub(figure5.4_plots, str_wrap("Figure 5.4: Attributions of BODY, HEART, and MIND among (A) adults, (B) 7- to 9-year-old children, and (C) 4- to 6-year-old children in Study 3. For each conceptual unit, scores could range from 0-1. Plots include scores by target character (panels A1, B1, and C1), scores by animacy status (A2, B2, and C2), and distributions of scores (panels A3, B3, and C3). Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals.", 115), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 1.7}
+ggdraw(figure5.4_plots_cap)
 ```
 
 XX __INSERT DEVELOPMENTAL TRAJECTORY PLOT (figure5.5)__
@@ -320,8 +332,12 @@ figure5.6_plots <- plot_grid(plots_d4_ad_title, plots_d4_46_title,
                              ncol = 2)
 ```
 
-```{r, include = T, fig.width = 6, fig.asp = 0.5}
-figure5.6_plots
+```{r}
+figure5.6_plots_cap <- add_sub(figure5.6_plots, str_wrap("Figure 5.6: Attributions of BODY, HEART, and MIND among (A) adults and (B) 4- to 5-year-old children in Study 4. For each conceptual unit, scores could range from 0-1. Plots include scores by target character (panels A1 and B1) and distributions of scores (panels A2 and B2). Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals.", 135), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 6, fig.asp = 0.6}
+ggdraw(figure5.6_plots_cap)
 ```
 
 XX __INSERT DEVELOPMENTAL TRAJECTORY PLOT (figure5.7)__
