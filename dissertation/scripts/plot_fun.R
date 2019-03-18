@@ -2,12 +2,14 @@
 
 # colors for plotting target characters
 colors02 <- c("#e41a1c", "#377eb8")
+# from colorbrewer2.org "Paired"
 colors09 <- colorRampPalette(c("#e31a1c", "#ff7f00", "#33a02c", 
-                               "#1f78b4", "#6a3d9a"), # from colorbrewer2.org "Paired"
+                               "#1f78b4", "#6a3d9a"), 
                              space = "Lab")(9)
 colors21 <- colorRampPalette(c("#e31a1c", "#ff7f00", "#33a02c", 
-                               "#1f78b4", "#6a3d9a"), # from colorbrewer2.org "Paired"
+                               "#1f78b4", "#6a3d9a"),
                              space = "Lab")(21)
+colorsAI <- c("#de2d26", "#2a4166")
 
 # function for generating heatmap of factor loadings
 heatmap_fun <- function(efa, factor_names = NA){
@@ -597,3 +599,156 @@ binomial_smooth <- function(...) {
   geom_smooth(method = "glm", method.args = list(family = "binomial"), ...)
 }
 
+# function for making multi-part plots of scores of target characters
+character_multiplot <- function(df_scored, show_anim_by_subj = F,
+                                # hard coded for fig.width = 6, fig.asp = 0.5
+                                plot_marg_upper = -32,
+                                axis_height = 0.17){
+  
+  levels_characters <- levels(df_scored$character) %>% 
+    as.character() %>%
+    gsub("persistent.*$", "PVS", .)
+  maxlength_characters <- max(nchar(levels_characters))
+  levels_characters_pad <- str_pad(levels_characters,
+                                   width = maxlength_characters,
+                                   pad = " ")
+  n_characters <- length(levels(df_scored$character))
+  if(n_characters == 2){
+    colors <- colors02
+  } else if(n_characters == 9) {
+    colors <- colors09
+  } else {
+    colors <- colors21
+  }
+  
+  plotA <- df_scored %>%
+    mutate(character = as.character(character),
+           character = gsub("persistent.*$", "PVS", character),
+           character = factor(character,
+                              levels = levels_characters,
+                              labels = levels_characters_pad)) %>%
+    ggplot(aes(x = character, y = score, color = character)) +
+    facet_grid(factor ~ .) +
+    geom_jitter(height = 0, width = 0.2, alpha = 0.25, show.legend = F) +
+    geom_pointrange(data = . %>%
+                      group_by(character, factor) %>%
+                      multi_boot_standard(col = "score", na.rm = T) %>%
+                      ungroup(),
+                    aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                    color = "black", shape = "diamond", show.legend = F) +
+    scale_color_manual(values = colors) +
+    labs(title = "Scores by target character", 
+         x = "Target character", y = "Score") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+  
+  if(n_characters > 2){
+    plotB <- df_scored %>%
+      left_join(anim_lookup) %>%
+      mutate(anim_inan = as.character(anim_inan),
+             anim_inan = factor(
+               anim_inan,
+               levels = levels(anim_lookup$anim_inan),
+               labels = str_pad(levels(anim_lookup$anim_inan),
+                                width = maxlength_characters,
+                                pad = " "))) %>%
+      ggplot(aes(x = anim_inan, y = score, color = anim_inan)) +
+      facet_grid(factor ~ .)
+    
+    if(show_anim_by_subj){
+      plotB <- plotB + 
+        geom_jitter(height = 0, width = 0.2, alpha = 0.25, show.legend = F) +
+        geom_pointrange(data = . %>%
+                          group_by(anim_inan, factor) %>%
+                          multi_boot_standard(col = "score", na.rm = T) %>%
+                          ungroup(),
+                        aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                        color = "black", shape = "diamond", show.legend = F)
+    }
+    
+    plotB <- plotB +
+      geom_pointrange(data = . %>%
+                        group_by(anim_inan, factor) %>%
+                        multi_boot_standard(col = "score", na.rm = T) %>%
+                        ungroup(),
+                      aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                      shape = "diamond", show.legend = F, fatten = 6) +
+      scale_color_manual(values = colorsAI) +
+      scale_y_continuous(limits = c(0, 1)) +
+      labs(title = "Scores by animacy status", 
+           x = "Animacy status", y = "Score") +
+      theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+  }
+  
+  plotC <- df_scored %>%
+    mutate(character = as.character(character),
+           character = gsub("persistent.*$", "PVS", character),
+           character = factor(character,
+                              levels = levels_characters,
+                              labels = levels_characters_pad)) %>%
+    ggplot(aes(x = score, fill = character)) +
+    facet_grid(factor ~ .) +
+    geom_histogram(binwidth = 0.05, show.legend = F) +
+    scale_fill_manual(values = colors21) +
+    scale_x_continuous(breaks = seq(0, 1, 0.25),
+                       labels = str_pad(format(seq(0, 1, 0.25), nsmall = 2),
+                                        width = maxlength_characters,
+                                        pad = " ")) +
+    labs(title = "Distribution of scores",
+         x = "Score", y = "Count") +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+  
+  plot_margins <- unit(c(plot_marg_upper, 5.5, 5.5, 5.5), "points")
+
+  if(n_characters > 2){
+    allplots <- plot_grid(
+      plotA + theme(axis.text.x = element_blank(),
+                    axis.title.x = element_blank(),
+                    axis.ticks.x = element_blank()), 
+      plotB + theme(axis.text.x = element_blank(),
+                    axis.title.x = element_blank(),
+                    axis.ticks.x = element_blank()), 
+      plotC + theme(axis.text.x = element_blank(),
+                    axis.title.x = element_blank(),
+                    axis.ticks.x = element_blank()),
+      ncol = 3, rel_widths = c(2, 1, 1),
+      labels = "AUTO")
+    all_axis_xs <- plot_grid(
+      gtable_filter(ggplotGrob(
+        plotA + theme(plot.margin = plot_margins)), 
+        'axis-b|xlab', trim=F),
+      gtable_filter(ggplotGrob(
+        plotB + theme(plot.margin = plot_margins)), 
+        'axis-b|xlab', trim=F),
+      gtable_filter(ggplotGrob(
+        plotC + theme(plot.margin = plot_margins)), 
+        'axis-b|xlab', trim=F),
+      ncol = 3, rel_widths = c(2, 1, 1),
+      align = "h", axis = "t")
+    allplots_plus <- plot_grid(allplots, all_axis_xs,
+                               ncol = 1, rel_heights = c(1, axis_height))
+  } else {
+    allplots <- plot_grid(
+      plotA + theme(axis.text.x = element_blank(),
+                    axis.title.x = element_blank(),
+                    axis.ticks.x = element_blank()), 
+      plotC + theme(axis.text.x = element_blank(),
+                    axis.title.x = element_blank(),
+                    axis.ticks.x = element_blank()),
+      ncol = 2, rel_widths = c(1, 1),
+      labels = "AUTO")
+    all_axis_xs <- plot_grid(
+      gtable_filter(ggplotGrob(
+        plotA + theme(plot.margin = plot_margins)), 
+        'axis-b|xlab', trim=F),
+      gtable_filter(ggplotGrob(
+        plotC + theme(plot.margin = plot_margins)), 
+        'axis-b|xlab', trim=F),
+      ncol = 2, rel_widths = c(1, 1),
+      align = "h", axis = "t")
+    allplots_plus <- plot_grid(allplots, all_axis_xs,
+                               ncol = 1, rel_heights = c(1, axis_height))
+  }
+  
+  return(allplots_plus)
+  
+}
