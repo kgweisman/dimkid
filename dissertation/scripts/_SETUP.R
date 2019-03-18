@@ -12,6 +12,7 @@ source("./scripts/efa_fun.R")
 source("./scripts/org_param.R")
 source("./scripts/org_fun.R")
 source("./scripts/comp_param.R")
+source("./scripts/deploy_fun.R")
 source("./scripts/ms_fun.R")
 source("./scripts/plot_fun.R")
 

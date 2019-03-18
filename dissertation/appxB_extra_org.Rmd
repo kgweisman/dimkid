@@ -1044,7 +1044,7 @@ plot_d2_79age_scored_ad_diff <- d2_79_scored_ad_diff %>%
                      labels = c(paste0(7:10, "y"), "Adults")) +
   geom_smooth(color = "black", method = "lm") +
   labs(title = "Study 2: Children, 7-9y",
-       x = "Age (y)", y = "Difference score", color = "Target character") +
+       x = "Age", y = "Difference score", color = "Target character") +
   theme(legend.position = "bottom",
         axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 ```
@@ -1148,6 +1148,7 @@ d3_4679age_scored_ad_diff <- full_join(
     mutate(subid = paste0("age46_", subid)))
 
 d3_age_missing <- d3_4679age_scored_ad_diff %>%
+  distinct(subid, age) %>%
   filter(is.na(age))
   
 d3_4679age_scored_ad_diff <- d3_4679age_scored_ad_diff %>%
@@ -1180,7 +1181,7 @@ plot_d3_4679age_scored_ad_diff <- d3_4679age_scored_ad_diff %>%
                      labels = c(paste0(4:10, "y"), "Adults")) +
   geom_smooth(color = "black", method = "lm") +
   labs(title = "Study 3: Children, 4-9y",
-       x = "Age (y)", y = "Difference score", color = "Target character") +
+       x = "Age", y = "Difference score", color = "Target character") +
   theme(legend.position = "bottom",
         axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 ```
@@ -1291,7 +1292,7 @@ plot_d4_46age_scored_ad_diff <- d4_46_scored_ad_diff %>%
                      labels = c(paste0(4:5, "y"), "Adults")) +
   geom_smooth(color = "black", method = "lm") +
   labs(title = "Study 4: Children, 4-5y",
-       x = "Age (y)", y = "Difference score", color = "Target character") +
+       x = "Age", y = "Difference score", color = "Target character") +
   theme(legend.position = "bottom",
         axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
 ```

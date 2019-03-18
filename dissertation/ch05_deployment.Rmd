@@ -80,10 +80,6 @@ Study 1d employed the "diverse characters" variant of the general approach, in w
 
 ### Studies 1a-1c
 
-### Study 1d
-
-## Discussion
-
 ```{r}
 plots_d1a <- character_multiplot(d1a_ad_scored_ad, 
                                  plot_labels = c("A1", "A2"))
@@ -120,6 +116,13 @@ plots_d1c_title <- plot_grid(
   ncol = 1, rel_heights = c(0.12, 1))
 ```
 
+```{r, fig.width = 9, fig.asp = 0.4}
+# interim plot for ease of writing
+plot_grid(plots_d1a_title, plots_d1b_title, plots_d1c_title, ncol = 3)
+```
+
+### Study 1d
+
 ```{r}
 plots_d1d <- character_multiplot(d1d_ad_scored_ad, show_anim_by_subj = T,
                                  plot_labels = c("D1", "D2", "D3"))
@@ -131,6 +134,13 @@ plots_d1d_title <- plot_grid(
   plots_d1d,
   ncol = 1, rel_heights = c(0.12, 1))
 ```
+
+```{r, fig.width = 9, fig.asp = 0.4}
+# interim plot for ease of writing
+plots_d1d_title
+```
+
+## Discussion
 
 ```{r}
 figure5.1_plots <- plot_grid(
@@ -161,12 +171,6 @@ To facilitate comparison between children and adults in Study 2, I use adults' _
 
 ### Adults
 
-### Children (7-9y)
-
-### Developmental comparison
-
-## Discussion
-
 ```{r}
 plots_d2_ad <- character_multiplot(d2_ad_scored_ad, 
                                    plot_labels = c("A1", "A2"))
@@ -178,6 +182,13 @@ plots_d2_ad_title <- plot_grid(
   plots_d2_ad,
   ncol = 1, rel_heights = c(0.12, 1))
 ```
+
+```{r, fig.width = 4, fig.asp = 1}
+# interim plot for ease of writing
+plots_d2_ad_title
+```
+
+### Children (7-9y)
 
 ```{r}
 plots_d2_79 <- character_multiplot(d2_79_scored_ad, 
@@ -191,9 +202,13 @@ plots_d2_79_title <- plot_grid(
   ncol = 1, rel_heights = c(0.12, 1))
 ```
 
+```{r, fig.width = 4, fig.asp = 1}
+# interim plot for ease of writing
+plots_d2_79_title
+```
+
 ```{r}
-figure5.2_plots <- plot_grid(plots_d2_ad_title, plots_d2_79_title,
-                             ncol = 2)
+figure5.2_plots <- plot_grid(plots_d2_ad_title, plots_d2_79_title, ncol = 2)
 ```
 
 ```{r}
@@ -204,7 +219,105 @@ figure5.2_plots_cap <- add_sub(figure5.2_plots, str_wrap("Figure 5.2: Attributio
 ggdraw(figure5.2_plots_cap)
 ```
 
-XX __INSERT DEVELOPMENTAL TRAJECTORY PLOT (figure5.3)__
+### Developmental comparison
+
+```{r}
+d2_79age_scored_ad <- d2_79_scored_ad %>%
+  left_join(d2_79 %>% distinct(subid, age)) %>%
+  left_join(anim_lookup) %>%
+  filter(!is.na(age)) %>%
+  mutate(character = factor(character,
+                            levels = levels(d2_ad_scored_ad$character)),
+         age_centered = scale(age, scale = F))
+
+contrasts(d2_79age_scored_ad$character) <- contrasts_sum_edge
+contrasts(d2_79age_scored_ad$factor) <- contrasts_cnt3_factor
+contrasts(d2_79age_scored_ad$anim_inan) <- contrasts_sum2_anim
+```
+
+```{r}
+# r_d2_devscore_BODY <- brm(score ~ anim_inan * age_centered,
+#                           data = d2_79age_scored_ad %>%
+#                             filter(factor == "BODY"),
+#                           cores = 4, control = list(adapt_delta = 0.99))
+# 
+# saveRDS(r_d2_devscore_BODY, "./stored/brms_models/r_d2_devscore_BODY")
+
+r_d2_devscore_BODY <- readRDS("./stored/brms_models/r_d2_devscore_BODY")
+
+summary(r_d2_devscore_BODY)
+```
+
+```{r}
+# r_d2_devscore_HEART <- brm(score ~ anim_inan * age_centered,
+#                           data = d2_79age_scored_ad %>%
+#                             filter(factor == "HEART"),
+#                           cores = 4, control = list(adapt_delta = 0.99))
+# 
+# saveRDS(r_d2_devscore_HEART, "./stored/brms_models/r_d2_devscore_HEART")
+
+r_d2_devscore_HEART <- readRDS("./stored/brms_models/r_d2_devscore_HEART")
+
+summary(r_d2_devscore_HEART)
+```
+
+```{r}
+# r_d2_devscore_MIND <- brm(score ~ anim_inan * age_centered,
+#                           data = d2_79age_scored_ad %>%
+#                             filter(factor == "MIND"),
+#                           cores = 4, control = list(adapt_delta = 0.99))
+# 
+# saveRDS(r_d2_devscore_MIND, "./stored/brms_models/r_d2_devscore_MIND")
+
+r_d2_devscore_MIND <- readRDS("./stored/brms_models/r_d2_devscore_MIND")
+
+summary(r_d2_devscore_MIND)
+```
+
+```{r}
+regtab_d2_devscore <- regtab_devscore_fun(reg_body = r_d2_devscore_BODY,
+                                          reg_heart = r_d2_devscore_HEART,
+                                          reg_mind = r_d2_devscore_MIND)
+```
+
+```{r}
+table5.1 <- devscore_table_fun(regtab_devscore = regtab_d2_devscore, 
+                               n_characters = 2, 
+                               table_name = "Table 5.1", 
+                               study_name = "Study 2", 
+                               age_range = "7- to 9-year-old children", 
+                               mean_age = mean(d2_79$age, na.rm = T), 
+                               char_compare_label = "Beetle vs. GM")
+```
+
+```{r, include = T}
+table5.1
+```
+
+
+__BOOKMARK__
+
+```{r}
+plots_d2_dev <- character_devplot(df_scored_ad = d2_ad_scored_ad, 
+                                  df_scored_ch = d2_79_scored_ad, 
+                                  df_age = d2_79)
+```
+
+```{r}
+figure5.3 <- plots_d2_dev +
+  labs(title = "Study 2: Children, 7-9y")
+```
+
+```{r}
+figure5.3_plots_cap <- add_sub(figure5.3, str_wrap("Figure 5.3: Changes in attributions of BODY, HEART, and MIND among 7- to 9-year-old children in Study 2. For each conceptual unit, scores could range from 0-1. Individual children are plotted as small, translucent circles; mean scores among adults are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. Lines correspond to simple linear regressions (formula: score ~ age).", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 0.5}
+ggdraw(figure5.3_plots_cap)
+```
+
+
+## Discussion
 
 
 # Study 3: Conceptual change over early and middle childhood (4-9y)
@@ -221,14 +334,6 @@ As in Study 2, to facilitate comparison between the three age groups included in
 
 ### Adults
 
-### Children (7-9y)
-
-### Children (4-6y)
-
-### Developmental comparison
-
-## Discussion
-
 ```{r}
 plots_d3_ad <- character_multiplot(d3_ad_scored_ad, show_anim_by_subj = T,
                                    plot_labels = c("A1", "A2"))
@@ -240,6 +345,13 @@ plots_d3_ad_title <- plot_grid(
   plots_d3_ad,
   ncol = 1, rel_heights = c(0.12, 1))
 ```
+
+```{r, fig.width = 5, fig.asp = 0.6}
+# interim plot for ease of writing
+plots_d3_ad_title
+```
+
+### Children (7-9y)
 
 ```{r}
 plots_d3_79 <- character_multiplot(d3_79_scored_ad, show_anim_by_subj = T,
@@ -253,6 +365,13 @@ plots_d3_79_title <- plot_grid(
   ncol = 1, rel_heights = c(0.12, 1))
 ```
 
+```{r, fig.width = 5, fig.asp = 0.6}
+# interim plot for ease of writing
+plots_d3_79_title
+```
+
+### Children (4-6y)
+
 ```{r}
 plots_d3_46 <- character_multiplot(d3_46_scored_ad, show_anim_by_subj = T,
                                    plot_labels = c("C1", "C2"))
@@ -263,6 +382,11 @@ plots_d3_46_title <- plot_grid(
                fontface = 'bold', x = 0, hjust = 0),
   plots_d3_46,
   ncol = 1, rel_heights = c(0.12, 1))
+```
+
+```{r, fig.width = 5, fig.asp = 0.6}
+# interim plot for ease of writing
+plots_d3_46_title
 ```
 
 ```{r}
@@ -280,7 +404,152 @@ figure5.4_plots_cap <- add_sub(figure5.4_plots, str_wrap("Figure 5.4: Attributio
 ggdraw(figure5.4_plots_cap)
 ```
 
-XX __INSERT DEVELOPMENTAL TRAJECTORY PLOT (figure5.5)__
+### Developmental comparison
+
+```{r}
+d3_4679_scored_ad <- full_join(d3_79_scored_ad %>% 
+                                 mutate(subid = paste0(subid, "_79")),
+                               d3_46_scored_ad %>%
+                                 mutate(subid = paste0(subid, "_46"))) %>%
+  left_join(full_join(d3_79 %>% mutate(subid = paste0(subid, "_79")),
+                      d3_46 %>% mutate(subid = paste0(subid, "_46"))) %>%
+              distinct(subid, age)) %>%
+  left_join(anim_lookup) %>%
+  filter(!is.na(age)) %>%
+  mutate(character = factor(character,
+                            levels = levels(d3_ad_scored_ad$character)),
+         age_centered = scale(age, scale = F))
+
+contrasts(d3_4679_scored_ad$character) <- contrasts_sum_dv09
+contrasts(d3_4679_scored_ad$factor) <- contrasts_cnt3_factor
+contrasts(d3_4679_scored_ad$anim_inan) <- contrasts_sum2_anim
+```
+
+```{r}
+# r_d3_devscore_BODY <- brm(score ~ anim_inan * age_centered +
+#                             (1 | character),
+#                           data = d3_4679_scored_ad %>%
+#                             filter(factor == "BODY"),
+#                           cores = 4, control = list(adapt_delta = 0.99))
+# 
+# saveRDS(r_d3_devscore_BODY, "./stored/brms_models/r_d3_devscore_BODY")
+
+r_d3_devscore_BODY <- readRDS("./stored/brms_models/r_d3_devscore_BODY")
+
+summary(r_d3_devscore_BODY)
+```
+
+```{r}
+# r_d3_devscore_HEART <- brm(score ~ anim_inan * age_centered +
+#                             (1 | character),
+#                           data = d3_4679_scored_ad %>%
+#                             filter(factor == "HEART"),
+#                           cores = 4, control = list(adapt_delta = 0.99))
+# 
+# saveRDS(r_d3_devscore_HEART, "./stored/brms_models/r_d3_devscore_HEART")
+
+r_d3_devscore_HEART <- readRDS("./stored/brms_models/r_d3_devscore_HEART")
+
+summary(r_d3_devscore_HEART)
+```
+
+```{r}
+# r_d3_devscore_MIND <- brm(score ~ anim_inan * age_centered +
+#                             (1 | character),
+#                           data = d3_4679_scored_ad %>%
+#                             filter(factor == "MIND"),
+#                           cores = 4, control = list(adapt_delta = 0.99))
+# 
+# saveRDS(r_d3_devscore_MIND, "./stored/brms_models/r_d3_devscore_MIND")
+
+r_d3_devscore_MIND <- readRDS("./stored/brms_models/r_d3_devscore_MIND")
+
+summary(r_d3_devscore_MIND)
+```
+
+```{r}
+regtab_d3_devscore <- regtab_devscore_fun(reg_body = r_d3_devscore_BODY,
+                                          reg_heart = r_d3_devscore_HEART,
+                                          reg_mind = r_d3_devscore_MIND)
+```
+
+```{r}
+table5.2 <- devscore_table_fun(regtab_devscore = regtab_d3_devscore, 
+                               n_characters = 9, 
+                               table_name = "Table 5.2", 
+                               study_name = "Study 3", 
+                               age_range = "4- to 9-year-old children", 
+                               mean_age = mean(d3_4679_scored_ad$age, 
+                                               na.rm = T), 
+                               char_compare_label = "Animate characters vs. GM")
+```
+
+```{r, include = T}
+table5.2
+```
+
+
+
+__BOOKMARK__
+
+
+
+```{r}
+plots_d3_dev_char <- character_devplot(
+  df_scored_ad = d3_ad_scored_ad, 
+  df_scored_ch = full_join(d3_79_scored_ad %>% 
+                             mutate(subid = paste0(subid, "_79")),
+                           d3_46_scored_ad %>%
+                             mutate(subid = paste0(subid, "_46"))), 
+  df_age = full_join(d3_79 %>%
+                       mutate(subid = paste0(subid, "_79")),
+                     d3_46 %>%
+                       mutate(subid = paste0(subid, "_46"))))
+```
+
+```{r}
+plots_d3_dev_anim <- character_devplot(
+  df_scored_ad = d3_ad_scored_ad %>%
+    left_join(anim_lookup) %>%
+    mutate(character = anim_inan), 
+  df_scored_ch = full_join(d3_79_scored_ad %>% 
+                             mutate(subid = paste0(subid, "_79")),
+                           d3_46_scored_ad %>%
+                             mutate(subid = paste0(subid, "_46"))) %>%
+    left_join(anim_lookup) %>%
+    mutate(character = anim_inan), 
+  df_age = full_join(d3_79 %>%
+                       mutate(subid = paste0(subid, "_79")),
+                     d3_46 %>%
+                       mutate(subid = paste0(subid, "_46"))))
+```
+
+```{r}
+figure5.5_char <- plots_d3_dev_char +
+  labs(title = "Study 3: Children, 4-9y (by target character)")
+
+figure5.5_anim <- plots_d3_dev_anim +
+  labs(title = "Study 3: Children, 4-9y (by animacy status)") +
+  scale_color_manual("Animacy status", values = colorsAI,
+                     guide = guide_legend(direction = "horizontal",
+                                          override.aes = list(alpha = 1))) +
+  scale_fill_manual("Animacy status", values = colorsAI,
+                    guide = guide_legend(direction = "horizontal",
+                                         override.aes = list(alpha = 1)))
+
+figure5.5_plots <- plot_grid(figure5.5_char, figure5.5_anim, 
+                             ncol = 1, labels = "AUTO")
+```
+
+```{r}
+figure5.5_plots_cap <- add_sub(figure5.5_plots, str_wrap("Figure 5.5: Changes in attributions of BODY, HEART, and MIND among 4- to 9-year-old children in Study 3. For each conceptual unit, scores could range from 0-1. Individual children are plotted as small, translucent circles; mean scores among adults are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. Lines correspond to simple linear regressions (formula: score ~ age).", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 1}
+ggdraw(figure5.5_plots_cap)
+```
+
+## Discussion
 
 
 # Study 4: A focus on early childhood (4-5y)
@@ -301,8 +570,81 @@ As in Studies 2 and 3, to facilitate comparison between children and adults in S
 
 ### Developmental comparison
 
-## Discussion
+```{r}
+d4_46age_scored_ad <- d4_46_scored_ad %>%
+  left_join(d4_46 %>% distinct(subid, age)) %>%
+  left_join(anim_lookup) %>%
+  filter(!is.na(age)) %>%
+  mutate(character = factor(character,
+                            levels = levels(d4_ad_scored_ad$character)),
+         age_centered = scale(age, scale = F))
 
+contrasts(d4_46age_scored_ad$character) <- contrasts_sum_edge
+contrasts(d4_46age_scored_ad$factor) <- contrasts_cnt3_factor
+contrasts(d4_46age_scored_ad$anim_inan) <- contrasts_sum2_anim
+```
+
+```{r}
+# r_d4_devscore_BODY <- brm(score ~ anim_inan * age_centered + (1 | subid),
+#                           data = d4_46age_scored_ad %>%
+#                             filter(factor == "BODY"),
+#                           cores = 4, control = list(adapt_delta = 0.99))
+# 
+# saveRDS(r_d4_devscore_BODY, "./stored/brms_models/r_d4_devscore_BODY")
+
+r_d4_devscore_BODY <- readRDS("./stored/brms_models/r_d4_devscore_BODY")
+
+summary(r_d4_devscore_BODY)
+```
+
+```{r}
+# r_d4_devscore_HEART <- brm(score ~ anim_inan * age_centered + (1 | subid),
+#                           data = d4_46age_scored_ad %>%
+#                             filter(factor == "HEART"),
+#                           cores = 4, control = list(adapt_delta = 0.99))
+# 
+# saveRDS(r_d4_devscore_HEART, "./stored/brms_models/r_d4_devscore_HEART")
+
+r_d4_devscore_HEART <- readRDS("./stored/brms_models/r_d4_devscore_HEART")
+
+summary(r_d4_devscore_HEART)
+```
+
+```{r}
+# r_d4_devscore_MIND <- brm(score ~ anim_inan * age_centered + (1 | subid),
+#                           data = d4_46age_scored_ad %>%
+#                             filter(factor == "MIND"),
+#                           cores = 4, control = list(adapt_delta = 0.99))
+# 
+# saveRDS(r_d4_devscore_MIND, "./stored/brms_models/r_d4_devscore_MIND")
+
+r_d4_devscore_MIND <- readRDS("./stored/brms_models/r_d4_devscore_MIND")
+
+summary(r_d4_devscore_MIND)
+```
+
+```{r}
+regtab_d4_devscore <- regtab_devscore_fun(reg_body = r_d4_devscore_BODY,
+                                          reg_heart = r_d4_devscore_HEART,
+                                          reg_mind = r_d4_devscore_MIND)
+```
+
+```{r}
+table5.3 <- devscore_table_fun(regtab_devscore = regtab_d4_devscore, 
+                               n_characters = 2, 
+                               table_name = "Table 5.3", 
+                               study_name = "Study 4", 
+                               age_range = "4- to 5-year-old children", 
+                               mean_age = mean(d4_46$age, na.rm = T), 
+                               char_compare_label = "Beetle vs. GM",
+                               ranef_subid = T)
+```
+
+```{r, include = T}
+table5.3
+```
+
+__BOOKMARK__
 ```{r}
 plots_d4_ad <- character_multiplot(d4_ad_scored_ad, bin_width = 1/10,
                                    plot_labels = c("A1", "A2"))
@@ -340,7 +682,26 @@ figure5.6_plots_cap <- add_sub(figure5.6_plots, str_wrap("Figure 5.6: Attributio
 ggdraw(figure5.6_plots_cap)
 ```
 
-XX __INSERT DEVELOPMENTAL TRAJECTORY PLOT (figure5.7)__
+```{r}
+plots_d4_dev <- character_devplot(df_scored_ad = d4_ad_scored_ad, 
+                                  df_scored_ch = d4_46_scored_ad, 
+                                  df_age = d4_46)
+```
+
+```{r}
+figure5.3 <- plots_d4_dev +
+  labs(title = "Study 4: Children, 4-5y")
+```
+
+```{r}
+figure5.3_plots_cap <- add_sub(figure5.3, str_wrap("Figure 5.3: Changes in attributions of BODY, HEART, and MIND among 4- to 5-year-old children in Study 4. For each conceptual unit, scores could range from 0-1. Individual children are plotted as small, translucent circles; mean scores among adults are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. Lines correspond to simple linear regressions (formula: score ~ age).", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 0.5}
+ggdraw(figure5.3_plots_cap)
+```
+
+## Discussion
 
 
 # General discussion

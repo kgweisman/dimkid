@@ -781,3 +781,69 @@ character_multiplot <- function(df_scored, show_anim_by_subj = F,
   return(allplots_plus)
   
 }
+
+# function for showing development in scores by target character
+character_devplot <- function(df_scored_ad, df_scored_ch, df_age,
+                              jit_height = 0.015,
+                              dodge_width = NA){
+  
+  min_age <- floor(min(df_age$age, na.rm = T))
+  max_age <- ceiling(max(df_age$age, na.rm = T))
+  if(max_age < 7){
+    adult_age <- 6
+    max_age <- 5
+  } else {
+    adult_age <- max_age + 1
+  }
+  missing_age <- df_age %>%
+    distinct(subid, age) %>%
+    filter(is.na(age)) %>%
+    nrow()
+  
+  n_characters <- length(levels(df_scored_ad$character))
+  if(n_characters == 2){
+    colors <- colors02
+    dodge_width <- 0.5
+  } else if(n_characters == 9){
+    colors <- colors09
+    dodge_width <- 1.5
+  } else {
+    colors <- colors21
+    dodge_width <- 1.5
+  }
+  
+  plot <- df_scored_ch %>%
+    left_join(df_age %>% distinct(subid, age)) %>%
+    arrange(desc(character)) %>%
+    ggplot(aes(x = age, y = score, color = character, fill = character)) +
+    facet_grid(. ~ factor) +
+    geom_jitter(width = 0, height = jit_height, alpha = 0.2) +
+    geom_pointrange(data = df_scored_ad %>%
+                      group_by(factor, character) %>%
+                      multi_boot_standard(col = "score") %>%
+                      ungroup(),
+                    aes(x = adult_age, 
+                        y = mean, ymin = ci_lower, ymax = ci_upper),
+                    position = position_dodge(width = dodge_width),
+                    shape = "diamond", fatten = 6, show.legend = F) +
+    geom_smooth(method = "lm", alpha = 0.2, show.legend = F) +
+    scale_color_manual("Target character", values = colors,
+                       guide = guide_legend(
+                         direction = "horizontal",
+                         ncol = length(colors),
+                         override.aes = list(alpha = 1))) +
+    scale_fill_manual("Target character", values = colors) +
+    scale_x_continuous("Age", breaks = c(min_age:adult_age), 
+                       labels = c(paste0(min_age:max_age, "y"), "Adults")) +
+    scale_y_continuous("Score", limits = c(0 - jit_height, 1 + jit_height)) +
+    theme(legend.position = "bottom",
+          axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+  
+  if(missing_age > 0){
+    plot <- plot + 
+      labs(subtitle = paste("Note: missing exact age for", 
+                            missing_age, "children"))
+  }
+  
+  return(plot)
+}
