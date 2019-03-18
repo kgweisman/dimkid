@@ -601,9 +601,9 @@ binomial_smooth <- function(...) {
 
 # function for making multi-part plots of scores of target characters
 character_multiplot <- function(df_scored, show_anim_by_subj = F,
-                                # hard coded for fig.width = 6, fig.asp = 0.5
-                                plot_marg_upper = -32,
-                                axis_height = 0.17){
+                                plot_marg_upper = NA,
+                                axis_height = NA,
+                                plot_labels = "AUTO"){
   
   levels_characters <- levels(df_scored$character) %>% 
     as.character() %>%
@@ -688,7 +688,7 @@ character_multiplot <- function(df_scored, show_anim_by_subj = F,
     ggplot(aes(x = score, fill = character)) +
     facet_grid(factor ~ .) +
     geom_histogram(binwidth = 0.05, show.legend = F) +
-    scale_fill_manual(values = colors21) +
+    scale_fill_manual(values = colors) +
     scale_x_continuous(breaks = seq(0, 1, 0.25),
                        labels = str_pad(format(seq(0, 1, 0.25), nsmall = 2),
                                         width = maxlength_characters,
@@ -696,6 +696,18 @@ character_multiplot <- function(df_scored, show_anim_by_subj = F,
     labs(title = "Distribution of scores",
          x = "Score", y = "Count") +
     theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+  
+  if(n_characters > 2) {
+    # hard-coded for fig.width = 6, fig.asp = 0.5
+    if(is.na(plot_marg_upper)) {plot_marg_upper <- -32}
+    if(is.na(axis_height)) {axis_height <- 0.17}
+  }
+  
+  if(n_characters == 2){
+    # hard-coded for fig.width = 3, fig.asp = 1
+    if(is.na(plot_marg_upper)) {plot_marg_upper <- -32}
+    if(is.na(axis_height)) {axis_height <- 0.085}
+  }
   
   plot_margins <- unit(c(plot_marg_upper, 5.5, 5.5, 5.5), "points")
 
@@ -711,7 +723,7 @@ character_multiplot <- function(df_scored, show_anim_by_subj = F,
                     axis.title.x = element_blank(),
                     axis.ticks.x = element_blank()),
       ncol = 3, rel_widths = c(2, 1, 1),
-      labels = "AUTO")
+      labels = plot_labels)
     all_axis_xs <- plot_grid(
       gtable_filter(ggplotGrob(
         plotA + theme(plot.margin = plot_margins)), 
@@ -735,7 +747,7 @@ character_multiplot <- function(df_scored, show_anim_by_subj = F,
                     axis.title.x = element_blank(),
                     axis.ticks.x = element_blank()),
       ncol = 2, rel_widths = c(1, 1),
-      labels = "AUTO")
+      labels = plot_labels)
     all_axis_xs <- plot_grid(
       gtable_filter(ggplotGrob(
         plotA + theme(plot.margin = plot_margins)), 
