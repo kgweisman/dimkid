@@ -601,10 +601,12 @@ binomial_smooth <- function(...) {
 
 # function for making multi-part plots of scores of target characters
 character_multiplot <- function(df_scored, show_anim_by_subj = F,
+                                bin_width = 1/12,
                                 plot_marg_upper = NA,
                                 axis_height = NA,
                                 plot_labels = "AUTO"){
   
+  # setup -----
   levels_characters <- levels(df_scored$character) %>% 
     as.character() %>%
     gsub("persistent.*$", "PVS", .)
@@ -621,6 +623,7 @@ character_multiplot <- function(df_scored, show_anim_by_subj = F,
     colors <- colors21
   }
   
+  # target characters -----
   plotA <- df_scored %>%
     mutate(character = as.character(character),
            character = gsub("persistent.*$", "PVS", character),
@@ -641,6 +644,7 @@ character_multiplot <- function(df_scored, show_anim_by_subj = F,
          x = "Target character", y = "Score") +
     theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
   
+  # animacy status -----
   if(n_characters > 2){
     plotB <- df_scored %>%
       left_join(anim_lookup) %>%
@@ -679,6 +683,7 @@ character_multiplot <- function(df_scored, show_anim_by_subj = F,
       theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
   }
   
+  # histogram -----
   plotC <- df_scored %>%
     mutate(character = as.character(character),
            character = gsub("persistent.*$", "PVS", character),
@@ -687,7 +692,7 @@ character_multiplot <- function(df_scored, show_anim_by_subj = F,
                               labels = levels_characters_pad)) %>%
     ggplot(aes(x = score, fill = character)) +
     facet_grid(factor ~ .) +
-    geom_histogram(binwidth = 0.05, show.legend = F) +
+    geom_histogram(binwidth = bin_width, show.legend = F) +
     scale_fill_manual(values = colors) +
     scale_x_continuous(breaks = seq(0, 1, 0.25),
                        labels = str_pad(format(seq(0, 1, 0.25), nsmall = 2),
@@ -697,6 +702,7 @@ character_multiplot <- function(df_scored, show_anim_by_subj = F,
          x = "Score", y = "Count") +
     theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
   
+  # put them all together -----
   if(n_characters > 2) {
     # hard-coded for fig.width = 6, fig.asp = 0.5
     if(is.na(plot_marg_upper)) {plot_marg_upper <- -32}
@@ -710,7 +716,12 @@ character_multiplot <- function(df_scored, show_anim_by_subj = F,
   }
   
   plot_margins <- unit(c(plot_marg_upper, 5.5, 5.5, 5.5), "points")
-
+  if(n_characters == 21){
+    relative_wid <- c(4, 1, 1)
+  } else if(n_characters == 9) {
+    relative_wid <- c(2, 1, 1)
+  }
+  
   if(n_characters > 2){
     allplots <- plot_grid(
       plotA + theme(axis.text.x = element_blank(),
@@ -722,7 +733,7 @@ character_multiplot <- function(df_scored, show_anim_by_subj = F,
       plotC + theme(axis.text.x = element_blank(),
                     axis.title.x = element_blank(),
                     axis.ticks.x = element_blank()),
-      ncol = 3, rel_widths = c(2, 1, 1),
+      ncol = 3, rel_widths = relative_wid,
       labels = plot_labels)
     all_axis_xs <- plot_grid(
       gtable_filter(ggplotGrob(
@@ -734,7 +745,7 @@ character_multiplot <- function(df_scored, show_anim_by_subj = F,
       gtable_filter(ggplotGrob(
         plotC + theme(plot.margin = plot_margins)), 
         'axis-b|xlab', trim=F),
-      ncol = 3, rel_widths = c(2, 1, 1),
+      ncol = 3, rel_widths = relative_wid,
       align = "h", axis = "t")
     allplots_plus <- plot_grid(allplots, all_axis_xs,
                                ncol = 1, rel_heights = c(1, axis_height))

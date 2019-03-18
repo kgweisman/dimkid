@@ -126,6 +126,24 @@ To facilitate comparison between children and adults in Study 2, I use adults' _
 
 ## Discussion
 
+```{r, fig.width = 3, fig.asp = 1}
+plots_d2_ad <- character_multiplot(d2_ad_scored_ad, bin_width = 1/9,
+                                   plot_labels = c("A1", "A2"))
+plots_d2_79 <- character_multiplot(d2_79_scored_ad, bin_width = 1/9,
+                                   plot_labels = c("B1", "B2"))
+```
+
+```{r}
+figure5.2_plots <- plot_grid(plot_grid(plots_d2_ad, plots_d2_79, 
+                                       ncol = 2))
+```
+
+```{r, include = T, fig.width = 6, fig.asp = 0.5}
+figure5.2_plots
+```
+
+XX __INSERT DEVELOPMENTAL TRAJECTORY PLOT (figure5.3)__
+
 
 # Study 3: Conceptual change over early and middle childhood (4-9y)
 
@@ -149,6 +167,26 @@ As in Study 2, to facilitate comparison between the three age groups included in
 
 ## Discussion
 
+```{r, fig.width = 3, fig.asp = 1}
+plots_d3_ad <- character_multiplot(d3_ad_scored_ad, bin_width = 1/9,
+                                   plot_labels = c("A1", "A2"))
+plots_d3_79 <- character_multiplot(d3_79_scored_ad, bin_width = 1/9,
+                                   plot_labels = c("B1", "B2"))
+plots_d3_46 <- character_multiplot(d3_46_scored_ad, bin_width = 1/9,
+                                   plot_labels = c("B1", "B2"))
+```
+
+```{r}
+figure5.4_plots <- plot_grid(plot_grid(plots_d3_ad, plots_d3_79, 
+                                       plots_d3_46, ncol = 1))
+```
+
+```{r, include = T, fig.width = 6, fig.asp = 1.2}
+figure5.4_plots
+```
+
+XX __INSERT DEVELOPMENTAL TRAJECTORY PLOT (figure5.5)__
+
 
 # Study 4: A focus on early childhood (4-5y)
 
@@ -169,6 +207,24 @@ As in Studies 2 and 3, to facilitate comparison between children and adults in S
 ### Developmental comparison
 
 ## Discussion
+
+```{r, fig.width = 3, fig.asp = 1}
+plots_d4_ad <- character_multiplot(d4_ad_scored_ad, bin_width = 1/9,
+                                   plot_labels = c("A1", "A2"))
+plots_d4_46 <- character_multiplot(d4_46_scored_ad, bin_width = 1/9,
+                                   plot_labels = c("B1", "B2"))
+```
+
+```{r}
+figure5.6_plots <- plot_grid(plot_grid(plots_d4_ad, plots_d4_46, 
+                                       ncol = 2))
+```
+
+```{r, include = T, fig.width = 6, fig.asp = 0.5}
+figure5.6_plots
+```
+
+XX __INSERT DEVELOPMENTAL TRAJECTORY PLOT (figure5.7)__
 
 
 # General discussion
