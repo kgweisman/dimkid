@@ -565,7 +565,7 @@ table5.3 <- devgp_table_fun(regtab_devgp = regtab_d3_devgp,
                             table_name = "Table 5.3", 
                             study_name = "Study 3", 
                             age_group = "4- to 9-year-old children",
-                            n_age_groups = 2, 
+                            n_age_groups = , 
                             char_compare_label = "Animate characters vs. GM")
 ```
 
@@ -573,11 +573,11 @@ table5.3 <- devgp_table_fun(regtab_devgp = regtab_d3_devgp,
 table5.3
 ```
 
-Children's _BODY_ scores were generally higher than adults' (see Table 5.3, "Children vs. adults" row for the BODY domain). This appears to have been particularly true for the robot (see Figure 5.4, top row); as a result, the difference between the beetle and the robot was attenuated among children, relative to adults (see Table 5.3, "Interaction" row for the BODY domain).
+Neither older nor younger children's _BODY_ scores were generally higher than adults' (see Table 5.3, "Older children vs. adults" and "Younger children vs. adults" rows for the BODY domain), but in both groups of children the difference in _BODY_ scores between animate vs. inanimate characters was attenuated, relative to adults (see Table 5.3, "Interaction" row for the BODY domain).
 
-Children's _HEART_ scores were also higher than adults' (see Table 5.3, "Children vs. adults" row for the HEART domain, and Figure 5.4, middle row), but this difference did not vary substantially across target characters (see Table 5.3, "Interaction" row for the BODY domain).
+In the _HEART_ domain, both older and younger children's _HEART_ scores were generally higher than adults' (see Table 5.3, "Children vs. adults" row for the HEART domain, and Figure 5.4, middle row), but this difference did not vary substantially across target characters (see Table 5.3, "Interaction" row for the BODY domain).
 
-There were no substantial differences between children and adults in their _MIND_ scores (see Table 5.3 and Figure 5.4, bottom row).
+Finally, in the _MIND_ domain, younger children's (but not older children's) _MIND_ scores were substantially lower than adults' (see Table 5.3, "Older children vs. adults" and "Younger children vs. adults" rows for the MIND domain). In addition, in both groups of children the difference in _MIND_ scores between animate vs. inanimate characters was attenuated, relative to adults (see Table 5.3, "Interaction" row for the MIND domain).
 
 #### Age-related differences between 4-9y
 
