@@ -93,7 +93,26 @@ devscore_table_fun <- function(regtab_devscore, n_characters,
 }
 
 # table for age group comparisons
-regtab_devgp_fun <- function(reg_body, reg_heart, reg_mind){
+regtab_devgp_fun <- function(reg_body, reg_heart, reg_mind,
+                             age_levels, age_labels){
+  
+  
+  if(length(age_levels) == 1){
+    param_levels <- c("Intercept", "anim_inan_anim_GM", age_levels,
+                      as.character(interaction("anim_inan_anim_GM", 
+                                               age_levels, sep = ":")))
+    param_labels <-  c("Intercept (adults)", "Animate characters vs. GM (adults)",
+                       age_labels, "Interaction")
+  } else {
+    param_levels <- c("Intercept", "anim_inan_anim_GM", age_levels,
+                      as.character(interaction("anim_inan_anim_GM", 
+                                               age_levels, sep = ":")))
+    param_labels <- c("Intercept (adults)", "Animate characters vs. GM (adults)",
+                      age_labels, as.character(interaction("Interaction",
+                                                           age_labels, 
+                                                           sep = ": ")))
+  }
+  
   regtab <- bind_rows(
     fixef(reg_body) %>%
       data.frame() %>%
@@ -107,18 +126,19 @@ regtab_devgp_fun <- function(reg_body, reg_heart, reg_mind){
       data.frame() %>%
       rownames_to_column("param") %>%
       mutate(factor = "MIND")) %>%
-    rename(b = Estimate, s.e. = Est.Error) %>%
-    mutate(param = factor(
-      param,
-      levels = c("Intercept", "anim_inan_anim_GM", "age_group", 
-                 "anim_inan_anim_GM:age_group"),
-      labels = c("Intercept (adults)", "Animate characters vs. GM (adults)", 
-                 "Children vs. adults", "Interaction")),
-      b = format(round(b, 2), nsmall = 2),
-      s.e. = format(round(s.e., 2), nsmall = 2),
-      CI95 = paste0("[", format(round(Q2.5, 2), nsmall = 2),
-                    ", ", format(round(Q97.5, 2), nsmall = 2), "]"),
-      nonzero = ifelse(Q2.5 * Q97.5 >= 0, "*", "")) %>%
+    rename(b = Estimate, s.e. = Est.Error)
+  
+  regtab <- regtab %>%
+    mutate(param = factor(param,
+                          levels = param_levels,
+                          labels = param_labels))
+  
+  regtab <- regtab %>%
+    mutate(b = format(round(b, 2), nsmall = 2),
+           s.e. = format(round(s.e., 2), nsmall = 2),
+           CI95 = paste0("[", format(round(Q2.5, 2), nsmall = 2),
+                         ", ", format(round(Q97.5, 2), nsmall = 2), "]"),
+           nonzero = ifelse(Q2.5 * Q97.5 >= 0, "*", "")) %>%
     select(-starts_with("Q")) %>%
     select(-starts_with("s.e.")) %>%
     gather(key, value, -c(factor, param)) %>%
@@ -134,7 +154,7 @@ regtab_devgp_fun <- function(reg_body, reg_heart, reg_mind){
 
 devgp_table_fun <- function(regtab_devgp, n_characters,
                             table_name, study_name,
-                            age_groups, mean_age,
+                            age_groups, n_age_groups = 1,
                             char_compare_label = "Animate characters vs. GM",
                             ranef_subid = F){
   
@@ -171,11 +191,11 @@ devgp_table_fun <- function(regtab_devgp, n_characters,
             " among adults; (3) the difference between children's and adults' scores, collapsing across target characters; and (4) the interactive effect of age group and ",
             ifelse(grepl("animate", tolower(char_compare_label)),
                    "animacy status", "target character"),
-            ". The last two effects are highlighted in bold, because they are the primary parameters of interest for these analyses.",
+            ". Age effects are highlighted in bold, because they are the primary parameters of interest for these analyses.",
             ranef_text,
             "For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.")) %>%  
     kable_styling() %>%
-    row_spec(3:4, bold = T) %>%
+    row_spec(3:(3 + n_age_groups * 2 - 1), bold = T) %>%
     add_header_above(c(" " = 1,
                        "BODY" = 3, "HEART" = 3, "MIND" = 3))
   
