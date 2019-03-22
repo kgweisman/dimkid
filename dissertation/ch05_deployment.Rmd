@@ -207,21 +207,26 @@ plots_d2_79_title <- plot_grid(
 plots_d2_79_title
 ```
 
-```{r}
-figure5.2_plots <- plot_grid(plots_d2_ad_title, plots_d2_79_title, ncol = 2)
-```
-
-```{r}
-figure5.2_plots_cap <- add_sub(figure5.2_plots, str_wrap("Figure 5.2: Attributions of BODY, HEART, and MIND among (A) adults and (B) 7- to 9-year-old children in Study 2. For each conceptual unit, scores could range from 0-1. Plots include scores by target character (panels A1 and B1) and distributions of scores (panels A2 and B2). Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals.", 135), x = 0, hjust = 0)
-```
-
-```{r, include = T, fig.width = 6, fig.asp = 0.6}
-ggdraw(figure5.2_plots_cap)
-```
-
 ### Developmental comparison
 
 #### Children vs. adults
+
+```{r}
+figure5.2_plots <- character_multiplot_age(
+  df_scored = full_join(d2_ad_scored_ad, d2_79_scored_ad), 
+  show_anim_by_subj = T,
+  age_levels = c("children79", "adults"),
+  age_labels = c("Children, 7-9y", "Adults"),
+  plot_marg_upper = -50, axis_height = 0.18)
+```
+
+```{r}
+figure5.2_plots_cap <- add_sub(figure5.2_plots, str_wrap("Figure 5.2: Attributions of BODY, HEART, and MIND among children (7-9y) and adults in Study 2. For each conceptual unit, scores could range from 0-1. Plots include (A) scores by target character, and (B) distributions of scores. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals.", 90), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 4, fig.asp = 0.8}
+ggdraw(figure5.2_plots_cap)
+```
 
 ```{r}
 d2_79ad_scored_ad <- full_join(d2_ad_scored_ad, d2_79_scored_ad) %>%
@@ -305,6 +310,19 @@ Children's _HEART_ scores were also higher than adults' (see Table 5.1, "Childre
 There were no substantial differences between children and adults in their _MIND_ scores (see Table 5.1 and Figure 5.2, bottom row)
 
 #### Age-related differences between 7-9y
+
+```{r}
+figure5.3 <- plots_d2_dev +
+  labs(title = "Study 2: Children, 7-9y")
+```
+
+```{r}
+figure5.3_plots_cap <- add_sub(figure5.3, str_wrap("Figure 5.3: Changes in attributions of BODY, HEART, and MIND among 7- to 9-year-old children in Study 2. For each conceptual unit, scores could range from 0-1. Individual children are plotted as small, translucent circles; mean scores among adults are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. Lines correspond to simple linear regressions (formula: score ~ age).", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 0.5}
+ggdraw(figure5.3_plots_cap)
+```
 
 ```{r}
 d2_79age_scored_ad <- d2_79_scored_ad %>%
@@ -391,20 +409,6 @@ plots_d2_dev <- character_devplot(df_scored_ad = d2_ad_scored_ad,
                                   df_age = d2_79)
 ```
 
-```{r}
-figure5.3 <- plots_d2_dev +
-  labs(title = "Study 2: Children, 7-9y")
-```
-
-```{r}
-figure5.3_plots_cap <- add_sub(figure5.3, str_wrap("Figure 5.3: Changes in attributions of BODY, HEART, and MIND among 7- to 9-year-old children in Study 2. For each conceptual unit, scores could range from 0-1. Individual children are plotted as small, translucent circles; mean scores among adults are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. Lines correspond to simple linear regressions (formula: score ~ age).", 110), x = 0, hjust = 0)
-```
-
-```{r, include = T, fig.width = 5, fig.asp = 0.5}
-ggdraw(figure5.3_plots_cap)
-```
-
-
 ## Discussion
 
 
@@ -477,24 +481,27 @@ plots_d3_46_title <- plot_grid(
 plots_d3_46_title
 ```
 
-```{r}
-figure5.4_plots <- plot_grid(plots_d3_ad_title, 
-                             plots_d3_79_title,
-                             plots_d3_46_title,
-                             ncol = 1)
-```
-
-```{r}
-figure5.4_plots_cap <- add_sub(figure5.4_plots, str_wrap("Figure 5.4: Attributions of BODY, HEART, and MIND among (A) adults, (B) 7- to 9-year-old children, and (C) 4- to 6-year-old children in Study 3. For each conceptual unit, scores could range from 0-1. Plots include scores by target character (panels A1, B1, and C1), scores by animacy status (A2, B2, and C2), and distributions of scores (panels A3, B3, and C3). Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals.", 115), x = 0, hjust = 0)
-```
-
-```{r, include = T, fig.width = 5, fig.asp = 1.7}
-ggdraw(figure5.4_plots_cap)
-```
-
 ### Developmental comparison
 
 #### Children vs. adults
+
+```{r}
+figure5.4_plots <- character_multiplot_age(
+  df_scored = full_join(d3_ad_scored_ad, d3_46_scored_ad) %>%
+    full_join(d3_79_scored_ad), 
+  show_anim_by_subj = T,
+  age_levels = c("children46", "children79", "adults"),
+  age_labels = c("Children, 4-6y", "Children, 7-9y", "Adults"),
+  plot_marg_upper = -70, axis_height = 0.13)
+```
+
+```{r}
+figure5.4_plots_cap <- add_sub(figure5.4_plots, str_wrap("Figure 5.4: Attributions of BODY, HEART, and MIND among younger children (4-6y), older children (7-9y), and adults in Study 3. For each conceptual unit, scores could range from 0-1. Plots include (A) scores by target character, (B) animacy status, and (C) distributions of scores. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals.", 230), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 10, fig.asp = 0.4}
+ggdraw(figure5.4_plots_cap)
+```
 
 ```{r}
 d3_4679ad_scored_ad <- full_join(d3_ad_scored_ad, d3_79_scored_ad) %>%
@@ -580,6 +587,31 @@ In the _HEART_ domain, both older and younger children's _HEART_ scores were gen
 Finally, in the _MIND_ domain, younger children's (but not older children's) _MIND_ scores were substantially lower than adults' (see Table 5.3, "Older children vs. adults" and "Younger children vs. adults" rows for the MIND domain). In addition, in both groups of children the difference in _MIND_ scores between animate vs. inanimate characters was attenuated, relative to adults (see Table 5.3, "Interaction" row for the MIND domain).
 
 #### Age-related differences between 4-9y
+
+```{r}
+figure5.5_char <- plots_d3_dev_char +
+  labs(title = "Study 3: Children, 4-9y (by target character)")
+
+figure5.5_anim <- plots_d3_dev_anim +
+  labs(title = "Study 3: Children, 4-9y (by animacy status)") +
+  scale_color_manual("Animacy status", values = colorsAI,
+                     guide = guide_legend(direction = "horizontal",
+                                          override.aes = list(alpha = 1))) +
+  scale_fill_manual("Animacy status", values = colorsAI,
+                    guide = guide_legend(direction = "horizontal",
+                                         override.aes = list(alpha = 1)))
+
+figure5.5_plots <- plot_grid(figure5.5_char, figure5.5_anim, 
+                             ncol = 1, labels = "AUTO")
+```
+
+```{r}
+figure5.5_plots_cap <- add_sub(figure5.5_plots, str_wrap("Figure 5.5: Changes in attributions of BODY, HEART, and MIND among 4- to 9-year-old children in Study 3. For each conceptual unit, scores could range from 0-1. Individual children are plotted as small, translucent circles; mean scores among adults are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. Lines correspond to simple linear regressions (formula: score ~ age).", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 1}
+ggdraw(figure5.5_plots_cap)
+```
 
 ```{r}
 d3_4679_scored_ad <- full_join(d3_79_scored_ad %>% 
@@ -699,31 +731,6 @@ plots_d3_dev_anim <- character_devplot(
                        mutate(subid = paste0(subid, "_46"))))
 ```
 
-```{r}
-figure5.5_char <- plots_d3_dev_char +
-  labs(title = "Study 3: Children, 4-9y (by target character)")
-
-figure5.5_anim <- plots_d3_dev_anim +
-  labs(title = "Study 3: Children, 4-9y (by animacy status)") +
-  scale_color_manual("Animacy status", values = colorsAI,
-                     guide = guide_legend(direction = "horizontal",
-                                          override.aes = list(alpha = 1))) +
-  scale_fill_manual("Animacy status", values = colorsAI,
-                    guide = guide_legend(direction = "horizontal",
-                                         override.aes = list(alpha = 1)))
-
-figure5.5_plots <- plot_grid(figure5.5_char, figure5.5_anim, 
-                             ncol = 1, labels = "AUTO")
-```
-
-```{r}
-figure5.5_plots_cap <- add_sub(figure5.5_plots, str_wrap("Figure 5.5: Changes in attributions of BODY, HEART, and MIND among 4- to 9-year-old children in Study 3. For each conceptual unit, scores could range from 0-1. Individual children are plotted as small, translucent circles; mean scores among adults are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. Lines correspond to simple linear regressions (formula: score ~ age).", 110), x = 0, hjust = 0)
-```
-
-```{r, include = T, fig.width = 5, fig.asp = 1}
-ggdraw(figure5.5_plots_cap)
-```
-
 ## Discussion
 
 
@@ -777,22 +784,26 @@ plots_d4_46_title <- plot_grid(
 plots_d4_46_title
 ```
 
-```{r}
-figure5.6_plots <- plot_grid(plots_d4_ad_title, plots_d4_46_title,
-                             ncol = 2)
-```
-
-```{r}
-figure5.6_plots_cap <- add_sub(figure5.6_plots, str_wrap("Figure 5.6: Attributions of BODY, HEART, and MIND among (A) adults and (B) 4- to 5-year-old children in Study 4. For each conceptual unit, scores could range from 0-1. Plots include scores by target character (panels A1 and B1) and distributions of scores (panels A2 and B2). Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals.", 135), x = 0, hjust = 0)
-```
-
-```{r, include = T, fig.width = 6, fig.asp = 0.6}
-ggdraw(figure5.6_plots_cap)
-```
-
 ### Developmental comparison
 
 #### Children vs. adults
+
+```{r}
+figure5.6_plots <- character_multiplot_age(
+  df_scored = full_join(d4_ad_scored_ad, d4_46_scored_ad), 
+  show_anim_by_subj = T,
+  age_levels = c("children46", "adults"),
+  age_labels = c("Children, 4-5y", "Adults"),
+  plot_marg_upper = -50, axis_height = 0.18)
+```
+
+```{r}
+figure5.6_plots_cap <- add_sub(figure5.6_plots, str_wrap("Figure 5.6: Attributions of BODY, HEART, and MIND among children (4-5y) and adults in Study 4. For each conceptual unit, scores could range from 0-1. Plots include (A) scores by target character, and (B) distributions of scores. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals.", 90), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 4, fig.asp = 0.8}
+ggdraw(figure5.6_plots_cap)
+```
 
 ```{r}
 d4_46ad_scored_ad <- full_join(d4_ad_scored_ad, d4_46_scored_ad) %>%
@@ -880,6 +891,19 @@ And yet again, as in Study 2, there were no substantial differences between chil
 #### Age-related differences between 4-5y
 
 ```{r}
+figure5.7 <- plots_d4_dev +
+  labs(title = "Study 4: Children, 4-5y")
+```
+
+```{r}
+figure5.7_plots_cap <- add_sub(figure5.7, str_wrap("Figure 5.7: Changes in attributions of BODY, HEART, and MIND among 4- to 5-year-old children in Study 4. For each conceptual unit, scores could range from 0-1. Individual children are plotted as small, translucent circles; mean scores among adults are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. Lines correspond to simple linear regressions (formula: score ~ age).", 110), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 5, fig.asp = 0.5}
+ggdraw(figure5.7_plots_cap)
+```
+
+```{r}
 d4_46age_scored_ad <- d4_46_scored_ad %>%
   left_join(d4_46 %>% distinct(subid, age)) %>%
   left_join(anim_lookup) %>%
@@ -961,19 +985,6 @@ In both the HEART and MIND domains, children's scores did not differ reliably ac
 plots_d4_dev <- character_devplot(df_scored_ad = d4_ad_scored_ad, 
                                   df_scored_ch = d4_46_scored_ad, 
                                   df_age = d4_46)
-```
-
-```{r}
-figure5.7 <- plots_d4_dev +
-  labs(title = "Study 4: Children, 4-5y")
-```
-
-```{r}
-figure5.7_plots_cap <- add_sub(figure5.7, str_wrap("Figure 5.7: Changes in attributions of BODY, HEART, and MIND among 4- to 5-year-old children in Study 4. For each conceptual unit, scores could range from 0-1. Individual children are plotted as small, translucent circles; mean scores among adults are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. Lines correspond to simple linear regressions (formula: score ~ age).", 110), x = 0, hjust = 0)
-```
-
-```{r, include = T, fig.width = 5, fig.asp = 0.5}
-ggdraw(figure5.7_plots_cap)
 ```
 
 ## Discussion
