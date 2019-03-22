@@ -794,6 +794,89 @@ ggdraw(figure5.6_plots_cap)
 
 #### Children vs. adults
 
+```{r}
+d4_46ad_scored_ad <- full_join(d4_ad_scored_ad, d4_46_scored_ad) %>%
+  left_join(anim_lookup) %>%
+  mutate(character = factor(character,
+                            levels = levels(d4_ad_scored_ad$character)),
+         age_group = factor(age_group))
+
+contrasts(d4_46ad_scored_ad$character) <- contrasts_sum_edge
+contrasts(d4_46ad_scored_ad$factor) <- contrasts_cnt3_factor
+contrasts(d4_46ad_scored_ad$anim_inan) <- contrasts_sum2_anim
+contrasts(d4_46ad_scored_ad$age_group) <- contrasts_dum2_agegp
+```
+
+```{r}
+# r_d4_devgp_BODY <- brm(score ~ anim_inan * age_group,
+#                           data = d4_46ad_scored_ad %>%
+#                             filter(factor == "BODY"),
+#                           cores = 4, control = list(adapt_delta = 0.99))
+# 
+# saveRDS(r_d4_devgp_BODY, "./stored/brms_models/r_d4_devgp_BODY")
+
+r_d4_devgp_BODY <- readRDS("./stored/brms_models/r_d4_devgp_BODY")
+
+summary(r_d4_devgp_BODY)
+```
+
+```{r}
+# r_d4_devgp_HEART <- brm(score ~ anim_inan * age_group,
+#                           data = d4_46ad_scored_ad %>%
+#                             filter(factor == "HEART"),
+#                           cores = 4, control = list(adapt_delta = 0.99))
+# 
+# saveRDS(r_d4_devgp_HEART, "./stored/brms_models/r_d4_devgp_HEART")
+
+r_d4_devgp_HEART <- readRDS("./stored/brms_models/r_d4_devgp_HEART")
+
+summary(r_d4_devgp_HEART)
+```
+
+```{r}
+# r_d4_devgp_MIND <- brm(score ~ anim_inan * age_group,
+#                           data = d4_46ad_scored_ad %>%
+#                             filter(factor == "MIND"),
+#                           cores = 4, control = list(adapt_delta = 0.99))
+# 
+# saveRDS(r_d4_devgp_MIND, "./stored/brms_models/r_d4_devgp_MIND")
+
+r_d4_devgp_MIND <- readRDS("./stored/brms_models/r_d4_devgp_MIND")
+
+summary(r_d4_devgp_MIND)
+```
+
+```{r}
+regtab_d4_devgp <- regtab_devgp_fun(
+  reg_body = r_d4_devgp_BODY, 
+  reg_heart = r_d4_devgp_HEART,
+  reg_mind = r_d4_devgp_MIND,
+  age_levels = c("age_group_child"), 
+  age_labels = c("Children vs. adults"))
+```
+
+```{r}
+table5.5 <- devgp_table_fun(regtab_devgp = regtab_d4_devgp, 
+                            n_characters = 2, 
+                            table_name = "Table 5.5", 
+                            study_name = "Study 4", 
+                            age_group = "4- to 5-year-old children", 
+                            n_age_groups = 1,
+                            char_compare_label = "Beetle vs. GM")
+```
+
+```{r, include = T}
+table5.5
+```
+
+The age comparison between 4- to 5-year-old children and adults in Study 4 yielded remarkably similar results to the parallel comparison between 7- to 9-year-old children and adults in Study 2. 
+
+As in Study 2, children's _BODY_ scores were generally higher than adults' (see Table 5.5, "Children vs. adults" row for the BODY domain). This appears to have been particularly true for the robot (see Figure 5.6, top row); as a result, the difference between the beetle and the robot was attenuated among children, relative to adults (see Table 5.5, "Interaction" row for the BODY domain).
+
+Again, as in Study 2, children's _HEART_ scores were also higher than adults' (see Table 5.5, "Children vs. adults" row for the HEART domain, and Figure 5.6, middle row). In Study 4, this difference between children and adults was slightly more pronounced for the robot than the beetle (see Table 5.5, "Interaction" row for the BODY domain).
+
+And yet again, as in Study 2, there were no substantial differences between children and adults in their _MIND_ scores (see Table 5.5 and Figure 5.6, bottom row)
+
 #### Age-related differences between 4-5y
 
 ```{r}
