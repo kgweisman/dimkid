@@ -169,65 +169,6 @@ To facilitate comparison between children and adults in Study 2, I use adults' _
 
 ## Results
 
-### Adults
-
-```{r}
-plots_d2_ad <- character_multiplot(d2_ad_scored_ad, 
-                                   plot_labels = c("A1", "A2"))
-
-plots_d2_ad_title <- plot_grid(
-  ggdraw() + 
-    draw_label("Study 2: Adults", size = 16, 
-               fontface = 'bold', x = 0, hjust = 0),
-  plots_d2_ad,
-  ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 4, fig.asp = 1}
-# interim plot for ease of writing
-plots_d2_ad_title
-```
-
-### Children (7-9y)
-
-```{r}
-plots_d2_79 <- character_multiplot(d2_79_scored_ad, 
-                                   plot_labels = c("B1", "B2"))
-
-plots_d2_79_title <- plot_grid(
-  ggdraw() + 
-    draw_label("Study 2: Children, 7-9y", size = 16, 
-               fontface = 'bold', x = 0, hjust = 0),
-  plots_d2_79,
-  ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 4, fig.asp = 1}
-# interim plot for ease of writing
-plots_d2_79_title
-```
-
-### Developmental comparison
-
-#### Children vs. adults
-
-```{r}
-figure5.2_plots <- character_multiplot_age(
-  df_scored = full_join(d2_ad_scored_ad, d2_79_scored_ad), 
-  show_anim_by_subj = T,
-  age_levels = c("children79", "adults"),
-  age_labels = c("Children, 7-9y", "Adults"),
-  plot_marg_upper = -50, axis_height = 0.18)
-```
-
-```{r}
-figure5.2_plots_cap <- add_sub(figure5.2_plots, str_wrap("Figure 5.2: Attributions of BODY, HEART, and MIND among children (7-9y) and adults in Study 2. For each conceptual unit, scores could range from 0-1. Plots include (A) scores by target character, and (B) distributions of scores. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals.", 90), x = 0, hjust = 0)
-```
-
-```{r, include = T, fig.width = 4, fig.asp = 0.8}
-ggdraw(figure5.2_plots_cap)
-```
-
 ```{r}
 d2_79ad_scored_ad <- full_join(d2_ad_scored_ad, d2_79_scored_ad) %>%
   left_join(anim_lookup) %>%
@@ -239,6 +180,50 @@ contrasts(d2_79ad_scored_ad$character) <- contrasts_sum_edge
 contrasts(d2_79ad_scored_ad$factor) <- contrasts_cnt3_factor
 contrasts(d2_79ad_scored_ad$anim_inan) <- contrasts_sum2_anim
 contrasts(d2_79ad_scored_ad$age_group) <- contrasts_dum2_agegp
+```
+
+### Children vs. adults
+
+```{r}
+d2_79ad_means <- d2_79ad_scored_ad %>%
+  group_by(age_group, character, factor) %>%
+  multi_boot_standard(col = "score", na.rm = T) %>%
+  ungroup()
+```
+
+See Figure 5.2, panel A, for _BODY_, _HEART_, and _MIND_ scores for both target characters among the 7- to 9-year-old children and adults in Study 2.
+
+In the aggregate, both children and adults seem to have considered the beetle—the animate "edge case" featured in this study—to be a being with a moderately high degree of physiological sensations (mean _BODY_ score among adults: `r score_mean_print_fun(d2_79ad_means, "BODY", "adults", "beetle")`; among children: `r score_mean_print_fun(d2_79ad_means, "BODY", "children79", "beetle")`) and perceptual-cognitive capacities (mean _MIND_ score among adults: `r score_mean_print_fun(d2_79ad_means, "MIND", "adults", "beetle")`; among children: `r score_mean_print_fun(d2_79ad_means, "MIND", "children79", "beetle")`). However, adults and children appeared to diverge in their assessments of its abilities in the HEART domain: While adults tended to grant very little in the way of social-emotional abilities (mean _HEART_ score among adults: `r score_mean_print_fun(d2_79ad_means, "HEART", "adults", "beetle")`), children's _HEART_ scores tended to hover around the midpoint of the scale (mean: `r score_mean_print_fun(d2_79ad_means, "HEART", "children79", "beetle")`).
+
+For the robot—the inanimate "edge case" featured in this study—both adults and children, in the aggregate, indicated a high degree of perceptual-cognitive abilities (mean _MIND_ score among adults: `r score_mean_print_fun(d2_79ad_means, "MIND", "adults", "robot")`; among children: `r score_mean_print_fun(d2_79ad_means, "MIND", "children79", "robot")`), and appeared to agree that the robot had less in the way of physiological sensations and social-emotional abilities than the beetle. However, the two age groups appeared to diverge in their assessments of the absolute degree of BODY and HEART that they were willing to grant the robot: Adults granted very little in either domain (mean _BODY_ score: `r score_mean_print_fun(d2_79ad_means, "BODY", "adults", "robot")`; mean _HEART_ score: `r score_mean_print_fun(d2_79ad_means, "HEART", "adults", "robot")`), while children granted middling abilities in both domains (mean _BODY_ score: `r score_mean_print_fun(d2_79ad_means, "BODY", "children79", "robot")`; mean _HEART_ score: `r score_mean_print_fun(d2_79ad_means, "HEART", "children79", "robot")`).
+
+```{r}
+figure5.2_plots <- character_multiplot_age(
+  df_scored = full_join(d2_ad_scored_ad, d2_79_scored_ad), 
+  show_anim_by_subj = T,
+  age_levels = c("children79", "adults"),
+  age_labels = c("Children, 7-9y", "Adults"),
+  plot_marg_upper = -45, axis_height = 0.09)
+```
+
+```{r}
+figure5.2_plots_cap <- add_sub(figure5.2_plots, str_wrap("Figure 5.2: Attributions of BODY, HEART, and MIND among children (7-9y) and adults in Study 2. For each conceptual unit, scores could range from 0-1. Plots include (A) scores by target character, and (B) distributions of scores. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals.", 90), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 4, fig.asp = 0.8}
+ggdraw(figure5.2_plots_cap)
+```
+
+```{r}
+d2_79ad_ntiles <- d2_79ad_scored_ad %>%
+  group_by(age_group, factor) %>%
+  mutate(bin = cut(score, 13),
+         bin_num = as.numeric(factor(bin))) %>%
+  ungroup() %>%
+  count(age_group, factor, bin, bin_num) %>%
+  group_by(age_group, factor) %>%
+  mutate(prop = n/sum(n))
+d2_79ad_ntiles
 ```
 
 ```{r}
@@ -303,13 +288,22 @@ table5.1 <- devgp_table_fun(regtab_devgp = regtab_d2_devgp,
 table5.1
 ```
 
-Children's _BODY_ scores were generally higher than adults' (see Table 5.1, "Children vs. adults" row for the BODY domain). This appears to have been particularly true for the robot (see Figure 5.2, top row); as a result, the difference between the beetle and the robot was attenuated among children, relative to adults (see Table 5.1, "Interaction" row for the BODY domain).
+A series of Bayesian regression analyses confirmed these general impressions. Children's _BODY_ scores were generally higher than adults' (see Table 5.1, "Children vs. adults" row for the BODY domain), particularly for the robot (see Figure 5.2, top row); as a result, the difference between the beetle and the robot was attenuated among children, relative to adults (see Table 5.1, "Interaction" row for the BODY domain). Children's _HEART_ scores were also higher than adults' (see Table 5.1, "Children vs. adults" row for the HEART domain, and Figure 5.2, middle row), but this difference did not vary substantially across target characters (see Table 5.1, "Interaction" row for the BODY domain). There were no substantial differences between children and adults in their _MIND_ scores (see Table 5.1 and Figure 5.2, bottom row).
 
-Children's _HEART_ scores were also higher than adults' (see Table 5.1, "Children vs. adults" row for the HEART domain, and Figure 5.2, middle row), but this difference did not vary substantially across target characters (see Table 5.1, "Interaction" row for the BODY domain).
+Taken together, these observations highlight one especially striking difference between children and adults: For both edge cases, regardless of animacy status, children attributed substantially more HEART than did adults. Indeed, fully `r round((d2_79ad_ntiles %>% filter(age_group == "adults", factor == "HEART", bin_num == 1))$prop, 2)*100`% of adults in Study 2 had _HEART_ scores < `r gsub("^.*,", "", (d2_79ad_ntiles %>% filter(age_group == "adults", factor == "HEART", bin_num == 1))$bin) %>% gsub("\\]", "", .) %>% as.numeric() %>% ceiling_dec(2)` (i.e., answered at most _one_ of the 6 _HEART_ items with a response of "KINDA," and otherwise answered "NO" to all _HEART_ items). The more uniform distribution of children's _HEART_ scores across the 0-1 range stands in stark contrast to this adult standard; see Figure 5.2, panel B.
 
-There were no substantial differences between children and adults in their _MIND_ scores (see Table 5.1 and Figure 5.2, bottom row)
 
-#### Age-related differences between 7-9y
+### Age-related differences between 7-9y
+
+In the previous section, I compared the attributions of 7- to 9-year-old children as a group to those of adults. Here, I explore age-related differences within the child sample: How might children's attributions change over the age range included in this study? 
+
+If the snapshots of children vs. adults are reflective of _developmental_ changes, I would expect that, with increasing age, children's responses would become increasingly adult-like. Based on the age group comparisons in the previous section, this would mean that age would be associated with lower _BODY_ scores, particularly for the robot and lower _HEART_ scores for both target characters.
+
+```{r}
+plots_d2_dev <- character_devplot(df_scored_ad = d2_ad_scored_ad, 
+                                  df_scored_ch = d2_79_scored_ad, 
+                                  df_age = d2_79)
+```
 
 ```{r}
 figure5.3 <- plots_d2_dev +
@@ -397,19 +391,35 @@ table5.2 <- devscore_table_fun(regtab_devscore = regtab_d2_devscore,
 table5.2
 ```
 
+In fact, this is exactly what I observe among the 7- to 9-year-old children in this study. 
+
 In line with an adult-like understanding of the animate-inanimate distinction, _BODY_ scores were generally higher among children who assessed the beetle (the animate target character) than among children who assessed the robot (the inanimate target character; see Table 5.2, "Beetle vs. GM" row for the BODY domain). With age, however, children's _BODY_ scores generally decreased (and Table 5.2, "Exact age" row for the BODY domain), driven by changes in children's attributions of BODY to the robot. As a result, the difference between the beetle and the robot increased over the age range (see Table 5.2, "Interaction" row for the BODY domain, and Figure 5.3, leftmost plot).
 
-Children's _HEART_ scores did not differ reliably across the two target characters in this study (see Table 5.2, "Beetle vs. GM" row for the HEART domain). With age, children's _HEART_ scores for both characters generally decreased (and Table 5.2, "Exact age" and "Interaction" rows for the HEART domain, and Figure 5.3, center plot).
+Meanwhile, children's _HEART_ scores did not differ reliably across the two target characters in this study (see Table 5.2, "Beetle vs. GM" row for the HEART domain)—but with age, children's _HEART_ scores for both characters generally decreased (and Table 5.2, "Exact age" and "Interaction" rows for the HEART domain, and Figure 5.3, center plot).
 
-Finally—in contrast to what one might expect if children attributed more mental life across the board to animate than inanimate objects—_MIND_ scores were generally higher among children who assessed the robot (the inanimate target character) than among children who assessed the beetle (the animate target character; see Table 5.2, "Beetle vs. GM" row for the MIND domain). Moreover, with age, children's _MIND_ scores for both characters generally increased (and Table 5.2, "Exact age" and "Interaction" rows for the MIND domain, and Figure 5.3, rightmost plot).
-
-```{r}
-plots_d2_dev <- character_devplot(df_scored_ad = d2_ad_scored_ad, 
-                                  df_scored_ch = d2_79_scored_ad, 
-                                  df_age = d2_79)
-```
+Finally, _MIND_ scores were generally higher among children who assessed the robot (the inanimate target character) than among children who assessed the beetle (the animate target character; see Table 5.2, "Beetle vs. GM" row for the MIND domain). In addition to the predicted age-related differences in the BODY and HEART domains, children's _MIND_ scores for both characters generally increased with age (and Table 5.2, "Exact age" and "Interaction" rows for the MIND domain, and Figure 5.3, rightmost plot).
 
 ## Discussion
+
+XX __INSERT DISCUSSION__
+
+OUTLINE:
+adults: 
+    - animate-inanimate distinction strongest in the BODY domain
+    - neither edge case granted much HEART
+    - both edge cases granted fair amount of MIND
+
+children:
+- BODY: 
+    - animate-inanimate distinction in place
+    - but general decreases, especially for the robot (animate-inanimate distinction becomes more clear/robust)
+- HEART: biggest age differences
+    - both edge cases granted fair amount of HEART
+    - both more than adults
+    - decreases with age
+- MIND: 
+    - both edge cases granted fair amount of MIND
+    - increases with age (though no reliable group differences)
 
 
 # Study 3: Conceptual change over early and middle childhood (4-9y)
@@ -424,85 +434,6 @@ As in Study 2, to facilitate comparison between the three age groups included in
 
 ## Results
 
-### Adults
-
-```{r}
-plots_d3_ad <- character_multiplot(d3_ad_scored_ad, show_anim_by_subj = T,
-                                   plot_labels = c("A1", "A2"))
-
-plots_d3_ad_title <- plot_grid(
-  ggdraw() + 
-    draw_label("Study 3: Adults", size = 16, 
-               fontface = 'bold', x = 0, hjust = 0),
-  plots_d3_ad,
-  ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 5, fig.asp = 0.6}
-# interim plot for ease of writing
-plots_d3_ad_title
-```
-
-### Children (7-9y)
-
-```{r}
-plots_d3_79 <- character_multiplot(d3_79_scored_ad, show_anim_by_subj = T,
-                                   plot_labels = c("B1", "B2"))
-
-plots_d3_79_title <- plot_grid(
-  ggdraw() + 
-    draw_label("Study 3: Children, 7-9y", size = 16, 
-               fontface = 'bold', x = 0, hjust = 0),
-  plots_d3_79,
-  ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 5, fig.asp = 0.6}
-# interim plot for ease of writing
-plots_d3_79_title
-```
-
-### Children (4-6y)
-
-```{r}
-plots_d3_46 <- character_multiplot(d3_46_scored_ad, show_anim_by_subj = T,
-                                   plot_labels = c("C1", "C2"))
-
-plots_d3_46_title <- plot_grid(
-  ggdraw() + 
-    draw_label("Study 3: Children, 4-6y", size = 16, 
-               fontface = 'bold', x = 0, hjust = 0),
-  plots_d3_46,
-  ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 5, fig.asp = 0.6}
-# interim plot for ease of writing
-plots_d3_46_title
-```
-
-### Developmental comparison
-
-#### Children vs. adults
-
-```{r}
-figure5.4_plots <- character_multiplot_age(
-  df_scored = full_join(d3_ad_scored_ad, d3_46_scored_ad) %>%
-    full_join(d3_79_scored_ad), 
-  show_anim_by_subj = T,
-  age_levels = c("children46", "children79", "adults"),
-  age_labels = c("Children, 4-6y", "Children, 7-9y", "Adults"),
-  plot_marg_upper = -70, axis_height = 0.13)
-```
-
-```{r}
-figure5.4_plots_cap <- add_sub(figure5.4_plots, str_wrap("Figure 5.4: Attributions of BODY, HEART, and MIND among younger children (4-6y), older children (7-9y), and adults in Study 3. For each conceptual unit, scores could range from 0-1. Plots include (A) scores by target character, (B) animacy status, and (C) distributions of scores. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals.", 230), x = 0, hjust = 0)
-```
-
-```{r, include = T, fig.width = 10, fig.asp = 0.4}
-ggdraw(figure5.4_plots_cap)
-```
-
 ```{r}
 d3_4679ad_scored_ad <- full_join(d3_ad_scored_ad, d3_79_scored_ad) %>%
   full_join(d3_46_scored_ad) %>%
@@ -515,6 +446,27 @@ contrasts(d3_4679ad_scored_ad$character) <- contrasts_sum_dv09
 contrasts(d3_4679ad_scored_ad$factor) <- contrasts_cnt3_factor
 contrasts(d3_4679ad_scored_ad$anim_inan) <- contrasts_sum2_anim
 contrasts(d3_4679ad_scored_ad$age_group) <- contrasts_dum3_agegp
+```
+
+### Children vs. adults
+
+```{r}
+figure5.4_plots <- character_multiplot_age(
+  df_scored = full_join(d3_ad_scored_ad, d3_46_scored_ad) %>%
+    full_join(d3_79_scored_ad), 
+  show_anim_by_subj = T,
+  age_levels = c("children46", "children79", "adults"),
+  age_labels = c("Children, 4-6y", "Children, 7-9y", "Adults"),
+  jitter_wid = 1.5,
+  plot_marg_upper = -70, axis_height = 0.11)
+```
+
+```{r}
+figure5.4_plots_cap <- add_sub(figure5.4_plots, str_wrap("Figure 5.4: Attributions of BODY, HEART, and MIND among younger children (4-6y), older children (7-9y), and adults in Study 3. For each conceptual unit, scores could range from 0-1. Plots include (A) scores by target character, (B) animacy status, and (C) distributions of scores. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals.", 230), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 10, fig.asp = 0.4}
+ggdraw(figure5.4_plots_cap)
 ```
 
 ```{r}
@@ -586,7 +538,37 @@ In the _HEART_ domain, both older and younger children's _HEART_ scores were gen
 
 Finally, in the _MIND_ domain, younger children's (but not older children's) _MIND_ scores were substantially lower than adults' (see Table 5.3, "Older children vs. adults" and "Younger children vs. adults" rows for the MIND domain). In addition, in both groups of children the difference in _MIND_ scores between animate vs. inanimate characters was attenuated, relative to adults (see Table 5.3, "Interaction" row for the MIND domain).
 
-#### Age-related differences between 4-9y
+### Age-related differences between 4-9y
+
+```{r}
+plots_d3_dev_char <- character_devplot(
+  df_scored_ad = d3_ad_scored_ad, 
+  df_scored_ch = full_join(d3_79_scored_ad %>% 
+                             mutate(subid = paste0(subid, "_79")),
+                           d3_46_scored_ad %>%
+                             mutate(subid = paste0(subid, "_46"))), 
+  df_age = full_join(d3_79 %>%
+                       mutate(subid = paste0(subid, "_79")),
+                     d3_46 %>%
+                       mutate(subid = paste0(subid, "_46"))))
+```
+
+```{r}
+plots_d3_dev_anim <- character_devplot(
+  df_scored_ad = d3_ad_scored_ad %>%
+    left_join(anim_lookup) %>%
+    mutate(character = anim_inan), 
+  df_scored_ch = full_join(d3_79_scored_ad %>% 
+                             mutate(subid = paste0(subid, "_79")),
+                           d3_46_scored_ad %>%
+                             mutate(subid = paste0(subid, "_46"))) %>%
+    left_join(anim_lookup) %>%
+    mutate(character = anim_inan), 
+  df_age = full_join(d3_79 %>%
+                       mutate(subid = paste0(subid, "_79")),
+                     d3_46 %>%
+                       mutate(subid = paste0(subid, "_46"))))
+```
 
 ```{r}
 figure5.5_char <- plots_d3_dev_char +
@@ -701,36 +683,6 @@ As in the BODY domain, _HEART_ scores were generally higher among children who a
 
 Finally, as in the BODY and MIND domains, _MIND_ scores were generally higher among children who assessed one of the animate target characters than among those who assessed one of the inanimate target characters (see Table 5.4, "Beetle vs. GM" row for the MIND domain). With age, children's _MIND_ scores generally increased (see Table 5.4, "Exact age" row for the MIND domain). The difference betwen animate and inanimate characters in _MIND_ scores did not vary substantially with age (see Table 5.4, "Interaction" row for the MIND domain, and Figure 5.5, panel B, rightmost plot). However, visual inspection of Figure 5.5, panel A, suggests that there were two target characters for whom attributions of MIND did _NOT_ increase with age—namely, the two inert toys (the teddy bear and the doll). Interestingly, this plot suggests that the two technologies (the robot and the computer) appear to be among the characters for whom age-related changes in attributions of MIND may have been most dramatic—but this general trend of increasing attributions of MIND also appears to have applied to all of the animate characters.
 
-```{r}
-plots_d3_dev_char <- character_devplot(
-  df_scored_ad = d3_ad_scored_ad, 
-  df_scored_ch = full_join(d3_79_scored_ad %>% 
-                             mutate(subid = paste0(subid, "_79")),
-                           d3_46_scored_ad %>%
-                             mutate(subid = paste0(subid, "_46"))), 
-  df_age = full_join(d3_79 %>%
-                       mutate(subid = paste0(subid, "_79")),
-                     d3_46 %>%
-                       mutate(subid = paste0(subid, "_46"))))
-```
-
-```{r}
-plots_d3_dev_anim <- character_devplot(
-  df_scored_ad = d3_ad_scored_ad %>%
-    left_join(anim_lookup) %>%
-    mutate(character = anim_inan), 
-  df_scored_ch = full_join(d3_79_scored_ad %>% 
-                             mutate(subid = paste0(subid, "_79")),
-                           d3_46_scored_ad %>%
-                             mutate(subid = paste0(subid, "_46"))) %>%
-    left_join(anim_lookup) %>%
-    mutate(character = anim_inan), 
-  df_age = full_join(d3_79 %>%
-                       mutate(subid = paste0(subid, "_79")),
-                     d3_46 %>%
-                       mutate(subid = paste0(subid, "_46"))))
-```
-
 ## Discussion
 
 
@@ -746,47 +698,7 @@ As in Studies 2 and 3, to facilitate comparison between children and adults in S
 
 ## Results
 
-### Adults
-
-```{r}
-plots_d4_ad <- character_multiplot(d4_ad_scored_ad, bin_width = 1/10,
-                                   plot_labels = c("A1", "A2"))
-
-plots_d4_ad_title <- plot_grid(
-  ggdraw() + 
-    draw_label("Study 4: Adults", size = 16, 
-               fontface = 'bold', x = 0, hjust = 0),
-  plots_d4_ad,
-  ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 4, fig.asp = 1}
-# interim plot for ease of writing
-plots_d4_ad_title
-```
-
-### Children (4-5y)
-
-```{r}
-plots_d4_46 <- character_multiplot(d4_46_scored_ad, bin_width = 1/10,
-                                   plot_labels = c("B1", "B2"))
-
-plots_d4_46_title <- plot_grid(
-  ggdraw() + 
-    draw_label("Study 4: Children, 4-5y", size = 16, 
-               fontface = 'bold', x = 0, hjust = 0),
-  plots_d4_46,
-  ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 4, fig.asp = 1}
-# interim plot for ease of writing
-plots_d4_46_title
-```
-
-### Developmental comparison
-
-#### Children vs. adults
+### Children vs. adults
 
 ```{r}
 figure5.6_plots <- character_multiplot_age(
@@ -794,7 +706,7 @@ figure5.6_plots <- character_multiplot_age(
   show_anim_by_subj = T,
   age_levels = c("children46", "adults"),
   age_labels = c("Children, 4-5y", "Adults"),
-  plot_marg_upper = -50, axis_height = 0.18)
+  plot_marg_upper = -45, axis_height = 0.09)
 ```
 
 ```{r}
@@ -888,7 +800,13 @@ Again, as in Study 2, children's _HEART_ scores were also higher than adults' (s
 
 And yet again, as in Study 2, there were no substantial differences between children and adults in their _MIND_ scores (see Table 5.5 and Figure 5.6, bottom row)
 
-#### Age-related differences between 4-5y
+### Age-related differences between 4-5y
+
+```{r}
+plots_d4_dev <- character_devplot(df_scored_ad = d4_ad_scored_ad, 
+                                  df_scored_ch = d4_46_scored_ad, 
+                                  df_age = d4_46)
+```
 
 ```{r}
 figure5.7 <- plots_d4_dev +
@@ -980,12 +898,6 @@ table5.6
 Echoing the results of Studies 2 and 3, _BODY_ scores were generally higher among children who assessed the beetle (the animate target character) than among children who assessed the robot (the inanimate target character; see Table 5.6, "Beetle vs. GM" row for the BODY domain)—but this difference increased over the age range (see Table 5.6, "Interaction" row for the BODY domain, and Figure 5.7, leftmost plot). Interestingly, visual inspection of Figure 5.7 suggests that this was driven by increasing attributions of BODY to the beetle, rather than decreasing attributions to the robot—the reverse of what one might predict if preschool-age children were displaying an "animist" tendency in their mental capacity attributions.
 
 In both the HEART and MIND domains, children's scores did not differ reliably across the two target characters in this study (see Table 5.6, "Beetle vs. GM" row for the HEART and MIND domains), and did not vary reliably over the age range (see Table 5.6, "Exact age" and "Interaction" rows for the HEART and MIND domains, and Figure 5.7, center and rightmost plots).
-
-```{r}
-plots_d4_dev <- character_devplot(df_scored_ad = d4_ad_scored_ad, 
-                                  df_scored_ch = d4_46_scored_ad, 
-                                  df_age = d4_46)
-```
 
 ## Discussion
 

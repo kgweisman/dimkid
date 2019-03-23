@@ -268,3 +268,18 @@ modal_percent_fun <- function(table = diffscores_tab, which_pair, which_age_grou
   return(str)
 }
 
+# function for printing mean + CI for scores
+score_mean_print_fun <- function(table, which_factor, which_age_group,
+                                 which_character){
+  sum_tab <- table %>%
+    filter(factor == which_factor, age_group == which_age_group,
+           character == which_character) %>%
+    mutate_at(vars(ci_lower, ci_upper, mean), 
+             funs(format(round(., 2), nsmall = 2)))
+  
+  str <- paste0(sum_tab$mean, ", 95% CI: [", 
+                sum_tab$ci_lower, "-", sum_tab$ci_upper, "]")
+  
+  return(str)
+  
+}
