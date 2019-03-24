@@ -270,10 +270,19 @@ modal_percent_fun <- function(table = diffscores_tab, which_pair, which_age_grou
 
 # function for printing mean + CI for scores
 score_mean_print_fun <- function(table, which_factor, which_age_group,
-                                 which_character){
-  sum_tab <- table %>%
-    filter(factor == which_factor, age_group == which_age_group,
-           character == which_character) %>%
+                                 which_character = NA, which_anim = NA){
+  
+  if(!is.na(which_character)){
+    sum_tab <- table %>%
+      filter(factor == which_factor, age_group == which_age_group,
+             character == which_character)
+  } else {
+    sum_tab <- table %>%
+      filter(factor == which_factor, age_group == which_age_group,
+             anim_inan == which_anim)
+  }
+  
+  sum_tab <- sum_tab %>%
     mutate_at(vars(ci_lower, ci_upper, mean), 
              funs(format(round(., 2), nsmall = 2)))
   
