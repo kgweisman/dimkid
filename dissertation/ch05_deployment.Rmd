@@ -292,7 +292,6 @@ A series of Bayesian regression analyses confirmed these general impressions. Ch
 
 Taken together, these observations highlight one especially striking difference between children and adults: For both edge cases, regardless of animacy status, children attributed substantially more HEART than did adults. Indeed, fully `r round((d2_79ad_ntiles %>% filter(age_group == "adults", factor == "HEART", bin_num == 1))$prop, 2)*100`% of adults in Study 2 had _HEART_ scores < `r gsub("^.*,", "", (d2_79ad_ntiles %>% filter(age_group == "adults", factor == "HEART", bin_num == 1))$bin) %>% gsub("\\]", "", .) %>% as.numeric() %>% ceiling_dec(2)` (i.e., answered at most _one_ of the 6 _HEART_ items with a response of "KINDA," and otherwise answered "NO" to all _HEART_ items). The more uniform distribution of children's _HEART_ scores across the 0-1 range stands in stark contrast to this adult standard; see Figure 5.2, panel B.
 
-
 ### Age-related differences between 7-9y
 
 In the previous section, I compared the attributions of 7- to 9-year-old children as a group to those of adults. Here, I explore age-related differences within the child sample: How might children's attributions change over the age range included in this study? 
@@ -758,6 +757,12 @@ d4_46ad_means <- d4_46ad_scored_ad %>%
   ungroup()
 ```
 
+See Figure 5.6, panel A, for _BODY_, _HEART_, and _MIND_ scores for both target characters among the 4- to 5-year-old children and adults in Study 4. On the whole, participants' assessments of these two "edge cases" in Study 4 were similar to those of adults' and 7- to 9-year-old children in Study 2.
+
+As in Study 2, in the aggregate, both children and adults seem to have considered the beetle (the animate character) to be a being with a moderately high degree of physiological sensations (mean _BODY_ score among adults: `r score_mean_print_fun(d4_46ad_means, "BODY", "adults", "beetle")`; among children: `r score_mean_print_fun(d4_46ad_means, "BODY", "children46", "beetle")`) and perceptual-cognitive capacities (mean _MIND_ score among adults: `r score_mean_print_fun(d4_46ad_means, "MIND", "adults", "beetle")`; among children: `r score_mean_print_fun(d4_46ad_means, "MIND", "children46", "beetle")`). Adults granted relatively little in the way of social-emotional abilities to the beetle (mean _HEART_ score among adults: `r score_mean_print_fun(d4_46ad_means, "HEART", "adults", "beetle")`), but—with the older children in Study 2—children's _HEART_ scores tended to hover around the midpoint of the scale (mean: `r score_mean_print_fun(d4_46ad_means, "HEART", "children46", "beetle")`).
+
+For the robot (the inanimate character) both adults and children, in the aggregate, indicated a moderate degree of perceptual-cognitive abilities (mean _MIND_ score among adults: `r score_mean_print_fun(d4_46ad_means, "MIND", "adults", "robot")`; among children: `r score_mean_print_fun(d4_46ad_means, "MIND", "children46", "robot")`), and appeared to agree that the robot had less in the way of physiological sensations and social-emotional abilities than the beetle. However, echoing the results of Study 2, the two age groups appear to have diverged in their assessments of the absolute degree of BODY and HEART that they were willing to grant the robot: Adults granted very little in either domain (mean _BODY_ score: `r score_mean_print_fun(d4_46ad_means, "BODY", "adults", "robot")`; mean _HEART_ score: `r score_mean_print_fun(d4_46ad_means, "HEART", "adults", "robot")`), while children granted middling abilities in both domains (mean _BODY_ score: `r score_mean_print_fun(d4_46ad_means, "BODY", "children46", "robot")`; mean _HEART_ score: `r score_mean_print_fun(d4_46ad_means, "HEART", "children46", "robot")`).
+
 ```{r}
 figure5.6_plots <- character_multiplot_age(
   df_scored = full_join(d4_ad_scored_ad, d4_46_scored_ad), 
@@ -837,15 +842,13 @@ table5.5 <- devgp_table_fun(regtab_devgp = regtab_d4_devgp,
 table5.5
 ```
 
-The age comparison between 4- to 5-year-old children and adults in Study 4 yielded remarkably similar results to the parallel comparison between 7- to 9-year-old children and adults in Study 2. 
+A series of Bayesian regression analyses confirmed these overall impressions, yielding remarkably similar results to the parallel comparison between 7- to 9-year-old children and adults in Study 2. 
 
-As in Study 2, children's _BODY_ scores were generally higher than adults' (see Table 5.5, "Children vs. adults" row for the BODY domain). This appears to have been particularly true for the robot (see Figure 5.6, top row); as a result, the difference between the beetle and the robot was attenuated among children, relative to adults (see Table 5.5, "Interaction" row for the BODY domain).
-
-Again, as in Study 2, children's _HEART_ scores were also higher than adults' (see Table 5.5, "Children vs. adults" row for the HEART domain, and Figure 5.6, middle row). In Study 4, this difference between children and adults was slightly more pronounced for the robot than the beetle (see Table 5.5, "Interaction" row for the BODY domain).
-
-And yet again, as in Study 2, there were no substantial differences between children and adults in their _MIND_ scores (see Table 5.5 and Figure 5.6, bottom row)
+As in Study 2, children's _BODY_ scores were generally higher than adults' (see Table 5.5, "Children vs. adults" row for the BODY domain). This appears to have been particularly true for the robot (see Figure 5.6, top row); as a result, the difference between the beetle and the robot was attenuated among children, relative to adults (see Table 5.5, "Interaction" row for the BODY domain). Again, as in Study 2, children's _HEART_ scores were also higher than adults' (see Table 5.5, "Children vs. adults" row for the HEART domain, and Figure 5.6, middle row). In Study 4, this difference between children and adults was slightly more pronounced for the robot than the beetle (see Table 5.5, "Interaction" row for the BODY domain). And yet again, as in Study 2, there were no substantial differences between children and adults in their _MIND_ scores (see Table 5.5 and Figure 5.6, bottom row)
 
 ### Age-related differences between 4-5y
+
+Here, I explore age-related differences within the child sample: How might children's attributions change over the age range included in this study? Unlike Studies 2-3, which each included a relatively wide age range (7-9y in Study 2; 4-9y in Study 3), the age range included in Study 4 was relatively narrow, rendering it less likely to observe age-related differences. Nonetheless, based on the age group comparisons discussed in the previous sections, I expected that the most likely age-related differences to emerge would be lower _BODY_ scores, particularly for the robot; and lower _HEART_ scores for both target characters.
 
 ```{r}
 plots_d4_dev <- character_devplot(df_scored_ad = d4_ad_scored_ad, 
@@ -939,6 +942,8 @@ table5.6 <- devscore_table_fun(regtab_devscore = regtab_d4_devscore,
 ```{r, include = T}
 table5.6
 ```
+
+XX __BOOKMARK LINK TO PREVIOUS SECTION__
 
 Echoing the results of Studies 2 and 3, _BODY_ scores were generally higher among children who assessed the beetle (the animate target character) than among children who assessed the robot (the inanimate target character; see Table 5.6, "Beetle vs. GM" row for the BODY domain)—but this difference increased over the age range (see Table 5.6, "Interaction" row for the BODY domain, and Figure 5.7, leftmost plot). Interestingly, visual inspection of Figure 5.7 suggests that this was driven by increasing attributions of BODY to the beetle, rather than decreasing attributions to the robot—the reverse of what one might predict if preschool-age children were displaying an "animist" tendency in their mental capacity attributions.
 
