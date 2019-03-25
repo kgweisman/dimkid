@@ -861,3 +861,38 @@ character_devplot <- function(df_scored_ad, df_scored_ch, df_age,
   
   return(plot)
 }
+
+# function for scatter plots of attributions
+scatter_plot_fun <- function(df_scores = scores_all, 
+                             df_scores_mb =  score_all_mb,
+                             lookup = anim_lookup,
+                             which_age_group, chosen_alpha = 0.4){
+  plot <- df_scores %>%
+    left_join(lookup) %>%
+    filter(age_group == which_age_group) %>%
+    spread(factor, score) %>%
+    arrange(HEART) %>% # put highest HEART on top
+    ggplot(aes(x = BODY, y = MIND)) +
+    facet_grid(anim_inan ~ study) +
+    geom_jitter(aes(fill = HEART),
+                width = 0.05, height = 0.05, alpha = chosen_alpha, size = 3,
+                color = "black", shape = 21) +
+    geom_errorbarh(data = df_scores_mb %>% filter(age_group == which_age_group),
+                   aes(xmin = BODY_ci_lower, xmax = BODY_ci_upper),
+                   height = 0, size = 1) +
+    geom_errorbar(data = df_scores_mb %>% filter(age_group == which_age_group),
+                  aes(ymin = MIND_ci_lower, ymax = MIND_ci_upper),
+                  width = 0, size = 1) +
+    geom_point(data = df_scores_mb %>% filter(age_group == which_age_group),
+               aes(fill = HEART), shape = 23, size = 3, stroke = 1.5) +
+    geom_label(data = scatter_key %>% filter(age_group == which_age_group),
+               aes(x = NULL, y = NULL, label = character_list),
+               x = 1, y = 0, hjust = 1, size = 3, alpha = 0.7, label.size = 0) +
+    scale_fill_distiller(palette = "Spectral", 
+                         guide = guide_colorbar(barwidth = 20, barheight = 1)) +
+    labs(title = which_age_group,
+         x = "BODY score", y = "MIND score", fill = "HEART score") +
+    theme(legend.position = "bottom",
+          axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+  return(plot)
+}

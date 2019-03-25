@@ -292,3 +292,28 @@ score_mean_print_fun <- function(table, which_factor, which_age_group,
   return(str)
   
 }
+
+# another function for printing mean + CI for correlations among scores
+score_cor_by_anim_print_fun <- function(df_scores, which_pair){
+  r <- df_scores$r[df_scores$pair == which_pair]
+  CI <- df_scores$CI95[df_scores$pair == which_pair]
+  str <- paste0("r = ", r, " ", CI)
+  return(str)
+}
+
+# function for printing summary stats for scores
+stat_range_print_fun <- function(which_age_group, which_anim, which_stat,
+                                 scores_sum_df = scores_sum){
+  df <- scores_sum %>% 
+    filter(!grepl("Study 1", study),
+           age_group == which_age_group,
+           anim_inan == which_anim) %>% 
+    gather(key, value, -c(study, anim_inan, age_group)) %>%
+    filter(key == which_stat)
+  
+  stat_min <- min(df$value) %>% round(., 2) %>% format(., nsmall = 2)
+  stat_max <- max(df$value) %>% round(., 2) %>% format(., nsmall = 2)
+  str <- paste0(stat_min, "-", stat_max)
+  
+  return(str)
+}

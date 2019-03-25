@@ -318,3 +318,22 @@ score_cor_fun <- function(df_scored){
   
   return(res_cor)
 }
+
+# another function for getting correlations among scores, by animacy status
+score_cor_by_anim_fun <- function(which_age_group, which_anim,
+                                  scores_centered_df = scores_all_centered_wide){
+  res <- scores_centered_df %>% 
+    filter(age_group == which_age_group, anim_inan == which_anim) %>%
+    select(BODY, HEART, MIND) %>% 
+    corCi(plot = F) %>%
+    print() %>%
+    data.frame() %>%
+    rownames_to_column("pair") %>%
+    mutate(CI95 = paste0("[", format(round(lower.emp, 2), nsmall = 2), ", ", 
+                         format(round(upper.emp, 2), nsmall = 2), "]"),
+           nonzero = ifelse(lower.emp * upper.emp > 0, "*", ""),
+           r = format(round(estimate, 2), nsmall = 2)) %>%
+    select(pair, r, CI95, nonzero)
+  
+  return(res)
+}
