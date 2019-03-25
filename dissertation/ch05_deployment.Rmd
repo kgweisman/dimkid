@@ -973,6 +973,156 @@ children:
     - like adults and like studies 2-3, cuts across animate-inanimate distinction
     - no age differences - C.F. study 2
 
+# Extra
+
+```{r}
+library(plotly)
+```
+
+```{r, fig.width = 3, fig.asp = 0.9}
+scatter_s2 <- scores_all %>%
+  mutate(age_group = factor(age_group,
+                            levels = c("Children, 4-6y", "Children, 7-9y",
+                                       "Adults"))) %>%
+  filter(study == "Study 2") %>%
+  spread(factor, score) %>%
+  arrange(HEART) %>% # put highest HEART on top
+  ggplot(aes(x = BODY, y = MIND, fill = HEART)) +
+  facet_grid(character ~ age_group) +
+  geom_jitter(width = 0.05, height = 0.05, alpha = 0.6, size = 3,
+              color = "black", shape = 21) +
+  scale_fill_distiller(palette = "Spectral", 
+                       guide = guide_colorbar(barwidth = 20, barheight = 1)) +
+  labs(title = "Study 2",
+       x = "BODY score", y = "MIND score", fill = "HEART score") +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+```{r, fig.width = 3, fig.asp = 0.9}
+scatter_s3 <- scores_all %>%
+  mutate(age_group = factor(age_group,
+                            levels = c("Children, 4-6y", "Children, 7-9y",
+                                       "Adults"))) %>%
+  filter(study == "Study 3") %>%
+  spread(factor, score) %>%
+  left_join(anim_lookup) %>%
+  arrange(HEART) %>% # put highest HEART on top
+  ggplot(aes(x = BODY, y = MIND, fill = HEART)) +
+  facet_grid(anim_inan ~ age_group) +
+  geom_jitter(width = 0.05, height = 0.05, alpha = 0.6, size = 3,
+              color = "black", shape = 21) +
+  scale_fill_distiller(palette = "Spectral", 
+                       guide = guide_colorbar(barwidth = 20, barheight = 1)) +
+  labs(title = "Study 3",
+       x = "BODY score", y = "MIND score", fill = "HEART score") +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+```{r, fig.width = 3, fig.asp = 0.9}
+scatter_s4 <- scores_all %>%
+  mutate(age_group = factor(age_group,
+                            levels = c("Children, 4-6y", "Children, 7-9y",
+                                       "Adults"))) %>%
+  filter(study == "Study 4") %>%
+  spread(factor, score) %>%
+  arrange(HEART) %>% # put highest HEART on top
+  ggplot(aes(x = BODY, y = MIND, fill = HEART)) +
+  facet_grid(character ~ age_group) +
+  geom_jitter(width = 0.05, height = 0.05, alpha = 0.6, size = 3,
+              color = "black", shape = 21) +
+  scale_fill_distiller(palette = "Spectral", 
+                       guide = guide_colorbar(barwidth = 20, barheight = 1)) +
+  labs(title = "Study 4",
+       x = "BODY score", y = "MIND score", fill = "HEART score") +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+```{r, fig.width = 8, fig.asp = 0.4}
+plot_grid(plot_grid(scatter_s2 + theme(legend.position = "none"), 
+                    scatter_s3 + theme(legend.position = "none"), 
+                    scatter_s4 + theme(legend.position = "none"),
+                    ncol = 3, rel_widths = c(2, 2.8, 2)),
+          get_legend(scatter_s2), ncol = 1, rel_heights = c(1, 0.2))
+```
+
+```{r, fig.width = 3, fig.asp = 0.9}
+scatter_46 <- scores_all %>%
+  left_join(anim_lookup) %>%
+  filter(age_group == "Children, 4-6y") %>%
+  spread(factor, score) %>%
+  arrange(HEART) %>% # put highest HEART on top
+  ggplot(aes(x = BODY, y = MIND, fill = HEART)) +
+  facet_grid(anim_inan ~ study) +
+  geom_jitter(width = 0.05, height = 0.05, alpha = 0.6, size = 3,
+              color = "black", shape = 21) +
+  scale_fill_distiller(palette = "Spectral", 
+                       guide = guide_colorbar(barwidth = 20, barheight = 1)) +
+  labs(title = "Children, 4-6y",
+       x = "BODY score", y = "MIND score", fill = "HEART score") +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+```{r, fig.width = 3, fig.asp = 0.9}
+scatter_79 <- scores_all %>%
+  left_join(anim_lookup) %>%
+  filter(age_group == "Children, 7-9y") %>%
+  spread(factor, score) %>%
+  arrange(HEART) %>% # put highest HEART on top
+  ggplot(aes(x = BODY, y = MIND, fill = HEART)) +
+  facet_grid(anim_inan ~ study) +
+  geom_jitter(width = 0.05, height = 0.05, alpha = 0.6, size = 3,
+              color = "black", shape = 21) +
+  scale_fill_distiller(palette = "Spectral", 
+                       guide = guide_colorbar(barwidth = 20, barheight = 1)) +
+  labs(title = "Children, 7-9y",
+       x = "BODY score", y = "MIND score", fill = "HEART score") +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+```{r, fig.width = 3, fig.asp = 0.9}
+scatter_ad <- scores_all %>%
+  left_join(anim_lookup) %>%
+  filter(age_group == "Adults", !grepl("Study 1", study)) %>%
+  spread(factor, score) %>%
+  arrange(HEART) %>% # put highest HEART on top
+  ggplot(aes(x = BODY, y = MIND, fill = HEART)) +
+  facet_grid(anim_inan ~ study) +
+  geom_jitter(width = 0.05, height = 0.05, alpha = 0.6, size = 3,
+              color = "black", shape = 21) +
+  scale_fill_distiller(palette = "Spectral", 
+                       guide = guide_colorbar(barwidth = 20, barheight = 1)) +
+  labs(title = "Adults",
+       x = "BODY score", y = "MIND score", fill = "HEART score") +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1))
+```
+
+```{r}
+figure5.8_plots <- plot_grid(
+  plot_grid(scatter_46 + theme(legend.position = "none"), 
+            scatter_79 + theme(legend.position = "none"),
+            scatter_ad + theme(legend.position = "none"),
+            ncol = 3, labels = "AUTO", rel_widths = c(2, 2, 2.8)),
+  get_legend(scatter_46 + 
+               guides(fill = guide_colorbar(barheight = 0.8, barwidth = 20))),
+  ncol = 1, rel_heights = c(1, 0.2))
+```
+
+```{r}
+figure5.8_cap <- add_sub(figure5.8_plots, str_wrap("Figure 5.8: Participants' endorsements of BODY, HEART, and MIND for animate vs. inanimate characters, using adults' BODY, HEART, and MIND scales for all samples. (A) 4- to 6-year-old children in Studies 3 and 4. (B) 7- to 9-year-old children in Studies 2 and 3. (C) Adults in Studies 2-4. In Study 2, each participant assessed either an animate 'edge case' (a beetle) or an inanimate edge case (a robot). In Study 3, each participanted assessed either one of five animate characters (an elephant, a goat, a mouse, a bird, or a beetle) or one of four inanimate characters (a teddy bear, a doll, a robot, or a computer). In Study 4, each participant assessed both an animate and an inanimate 'edge case' (a beetle and a robot). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1.", 155), x = 0, hjust = 0)
+```
+
+```{r, include = T, fig.width = 7, fig.asp = 0.5}
+ggdraw(figure5.8_cap)
+```
+
+
+
 # General discussion
 
 

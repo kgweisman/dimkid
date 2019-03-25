@@ -3356,10 +3356,11 @@ figure4.11_plot <- scores_all %>%
   # mutate(score = scale(score)) %>% 
   spread(factor, score) %>%
   arrange(HEART) %>% # put highest HEART on top
-  ggplot(aes(x = BODY, y = MIND, color = HEART)) +
+  ggplot(aes(x = BODY, y = MIND, fill = HEART)) +
   facet_grid(age_group ~ study) +
-  geom_jitter(width = 0.05, height = 0.05, alpha = 0.5, size = 3) +
-  scale_color_distiller(palette = "Spectral", 
+  geom_jitter(width = 0.05, height = 0.05, alpha = 0.5, size = 3,
+              color = "black", shape = 21) +
+  scale_fill_distiller(palette = "Spectral", 
                         guide = guide_colorbar(barwidth = 30,
                                                barheight = 1)) +
   labs(x = "BODY score", y = "MIND score", color = "HEART score") +
