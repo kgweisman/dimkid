@@ -66,7 +66,14 @@ anim_lookup <- data.frame(character = levels(scores_all$character)) %>%
     anim_inan = factor(anim_inan, levels = c("animate", "inanimate")))
 ```
 
-XX
+All analyses in this chapter make use of the _BODY_, _HEART_, and _MIND_ scales developed in Chapter IV to summarize participants' respones in terms of the conceptual units identified among adults in each study (as presented in Chapter III). 
+
+For each study, I conduct two analyses of scores each of these three domains (BODY, HEART, and MIND), via Bayesian regressions. First, I compare age groups (e.g., adults vs. children), with an eye toward assessing both overall differences between age groups and differential sensitivity to the distinction between animate beings vs. inanimate objects in that domain. Second, I examine age-related differences within the child samples, again with an eye toward assessing overall increases or decreases in attributions with increasing age as well as increases or decreases in children's sensitivity to the animate-inanimate distinction in that domain. For all analyses, I conduct Bayesian regressions on raw scores (which ranged from 0-1 for each domain), including maximal random effects structures (contingent on the range of characters included in the study and the within- vs between-subjects design of the study).
+
+For two of these studies—Study 2 and Study 4, which both employed the "edge case" variant of the general empircal approach—the comparison between "animate beings" and "inanimate objects" is redundant with a full comparison of all target characters included in the study. To maximize comparability (and minimize unnecessary complexity), I have chosen to analyze Study 3 in a similar way, looking at differences between two groups of target characters (five animate beings vs. 4 inanimate objects) rather than attempting to analyze all possible differences among the nine "diverse characters" included in that study.
+
+In addition to these study-specific analyses, I include both visual and numerical summaries of findings across studies and samples in the General Discussion, as well as an addition regression analysis aimed at comparing the degree of the animate-distinction across domains (BODY, HEART, and MIND) and age groups (adults, 7- to 9-year-old children, and 4- to 6-year-old children), pooling data from Studies 2-4. This analysis again includes a maximal random effects structure (random intercepts for participants nested within studies and for specific target characters); rather than being conducted over raw scores (which ranged from 0-1), it is conducted over centered scores (centered to range from -0.5 to +0.5). See Table 5.8, caption, for more details about the coding of the parameters included in this analysis.
+
 
 # Study 2: Conceptual change between middle childhood (7-9y) and adulthood
 
@@ -952,7 +959,8 @@ table5.7 <- scores_sum %>%
          "Age group" = age_group) %>%
   rename_at(vars(starts_with("mean_"), starts_with("sd_")),
             funs(gsub("_.*$", "", .))) %>%
-  kable(digits = 2) %>%
+  kable(digits = 2,
+        caption = "Table 5.7: Summary statistics for BODY, HEART, and MIND scores in Studies 2-4, organized by the age group of participants and the animacy status of target characters.") %>%
   kable_styling() %>%
   column_spec(seq(3, 9, 2), border_left = T) %>%
   collapse_rows(1, valign = "top") %>%
@@ -961,7 +969,6 @@ table5.7 <- scores_sum %>%
   group_rows("Study 4", 11, 14) %>%
   add_header_above(c(" " = 2, "BODY" = 2, "HEART" = 2, "MIND" = 2,
                      "Correlations (Pearson's r)" = 3))
-
 ```
 
 ```{r, include = T}
@@ -1034,17 +1041,93 @@ ggdraw(figure5.8_cap)
 ```
 
 ```{r}
-r_anim <- lmer(score_centered0.5 ~ factor * anim_inan * age_group +
-                 (1 | study/subid) + (1 | character),
-               data = scores_all_centered_long %>%
-                 filter(!grepl("Study 1", study)))
+# r_anim <- brm(score_centered0.5 ~ factor * anim_inan * age_group +
+#                  (1 | study/subid) + (1 | character),
+#                data = scores_all_centered_long %>%
+#                  filter(!grepl("Study 1", study)),
+#               control = list(adapt_delta = 0.9),
+              # cores = 4)
+# 
+# saveRDS(r_anim, "./stored/brms_models/r_anim")
 
-summary(r_anim)$coefficients %>%
+r_anim <- readRDS("./stored/brms_models/r_anim")
+```
+
+```{r}
+regtab_anim <- fixef(r_anim) %>%
   data.frame() %>%
   rownames_to_column("param") %>%
-  mutate("sub" = ifelse(abs(t.value) >= 2, "*", "")) %>%
-  kable(digits = 2) %>%
-  kable_styling()
+  mutate(CI95 = paste0("[", format(round(Q2.5, 2), nsmall = 2),
+                       ", ", format(round(Q97.5, 2), nsmall = 2), "]"),
+         nonzero = ifelse(Q2.5 * Q97.5 >= 0, "*", "")) %>%
+  rename(b = Estimate, s.e. = Est.Error) %>%
+  mutate(param = factor(
+    param,
+    levels = c(
+      # BODY
+      "Intercept", 
+      "age_group_old", 
+      "age_group_yng", 
+      "anim_inan_anim_GM", # bold
+      "anim_inan_anim_GM:age_group_old", # bold
+      "anim_inan_anim_GM:age_group_yng", # bold
+      # HEART
+      "factor_heart_body", 
+      "factor_heart_body:age_group_old", 
+      "factor_heart_body:age_group_yng",
+      "factor_heart_body:anim_inan_anim_GM", # bold
+      "factor_heart_body:anim_inan_anim_GM:age_group_old", # bold
+      "factor_heart_body:anim_inan_anim_GM:age_group_yng", # bold
+      # MIND
+      "factor_mind_body",
+      "factor_mind_body:age_group_old", 
+      "factor_mind_body:age_group_yng",
+      "factor_mind_body:anim_inan_anim_GM", # bold
+      "factor_mind_body:anim_inan_anim_GM:age_group_old", # bold
+      "factor_mind_body:anim_inan_anim_GM:age_group_yng" # bold
+    ),
+    labels = c(
+      # BODY
+      "BODY, among adults (intercept)",
+      "BODY, older children (7-9y) vs. adults (main effect)", 
+      "BODY, younger children (4-6y) vs. adults (main effect)",
+      "BODY, animates vs. inanimates, among adults (main effect)",
+      "BODY, animates vs. inanimates, older children vs. adults (2-way interaction)",
+      "BODY, animates vs. inanimates, younger children vs. adults (2-way interaction)",
+      # HEART
+      "HEART vs. BODY, among adults (main effect)",
+      "HEART vs. BODY, older children (7-9y) vs. adults (2-way interaction)", 
+      "HEART vs. BODY, younger children (4-6y) vs. adults (2-way interaction)",
+      "HEART vs. BODY, animates vs. inanimates, among adults (2-way interaction)",
+      "HEART vs. BODY, animates vs. inanimates, older children vs. adults (3-way interaction)",
+      "HEART vs. BODY, animates vs. inanimates, younger children vs. adults (3-way interaction)",
+      # MIND
+      "MIND vs. BODY, among adults (main effect)",
+      "MIND vs. BODY, older children (7-9y) vs. adults (2-way interaction)", 
+      "MIND vs. BODY, younger children (4-6y) vs. adults (2-way interaction)",
+      "MIND vs. BODY, animates vs. inanimates, among adults (2-way interaction)",
+      "MIND vs. BODY, animates vs. inanimates, older children vs. adults (3-way interaction)",
+      "MIND vs. BODY, animates vs. inanimates, younger children vs. adults (3-way interaction)"
+      ))) %>%
+  select(param, b, s.e., CI95, nonzero) %>%
+  arrange(param)
+```
+
+```{r}
+table5.8 <- regtab_anim %>%
+  select(-s.e.) %>%
+  rename(Parameter = param, `95% CI` = CI95, ` ` = nonzero) %>%
+  kable(digits = 2,
+        caption = "Table 5.8: Regression analysis of distinctions between animate vs. inanimate target characters in attributions of BODY, HEART, and MIND among US adults, 7- to 9-year-old children, and 4- to 6-year-old children in Studies 2-4. In terms of fixed effects, this Bayesian regression included all main effects and interactions between factor (dummy-coded for comparisons to the BODY domain as a baseline), age group (dummy-coded for comparisons to adults as a baseline), and animacy status (effect-coded for comparisons of animate characters to the grand mean collapsing across characters). The animate-inanimate comparisons (including interactions with age group) are highlighted in bold, because these are the primary parameters of interest for these analyses. For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%
+  kable_styling() %>%
+  group_rows("BODY", 1, 6) %>%
+  group_rows("HEART", 7, 12) %>%
+  group_rows("MIND", 13, 18) %>%
+  row_spec(c(4:6, 10:12, 16:18), bold = T)
+```
+
+```{r, include = T}
+table5.8
 ```
 
 First, in the aggregate, the largest and most robust animate-inanimate distinctions among adults in these studies were in the BODY domain, for which the difference between animate vs. inanimate characters spanned at least half of the 0-1 scale across all of the studies included in this dissertation (see Figure 5.8, top row). A Bayesian regression analysis confirmed that adult participants distinguished strongly between animate vs. inanimate characters in their _BODY_ scores (see XX main effect in Table XX); collapsing across studies this distinction was still present, but substantially diminished, in the HEART and MIND domains (see XX interactions in Table XX). Visual inspection of Figure 5.8 (top row) suggests that the difference between animate and inanimate characters in _BODY_ scores was quite consistent across studies, while differences in _HEART_ and _MIND_ scores varied rather dramatically. (See also the "Robot vs. GM" and "Animate characters vs. GM" rows in Tables 5.1, 5.3, and 5.5 for differences between animate vs. inanimate characters among adults each study separately.)
