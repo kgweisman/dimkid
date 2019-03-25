@@ -40,7 +40,9 @@ source("./scripts/stored_ch04.R")
 
 # Chapter overview
 
-In this chapter, I focus on the third of my three key questions about the development of representations of mental life: _How do people of different ages deploy their conceptual representations of mental life to reason about specific entities in the world?_ Even more than other chapters, this question comes to life most vividly in the context of developmental comparisions; therefore I draw primarily on data from Studies 2-4, which included both adult and child samples; see [XX APPENDIX C?] for more on adults' responses in Studies 1a-1d. For details about the methods of all studies, see Chapter II. The goal of this chapter is to provide "snapshots" of mental capacity attributions to various target characters in early childhood, middle childhood, and adulthood, and to explore in finer-grained detail more continuous changes in children's beliefs about the mental lives of these characters between 4-9y of age, with particular attention to children's assessment of animate vs. inanimate beings.
+In this chapter, I focus on the third of my three key questions about the development of representations of mental life: _How do people of different ages deploy their conceptual representations of mental life to reason about specific entities in the world?_ Even more than other chapters, this question comes to life most vividly in the context of developmental comparisions; therefore I draw primarily on data from Studies 2-4, which included both adult and child samples; see [XX APPENDIX C?] for more on adults' responses in Studies 1a-1d. For details about the methods of all studies, see Chapter II. The goal of this chapter is to provide "snapshots" of mental capacity attributions to various target characters in early childhood, middle childhood, and adulthood, and to explore in finer-grained detail more continuous changes in children's beliefs about the mental lives of these characters between 4-9y of age.
+
+To structure this exploration, I focus in particular to age-related differences in children's and adults assessments of animate beings vs. inanimate beings. As discussed in Chapter I [XX CHECK THAT THIS IS TRUE], the animate-inanimate distinction has been the topic of extensive empirical and theoretical in both cognitive and developmental psychology, extending back at least as far as Piaget [XX CITE], with roots in some of the earliest discussions of mental life in the Western tradition [XX CITE PLATO, ARISTOTLE]. In the past few decades, empirical work on the animate-inanimate distinction has focused in particular on differences between animates vs. inanimates in their behaviors (e.g., their ability to engage in self-propelled movements [XX CITE R GELMAN] or to effect causal changes in the world [XX CITE SPELKE]), their observable properites (e.g., having eyes and faces, containing blood, having organs on the inside [XX CITE S GELMAN & OPFER]), and the biological processes that they engage in or are subjected to (e.g., growth, reproduction, death [XX CITE S GELMAN & OPFER]). Some studies have also explored children's developing understanding of the minds of animate beings—but not with the structure provided by the current analysis of naturally occurring "conceptual units." In this chapter, I aim to push this aspect of the field's understanding of the animate-inanimate distinction forward by providing a structured analysis of attributions of physiological sensations (BODY), social-emotional abilities (HEART), and perceptual-cognitive capacities (MIND) to animate vs. inanimate beings in large samples of 4- to 9-year-old US children and adults.
 
 
 # General analysis plan
@@ -318,28 +320,13 @@ Finally, _MIND_ scores were generally higher among children who assessed the rob
 
 ## Discussion
 
-XX __INSERT DISCUSSION__
+Adults in Study 2 distinguished strongly between the animate character (the beetle) vs. the inanimate character (the robot) in terms of their capacities in the BODY domain. They granted both of these "edge cases" relatively limited abilities in the HEART domain, and relatively strong abilities in the MIND domain (with the robot actually exceeding the beetle in its perceived MIND abilities).
 
-OUTLINE:
+Like adults, 7- to 9-year-old children clearly respected the animate-inaniamte distinction in their attributions of BODY abilities. Even among these relatively "old" children, however, there was room for increasing "adult-like-ness" across the age range: This distinction between the physiological sensations of a beetle vs. robot grew larger with increasing age, driven by decreases in _BODY_ scores for the robot. 
 
-adults: 
+The biggest difference between children and adults in Study 2 was in the HEART domain. Children attributed far more HEART abilities—to both the beetle and the robot—than did adults, and although this tendency decreased across the age range, it did not appear to reach adult-like levels even among the oldest children in this sample (see Figure 5.3, center panel). 
 
-  - animate-inanimate distinction strongest in the BODY domain
-  - neither edge case granted much HEART
-  - both edge cases granted fair amount of MIND
-
-children:
-
-- BODY: 
-    - animate-inanimate distinction in place
-    - but general decreases, especially for the robot (animate-inanimate distinction becomes more clear/robust)
-- HEART: biggest age differences
-    - both edge cases granted fair amount of HEART
-    - both more than adults
-    - decreases with age
-- MIND: 
-    - both edge cases granted fair amount of MIND
-    - increases with age (though no reliable group differences)
+Children's attributions of MIND to these edge cases were generally adult-like, characterized by generally high _MIND_ scores, particularly for the robot.
 
 
 # Study 3: Conceptual change over early and middle childhood (4-9y)
@@ -453,7 +440,7 @@ regtab_d3_devgp <- regtab_devgp_fun(
 
 ```{r}
 table5.3 <- devgp_table_fun(regtab_devgp = regtab_d3_devgp, 
-                            n_characters = 2, 
+                            n_characters = 9, 
                             table_name = "Table 5.3", 
                             study_name = "Study 3", 
                             age_group = "4- to 9-year-old children",
@@ -622,29 +609,14 @@ Finally, in line with the group differences in the previous section, _MIND_ scor
 
 ## Discussion
 
-XX __INSERT DISCUSSION__
+As in Study 2, adults in Study 3 distinguished very strongly between animate beings (the elephant, goat, mouse, bird, and beetle) vs. inanimate objects (the teddy bear, doll, robot, and computer) in terms of their capacities in the BODY domain: They were nearly unanimous in their denial of physiological sensations to inanimate objects, while all of the animate beings were granted a fairly high degree of BODY abilities (on average). Likewise, in the HEART domain, adults were nearly unanimous in their denial of social-emotional abilities to inanimate objects, while animate beings were perceived to vary in their HEART abilities. Finally, echoing Study 1, adults did not outright deny the possibility that some inanimate objects could have a fair degree of perceptual-cognitive abilities—but they did grant relatively _more_ MIND abilities to animate beings.
 
-OUTLINE:
+Study 3 aligned with Study 2 in providing further evidence for a robust distinction between animates vs. inanimates in the BODY domain among 7- to 9-year-old children, and extended this distinction back to younger (4- to 6-year-old children). As in Study 2, however, this distinction appears to have increased with age within this sample of children—in this case, driven both by decreases in _BODY_ scores for inanimate objects (as in Study 2) and by _increases_ in _BODY_ scores for animate beings. 
 
-adults: 
-  - like study 2, animate-inanimate distinction strongest in the BODY domain
-  - like study 2, most beings not granted much HEART: variable among the animate beings (and very little among inanimates) - harkens back to ch04
-  - all animates granted MIND—and some inanimates (technologies, like study 2)
+Again echoing Study 2, the biggest differences between children and adults in Study 3 were in the HEART domain. In this case, it was children's attributions of social-emotional abilities to inanimate objects—and in particular, the robot—that marked them as different from adulst in this study. Interestingly, this difference between "snapshots" of older and younger children vs. adults was _not_ reflected in age-related differences _within_ the child sample: If anything, _HEART_ scores among the relatively small sample of children (n = `r d3_4679_scored_ad %>% filter(character == "robot") %>% distinct(subid) %>% nrow()`) who assessed the robot appeared to have _increased_ with age (see Figure 5.5, panel A, center plot). Together with the results of Study 2, this provides some intriguing evidence that children (at least children in the San Francisco Bay Area) may have qualitatively different beliefs than adults about the possibility of social-emotional abilities in robots, perhaps reflecting cohort differences as well as any developmental changes. (I return this this possibility in Chapter VI [XX CHECK THAT THIS IS TRUE].)
 
-children:
+Finally, in contrast to Study 2, Study 3 also suggested substantial ongoing development in children's attributions of MIND, characterized by dramatic increases in _MIND_ scores with age. Like adults in this study (and like adults and 7- to 9-year-old children in Study 2), children of all ages seemed to be willing to attribute a fair degree of perceptual-cognitive abilities to inaniamte beings. Age-related differences were driven not only by increases in these attributions (which run counter-typical to the broadest or bluntest version of a general "animate-inaniamte" distinction), but also by increases in attributions of MIND to _animate_ beings (see Figure 5.5).
 
-- BODY: 
-    - animate-inanimate distinction in place even in younger age group than study 2
-    - but animate-inanimate distinction becomes more clear/robust with age
-- HEART: 
-    - like study 2, substantial child vs. adult differences (children > adults)...
-    - ...but NOT reflected in age diffs within the child samples!
-    - especially persistant: over-attributions to mouse (?), robot (increasing!)
-    - maybe HEART diffs are not _developmental_ differences?
-- MIND: 
-    - more strongly than study 2, dramatic increases with age
-    - like adults and like study 2, cuts across animate-inanimate distinction
-    
 
 # Study 4: A focus on early childhood (4-5y)
 
@@ -870,26 +842,11 @@ However, neither of these differences was present in this sample of children. In
 
 ## Discussion
 
-XX __INSERT DISCUSSION__
+Adults' attributions of BODY, HEART, and MIND to the two "edge cases" included in Study 4 were very similar to their attributions in Study 2. As in previous studies, the difference between animates vs. inanimates was dramatic in the BODY domain, smaller in the HEART domain, and in this case non-existent in the MIND domain. 
 
-OUTLINE:
+Study 4 aligned with Study 3 in providing evidence for a distinction between animate vs. inanimate characters in BODY attributions within the youngest sample tested in these studies (4- to 5-year-old children). As in previous studies, this distinction appears to have increased with age—but in contrast to previous studies, this appears to have been driven primarimly by increases in _BODY_ scores for the animate character (the beetle). 
 
-adults: 
-
-  - like studies 2-3, animate-inanimate distinction strongest in the BODY domain
-  - like study 1, edge cases not granted much HEART, but both granted fair amount of MIND
-    
-children:
-
-- BODY: 
-    - animate-inanimate distinction in place even in youngest age group (like studies 2-3)
-    - animate-inanimate distinction becomes more clear/robust with age (like studies 2-3) - but driven by INCREASE for the beetle (rather than decrease for the robot)
-- HEART: 
-    - like studies 2-3, substantial child vs. adult differences (children > adults), and no differentiation between target characters
-    - (...but not reflected in age diffs within the child sample)
-- MIND: 
-    - like adults and like studies 2-3, cuts across animate-inanimate distinction
-    - no age differences - C.F. study 2
+Like children in Studies 2 and 3, the 4- to 5-year-old children in this study generally attributed greater social-emotional abilities (HEART) to these characters, relative to adults. Finally, like the 7- to 9-year-old children in Study 2 (who also assessed these "edge cases"), the 4- to 5-year-old children demonstrated rather adult-like attributions in the MIND domain. The lack of age-related differences within the child sample in the domains of HEART and MIND should be interpreted with some caution, given the smaller sample size and more limited age range of children in Study 4 compared to Studies 2 and 3. 
 
 
 # General discussion
@@ -998,9 +955,7 @@ score_all_mb <- scores_all %>%
   rename_all(funs(gsub("_mean", "", .)))
 ```
 
-XX __INTRODUCE GENERAL DISCUSSION__
-
-In this final section, I aim to impart to the reader a sense of the bigger picture in the development of attributions of BODY, HEART, and MIND to animate beings and inanimate objects. 
+In this chapter, I focused on a third aspect of the development of conceptual representations of mental life: the deployment of these representations in assessments of particular beings in the world. I focused in particular on  analyses that might bring to light how representations of mental life interact with distinctions between animate beings vs. inanimate objects. 
 
 ## An adult endpoint
 
@@ -1130,7 +1085,7 @@ table5.8 <- regtab_anim %>%
 table5.8
 ```
 
-First, in the aggregate, the largest and most robust animate-inanimate distinctions among adults in these studies were in the BODY domain, for which the difference between animate vs. inanimate characters spanned at least half of the 0-1 scale across all of the studies included in this dissertation (see Figure 5.8, top row). A Bayesian regression analysis confirmed that adult participants distinguished strongly between animate vs. inanimate characters in their _BODY_ scores (see XX main effect in Table XX); collapsing across studies this distinction was still present, but substantially diminished, in the HEART and MIND domains (see XX interactions in Table XX). Visual inspection of Figure 5.8 (top row) suggests that the difference between animate and inanimate characters in _BODY_ scores was quite consistent across studies, while differences in _HEART_ and _MIND_ scores varied rather dramatically. (See also the "Robot vs. GM" and "Animate characters vs. GM" rows in Tables 5.1, 5.3, and 5.5 for differences between animate vs. inanimate characters among adults each study separately.)
+First, in the aggregate, the largest and most robust animate-inanimate distinctions among adults in these studies were in the BODY domain, for which the difference between animate vs. inanimate characters spanned at least half of the 0-1 scale across all of the studies included in this dissertation (see Figure 5.8, top row). A regression analysis confirmed that adult participants distinguished strongly between animate vs. inanimate characters in their _BODY_ scores (see "BODY, among adults (intercept)" row in Table 5.8); collapsing across studies this distinction was still present, but substantially diminished, in the HEART and MIND domains (see "HEART vs. BODY, animates vs. inanimates, among adults (2-way interaction)" and "MIND vs. BODY, animates vs. inanimates, among adults (2-way interaction)" rows in Table 5.8). Visual inspection of Figure 5.8 (top row) suggests that the difference between animate and inanimate characters in _BODY_ scores was quite consistent across studies, while differences in _HEART_ and _MIND_ scores varied rather dramatically. (See also the "Robot vs. GM" and "Animate characters vs. GM" rows in Tables 5.1, 5.3, and 5.5 for differences between animate vs. inanimate characters among adults each study separately.)
 
 ```{r, fig.width = 3, fig.asp = 0.9}
 scatter_46 <- scatter_plot_fun(which_age_group = "Children, 4-6y")
@@ -1166,9 +1121,9 @@ In sum, these studies suggest that—in addition to biological properties like h
 
 ## A developmental trajectory
 
-As among adults, the largest and most robust animate-inanimate distinctions among children in these studies were also in the BODY domain—but these distinctions were not quite as dramatic among children as they were among adults; see Figure 5.8, middle and bottom rows. The Bayesian regression analysis reported in the previous section confirmed that the difference in _BODY_ scores between animate vs. inanimate characters was smaller both among older children (7-9y) and particularly among younger children (4-6y) than it was among adults (see XX interactions in Table XX). Moreover, the differences in the strength of this distinction across domains were substantially attenuated, both among older children and particularly among younger children, as compared to adults (see XX interactions in Table XX). (See also the "Interaction" rows in Tables 5.1, 5.3, and 5.5 for differences in the size of the distinction between animate vs. inanimate characters among chidlren vs. adults each study separately: This varied by age group in all three studies in the BODY domain, and in one of three studies for both the HEART and MIND domains.)
+As among adults, the largest and most robust animate-inanimate distinctions among children in these studies were also in the BODY domain—but these distinctions were not quite as dramatic among children as they were among adults; see Figure 5.8, middle and bottom rows. The regression analysis reported in the previous section confirmed that the difference in _BODY_ scores between animate vs. inanimate characters was smaller both among older children (7-9y) and particularly among younger children (4-6y) than it was among adults (see "BODY, animates vs. inanimates, older children vs. adults (2-way interaction)" and "BODY, animates vs. inanimates, younger children vs. adults (2-way interaction)" interactions in Table 5.8). Moreover, the differences in the strength of this distinction across domains were substantially attenuated, both among older children and particularly among younger children, as compared to adults (see "HEART vs. BODY, animates vs. inanimates, older children vs. adults (3-way interaction)," "HEART vs. BODY, animates vs. inanimates, younger children vs. adults (3-way interaction)," "MIND vs. BODY, animates vs. inanimates, older children vs. adults (3-way interaction)," and "MIND vs. BODY, animates vs. inanimates, younger children vs. adults (3-way interaction)" rows in Table 5.8). (See also the "Interaction" rows in Tables 5.1, 5.3, and 5.5 for differences in the size of the distinction between animate vs. inanimate characters among chidlren vs. adults each study separately: This varied by age group in all three studies in the BODY domain, and in one of three studies for both the HEART and MIND domains.)
 
-In terms of variability, both older children (7-9y) and younger children (4-6y) appear, if anything, to have demonstrated the reverse pattern to that of adults: _BODY_ scores appear to have been more variable for _inanimate_ than animate characters, and _HEART_ and _MIND_ scores appear to have been roughly equally variable for animate and inanimate characters among children. Moreover, covariance relationships among these three aspects of mental life appeared to be no clearer or stronger among animates than they were among inanimates. In my view, there were no clear indications of substantial development between early and middle childhood in these aspects of the deployment of conceptual representations of mental life, suggesting that this kind of fine tuning might be ongoing well into middle childhood—perhaps into adolesence or beyond. (See Table XX for all standard deviations and correlations.) 
+In terms of variability, both older children (7-9y) and younger children (4-6y) appear, if anything, to have demonstrated the reverse pattern to that of adults: _BODY_ scores appear to have been more variable for _inanimate_ than animate characters, and _HEART_ and _MIND_ scores appear to have been roughly equally variable for animate and inanimate characters among children. Moreover, covariance relationships among these three aspects of mental life appeared to be no clearer or stronger among animates than they were among inanimates. In my view, there were no clear indications of substantial development between early and middle childhood in these aspects of the deployment of conceptual representations of mental life, suggesting that this kind of fine tuning might be ongoing well into middle childhood—perhaps into adolesence or beyond. (See Table 5.7 for all standard deviations and correlations.) 
 
 In sum, while I characterized adults as conceptualizing animate beings as entities who vary more dramatically in their BODY and HEART capacities than inanimate objects (and for whom all three aspects of mental life are more closely related), I do not consider Studies 2-4 to offer strong evidence that differences in perceived variability in mental capacities or differences in perceived relationships among different aspects of mental life are important parts of children's animate-inanimate distinction. Instead, these studies suggest that the primary role of attributions of mental life in 4- to 9-year-old children's attributions of mental life seems to be governing their "average" attributions of physiological sensations (BODY)—and to a lesser degree, social-emotional (HEART) and perceptual cognitive abilities (MIND)—to various entities in their world. 
 

@@ -45,9 +45,9 @@ devscore_table_fun <- function(regtab_devscore, n_characters,
                                ranef_subid = F){
   
   if(char_compare_label == "Animate characters vs. GM"){
-    ranef_text <- paste0("In addition to the fixed effects listed here, these regressions included random intercepts for individual target characters (n=", n_characters, "). ")
+    ranef_text <- paste0(" In addition to the fixed effects listed here, these regressions included random intercepts for individual target characters (n=", n_characters, "). ")
   } else if(ranef_subid){ # hacky, works because there are no studies with >2 char and within-subjects design...
-    ranef_text <- "In addition to the fixed effects listed here, these regressions included random intercepts for participants to account for the within-subjects design of this study. "
+    ranef_text <- " In addition to the fixed effects listed here, these regressions included random intercepts for participants to account for the within-subjects design of this study. "
   } else {
     ranef_text <- " "
   }
