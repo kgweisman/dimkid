@@ -403,12 +403,15 @@ Finally, _MIND_ scores were generally higher among children who assessed the rob
 XX __INSERT DISCUSSION__
 
 OUTLINE:
+
 adults: 
-    - animate-inanimate distinction strongest in the BODY domain
-    - neither edge case granted much HEART
-    - both edge cases granted fair amount of MIND
+
+  - animate-inanimate distinction strongest in the BODY domain
+  - neither edge case granted much HEART
+  - both edge cases granted fair amount of MIND
 
 children:
+
 - BODY: 
     - animate-inanimate distinction in place
     - but general decreases, especially for the robot (animate-inanimate distinction becomes more clear/robust)
@@ -704,12 +707,14 @@ Finally, in line with the group differences in the previous section, _MIND_ scor
 XX __INSERT DISCUSSION__
 
 OUTLINE:
+
 adults: 
-    - like study 2, animate-inanimate distinction strongest in the BODY domain
-    - like study 2, most beings not granted much HEART: variable among the animate beings (and very little among inanimates) - harkens back to ch04
-    - all animates granted MIND—and some inanimates (technologies, like study 2)
+  - like study 2, animate-inanimate distinction strongest in the BODY domain
+  - like study 2, most beings not granted much HEART: variable among the animate beings (and very little among inanimates) - harkens back to ch04
+  - all animates granted MIND—and some inanimates (technologies, like study 2)
 
 children:
+
 - BODY: 
     - animate-inanimate distinction in place even in younger age group than study 2
     - but animate-inanimate distinction becomes more clear/robust with age
@@ -848,7 +853,7 @@ As in Study 2, children's _BODY_ scores were generally higher than adults' (see 
 
 ### Age-related differences between 4-5y
 
-Here, I explore age-related differences within the child sample: How might children's attributions change over the age range included in this study? Unlike Studies 2-3, which each included a relatively wide age range (7-9y in Study 2; 4-9y in Study 3), the age range included in Study 4 was relatively narrow, rendering it less likely to observe age-related differences. Nonetheless, based on the age group comparisons discussed in the previous sections, I expected that the most likely age-related differences to emerge would be lower _BODY_ scores, particularly for the robot; and lower _HEART_ scores for both target characters.
+Here, I explore age-related differences within the child sample: How might children's attributions change over the age range included in this study? Unlike Studies 2-3, which each included a relatively wide age range (7-9y in Study 2; 4-9y in Study 3), the age range included in Study 4 was relatively narrow, rendering it less likely to observe age-related differences. Nonetheless, based on the age group comparisons discussed in the previous sections, I expected that the most likely age-related differences to emerge would be for increases in age to be associated with lower _BODY_ scores, particularly for the robot; and with lower _HEART_ scores for both target characters.
 
 ```{r}
 plots_d4_dev <- character_devplot(df_scored_ad = d4_ad_scored_ad, 
@@ -943,14 +948,30 @@ table5.6 <- devscore_table_fun(regtab_devscore = regtab_d4_devscore,
 table5.6
 ```
 
-XX __BOOKMARK LINK TO PREVIOUS SECTION__
-
-Echoing the results of Studies 2 and 3, _BODY_ scores were generally higher among children who assessed the beetle (the animate target character) than among children who assessed the robot (the inanimate target character; see Table 5.6, "Beetle vs. GM" row for the BODY domain)—but this difference increased over the age range (see Table 5.6, "Interaction" row for the BODY domain, and Figure 5.7, leftmost plot). Interestingly, visual inspection of Figure 5.7 suggests that this was driven by increasing attributions of BODY to the beetle, rather than decreasing attributions to the robot—the reverse of what one might predict if preschool-age children were displaying an "animist" tendency in their mental capacity attributions.
-
-In both the HEART and MIND domains, children's scores did not differ reliably across the two target characters in this study (see Table 5.6, "Beetle vs. GM" row for the HEART and MIND domains), and did not vary reliably over the age range (see Table 5.6, "Exact age" and "Interaction" rows for the HEART and MIND domains, and Figure 5.7, center and rightmost plots).
+However, neither of these differences was present in this sample of children. Instead, the only reliable age-related difference to emerge was an increasing differentiation of the beetle and the robot in the BODY domain, driven—surprisingly—by an _increase_ in _BODY_ scores for the beetle (rather than a decrease in _BODY_ scores for the robot). See Figure 5.7, and see Table 5.6 for the full results of these regression analyses. 
 
 ## Discussion
 
+XX __INSERT DISCUSSION__
+
+OUTLINE:
+
+adults: 
+
+  - like studies 2-3, animate-inanimate distinction strongest in the BODY domain
+  - like study 1, edge cases not granted much HEART, but both granted fair amount of MIND
+    
+children:
+
+- BODY: 
+    - animate-inanimate distinction in place even in youngest age group (like studies 2-3)
+    - animate-inanimate distinction becomes more clear/robust with age (like studies 2-3) - but driven by INCREASE for the beetle (rather than decrease for the robot)
+- HEART: 
+    - like studies 2-3, substantial child vs. adult differences (children > adults), and no differentiation between target characters
+    - (...but not reflected in age diffs within the child sample)
+- MIND: 
+    - like adults and like studies 2-3, cuts across animate-inanimate distinction
+    - no age differences - C.F. study 2
 
 # General discussion
 
@@ -958,21 +979,3 @@ In both the HEART and MIND domains, children's scores did not differ reliably ac
 # Chapter conclusion
 
 
-
-
-
-
-
-
-
-# SCRAPS
-
-## Documenting the application or deployment of conceptual representations through XX
-
-[XX CORRECT TO BE NOT ABOUT FACTOR SCORES! change from factor scores to endorsements. Factor scores don't give a sense of absolutely yes/no.]
-
-Having inferred a conceptual structure for a given group of participants via EFA, I then sought to examine attributions of mental capacities to the particular target characters included in each study within this conceptual structure: To what extent did participants attribute each of the fundamental components of mental life revealed by EFA to a given target character, and how did this attributions vary with age (either within an age group or between age groups)? 
-
-To explore this question, for each study I projected children's data into adults' conceptual space and examined "factor scores"—summaries of each participant's attributions of each of factors revealed by EFA. I used the correlation-preserving "ten Berge" method (as implemented in the "psych" package; Revelle, 2018), imputing missing values using the mean (by target character, capacity, and age group). This yielded one factor score for each of (adults') factors, for each participant. I consider these to be summaries of that person's attributions of the corresponding latent construct.
-
-I analyzed these factor scores via mixed effects Bayesian regression analyses using the "brms" package for R (Bürkner, 2017). In all of these analyses, I included the maximal random effect structures given the design for the relevant study. Further details varied by study, depending on the number of target characters included in that study, the number of factors revealed by EFA for the relevant group(s) of participants, and the goals of the analysis (e.g., comparing two age groups vs. examining continuous effects of age within one or more groups of participants).
