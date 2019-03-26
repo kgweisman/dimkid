@@ -19,7 +19,7 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 #   word_document:
 #     reference_docx: "./word-styles-reference.docx"
 # always_allow_html: yes
-   
+
 # # for knitting to .nb.html 
 # output:
 #   html_notebook:
@@ -27,3 +27,6 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 #     toc_depth: 4
 #     toc_float: yes
 ```
+
+
+
