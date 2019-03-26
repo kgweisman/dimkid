@@ -997,11 +997,11 @@ ggdraw(figure5.8_cap)
 
 ```{r}
 # r_anim <- brm(score_centered0.5 ~ factor * anim_inan * age_group +
-#                  (1 | study/subid) + (1 | character),
-#                data = scores_all_centered_long %>%
-#                  filter(!grepl("Study 1", study)),
-#               control = list(adapt_delta = 0.9),
-              # cores = 4)
+#                 (1 | study/subid) + (1 | character),
+#               data = scores_all_centered_long %>%
+#                 filter(!grepl("Study 1", study)),
+#               control = list(adapt_delta = 0.99),
+#               cores = 4)
 # 
 # saveRDS(r_anim, "./stored/brms_models/r_anim")
 
