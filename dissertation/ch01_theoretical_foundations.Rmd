@@ -28,5 +28,26 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 #     toc_float: yes
 ```
 
+# Chapter overview
 
+
+# Recent work in social psychology and affective science
+
+
+# Rich traditions in cognitive and developmental psychology
+
+
+# Ancient approaches to characterizing the "mind" or "soul"
+
+
+# The current project
+
+
+# Chapter conclusion
+
+My goal in this dissertation is to characterize the development of conceptual representations of mental life in the modern US context. In this chapter, I discussed the theoretical roots of this project. I described the current project as aiming to unite the "bottom-up" approach, sweeping scope, and attention to social consequences provided by recent advances in social psychology and affective science with the framework of "lay concepts" and "folk theories" that has emerged from cognitive and developmental psychology over the past several decades. I highlighted in particular the potential for these studies to shed new light on the development of the animate-inanimate distinction—a topic with a rich history in developmental psychology extending back to Piaget. 
+
+Indeed, the roots of this topic are even older than the field of psychology (let alone developmental psychology). Toward the end of this chapter, I drew on ancient philosophical work on the nature of the "mind" or "soul" to structure my exploration of _ordinary people's beliefs_ about the nature of mental life, and the development of these representations over early and middle childhood. In particular, I outlined three ontological questions that provide the backbone for this dissertation: (1) _What are the components, or "conceptual units," that anchor representations of mental life at different points in development?_; (2) _How are these conceptual units organized in relation to each other, and how does this organization change over development?_; and (3) _How do people of different ages deploy their conceptual representations of mental life to reason about specific entities in the world—namely, animate beings vs. inanimate objects?_ 
+
+In Chapters III-V, I address each of these three key questions in turn, applying a series of analyses to a set of large-scale studies with US adults and 4- to 9-year-old children. First, in Chapter II, I provide an overview of the general empirical approach I have employed in these explorations of representations of mental life, as well as the specific methods of each of the four studies included in this dissertation.
 
