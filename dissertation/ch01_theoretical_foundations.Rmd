@@ -28,26 +28,50 @@ knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
 #     toc_float: yes
 ```
 
-# Chapter overview
+The act of attributing mental life to other beings in the world is a fundamental part of human experience: From early in life, we look at others around us and see not just physical objects, but people, minds, with sensations, emotions, thoughts, and memories of their own. Viewing others in this way lays the foundation for our social lives and our behavior toward others. We might infer our friends’ goals and try to help, or identify things that others have forgotten or misunderstood and correct them; we delight in each other’s happiness, seek comfort from each other in times of sadness, and plan our actions to avoid (or to appear to avoid) causing others emotional or physical pain. In this sense, representations of mental life are at the core of human social life.
+
+But mental life is complex, encompassing a wide range of experiences and abilities that stand in complicated relationships to each other and play a wide range of roles in the behaviors of and interactions between social beings. Capacities for perception, beliefs, desires, goals, thoughts, emotions, physiological sensations, and other mental states have some things in common—e.g., these mental states are commonly experienced as occurring privately "inside" an individual, without being directly accessible to anyone else (although they might facial expressions, words, actions, and other publicly observable behaviors)—but mental states also differ along many dimensions. Some mental states are closely related to specific bodily organs (e.g., people see things with their eyes, feel hunger in their stomachs), and others less obviously so (where do people experience belief?). Some are positively or negatively valenced (e.g., pain feels bad, happiness feels good), others are more neutral, or vary in valence depending on the circumstance (thought, olfaction). Some mental states involve taking in information about the environment (e.g., seeing, hearing), while others involve storing or updating that information (remembering, learning), or using it to bring about changes in the external world (planning, making choices). In a given social context, certain mental states might be considered more appropriate or socially productive than others (e.g., love vs. anger, guilt vs. pride, excitement vs. contentment [XX CITE TSAI on ideal affect]). And people might believe that certain mental capacities are shared by a wide range of entities (e.g., even insects might experience some kind of hunger; even robots might have a capacity for "memory," in some sense), while others are limited to a smaller subset of beings (perhaps only humans experience embarrassment) [XX CITE HASLAM on uniquely human].
+
+This makes conceptual representations of mental life a fascinating case study of abstract reasoning and its development: How do people come to represent this complex conceptual space? This question has deep roots in cognitive and developmental psychology—but in attempting to address it, I draw inspiration from both ancient philosophers and modern social psychologists. In the following sections, I discuss the theoretical foundations of my approach, beginning with recent advances in social psychology and affective science.
 
 
-# Recent work in social psychology and affective science
+# Theoretical foundations
+
+## Recent advances in social psychology and affective science
+
+XX
+
+## Rich traditions in cognitive and developmental psychology
+
+XX
+
+## Ancient approaches to characterizing the "mind" or "soul"
+
+XX
 
 
-# Rich traditions in cognitive and developmental psychology
+# The current project: Exploring development in three aspects of conceptual representations of mental life
+
+My goal in this dissertation is to characterize the development of conceptual representations of mental life in the modern US context. I aim to unite the "bottom-up" approach and sweeping scope provided by recent advances in social psychology and affective science (reviewed in the first section of this chapter, "Recent advances in social psychology and affective science"), with the framework of "lay concepts" and "folk theories" that has emerged from cognitive and developmental psychology over the past several decades (reviewed in the second section, "Rich traditions in cognitive and developmental psychology"). In addition to providing a case study of abstract reasoning and its development, I believe this work has the potential to shed new light on the development of the animate-inanimate distinction—a topic with a rich history in psychology extending back to Piaget. 
+
+Indeed, the roots of this topic are even older than the field of psychology itself. Drawing inspiration from the works of  Plato, Aristotle, and the Buddha on the nature of the "mind" or "soul," I structure my exploration of _ordinary people's beliefs_ about the nature of mental life around three ontological questions that provide the backbone for this dissertation.
+
+## Question #1: _What are the components, or "conceptual units," that anchor representations of mental life at different points in development?_
+
+As described early in this chapter ("Ancient approaches to characterizing the 'mind' or 'soul'"), XX.
+
+## Question #2: _How are these conceptual units organized in relation to each other, and how does this organization change over development?_
+
+As described early in this chapter ("Ancient approaches to characterizing the 'mind' or 'soul'"), XX.
+
+## Question #3: _How do people of different ages deploy their conceptual representations of mental life to reason about specific entities in the world—namely, animate beings vs. inanimate objects?_ 
+
+As described early in this chapter ("Ancient approaches to characterizing the 'mind' or 'soul'"), XX.
 
 
-# Ancient approaches to characterizing the "mind" or "soul"
+# Overview
 
+The remainder of this dissertation is devoted to describing empirical findings that, I believe, shed light on each of these three key questions about conceptual representations of mental life in the modern US context. I begin by identifying "conceptual units" at three points in development: early childhood (4-6y), middle chidlhood (7-9y), and adulthood (Chapter III). Next, I explore the relationships among these conceptual units, and how these relationships might evolve and change over this period of development (Chapter IV). I then consider the deployment or application of these conceptual representations in one aspect of social reasoning, using the apparent conceptual structure established in Chapters III-IV to shed light on children's developing mental capacity attributions to animate beings vs. inaimate objects (Chatper V). Finally, I synthesize my findings from these three lines of inquiry and step back to reflect on how these three aspects of conceptual development might be related to one other, what this case study of representations of mental life might reveal about conceptual development more broadly, and the potential consequences of these representations of mental life in children's social development (Chapter VI). 
 
-# The current project
-
-
-# Chapter conclusion
-
-My goal in this dissertation is to characterize the development of conceptual representations of mental life in the modern US context. In this chapter, I discussed the theoretical roots of this project. I described the current project as aiming to unite the "bottom-up" approach, sweeping scope, and attention to social consequences provided by recent advances in social psychology and affective science with the framework of "lay concepts" and "folk theories" that has emerged from cognitive and developmental psychology over the past several decades. I highlighted in particular the potential for these studies to shed new light on the development of the animate-inanimate distinction—a topic with a rich history in developmental psychology extending back to Piaget. 
-
-Indeed, the roots of this topic are even older than the field of psychology (let alone developmental psychology). Toward the end of this chapter, I drew on ancient philosophical work on the nature of the "mind" or "soul" to structure my exploration of _ordinary people's beliefs_ about the nature of mental life, and the development of these representations over early and middle childhood. In particular, I outlined three ontological questions that provide the backbone for this dissertation: (1) _What are the components, or "conceptual units," that anchor representations of mental life at different points in development?_; (2) _How are these conceptual units organized in relation to each other, and how does this organization change over development?_; and (3) _How do people of different ages deploy their conceptual representations of mental life to reason about specific entities in the world—namely, animate beings vs. inanimate objects?_ 
-
-In Chapters III-V, I address each of these three key questions in turn, applying a series of analyses to a set of large-scale studies with US adults and 4- to 9-year-old children. First, in Chapter II, I provide an overview of the general empirical approach I have employed in these explorations of representations of mental life, as well as the specific methods of each of the four studies included in this dissertation.
+First, in Chapter II, I provide an overview of my general empirical approach and the specific methods I employed in the four large-scale studies included in this dissertation.
 
