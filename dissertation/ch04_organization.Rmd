@@ -598,6 +598,10 @@ regtab_study1abc <- regtab_d1a_ad_scored_ad_diff %>%
   mutate_at(vars(b, s.e.),
             funs(format(round(., digits = 2), nsmall = 2))) %>%
   unite(result, b, s.e., CI95, nonzero) %>%
+  mutate(study = factor(study,
+                        levels = c("Study 1a",
+                                   "Study 1b",
+                                   "Study 1c"))) %>%
   spread(study, result) %>%
   separate(`Study 1a`, c("s1a_b", "s1a_s.e.", "s1a_95% CI", "s1a_nz"), sep = "_") %>%
   separate(`Study 1b`, c("s1b_b", "s1b_s.e.", "s1b_95% CI", "s1b_nz"), sep = "_") %>%
@@ -1537,6 +1541,10 @@ regtab_study2 <- regtab_d2_ad_scored_ad_diff %>%
   mutate_at(vars(b, s.e.),
             funs(format(round(., digits = 2), nsmall = 2))) %>%
   unite(result, b, s.e., CI95, nonzero) %>%
+  mutate(study = factor(study,
+                        levels = c("Adults",
+                                   "Children, 7-9y (using adults' scales)",
+                                   "Children, 7-9y (using their own scales)"))) %>%
   spread(study, result) %>%
   separate(`Adults`, c("s2a_b", "s2a_s.e.", "s2a_95% CI", "s2a_nz"), sep = "_") %>%
   separate(`Children, 7-9y (using adults' scales)`, c("s2b_b", "s2b_s.e.", "s2b_95% CI", "s2b_nz"), sep = "_") %>%
@@ -2286,11 +2294,15 @@ regtab_study3 <- regtab_d3_ad_scored_ad_diff %>%
   full_join(regtab_d3_46_scored_ad_diff) %>%
   mutate_at(vars(b, s.e.),
             funs(format(round(., digits = 2), nsmall = 2))) %>%
+  mutate(study = factor(study,
+                        levels = c("Adults",
+                                   "Children, 7-9y (using adults' scales)",
+                                   "Children, 4-6y (using adults' scales)"))) %>%
   unite(result, b, s.e., CI95, nonzero) %>%
   spread(study, result) %>%
-  separate(`Adults`, c("s2a_b", "s2a_s.e.", "s2a_95% CI", "s2a_nz"), sep = "_") %>%
-  separate(`Children, 7-9y (using adults' scales)`, c("s2b_b", "s2b_s.e.", "s2b_95% CI", "s2b_nz"), sep = "_") %>%
-  separate(`Children, 4-6y (using adults' scales)`, c("s2c_b", "s2c_s.e.", "s2c_95% CI", "s2c_nz"), sep = "_")
+  separate(`Adults`, c("s3a_b", "s3a_s.e.", "s3a_95% CI", "s3a_nz"), sep = "_") %>%
+  separate(`Children, 7-9y (using adults' scales)`, c("s3b_b", "s3b_s.e.", "s3b_95% CI", "s3b_nz"), sep = "_") %>%
+  separate(`Children, 4-6y (using adults' scales)`, c("s3c_c", "s3c_s.e.", "s3c_95% CI", "s3c_nz"), sep = "_")
 ```
 
 ```{r}
@@ -2298,7 +2310,7 @@ table4.6 <- regtab_study3 %>%
   select(-pair, -contains("s.e.")) %>%
   rename(Parameter = param) %>%
   rename_all(funs(gsub("nz", " ", .))) %>%
-  rename_all(funs(gsub("s2._", "", .))) %>%
+  rename_all(funs(gsub("s3._", "", .))) %>%
   kable(format = "html", align = c("l", rep(c(rep("r", 2), "l"), 3)), 
         caption = "Table 4.6: Regression analyses of difference scores among US adults, older children (7-9y of age), and younger children (4-6y of age) in Study 3. The table presents results from separate Bayesian regressions of each pair of conceptual units (BODY vs. HEART, BODY vs. MIND, and HEART vs. MIND). Each regression included nine fixed effect parameters: (1) the intercept, which I treat as an index of the asymmetry in attributions of the two conceptual units in question; and (2-9) a set of parameters estimating the difference between target characters and the grand mean (GM). The intercepts are highlighted in bold, because these are the primary parameters of interest for these analyses. For each parameter, the table includes the estimate (b) and a 95% credible interval for that estimate. Asterisks indicate 95% credible intervals that do not include 0.") %>%  
   kable_styling() %>%
@@ -2864,6 +2876,9 @@ regtab_study4 <- regtab_d4_ad_scored_ad_diff %>%
   mutate_at(vars(b, s.e.),
             funs(format(round(., digits = 2), nsmall = 2))) %>%
   unite(result, b, s.e., CI95, nonzero) %>%
+  mutate(study = factor(study,
+                        levels = c("Adults",
+                                   "Children, 4-5y (using adults' scales)"))) %>%
   spread(study, result) %>%
   separate(`Adults`, c("s4a_b", "s4a_s.e.", "s4a_95% CI", "s4a_nz"), sep = "_") %>%
   separate(`Children, 4-5y (using adults' scales)`, c("s4b_b", "s4b_s.e.", "s4b_95% CI", "s4b_nz"), sep = "_")
