@@ -33,14 +33,43 @@ XX __INTRODUCE DISCUSSION__
 
 # Synthesis: What have we learned about representations of mental life?
 
-## Multiple dimensions of development: Conceptual units, their organization, and their deployment
+## Conceptual units, their organization, and their deployment
+
+OUTLINE
+
+- Summary
+    - Conceptual units: 
+        - Some time during early childhood: HEART differentitation from BODY (& MIND)
+        - By middle childhood: robust, adult-like distinctions
+    - Organization:
+        - From early on: BODY & MIND more basic than HEART
+        - Throughout early and into middle childhood: BODY & MIND come to be equally basic (rather than BODY more basic than MIND)
+        - Throughout middle childhood (and perhaps beyond): HEART comes to be seen as jointly dependent on BODY + MIND
+    - Deployment:
+        - From early on: BODY, HEART, & MIND all inform animate-inanimate distinction
+        - Through middle childhood (and perhaps beyond): Each comes to play a distinct role: BODY necessary + sufficient, HEART necessary but not sufficient, MIND merely correlated
+        - Extending into middle childhood (and perhaps beyond): General tendecies to over-attribute HEART, under-attribute MIND
+- Synthesis/speculation
+    - Interplay between conceptual units & organization: each informs the other.
+        - e.g., hiearchy as a precursor of distinction: for BODY/HEART, some evidence that younger children are treating BODY as more basic than HEART even before they are treating BODY as _distinct_ from HEART
+        - e.g., distinction as a precursor of hierarchy: for both BODY/HEART and MIND/HEART, evidence for robust distinctions among older children but hierarchy not nearly as strict as adults
+    - Priority of ontology (units/organization) before deployment
+        - older children seem very adultlike in units, rather adultlike in organization (but less strict, and no joint dependency), and least adultlike in deployment (quite adultlike, but less strict, in animate-inanimate distinction, but marked over-attribution of HEART, especially to "edge cases")
+        - over-attribution of HEART to animates (evident in early childhood and through middle childhood, declines but not to adult levels): A relic of the recent differentiation of HEART from BODY—in combination with a lack of joint dependency on BODY _and_ MIND
+        - over-attribution of HEART to inanimates (mostly robot!): A relic of the recent "release" of HEART from MIND? (some intriguing hints that these attributions might actually increase over early childhood (S3))—in combination with a lack of joint dependency on MIND _and_ BODY
+        - under-attribution of MIND to both animates and inanimates (becomes more adultlike with age in S2, S3): ?? I don't have a strong intuition on this—might require further study—but it's noteworthy given that MIND is probably the most adult-like unit from early on (but maybe that's because it's the stuff that children _don't_ attribute!). Could children think of this stuff as primarily _human_? (cf. Haslam)
+
 
 ## "Edge cases" vs. "diverse characters" approaches
+
+## Parallels in other conceptual domains
 
 
 # Social consequences
 
 ## BODY, HEART, and MIND as "lenses" through which to view a being
+
+## Lenses, or theories of (motivated) action?
 
 ## Reasoning about extraordinary beings
 
@@ -53,7 +82,6 @@ XX __INTRODUCE DISCUSSION__
 
 ## From conceptual structure to folk theory
 
-## Parallels in other conceptual domains
 
 
 
