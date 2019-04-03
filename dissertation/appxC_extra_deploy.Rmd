@@ -41,8 +41,8 @@ source("./scripts/stored_ch04.R")
 
 In this appendix, XX
 
-```{r, include = T, fig.width = 6, fig.asp = 0.8}
-scores_all %>%
+```{r}
+figure_temp <- scores_all %>%
   filter(!grepl("Study 1", study)) %>%
   # filter(study == "Study 2") %>%
   left_join(d2_79 %>% distinct(subid, age) %>%
@@ -69,28 +69,8 @@ scores_all %>%
   labs(x = "Age bin (roughly even cuts between 4-9y)", y = "Mean score")
 ```
 
-
-```{r}
-scores_sum <- scores_all_centered_wide %>%
-  group_by(age_group, study, anim_inan) %>%
-  summarise(mean_B = mean(BODY),
-            mean_H = mean(HEART),
-            mean_M = mean(MIND),
-            # var_B = var(BODY),
-            # var_H = var(HEART),
-            # var_M = var(MIND),
-            sd_B = sd(BODY),
-            sd_H = sd(HEART),
-            sd_M = sd(MIND),
-            r_BH = cor(BODY, HEART),
-            r_BM = cor(BODY, MIND),
-            r_HM = cor(HEART, MIND)) %>%
-  filter(!grepl("Study 1", study)) %>%
-  select(study, anim_inan, age_group, 
-         ends_with("_B"), ends_with("_H"), ends_with("_M"),
-         starts_with("r_")) %>%
-  arrange(study, anim_inan, age_group) %>%
-  ungroup()
+```{r, include = T, fig.width = 6, fig.asp = 0.8}
+figure_temp
 ```
 
 ```{r}
