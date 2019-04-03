@@ -104,26 +104,54 @@ In terms of general age-related differences in attributions beyond the animate-i
 
 In my view, this particular aspect of conceptual representations of mental life—what I have called their "deployment" or application to specific real-world cases—is best captured by the "diverse characters" variant of the experimental approach. I believe including a wider range of target characters provides a more comprehensive and ecologically valid picture of the deployment of this conceptual structure, because it includes more of the range of entities that are the primary targets of reasoning about mental life in the course of most people's ordinary lives; if anything I would suggest that future studies with children aim to include an even more "diverse" set of characters (e.g., a wider range of inanimates, including non-anthropomorphic inert objects; a wider range of animtes, including humans). (Of course, for the particular purpose of exploring how children may make sense of _extraordinary_ entities—e.g., novel "social" technologies, like robots—the "edge case" variant of the experimental approach is invaluable; see [XX INSERT SUBHEADING], below.)
 
-## Parallels in other conceptual domains
+# Applications to other conceptual domains
+
+OUTLINE
+
+- Importance of investigating "lay ontologies" in addition to lay theories
+    - harkens back to Plato et al (see Chapter I)
+    - also coming into vogue in other areas in psychology (e.g., Poldrak)
+    - let's do this in development!
+- Utility of a bottom-up approach
+    - for mapping out lay ontologies (again, see Poldrak; also, see social psych, incl. Gray et al., Haslam, Nook; see old cognitive psych, incl. Rips & Conrad, Fabricius)
+    - for charting the development of lay ontologies (see Nook, Fabricius, but very few others)
 
 
-# Social consequences
+# Implications for social development
 
 ## BODY, HEART, and MIND as "lenses" through which to view a being
 
-## Lenses, or theories of (motivated) action?
+OUTLINE: (Weisman, in revision, Psych Review)
 
-## Reasoning about extraordinary beings
+- Candidate lenses for US adults
+    - BODY: As an animal with biological needs & drives, capaciaties for self-initiated behavior
+    - HEART: As a social partner with emotions, relationships, moral status (agency/patiency)
+    - MIND: As a planful agent navigating efficiently through an environment in pursuit of goals
+- Some more basic or common; others acquired, distinguished, or refined through (cultural, social) experience over early and middle childhood (and beyond)
+    - Possible developmental trajectory for US children: "SOCIAL PARTNER" not differentiated from ANIMAL/AGENT at first? combination of the two? predictions for infant work...
+- Another gloss: parallel theories of (motivated) action? (Schank & Abelson, 1977;… Dweck, 2017; Gross, XX, Ong, Zaki, & Goodman, 2015):
+
+## Reasoning about animates, inanimates, and extraordinary beings
+
+OUTLINE
+
+- sheds new light on animate-inanimate distinction & its development
+- Robots (Weisman, in revision, Psych Review)
+- Supernatural beings (Weisman, Legare, & Luhrmann, in prep)
 
 
-# Open questions
+# The biggest open question: What drives these changes? 
 
-## What drives these changes? 
+OUTLINE
 
-## Development before and after 4-10y
-
-## From conceptual structure to folk theory
-
-
-
+- Extended development suggests input & socialization may play especially large roles in conceptual development in this domain
+- Intriguing alignments with cross-cultural differences (Weisman, Legare, & Luhrmann)
+- Speculation about possible sources of input
+    - for units
+        - "regulation" socialization
+        - cultural valuing/devaluing (e.g., of BODY, of HEART)
+    - for organization
+        - extraordinary beings (religious/spiritual input? tech?)
+    - for deployment
+        - extraordinary beings, again? other sources?
 
