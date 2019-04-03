@@ -884,55 +884,6 @@ contrasts(scores_all_centered_wide$anim_inan) <- contrasts_sum2_anim
 ```
 
 ```{r}
-scores_sum <- scores_all_centered_wide %>%
-  group_by(age_group, study, anim_inan) %>%
-  summarise(mean_B = mean(BODY),
-            mean_H = mean(HEART),
-            mean_M = mean(MIND),
-            # var_B = var(BODY),
-            # var_H = var(HEART),
-            # var_M = var(MIND),
-            sd_B = sd(BODY),
-            sd_H = sd(HEART),
-            sd_M = sd(MIND),
-            r_BH = cor(BODY, HEART),
-            r_BM = cor(BODY, MIND),
-            r_HM = cor(HEART, MIND)) %>%
-  filter(!grepl("Study 1", study)) %>%
-  select(study, anim_inan, age_group, 
-         ends_with("_B"), ends_with("_H"), ends_with("_M"),
-         starts_with("r_")) %>%
-  arrange(study, anim_inan, age_group) %>%
-  ungroup()
-```
-
-```{r}
-table5.7 <- scores_sum %>%
-  select(-study) %>%
-  rename("BODY vs. HEART" = r_BH, 
-         "BODY vs. MIND" = r_BM, 
-         "HEART vs. MIND" = r_HM,
-         "Animacy status" = anim_inan, 
-         "Age group" = age_group) %>%
-  rename_at(vars(starts_with("mean_"), starts_with("sd_")),
-            funs(gsub("_.*$", "", .))) %>%
-  kable(digits = 2,
-        caption = "Table 5.7: Summary statistics for BODY, HEART, and MIND scores in Studies 2-4, organized by the age group of participants and the animacy status of target characters.") %>%
-  kable_styling() %>%
-  column_spec(seq(3, 9, 2), border_left = T) %>%
-  collapse_rows(1, valign = "top") %>%
-  group_rows("Study 2", 1, 4) %>%
-  group_rows("Study 3", 5, 10) %>%
-  group_rows("Study 4", 11, 14) %>%
-  add_header_above(c(" " = 2, "BODY" = 2, "HEART" = 2, "MIND" = 2,
-                     "Correlations (Pearson's r)" = 3))
-```
-
-```{r, include = T}
-table5.7
-```
-
-```{r}
 scatter_key <- scores_all %>%
   distinct(study, age_group, character) %>%
   left_join(anim_lookup) %>%
@@ -965,7 +916,7 @@ Taken together, these studies shed new light on the role of attributions of ment
 figure5.7_plot <- ggplot(scores_all_centered_long,
        aes(x = study, y = score, group = anim_inan, color = anim_inan,
            shape = design)) +
-  facet_grid(age_group ~ factor) +
+  facet_grid(factor ~ age_group, scales = "free", space = "free") +
   geom_point(alpha = 0.1, shape = "circle",
              position = position_jitterdodge(jitter.width = 0.5,
                                              jitter.height = 0.05,
@@ -983,15 +934,16 @@ figure5.7_plot <- ggplot(scores_all_centered_long,
                      values = c(16, 15, 17),
                      guide = guide_legend(override.aes = list(alpha = 1))) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
-        legend.position = "bottom") +
+        legend.position = "bottom",
+        legend.direction = "vertical") +
   labs(x = "Study", y = "Score")
 ```
 
 ```{r}
-figure5.7_cap <- add_sub(figure5.7_plot, str_wrap("Figure 5.7: Differention of animate vs. inanimate characters in participants' endorsements of BODY, HEART, and MIND across studies and age groups, using adults' BODY, HEART, and MIND scales for all samples. In Studies 1a, 1b, and 2, each participant assessed either an animate 'edge case' (a beetle) or an inanimate edge case (a robot). In Study 1c and Study 4, each participant assessed both an animate and an inanimate 'edge case' (a beetle and a robot). In Study 1d, each participant assessed either one of 17 animate beings (adult, child, infant, person in a persistent vegetative state, fetus, chimpanzee, elephant, dolphin, bear, dog, goat, mouse, frog, blue jay, fish, beetle, or microbe) or one of four inanimate objects (robot, computer, car, stapler); similarly, in Study 3, each participant assessed either one of five animate characters (elephant, goat, mouse, bird, or beetle) or one of four inanimate characters (teddy bear, doll, robot, or computer). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as translucent circles, and mean scores are plotted as larger, solid black points. Error bars are 95% bootstrapped confidence intervals.", 130), x = 0, hjust = 0)
+figure5.7_cap <- add_sub(figure5.7_plot, str_wrap("Figure 5.7: Differention of animate vs. inanimate characters in participants' endorsements of BODY, HEART, and MIND across studies and age groups, using adults' BODY, HEART, and MIND scales for all samples. In Studies 1a, 1b, and 2, each participant assessed either an animate 'edge case' (a beetle) or an inanimate edge case (a robot). In Study 1c and Study 4, each participant assessed both an animate and an inanimate 'edge case' (a beetle and a robot). In Study 1d, each participant assessed either one of 17 animate beings (adult, child, infant, person in a persistent vegetative state, fetus, chimpanzee, elephant, dolphin, bear, dog, goat, mouse, frog, blue jay, fish, beetle, or microbe) or one of four inanimate objects (robot, computer, car, stapler); similarly, in Study 3, each participant assessed either one of five animate characters (elephant, goat, mouse, bird, or beetle) or one of four inanimate characters (teddy bear, doll, robot, or computer). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as translucent circles, and mean scores are plotted as larger, solid black points. Error bars are 95% bootstrapped confidence intervals.", 80), x = 0, hjust = 0)
 ```
 
-```{r, include = T, fig.width = 6, fig.asp = 0.8}
+```{r, include = T, fig.width = 4, fig.asp = 1.3}
 ggdraw(figure5.7_cap)
 ```
 
@@ -1113,20 +1065,23 @@ figure5.8_cap <- add_sub(figure5.8_plots, str_wrap("Figure 5.8: Participants' en
 ggdraw(figure5.8_cap)
 ```
 
-Beyond this, there appear to be have been differences between animate vs. inanimate characters in the _variability_ of adults' BODY, HEART, and MIND attributions. In each study, adults' attributions of to animate beings varied widely along all three dimensions: BODY, HEART, and MIND (see Figure 5.7, top row, Figure 5.8, panel C, top row, and Table 5.7 for standard deviations across study, animacy status, and domain). This variability has several possible sources, including differences in opinions or beliefs across individual participants (especially relevant for attributions to the animate "edge case"—the beetle—in Studies 1a, 1b, 1c, 2, and 4), as well as differences in the (perceived) mental capacity profiles of different animate beings (especially relevant for attributions to the "diverse characters" featured in Study 1d and Study 3). Moreover, these attributions appear to have varied in tandem (see Table 5.7 and Figure 5.8). _BODY_ and _MIND_ scores for animate beings were particularly strongly correlated (Pearson's r = `r stat_range_print_fun("Adults", "animate", "r_BM")` across Studies 2-4), and scores for each of these more "basic" conceptual units (per Chapter IV) were also correlated quite strongly with _HEART_ scores (BODY vs. HEART: r = `r stat_range_print_fun("Adults", "animate", "r_BH")`; MIND vs. HEART: r = `r stat_range_print_fun("Adults", "animate", "r_HM")`). Indeed—to pick up on a thread from the General Discussion in Chapter IV—attributions of HEART to animate beings appear to have been _jointly_ dependent on attributions of _both_ BODY and MIND; see Figure 5.8, panel C, in which strong _HEART_ scores are present only among participants who received strong _BODY_ and _MIND_ scores—i.e., reddish points are only present in the upper right corner of the plot (and see [XX APPENDIX C?] for relevant regression analyses). 
+Beyond this, there appear to be have been differences between animate vs. inanimate characters in the _variability_ of adults' BODY, HEART, and MIND attributions. In each study, adults' attributions of to animate beings varied widely along all three dimensions: BODY, HEART, and MIND (see Figure 5.7, top row, Figure 5.8, panel C, top row, and [XX APPENDIX C TABLE] for standard deviations across study, animacy status, and domain). This variability has several possible sources, including differences in opinions or beliefs across individual participants (especially relevant for attributions to the animate "edge case"—the beetle—in Studies 1a, 1b, 1c, 2, and 4), as well as differences in the (perceived) mental capacity profiles of different animate beings (especially relevant for attributions to the "diverse characters" featured in Study 1d and Study 3). Moreover, these attributions appear to have varied in tandem (see Figure 5.8 and [XX APPENDIX C TABLE]). _BODY_ and _MIND_ scores for animate beings were particularly strongly correlated (Pearson's r = `r stat_range_print_fun("Adults", "animate", "r_BM")` across Studies 2-4), and scores for each of these more "basic" conceptual units (per Chapter IV) were also correlated quite strongly with _HEART_ scores (BODY vs. HEART: r = `r stat_range_print_fun("Adults", "animate", "r_BH")`; MIND vs. HEART: r = `r stat_range_print_fun("Adults", "animate", "r_HM")`). Indeed—to pick up on a thread from the General Discussion in Chapter IV—attributions of HEART to animate beings appear to have been _jointly_ dependent on attributions of _both_ BODY and MIND; see Figure 5.8, panel C, in which strong _HEART_ scores are present only among participants who received strong _BODY_ and _MIND_ scores—i.e., reddish points are only present in the upper right corner of the plot (and see [XX APPENDIX C?] for relevant regression analyses). 
 
-Meanwhile, adults' attributions to inanimate objects (Figure 5.8, panel C, bottom row) varied particularly strongly in the MIND domain, but seemingly less in the domains of BODY and HEART (see also Table 5.7). Among inanimate objects, _BODY_ and _HEART_ scores were particularly strongly correlated (Pearson's r = `r stat_range_print_fun("Adults", "inanimate", "r_BH")` across Studies 2-4)—but high scores in either of these two domains were quite rare. Scores for the two more "basic" conceptual units (per Chapter IV), _BODY_ and _MIND_, were only weakly correlated (Pearson's r = `r stat_range_print_fun("Adults", "inanimate", "r_BM")` across Studies 2-4), and _MIND_ and _HEART_ scores were virtually independent (MIND vs. HEART: r = `r stat_range_print_fun("Adults", "inanimate", "r_HM")`). (See [XX APPENDIX C?] for regression analyses exploring the possibility of joint dependency of HEART on BODY and MIND among inanimate objects.)
+Meanwhile, adults' attributions to inanimate objects (Figure 5.8, panel C, bottom row) varied particularly strongly in the MIND domain, but seemingly less in the domains of BODY and HEART (see also [XX APPENDIX C TABLE]). Among inanimate objects, _BODY_ and _HEART_ scores were particularly strongly correlated (Pearson's r = `r stat_range_print_fun("Adults", "inanimate", "r_BH")` across Studies 2-4)—but high scores in either of these two domains were quite rare. Scores for the two more "basic" conceptual units (per Chapter IV), _BODY_ and _MIND_, were only weakly correlated (Pearson's r = `r stat_range_print_fun("Adults", "inanimate", "r_BM")` across Studies 2-4), and _MIND_ and _HEART_ scores were virtually independent (MIND vs. HEART: r = `r stat_range_print_fun("Adults", "inanimate", "r_HM")`). (See [XX APPENDIX C?] for regression analyses exploring the possibility of joint dependency of HEART on BODY and MIND among inanimate objects.)
 
 In sum, these studies suggest that—in addition to biological properties like having blood, digesting food, growing, reproducing, and dying [XX CITE GELMAN and others]—US adults distinguish animate beings from inanimate objects by their high degree of perceived physiological sensations (BODY)—and, to a lesser degree, their superior social-emotional abilities (HEART) and perceptual cognitive abilities (MIND). Above and beyond perceiving animates vs. inanimates to differ in their "average" mental capacities, adults in these studies also appeared to conceptualize animate beings as entities who _vary_ quite dramatically in all three aspects of mental life, and for whom these different aspects of mental life may be closely related. In contrast, in this consensus view inanimate objects appear to be seen as entities that vary mostly in their perceptual-cognitive abilities (MIND), with consistently little of the physiological sensations or social-emotional abilities of the BODY and HEART.
 
 ## A developmental trajectory
 
-As among adults, the largest and most robust animate-inanimate distinctions among children in these studies were also in the BODY domain—but these distinctions were not quite as dramatic among children as they were among adults; see Figure 5.7, middle and bottom rows. The regression analysis reported in the previous section confirmed that the difference in _BODY_ scores between animate vs. inanimate characters was smaller both among older children (7-9y) and particularly among younger children (4-6y) than it was among adults (see "BODY, animates vs. inanimates, older children vs. adults (2-way interaction)" and "BODY, animates vs. inanimates, younger children vs. adults (2-way interaction)" interactions in Table 5.8). Moreover, the differences in the strength of this distinction across domains were substantially attenuated, both among older children and particularly among younger children, as compared to adults (see "HEART vs. BODY, animates vs. inanimates, older children vs. adults (3-way interaction)," "HEART vs. BODY, animates vs. inanimates, younger children vs. adults (3-way interaction)," "MIND vs. BODY, animates vs. inanimates, older children vs. adults (3-way interaction)," and "MIND vs. BODY, animates vs. inanimates, younger children vs. adults (3-way interaction)" rows in Table 5.8). (See also the "Interaction" rows in Tables 5.1, 5.3, and 5.5 for differences in the size of the distinction between animate vs. inanimate characters among children vs. adults each study separately: This varied by age group in all three studies in the BODY domain, and in one of three studies for both the HEART and MIND domains.)
+As among adults, the largest and most robust animate-inanimate distinctions among children in these studies were also in the BODY domain—but these distinctions were not quite as dramatic among children as they were among adults; see Figure 5.7, middle and bottom rows. The regression analysis reported in the previous section confirmed that the difference in _BODY_ scores between animate vs. inanimate characters was smaller both among older children (7-9y) and particularly among younger children (4-6y) than it was among adults (see "BODY, animates vs. inanimates, older children vs. adults (2-way interaction)" and "BODY, animates vs. inanimates, younger children vs. adults (2-way interaction)" interactions in Table 5.8). This appears to have been driven primarily by children over-attributing BODY to inanimate characters: While adults' _BODY_ scores were near zero for inanimate beings, children's _BODY_ scores for inanimate characters hovered, on average, around 0.25 on a scale from 0 to 1 (see Figure 5.7).
 
-In terms of variability, both older children (7-9y) and younger children (4-6y) appear, if anything, to have demonstrated the reverse pattern to that of adults: _BODY_ scores appear to have been more variable for _inanimate_ than animate characters, and _HEART_ and _MIND_ scores appear to have been roughly equally variable for animate and inanimate characters among children. Moreover, covariance relationships among these three aspects of mental life appeared to be no clearer or stronger among animates than they were among inanimates. In my view, there were no clear indications of substantial development between early and middle childhood in these aspects of the deployment of conceptual representations of mental life, suggesting that this kind of fine tuning might be ongoing well into middle childhood—perhaps into adolescence or beyond. (See Table 5.7 for all standard deviations and correlations.) 
+In line with an attenuated animate-inanimate distinction in the BODY domain, the differences in the strength of the animate-inanimate distinction across domains were substantially attenuated, both among older children and particularly among younger children, as compared to adults (see "HEART vs. BODY, animates vs. inanimates, older children vs. adults (3-way interaction)," "HEART vs. BODY, animates vs. inanimates, younger children vs. adults (3-way interaction)," "MIND vs. BODY, animates vs. inanimates, older children vs. adults (3-way interaction)," and "MIND vs. BODY, animates vs. inanimates, younger children vs. adults (3-way interaction)" rows in Table 5.8). (See also the "Interaction" rows in Tables 5.1, 5.3, and 5.5 for differences in the size of the distinction between animate vs. inanimate characters among children vs. adults each study separately: This varied by age group in all three studies in the BODY domain, and in one of three studies for both the HEART and MIND domains.)
+
+In terms of variability, both older children (7-9y) and younger children (4-6y) appear, if anything, to have demonstrated the reverse pattern to that of adults: _BODY_ scores appear to have been more variable for _inanimate_ than animate characters, and _HEART_ and _MIND_ scores appear to have been roughly equally variable for animate and inanimate characters among children. Moreover, covariance relationships among these three aspects of mental life appeared to be no clearer or stronger among animates than they were among inanimates. In my view, there were no clear indications of substantial development between early and middle childhood in these aspects of the deployment of conceptual representations of mental life, suggesting that this kind of fine tuning might be ongoing well into middle childhood—perhaps into adolescence or beyond. (See [XX APPENDIX C TABLE] for all standard deviations and correlations.) 
 
 In sum, while I characterized adults as conceptualizing animate beings as entities who vary more dramatically in their BODY and HEART capacities than inanimate objects (and for whom all three aspects of mental life are more closely related), I do not consider Studies 2-4 to offer strong evidence that differences in perceived variability in mental capacities or differences in perceived relationships among different aspects of mental life are important parts of children's animate-inanimate distinction. Instead, these studies suggest that the primary role of attributions of mental life in 4- to 9-year-old children's attributions of mental life seems to be governing their "average" attributions of physiological sensations (BODY)—and to a lesser degree, social-emotional (HEART) and perceptual cognitive abilities (MIND)—to various entities in their world. 
 
+Beyond the animate-inanimate distinction, there were more general age-related differences that emerged from this analysis of the deployment of conceptual representations of mental life to various beings in the world. (See Figure 5.7 for a summary of comparisons across age groups in all studies.) The most striking and consistent was in the HEART domain: Across all child samples in Studies 2-4, both older and younger children tended to grant both animate and inanimate characters more HEART abilties than did adults. In Study 2 and Study 4 children in both age groups also granted both "edge cases" (beetles and robots) more BODY abilities than did adults, but this age-related difference did not extend to the wider set of "diverse characters" featured in Study 3. Across studies, these over-attributions of BODY and HEART (relative to adults) declined with age. Finally, there were some hints that 4- to 6-year-old children might have _under_-attributed MIND to both animate and inanimate characters, relative to adults (Study 3; but cf. Study 4), and, relatedly, that both 4- to 6-year-old and 7- to 9-year-old children's attributions of MIND to animate and inanimate characters increased (i.e., became more adult-like) with age (Studies 2 and 3; but cf. Study 4).
 
 # Chapter conclusion
 
@@ -1134,7 +1089,9 @@ In this chapter, I explored a third aspect of conceptual representations of ment
 
 These studies are consistent with the following theory: By the preschool years, US children's animate-inanimate distinction includes an awareness that animate beings are more likely than inanimate objects to have physiological sensations like hunger, pain, and fatigue (what I have called BODY). This continues to be the primary axis of the distinction between the mental lives of animates vs. inanimates throughout development, increasing in size and reliability over early and middle childhood (and perhaps beyond); ultimately, US adults perceive the BODY domain to be the site of the most dramatic and robust differences in the mental lives of animate beings vs. inanimate objects. At all ages, animates and inanimates are also perceived to differ in their social-emotional abilities (HEART) and perceptual-cognitive capacities (MIND), but among children as well as adults these differences are smaller and more variable across the particular beings in mind. Finally, at some point in later childhood or adolescence, US children come to acquire adults' intuition that animate beings are distinct from inanimate objects not only in that their mental capacities are, on average, superior (especially in the BODY domain)—but also in that their mental capacities are more _variable_ across specific entities and more _correlated_ across domains (BODY, HEART, and MIND). These nuances—which might be characterized as "over-hypotheses" about the mental lives of animates vs. inanimates [XX CITE]—appear to emerge at a later point in the development.
 
-As in previous chapters, this is not the only possible interpretation of the pattern of results presented here; I have intentionally stated these hypotheses in their strongest form, to facilitate confirmatory tests in future research. The primary role of the studies and analyses discussed here has been to inspire the hypothesis stated in the previous paragraph and to the foundation for these future studies.  
+In addition to this emergent theory of the refinement of mental capacity attributions to animate vs. inanimate beings, these studies also suggest that—regardless of animacy status—children may have a tendency to over-attribute both the physiological sensations of the BODY and especially the social-emotional abilities of the HEART to many entities in the world, coupled with a (weaker) tendency to _under_-attribute the perceptual-cognitive abilities of the MIND. The tendency to over-attribute HEART is particularly striking—it emerged robustly in all studies, and while attributions of HEART did appear to decline with age, they did not appear to reach "adult-like" levels even among the older children in these studies (who were nearly 10 years of age; see [XX APPENDIX C?]). This finding is consistent with the possibility that, well into middle childhood, children may maintain a general openness to untraditional social partners (both animate and inanimate).
+
+As in previous chapters, these are not the only possible interpretation of the patterns of results presented here; I have intentionally stated these hypotheses in their strongest form, to facilitate confirmatory tests in future research. The primary role of the studies and analyses discussed here has been to inspire the hypothesis stated in the previous paragraph and to the foundation for these future studies.  
 
 This marks the end of my exploration of the large, rich datasets emerging from Studies 1-4. In the next and final chapter, I step back to reflect on what these three "passes" at analysis have revealed about conceptual development in this domain, how these three aspects of conceptual development (conceptual units, relational organization, and deployment) might be related to one other, and what this case study of representations of mental life might reveal about conceptual development more broadly.
 
