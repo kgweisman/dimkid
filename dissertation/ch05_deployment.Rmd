@@ -1065,6 +1065,29 @@ figure5.8_cap <- add_sub(figure5.8_plots, str_wrap("Figure 5.8: Participants' en
 ggdraw(figure5.8_cap)
 ```
 
+```{r}
+scores_sum <- scores_all_centered_wide %>%
+  group_by(age_group, study, anim_inan) %>%
+  summarise(mean_B = mean(BODY),
+            mean_H = mean(HEART),
+            mean_M = mean(MIND),
+            # var_B = var(BODY),
+            # var_H = var(HEART),
+            # var_M = var(MIND),
+            sd_B = sd(BODY),
+            sd_H = sd(HEART),
+            sd_M = sd(MIND),
+            r_BH = cor(BODY, HEART),
+            r_BM = cor(BODY, MIND),
+            r_HM = cor(HEART, MIND)) %>%
+  filter(!grepl("Study 1", study)) %>%
+  select(study, anim_inan, age_group, 
+         ends_with("_B"), ends_with("_H"), ends_with("_M"),
+         starts_with("r_")) %>%
+  arrange(study, anim_inan, age_group) %>%
+  ungroup()
+```
+
 Beyond this, there appear to be have been differences between animate vs. inanimate characters in the _variability_ of adults' BODY, HEART, and MIND attributions. In each study, adults' attributions of to animate beings varied widely along all three dimensions: BODY, HEART, and MIND (see Figure 5.7, top row, Figure 5.8, panel C, top row, and [XX APPENDIX C TABLE] for standard deviations across study, animacy status, and domain). This variability has several possible sources, including differences in opinions or beliefs across individual participants (especially relevant for attributions to the animate "edge case"—the beetle—in Studies 1a, 1b, 1c, 2, and 4), as well as differences in the (perceived) mental capacity profiles of different animate beings (especially relevant for attributions to the "diverse characters" featured in Study 1d and Study 3). Moreover, these attributions appear to have varied in tandem (see Figure 5.8 and [XX APPENDIX C TABLE]). _BODY_ and _MIND_ scores for animate beings were particularly strongly correlated (Pearson's r = `r stat_range_print_fun("Adults", "animate", "r_BM")` across Studies 2-4), and scores for each of these more "basic" conceptual units (per Chapter IV) were also correlated quite strongly with _HEART_ scores (BODY vs. HEART: r = `r stat_range_print_fun("Adults", "animate", "r_BH")`; MIND vs. HEART: r = `r stat_range_print_fun("Adults", "animate", "r_HM")`). Indeed—to pick up on a thread from the General Discussion in Chapter IV—attributions of HEART to animate beings appear to have been _jointly_ dependent on attributions of _both_ BODY and MIND; see Figure 5.8, panel C, in which strong _HEART_ scores are present only among participants who received strong _BODY_ and _MIND_ scores—i.e., reddish points are only present in the upper right corner of the plot (and see [XX APPENDIX C?] for relevant regression analyses). 
 
 Meanwhile, adults' attributions to inanimate objects (Figure 5.8, panel C, bottom row) varied particularly strongly in the MIND domain, but seemingly less in the domains of BODY and HEART (see also [XX APPENDIX C TABLE]). Among inanimate objects, _BODY_ and _HEART_ scores were particularly strongly correlated (Pearson's r = `r stat_range_print_fun("Adults", "inanimate", "r_BH")` across Studies 2-4)—but high scores in either of these two domains were quite rare. Scores for the two more "basic" conceptual units (per Chapter IV), _BODY_ and _MIND_, were only weakly correlated (Pearson's r = `r stat_range_print_fun("Adults", "inanimate", "r_BM")` across Studies 2-4), and _MIND_ and _HEART_ scores were virtually independent (MIND vs. HEART: r = `r stat_range_print_fun("Adults", "inanimate", "r_HM")`). (See [XX APPENDIX C?] for regression analyses exploring the possibility of joint dependency of HEART on BODY and MIND among inanimate objects.)
