@@ -58,3 +58,19 @@ d3_ad_wide_i <- d3_ad_wide %>%
   ungroup() %>%
   select(-subid, -character) %>%
   column_to_rownames("subid_char")
+
+d3_ad_i <- d3_ad_wide_i %>%
+  rownames_to_column("subid_char") %>%
+  mutate(subid_char = gsub("_elephant", ".elephant", subid_char),
+         subid_char = gsub("_goat", ".goat", subid_char),
+         subid_char = gsub("_mouse", ".mouse", subid_char),
+         subid_char = gsub("_bird", ".bird", subid_char),
+         subid_char = gsub("_beetle", ".beetle", subid_char),
+         subid_char = gsub("_teddy_bear", ".teddy bear", subid_char),
+         subid_char = gsub("_doll", ".doll", subid_char),
+         subid_char = gsub("_robot", ".robot", subid_char),
+         subid_char = gsub("_computer", ".computer", subid_char)) %>%
+  gather(capacity, response_num, -subid_char) %>%
+  separate(subid_char, c("subid", "character"), sep = "\\.") %>%
+  left_join(d3_ad %>% distinct(study, subid, age_group, age)) %>%
+  mutate_at(vars(subid, character), funs(factor))

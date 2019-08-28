@@ -44,3 +44,12 @@ d2_ad_wide_i <- d2_ad_wide %>%
   ungroup() %>%
   select(-subid, -character) %>%
   column_to_rownames("subid_char")
+
+d2_ad_i <- d2_ad_wide_i %>%
+  rownames_to_column("subid_char") %>%
+  mutate(subid_char = gsub("_robot", ".robot", subid_char),
+         subid_char = gsub("_beetle", ".beetle", subid_char)) %>%
+  gather(capacity, response_num, -subid_char) %>%
+  separate(subid_char, c("subid", "character"), sep = "\\.") %>%
+  left_join(d2_ad %>% distinct(study, subid, age_group, age)) %>%
+  mutate_at(vars(subid, character), funs(factor))

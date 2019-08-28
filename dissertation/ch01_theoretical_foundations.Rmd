@@ -5,7 +5,6 @@ output:
     toc: yes
     toc_depth: 4
     toc_float: yes
-always_allow_html: yes
 bibliography: ./bibliography/dissbib.bib
 csl: ./bibliography/apa.csl
 ---
@@ -36,7 +35,7 @@ Viewing others in this way lays the foundation for our social interactions. We m
 
 As these examples illustrate, mental life is complex, encompassing a wide range of experiences and abilities that vary along many dimensions. Some mental states are closely related to specific bodily organs (e.g., people see things with their eyes, feel hunger in their stomachs), and others less obviously so (where do people experience belief?). Some are positively or negatively valenced (e.g., pain feels bad, happiness feels good), others are more neutral, or vary in valence depending on the circumstance (thinking, smelling). Some mental states involve taking in information about the environment (e.g., seeing, hearing), while others involve storing or updating that information (remembering, learning), or using it to bring about changes in the external world (planning, making choices). In a given social context, certain mental states might be considered more appropriate or socially productive than others [e.g., love vs. anger, guilt vs. pride, excitement vs. contentment; @Tsai2007c]. And people might believe that certain mental capacities are shared by a wide range of entities (e.g., even insects might experience hunger; even robots might have a capacity for memory), while others are limited to a smaller subset of beings [perhaps only humans experience embarrassment; @Haslam2008]. 
 
-How do people come to represent this complex conceptual space? This is the question I aim to address in this dissertation. Representations of mental life are a particularly fascinating case study of abstract reasoning and its development, with roots in ancient philosophy and connections to rich traditions of work in many subfields of psychology. In this chapter, I discuss these theoretical foundations. I begin with hints from developmental psychology that representations of mental life may undergo dramatic changes over the course of early and middle childhood.
+How do people come to represent this complex conceptual space? This is the question I aim to address in this dissertation. Representations of mental life are a particularly fascinating case study of abstract reasoning and its development, with roots in ancient philosophy and connections to rich traditions of work in many sub-fields of psychology. In this chapter, I discuss these theoretical foundations. I begin with hints from developmental psychology that representations of mental life may undergo dramatic changes over the course of early and middle childhood.
 
 
 # The possibility of conceptual change in representations of mental life
@@ -55,7 +54,7 @@ Meanwhile, under the unifying label of "theory of mind," thousands of studies ha
 
 Studies of conceptual change in children's understanding of the mind have generally focused on changes in children's beliefs about the world (e.g., Does the child believe that the moon has intentions?); or on changes in children's intuitive theories (e.g., Does the child draw on social-psychological or biological causes when explaining an entity's behavior? Do they include beliefs, in addition to desires, in their representations of the mental states that drive people's actions?). 
 
-For the most part, however, these studies do not address the structural organization of children's representations of mental life—a key ontological structure underlying these beliefs and intuitive theories. Terms like "intention," "belief," and "desire" abound in the scientific theories reviewed in the previous section—but how well do these terms correspond to children's own understanding of types of mental states (or, for that matter, to that of adults)? How do children conceive of the similarities, distinctions, and logical relations among the wide variety of expeirences and abilities that might be considered part of mental life? How might this organizational structure change over development? 
+For the most part, however, these studies do not address the structural organization of children's representations of mental life—a key ontological structure underlying these beliefs and intuitive theories. Terms like "intention," "belief," and "desire" abound in the scientific theories reviewed in the previous section—but how well do these terms correspond to children's own understanding of types of mental states (or, for that matter, to that of adults)? How do children conceive of the similarities, distinctions, and logical relations among the wide variety of experiences and abilities that might be considered part of mental life? How might this organizational structure change over development? 
 
 In other words, although the field of developmental psychology has made great progress investigating changes in children's beliefs and intuitive theories about the mind, we have very little understanding of changes in _conceptual structure_ in this domain. (See @Chi2009; and @Keil2009; for extended discussions of different kinds of conceptual change.)
 

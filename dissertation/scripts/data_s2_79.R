@@ -63,3 +63,11 @@ d2_79_wide_i <- d2_79_wide %>%
   ungroup() %>%
   select(-subid, -character) %>%
   column_to_rownames("subid_char")
+
+d2_79_i <- d2_79_wide_i %>%
+  rownames_to_column("subid_char") %>%
+  gather(capacity, response_num, -subid_char) %>%
+  separate(subid_char, c("subid", "character"), sep = "_") %>%
+  left_join(d2_79 %>% distinct(study, subid, age_group, age)) %>%
+  mutate_at(vars(subid, character), funs(factor))
+

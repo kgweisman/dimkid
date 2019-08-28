@@ -5,7 +5,8 @@ output:
     toc: yes
     toc_depth: 4
     toc_float: yes
-always_allow_html: yes
+bibliography: ./bibliography/dissbib.bib
+csl: ./bibliography/apa.csl
 ---
 
 ```{r global_options, include = F}
@@ -62,17 +63,17 @@ The first step in these analyses is to transform participants' ratings of indivi
 
 For each EFA solution, I construct a scale for each of the factors (conceptual units) identified by that solution. First, I sort each of the mental capacities included in that study into categories based on their loadings on each of the factors in that solution. For each mental capacity, I identify the "dominant" factor as the factor with the largest positive factor loading. For example, if the mental capacity _feel happy_ had loadings of 0.60 on the BODY factor, 0.70 on the HEART factor, and 0.30 on the MIND factor, I would sort it into the HEART category. For each factor, I take the six highest-loading items as a candidate scale, then "drop" the capacities with the smallest factor loadings on their respective dominant factors until I have the same number of mental capacities in each category. For example, if the BODY factor were the dominant factor for nine mental capacities, the HEART factor for six capacities, and the MIND factor for five capacities, for each factor I would keep only the capacities with the five highest positive loadings on that factor, in order to construct three scales of equal length (and a maximum length of six items).
 
-To calculate scores on these scales, I take the average of all of mental capacities for each scale, rescaling scores to range from 0 to 1 to facilitate comparison across studies. This yields a dataset in which each participant is associated with one score (between 0 and 1) for each of the conceptual units identified in the relative EFA solution, for each of the target characters that that participant assessed.
+To calculate scores on these scales, I take the average of all items, rescaling scores to range from 0 to 1 to facilitate comparison across studies. This yields a dataset in which each participant is associated with one score (between 0 and 1) for each of the conceptual units identified in the relative EFA solution, for each of the target characters that that participant assessed.
 
 In this chapter, I apply this method to all of the three-factor solutions for adult samples as presented in Chapter III (Studies 1-4), yielding _BODY_, _HEART_, and _MIND_ scores for each target character as assessed by each participant. (I ignore the aberrant four-factor solution for adults in Study 2 suggested by one of the three factor retention protocols considered in that chapter, since this was the only study out of the seven considered in which a four-factor solution appeared to add any value beyond the robust BODY-HEART-MIND framework common to all studies.) 
 
 I use these three-factor adult solutions to assess datasets from both adults and children, allowing me to explore the relationships among a "mature" set of conceptual units (on the assumption that, over development, children will ultimately come to a consensus with the adults in their cultural context).
 
-For the first sample of "older" children (7-9y of age, Study 2), I also briefly consider a second set of conceptual units: BODY, HEART, and MIND as defined by EFAs of the children's own responses (rather than adults' responses). Because the EFAs for older children and adults are so similar (see Chapter II and Table 4.10), the outcomes of these two approaches to constructing _BODY_, _HEART_, and _MIND_ scales to yield very similar results in this age group. (Indeed, for the second sample of "older" children, Study 3, the scales that would emerge from EFA of their responses are identical to the scales that emerge from EFA of adult responses, with the exception of a single item on the _BODY_ scale; see Table 4.10.)
+For the first sample of "older" children (7-9y of age, Study 2), I also briefly consider a second set of conceptual units: BODY, HEART, and MIND as defined by EFAs of the children's own responses (rather than adults' responses). Because the EFAs for older children and adults are so similar (see Chapter II and Table 4.10), the outcomes of these two approaches to constructing _BODY_, _HEART_, and _MIND_ scales should yield very similar results. (Indeed, for the second sample of "older" children, Study 3, the scales that would emerge from EFA of their responses are identical to the scales that emerge from EFA of adult responses, with the exception of a single item on the _BODY_ scale; see Table 4.10.)
 
 For "younger" children (4-6y of age, Study 3; 4-5y of age, Study 4), I have chosen _not_ to examine the various sets of two to four conceptual units that would be defined by EFAs of children's own responses.  As discussed at length in Chapter II, EFAs of younger children's responses were less robust and reliable than those of older children or adults, with different factor retention protocols generating different EFA solutions. For the purposes of the current chapter, this would mean assessing multiple additional sets of conceptual units for each of these samples. I have chosen to prioritize comparability across samples and studies over completeness in the main text of this chapter; the interested reader can find these alternative analyses in Appendix B. 
 
-It is important to note that this is far from the only way to approach "scoring" participants on these conceptual units. For example, instead of constructing scales to capture each conceptual unit, I could have examined factor scores—summaries of each factor (conceptual unit) based on a participant's responses to all mental capacities and the relationships between all mental capacities and all factors included in that EFA solution. However, much like _z_-scores, factor scores indicate where a participant falls in relation to other participants in the sample, and do not provide the kind of absolute score that is key to my goal in this chapter, which is to analyze relationships among factors in terms of the extent to which individual participants indicated that target characters "possessed" the conceptual units BODY, HEART, and MIND, and to compare these scores across samples and studies (rather than only across participants within a sample). (Indeed, factor are designed to be symmetrical around zero, which precludes the kind of analyses of _asymmetries_ between "scores" for BODY, HEART, and MIND that are the backbone of this chapter.)
+This is not the only way to approach "scoring" participants on these conceptual units. For example, instead of constructing scales to capture each conceptual unit, I could have examined factor scores—summaries of each factor (conceptual unit) based on a participant's responses to all mental capacities and the relationships between all mental capacities and all factors included in that EFA solution. However, much like _z_-scores, factor scores indicate where a participant falls in relation to other participants in the sample, and do not provide the kind of absolute score that is key to my goal in this chapter, which is to analyze relationships among factors in terms of the extent to which individual participants indicated that target characters "possessed" the conceptual units BODY, HEART, and MIND, and to compare these scores across samples and studies (rather than only across participants within a sample). (Indeed, factor are designed to be symmetrical around zero, which precludes the kind of analyses of _asymmetries_ between "scores" for BODY, HEART, and MIND that are the backbone of this chapter.)
 
 Even within the "scale" approach described in this section, there are many parameters of this analysis that I could have set differently. For example, I could have considered absolute factor loadings rather than raw factor loadings, which would allow for mental capacities that loaded especially strongly _negatively_ on a particular factor to contribute (negatively) to scores on that conceptual unit; I could have omitted the step of making the scales for all factors within a single EFA solution equal length; I could have chosen to use only the top four or five (rather than six) mental capacities across all EFA solutions, or to set no limit on the number of items in a scale; or I could have implemented absolute thresholds for how strongly a mental capacity must load on a factor in order to count toward the score for that conceptual unit, or absolute limits on the degree to which a mental capacity can "cross-load" on non-dominant factors and still count toward the score for any one conceptual unit. However, these kinds of details differ quite dramatically across studies and age groups. For example, in some samples there are no strong negative factor loadings, and in others there are; if I considered absolute loadings rather than raw loadings, I could end up comparing scores from a "bipolar" scale in one sample to scores from a "unipolar" scale in another sample, making the comparison more difficult to interpret. Likewise, some EFA solutions tended to feature generally weaker factor loadings than others; if I were to impose absolute thresholds for the strength of factor loadings, I could end up comparing scores from scales of wildly different lengths across samples. In my view, the analysis decisions outlined above maximize comparability across studies and age groups—the primary goal of this chapter. (Note, however, that in the analysis code for this chapter I have included easy short cuts for the interested reader to explore different options for each of these parameters.)
 
@@ -82,23 +83,23 @@ Even within the "scale" approach described in this section, there are many param
 
 ### Visualizing relationships
 
-After constructing scales to capture participants' endorsement of each conceptual unit, my next step is to characterize the relationships among scores on these three scales (_BODY_, _HEART_, and _MIND_). This is a truly exploratory endeavor: At the outset of this work, I had no strong hypotheses about these relationships, and only high-level intuitions about which aspects of these relationships would be of greatest interest in understanding the conceptual representations of interest. Accordingly, I begin each section with a holistic visualization of the relationships between the three pairs of conceptual units, presenting scatterplots of participants' scores on each pair of scales (_BODY_ vs. _HEART_, _BODY_ vs. _MIND_, and _HEART_ vs. _MIND_) and offering informal descriptions of what I consider to be the most striking features of these scatterplots. In addition to motivating my subsequent formal analyses, these informal descriptions are intended to guide future research targeting additional aspects of the relationships among conceptual units that are outside of the scope of the current dissertation.
+After constructing scales to capture participants' endorsement of each conceptual unit, my next step is to characterize the relationships among scores on these three scales (_BODY_, _HEART_, and _MIND_). This is a truly exploratory endeavor: At the outset of this work, I had no strong hypotheses about these relationships, and only high-level intuitions about which aspects of these relationships would be of greatest interest in understanding these conceptual representations. Accordingly, I begin each section with a holistic visualization of the relationships between the three pairs of conceptual units, presenting scatterplots of participants' scores on each pair of scales (_BODY_ vs. _HEART_, _BODY_ vs. _MIND_, and _HEART_ vs. _MIND_) and offering informal descriptions of what I consider to be the most striking features of these scatterplots. In addition to motivating my subsequent formal analyses, these informal descriptions are intended to guide future research targeting additional aspects of the relationships among conceptual units that are outside of the scope of the current dissertation.
 
 ### Formal analyses of asymmetries
 
-As I described in the theoretical overview of this dissertation (Chapter I [XX CHECK THIS IS TRUE]) and the opening of this chapter, one aspect of the relationships among conceptual units that is of particular interest to me is the possibility of asymmetries in these relationships. Were participants more likely to attribute BODY without HEART, or HEART without BODY? What about BODY vs. MIND, or HEART vs. MIND? Such asymmetries might reveal which conceptual units are more basic or fundamental, whether any of these conceptual units might be considered to depend on the presence of others—in other words, whether conceptual representations (in any particular sample) might be characterized by a hierarchical structure among conceptual units. Likewise, age-related differences in the direction or strength of these asymmetries might hint at developmental changes in these hierarchical structures over early and middle childhood.
+As I described in the opening of this chapter, one aspect of the relationships among conceptual units that is of particular interest to me is the possibility of asymmetries in these relationships. Were participants more likely to attribute BODY without HEART, or HEART without BODY? What about BODY vs. MIND, or HEART vs. MIND? Such asymmetries might reveal which conceptual units are more basic or fundamental, whether any of these conceptual units might be considered to depend on the presence of others—in other words, whether conceptual representations (in any particular sample) might be characterized by a hierarchical structure among conceptual units. Likewise, age-related differences in the direction or strength of these asymmetries might hint at developmental changes in these hierarchical structures over early and middle childhood.
 
 Guided by this theoretical interest, the last step in my analyses in this chapter is to examine differences between scores on the _BODY_, _HEART_, and _MIND_ scales. For each pair of conceptual units (e.g., BODY vs. HEART), I calculate a simple difference between scores on these two scales (in this case, subtracting participants' _HEART_ scores from their _BODY_ scores). In the visualizations described in the previous section, this corresponds to the perpendicular distance between a particular datapoint and the line of equivalence ($y = x$). (The directions of these difference scores were chosen arbitrarily; e.g., I could have chosen to subtract participants' _BODY_ scores from their _HEART_ scores.)
 
 Here I describe my principles for interpreting these difference scores. A summary of these difference scores across all samples and studies can be found at the end of this chapter (Figure 4.10, panel A).
 
-In my view, difference scores close to zero provide no evidence for or against a hierarchical relationship between conceptual units. This is illustrated most dramatically by the fact that a difference score of zero could occur if a participant attributes very little in the way of mental life to a particular target character (e.g., an inert object) or if a participant attributes maximal mental life to a particular target character (e.g., an adult human)—in either case, this would yield difference scores of zero for any pair of conceptual units. Even if a participant endorses two conceptual units to a middling degree (e.g., indicating that a beetle has middling capacities in both the _BODY_ and _MIND_ domains), I would not consider this evidence against a possible hierarchical relationship between the conceptual units in question.
+In my view, difference scores close to zero provide no evidence for or against a hierarchical relationship between conceptual units. This is illustrated most dramatically by the many scenarios in which we would observe difference scores of zero. A difference score of zero could occur if a participant attributes very little in the way of mental life to a particular target character (e.g., an inert object), or if a participant attributes maximal mental life to a particular target character (e.g., an adult human), or if a participant endorses two conceptual units to a middling degree (e.g., indicating that a beetle has middling capacities in both the _BODY_ and _MIND_ domains). None of these patterns of attribution should be considered evidence against a possible hierarchical relationship between the conceptual units in question. 
 
 Meanwhile, if participants within a sample have radically divergent difference scores—e.g., if roughly half of participants have much higher _HEART_ than _MIND_ scores and roughly half have much lower _HEART_ than _MIND_ scores—I interpret this as some evidence _against_ systematic hierarchical relationships between the conceptual units in question. 
 
-It is only an abundance of non-zero difference scores running in the same direction for many participants within a sample that, in my view, provides evidence _for_ systematic hierarchies among the conceptual units. This degree of consensus across participants in the direction of asymmetry between endorsements of two conceptual units is particularly significant in these datasets because these studies were designed with the express purpose of eliciting _variability_ in mental capacity attributions across participants—either by asking participants about "edge cases" (a beetle, a robot), whose particular mental capacity profiles are likely to be the subject of disagreement across individuals; or by asking different participants to consider a variety of "diverse characters" (including inert objects, technologies, and a wide range of animals and humans), whose mental capacity profiles are likely considered to vary dramatically. (See Chapter II for further discussion of these two variants of the experimental approach.) Differences in individual participants' knowledge, experience, and opinions, and differences in the target characters assessed by different participants, were key features of the design of these studies; it was critical to the success of the EFAs presented in Chapter III that participants varied in the degree to which they endorsed particular mental capacities. If, despite this variability, participants nonetheless converge on a common pattern of _relative_ endorsements across two conceptual units—e.g., if most participants endorse capacities included in the _MIND_ scale more strongly than they endorse capacities included in the _HEART_ scale, regardless of the absolute strength of these endorsements—this provides some evidence of a common conceptual framework that places these conceptual units in asymmetrical, perhaps hierarchical, relation to one another. 
+It is only an abundance of non-zero difference scores running in the same direction for many participants within a sample that, in my view, provides evidence _for_ systematic hierarchies among the conceptual units. Consensus across participants in the direction of asymmetry between endorsements of two conceptual units would be particularly meaningful in the current studies, because these studies were designed with the express purpose of eliciting _variability_ in mental capacity attributions across participants—either by asking participants about "edge cases" (a beetle, a robot), whose particular mental capacity profiles are likely to be the subject of disagreement across individuals; or by asking different participants to consider a variety of "diverse characters" (including inert objects, technologies, and a wide range of animals and humans), whose mental capacity profiles are likely considered to vary dramatically. (See Chapter II for further discussion of these two variants of the experimental approach.) Differences in individual participants' knowledge, experience, and opinions, and differences in the target characters assessed by different participants, were key features of the design of these studies; it was critical to the success of the EFAs presented in Chapter III that participants varied in the degree to which they endorsed particular mental capacities. If, despite this variability, participants nonetheless converge on a common pattern of _relative_ endorsements across two conceptual units—e.g., if most participants endorse capacities included in the _MIND_ scale more strongly than they endorse capacities included in the _HEART_ scale, regardless of the absolute strength of these endorsements—this provides some evidence of a common conceptual framework that places these conceptual units in asymmetrical, perhaps hierarchical, relation to one another. 
 
-To operationalize these principles and test for consensus in the direction of difference scores between any two conceptual units, I compare difference scores to zero via Bayesian regressions, using the "brms" package for R [XX CITE]. I conduct a separate regression analysis for each pair of conceptual units, accounting for differences between target characters (effect-coded so as to center the intercept at the grand mean) and accounting for within-subjects designs when appropriate (i.e., for Study 1c and Study 4) by including maximal random effects structures (random intercepts for participants). In these analyses, I am primarily interested in whether the intercept is estimated to be differentiable from zero, which I gauge by assessing whether the 95% credible interval for the intercept contains zero. 
+To operationalize these principles and test for consensus in the direction of difference scores between any two conceptual units, I compare difference scores to zero via Bayesian regressions, using the "brms" package for R [@Burkner2017]. I conduct a separate regression analysis for each pair of conceptual units, accounting for differences between target characters (effect-coded so as to center the intercept at the grand mean) and accounting for within-subjects designs when appropriate (i.e., for Study 1c and Study 4) by including maximal random effects structures (random intercepts for participants). In these analyses, I am primarily interested in whether the intercept is estimated to be differentiable from zero, which I gauge by assessing whether the 95% credible interval for the intercept contains zero. 
 
 I conduct many such regressions in this chapter: One for each of the three pairs of conceptual units (_BODY - HEART_, _BODY - MIND_, and _HEART - MIND_), for each age group, for each sample. A summary of these intercepts across all samples and studies can be found at the end of this chapter (Figure 4.10, panel B). In addition, for studies that include a developmental comparison (Studies 2-4), I conduct an additional analysis for each of the three pairs of conceptual units, including main effects and interactions to compare the age groups included (dummy-coded with adults as the baseline); these analyses provide formal assessments of the degree to which children differ from adults in the asymmetry of their responses to these conceptual units. I do not implement any "corrections" for multiple comparisons, in part because my evaluations of these analyses are based on credible intervals rather than _p_-values or other frequentist indices of statistical significance. Parameter estimates (_b_) can be used as indices of effect size.
 
@@ -359,11 +360,11 @@ The visualizations of relationships among scores on these _BODY_, _HEART_, and _
 
 ##### BODY vs. HEART
 
-First I consider the relationship between BODY and HEART (Figure 4.1, leftmost column: panels A1, B1, and C1). To my eyes, the most striking features of these visualizations are that (1) there is a positive relationship between scores on the _BODY_ and _HEART_ scales (an observation confirmed by significantly positive Pearson correlations; Study 1a: `r score_cor_print_fun(d1a_ad_scored_ad, "BODY vs. HEART")`; Study 1b: `r score_cor_print_fun(d1b_ad_scored_ad, "BODY vs. HEART")`; Study 1c: Study 1c: `r score_cor_print_fun(d1c_ad_scored_ad, "BODY vs. HEART")`); and (2) there are virtually no datapoints above the line of equivalence ($y = x$, dotted diagonal line), and certainly no datapoints in the upper left corner of the plot of these plots. Individual participants tended to endorse the mental capacity items included in the _BODY_ scale at least as strongly, and often more strongly, than they endorsed items included in the _HEART_ scale—in other words, that many participants attributed more BODY than HEART to the target character in question, but virtually no participants attribute more HEART than BODY. This asymmetry appears to have been driven primarily by participants' assessments of the beetle (in red); for the robot (in blue), _BODY_ and _HEART_ scores appear to have been more similar (close to the dotted line), and were generally quite low. 
+First I consider the relationship between BODY and HEART (Figure 4.1, leftmost column: panels A1, B1, and C1). To my eyes, the most striking features of these visualizations are that (1) there is a positive relationship between scores on the _BODY_ and _HEART_ scales (an observation confirmed by significantly positive Pearson correlations; Study 1a: `r score_cor_print_fun(d1a_ad_scored_ad, "BODY vs. HEART")`; Study 1b: `r score_cor_print_fun(d1b_ad_scored_ad, "BODY vs. HEART")`; Study 1c: Study 1c: `r score_cor_print_fun(d1c_ad_scored_ad, "BODY vs. HEART")`); and (2) there are virtually no datapoints above the line of equivalence ($y = x$, dotted diagonal line), and certainly no datapoints in the upper left corner of the plot of these plots. Individual participants tended to endorse the mental capacity items included in the _BODY_ scale at least as strongly, and often more strongly, than they endorsed items included in the _HEART_ scale—in other words, many participants attributed more BODY than HEART to the target character in question, but virtually no participants attribute more HEART than BODY. This asymmetry appears to have been driven primarily by participants' assessments of the beetle (in red); for the robot (in blue), _BODY_ and _HEART_ scores appear to have been more similar (close to the dotted line), and were generally quite low. 
 
 ##### BODY vs. MIND
 
-Next I consider the relationship between BODY and MIND (Figure 4.1, center column: panels A2, B2, and C2). Similar to the BODY vs. HEART comparison, two notable features of these visualizations are that (1) there is a positive relationship between scores on the _BODY_ and _MIND_ scales (an observation confirmed by significantly positive Pearson correlations; Study 1a: `r score_cor_print_fun(d1a_ad_scored_ad, "BODY vs. MIND")`; Study 1b: `r score_cor_print_fun(d1b_ad_scored_ad, "BODY vs. MIND")`; Study 1c: Study 1c: `r score_cor_print_fun(d1c_ad_scored_ad, "BODY vs. MIND")`); and (2) there are fewer datapoints below the line of equivalence ($y = x$, dotted diagonal line) than above it, and no datapoints in the lower right corner of the plot of these plots. Most participants tended to endorse the mental capacity items included in the _MIND_ scale roughly as strongly, and sometimes more strongly, than they endorsed items included in the _BODY_ scale, while relatively few participants endorsed _MIND_ items less strongly than _BODY_ items. However, visual inspection suggested that this asymmetry was less extreme than the asymmetry between _BODY_ and _HEART_ scores just described. In this case, the asymmetry between _BODY_ and _MIND_ appears to have been driven primarily by participants' assessments of the robot (in blue); for the beetle (in red), _BODY_ and _MIND_ scores appear to have been more similar (close to the dotted line). 
+Next I consider the relationship between BODY and MIND (Figure 4.1, center column: panels A2, B2, and C2). Similar to the BODY vs. HEART comparison, two notable features of these visualizations are that (1) there is a positive relationship between scores on the _BODY_ and _MIND_ scales (an observation confirmed by significantly positive Pearson correlations; Study 1a: `r score_cor_print_fun(d1a_ad_scored_ad, "BODY vs. MIND")`; Study 1b: `r score_cor_print_fun(d1b_ad_scored_ad, "BODY vs. MIND")`; Study 1c: Study 1c: `r score_cor_print_fun(d1c_ad_scored_ad, "BODY vs. MIND")`); and (2) there are fewer datapoints below the line of equivalence ($y = x$, dotted diagonal line) than above it, and no datapoints in the lower right corner of the plot of these plots. Most participants tended to endorse the mental capacity items included in the _MIND_ scale roughly as strongly, and sometimes more strongly, than they endorsed items included in the _BODY_ scale, while relatively few participants endorsed _MIND_ items less strongly than _BODY_ items. However, visual inspection suggests that this asymmetry was less extreme than the asymmetry between _BODY_ and _HEART_ scores just described. In this case, the asymmetry between _BODY_ and _MIND_ appears to have been driven primarily by participants' assessments of the robot (in blue); for the beetle (in red), _BODY_ and _MIND_ scores appear to have been more similar (close to the dotted line). 
 
 ##### HEART vs. MIND
 
@@ -402,7 +403,7 @@ plot_d1a_ad_scored_ad_diff <- diffplot_fun(d1a_ad_scored_ad_diff)
 #   data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"),
 #   cores = 4)
 # 
-# saveRDS(r_d1a_ad_scored_ad_diff_BODY_HEART, 
+# saveRDS(r_d1a_ad_scored_ad_diff_BODY_HEART,
 #         "./stored/brms_models/r_d1a_ad_scored_ad_diff_BODY_HEART")
 
 r_d1a_ad_scored_ad_diff_BODY_HEART <- readRDS("./stored/brms_models/r_d1a_ad_scored_ad_diff_BODY_HEART")
@@ -416,7 +417,7 @@ summary(r_d1a_ad_scored_ad_diff_BODY_HEART)
 #   data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - MIND"),
 #   cores = 4)
 # 
-# saveRDS(r_d1a_ad_scored_ad_diff_BODY_MIND, 
+# saveRDS(r_d1a_ad_scored_ad_diff_BODY_MIND,
 #         "./stored/brms_models/r_d1a_ad_scored_ad_diff_BODY_MIND")
 
 r_d1a_ad_scored_ad_diff_BODY_MIND <- readRDS("./stored/brms_models/r_d1a_ad_scored_ad_diff_BODY_MIND")
@@ -430,7 +431,7 @@ summary(r_d1a_ad_scored_ad_diff_BODY_MIND)
 #   data = d1a_ad_scored_ad_diff %>% filter(pair == "HEART - MIND"),
 #   cores = 4)
 # 
-# saveRDS(r_d1a_ad_scored_ad_diff_HEART_MIND, 
+# saveRDS(r_d1a_ad_scored_ad_diff_HEART_MIND,
 #         "./stored/brms_models/r_d1a_ad_scored_ad_diff_HEART_MIND")
 
 r_d1a_ad_scored_ad_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d1a_ad_scored_ad_diff_HEART_MIND")
@@ -702,7 +703,7 @@ table4.2
 
 #### Interim discussion
 
-Across Studies 1a-1c, visual inspection of the relationships among the conceptual units identified in Chapter III (BODY, HEART, and MIND) suggested that all of these relationships are characterized by two features: (1) Positive contingencies, such that the more strongly a participant endorsed one conceptual unit, the more strongly they tended to endorse the others; and (2) Robust asymmetries, such that participants tended to endorse MIND more strongly than BODY or HEART, and HEART more strongly than MIND. These asymmetries were most pronounced for comparisons involving HEART, with the vast majority of participants in all three of these studies endorsing both BODY and MIND more strongly than HEART for both of the "edge case" characters included in these studies (a beetle and a robot). Formal analyses of difference scores across the _BODY_, _HEART_, and _MIND_ scales in Studies 1a-1c confirmed these observations.
+Across Studies 1a-1c, visual inspection of the relationships among the conceptual units identified in Chapter III (BODY, HEART, and MIND) suggests that all of these relationships are characterized by two features: (1) Positive contingencies, such that the more strongly a participant endorsed one conceptual unit, the more strongly they tended to endorse the others; and (2) Robust asymmetries, such that participants tended to endorse MIND more strongly than BODY or HEART, and HEART more strongly than MIND. These asymmetries were most pronounced for comparisons involving HEART, with the vast majority of participants in all three of these studies endorsing both BODY and MIND more strongly than HEART for both of the "edge case" characters included in these studies (a beetle and a robot). Formal analyses of difference scores across the _BODY_, _HEART_, and _MIND_ scales in Studies 1a-1c confirmed these observations.
 
 ### Study 1d
 
@@ -853,7 +854,7 @@ Similar to the BODY vs. HEART comparison, this asymmetry was less pronounced for
 
 In Study 1d, many of the results obtained in Studies 1a-1c were upheld. In particular, (1) The relationships between BODY vs. HEART and between MIND vs. HEART were positive, such that the more strongly a participant endorsed one conceptual unit, the more strongly they tended to endorse the other; and (2) There were robust asymmetries in these positive relationships, such that participants tended to endorse both BODY or MIND more strongly than HEART. 
 
-Visual inspection of the BODY vs. MIND scatterplot for Study 1d suggested that this relationship was quite variable across participants and across target characters—even more variable and less robust than what was observed in Studies 1a-1c. Formal analyses confirmed that, in the aggregate, there was a slight tendency for participants to endorse MIND more strongly than BODY, but this asymmetry was weak and highly contingent on the particular target character that participants were assigned to assess.
+Visual inspection of the BODY vs. MIND scatterplot for Study 1d suggests that this relationship was quite variable across participants and across target characters—even more variable and less robust than what was observed in Studies 1a-1c. Formal analyses confirmed that, in the aggregate, there was a slight tendency for participants to endorse MIND more strongly than BODY, but this asymmetry was weak and highly contingent on the particular target character that participants were assigned to assess.
 
 ```{r}
 table4.3 <- regtab_study1d %>%
@@ -898,7 +899,7 @@ In Study 2, `r nrow(d2_ad_wide)` US adults and `r nrow(d2_79_wide)` US children 
 ```{r}
 scales_efa_wdm_d2_ad <- scale_fun(efa_wdm_d2_ad, 
                                   factor_names = factor_names_efa_wdm_d2_ad)
-d2_ad_scored_ad <- score_fun(d2_ad, scales_efa_wdm_d2_ad)
+d2_ad_scored_ad <- score_fun(d2_ad_i, scales_efa_wdm_d2_ad)
 
 saveRDS(scales_efa_wdm_d2_ad, file = "./stored/scales/scales_efa_wdm_d2_ad")
 saveRDS(d2_ad_scored_ad, file = "./stored/scored_data/d2_ad_scored_ad")
@@ -1056,7 +1057,7 @@ The primary goal of Study 2 was to begin investigating the development of these 
 I begin my exploration of this aspect of conceptual change by applying the same _BODY_, _HEART_, and _MIND_ scales (derived from EFA of adults' responses) to children's responses, examining the same visualizations, and conducting the same regression analyses. I then conduct a formal comparison of children's and adults' results ("Developmental comparison"), before briefly considering what the relationships between BODY, HEART, and MIND might look like if they were indexed by scales derived from EFA of children's, rather than adults' responses ("Children (7-9y), using children's own scales"). 
 
 ```{r}
-d2_79_scored_ad <- score_fun(d2_79, scales_efa_wdm_d2_ad)
+d2_79_scored_ad <- score_fun(d2_79_i, scales_efa_wdm_d2_ad)
 saveRDS(d2_79_scored_ad, file = "./stored/scored_data/d2_79_scored_ad")
 ```
 
@@ -1247,7 +1248,7 @@ ggdraw(figure4.3_cap)
 
 ### Developmental comparison
 
-The preceding visualizations and analyses all suggested that children's responses were generally less asymmetrical than those of adults. This is perhaps easiest to observe in Figure 4.3, row D, which presents (hypothetical) "movement" between the mean placement for a target character among children (beginning of arrow) and the mean placement for a target character among adults (arrowhead), for each pair of conceptual units. In each case, this "movement" either maintains a similar distance from the line of equivalence ($y = x$) (as with mean assessments of the robot in the BODY vs. HEART space, panel C1; and the beetle in the BODY vs. MIND space, panel C2) or moves away from the line of equivalence toward the upper left and lower right corners of the plot (as with mean assessments of the beetle in the BODY vs. HEART space, panel C1; the robot in the BODY vs. MIND space, panel C2; and both characters in the HEART vs. MIND space, panel C3). Analysis of changes in _absolute_ attributions of BODY, HEART, and MIND, is pursued in Chapter V; for the purposes of the current chapter, the primary observation of interest is that these "shifts" between child and adult assessments of these characters generally point in the direction of stable or increasing (not decreasing) asymmetries over developmental time.
+The preceding visualizations and analyses all suggest that children's responses were generally less asymmetrical than those of adults. This is perhaps easiest to observe in Figure 4.3, row D, which presents (hypothetical) "movement" between the mean placement for a target character among children (beginning of arrow) and the mean placement for a target character among adults (arrowhead), for each pair of conceptual units. In each case, this "movement" either maintains a similar distance from the line of equivalence ($y = x$) (as with mean assessments of the robot in the BODY vs. HEART space, panel C1; and the beetle in the BODY vs. MIND space, panel C2) or moves away from the line of equivalence toward the upper left and lower right corners of the plot (as with mean assessments of the beetle in the BODY vs. HEART space, panel C1; the robot in the BODY vs. MIND space, panel C2; and both characters in the HEART vs. MIND space, panel C3). Analysis of changes in _absolute_ attributions of BODY, HEART, and MIND, is pursued in Chapter V; for the purposes of the current chapter, the primary observation of interest is that these "shifts" between child and adult assessments of these characters generally point in the direction of stable or increasing (not decreasing) asymmetries over developmental time.
 
 To assess the size and robustness of these apparent developmental differences, I conducted formal comparisons of difference scores between conceptual units among these two age groups. For each pair of conceptual units, I pooled data from both age groups and modified my regression analyses to include a main effect of age group (comparing children's difference scores to the baseline set by adults) and an interaction between age group and target character (assessing whether the observed differences between characters varied by age group).
 
@@ -1262,7 +1263,7 @@ contrasts(d2_ad79_scored_ad_diff$age_group) <- contrasts_dum2_agegp
 ```{r}
 # r_d2_ad79_scored_ad_diff_BODY_HEART <- brm(
 #   diff ~ 1 + character * age_group,
-#   data = d2_ad79_scored_ad_diff %>% filter(pair == "BODY - HEART"), 
+#   data = d2_ad79_scored_ad_diff %>% filter(pair == "BODY - HEART"),
 #   cores = 4)
 # 
 # saveRDS(r_d2_ad79_scored_ad_diff_BODY_HEART,
@@ -1276,7 +1277,7 @@ summary(r_d2_ad79_scored_ad_diff_BODY_HEART)
 ```{r}
 # r_d2_ad79_scored_ad_diff_BODY_MIND <- brm(
 #   diff ~ 1 + character * age_group,
-#   data = d2_ad79_scored_ad_diff %>% filter(pair == "BODY - MIND"), 
+#   data = d2_ad79_scored_ad_diff %>% filter(pair == "BODY - MIND"),
 #   cores = 4)
 # 
 # saveRDS(r_d2_ad79_scored_ad_diff_BODY_MIND,
@@ -1290,7 +1291,7 @@ summary(r_d2_ad79_scored_ad_diff_BODY_MIND)
 ```{r}
 # r_d2_ad79_scored_ad_diff_HEART_MIND <- brm(
 #   diff ~ 1 + character * age_group,
-#   data = d2_ad79_scored_ad_diff %>% filter(pair == "HEART - MIND"), 
+#   data = d2_ad79_scored_ad_diff %>% filter(pair == "HEART - MIND"),
 #   cores = 4)
 # 
 # saveRDS(r_d2_ad79_scored_ad_diff_HEART_MIND,
@@ -1330,7 +1331,7 @@ These analyses confirmed that difference scores for all three pairs of conceptua
 
 ### Interim discussion
 
-Both visual inspection and formal analyses of the relationships among BODY, HEART, and MIND suggested that the the asymmetries in relationships among 7- to 9-year-old children's endorsements of these conceptual units were similar in direction—but substantially attenuated in size—relative to the baseline set by adults. This suggests that the proposed hierarchical relationships between these conceptual units are nascent in this age group, but may not be fully robust or "mature."
+Both visual inspection and formal analyses of the relationships among BODY, HEART, and MIND suggest that the the asymmetries in relationships among 7- to 9-year-old children's endorsements of these conceptual units were similar in direction—but substantially attenuated in size—relative to the baseline set by adults. This suggests that the proposed hierarchical relationships between these conceptual units are nascent in this age group, but may not be fully robust or "mature."
 
 ### Children (7-9y), using children's own scales
 
@@ -1341,7 +1342,7 @@ The previous analyses made use of _BODY_, _HEART_, and _MIND_ scores derived fro
 ```{r}
 scales_efa_wdm_d2_79 <- scale_fun(efa_wdm_d2_79, 
                                   factor_names = factor_names_efa_wdm_d2_79)
-d2_79_scored_79 <- score_fun(d2_79, scales_efa_wdm_d2_79)
+d2_79_scored_79 <- score_fun(d2_79_i, scales_efa_wdm_d2_79)
 
 saveRDS(scales_efa_wdm_d2_79, file = "./stored/scales/scales_efa_wdm_d2_79")
 saveRDS(d2_79_scored_79, file = "./stored/scored_data/d2_79_scored_79")
@@ -1439,8 +1440,8 @@ plot_d2_79_scored_79_diff <- diffplot_fun(d2_79_scored_79_diff)
 
 ```{r}
 # r_d2_79_scored_79_diff_BODY_HEART <- brm(
-#   diff ~ 1 + character,
-#   data = d2_79_scored_79_diff %>% filter(pair == "BODY - HEART"),
+#   diff ~ 1 + character, 
+#   data = d2_79_scored_79_diff %>% filter(pair == "BODY - HEART"), 
 #   cores = 4)
 # 
 # saveRDS(r_d2_79_scored_79_diff_BODY_HEART,
@@ -1514,7 +1515,7 @@ figure4.5_plots <- plot_grid(
     labs(title = "Study 2: Children, 7-9y (scored using adults' scales)") +
     theme(legend.position = "bottom"),
   plot_d2_79_scored_79_diff + 
-    labs(title = "Study 2: Children, 4-6y (scored using their own scales)") +
+    labs(title = "Study 2: Children, 7-9y (scored using their own scales)") +
     theme(legend.position = "bottom"), 
   ncol = 3, rel_widths = c(1, 1, 1),
   labels = "AUTO")
@@ -1614,7 +1615,7 @@ In Study 3, `r nrow(d3_ad_wide)` US adults, `r nrow(d3_79_wide)` "older" childre
 ```{r}
 scales_efa_wdm_d3_ad <- scale_fun(efa_wdm_d3_ad, 
                                   factor_names = factor_names_efa_wdm_d3_ad)
-d3_ad_scored_ad <- score_fun(d3_ad, scales_efa_wdm_d3_ad)
+d3_ad_scored_ad <- score_fun(d3_ad_i, scales_efa_wdm_d3_ad)
 
 saveRDS(scales_efa_wdm_d3_ad, file = "./stored/scales/scales_efa_wdm_d3_ad")
 saveRDS(d3_ad_scored_ad, file = "./stored/scored_data/d3_ad_scored_ad")
@@ -1751,7 +1752,7 @@ Visualizations of relationships among scores on these _BODY_, _HEART_, and _MIND
 
 As among adults in Studies 1 and 2, two striking features of the relationship between BODY and HEART among adults in Study 3 (Figure 4.6, panel A1) are that scores on these scales were positively correlated (`r score_cor_print_fun(d3_ad_scored_ad, "BODY vs. HEART")`), and virtually no adults attributed more HEART than BODY to the target character they were assigned to assess. A regression analysis confirmed that _BODY_ vs. _HEART_ difference scores were substantially non-zero, in the direction of participants endorsing _BODY_ items more strongly than _HEART_ items (see Figure 4.7, panel A, and the "Intercept" row for the "BODY-HEART" comparison in Table 4.6). 
 
-These regression results also suggested that the asymmetry between BODY and HEART was primarily driven by responses to the animate beings (see the various comparisons of target characters to the grand mean for the "BODY-HEART" comparison in Table 4.6.). Indeed, visual inspection of mean scores by target character (Figure 4.6, panel A1) revealed a suite of characters—namely, inanimate objects—that, in the aggregate, received very low _BODY_ scores and very low _HEART_ scores. This suite of characters appears to be distinct from the other characters—all animate beings—all of which, in the aggregate, received relatively high _BODY_ scores, but varied in their mean _HEART_ scores. Echoing Study 1d, this raises the intriguing possibility that adults' attributions of BODY and HEART may have been governed by some sort of "threshold" model, in which attributions of any substantial amount of HEART depend on the target character having a certain degree of BODY. It is also worth noting that, even among this wider range of target characters, there were no characters for whom the BODY-HEART asymmetry was systematically reversed (i.e., who were generally considered to have more HEART than BODY capacities). 
+These regression results also suggest that the asymmetry between BODY and HEART was primarily driven by responses to the animate beings (see the various comparisons of target characters to the grand mean for the "BODY-HEART" comparison in Table 4.6.). Indeed, visual inspection of mean scores by target character (Figure 4.6, panel A1) revealed a suite of characters—namely, inanimate objects—that, in the aggregate, received very low _BODY_ scores and very low _HEART_ scores. This suite of characters appears to be distinct from the other characters—all animate beings—all of which, in the aggregate, received relatively high _BODY_ scores, but varied in their mean _HEART_ scores. Echoing Study 1d, this raises the intriguing possibility that adults' attributions of BODY and HEART may have been governed by some sort of "threshold" model, in which attributions of any substantial amount of HEART depend on the target character having a certain degree of BODY. It is also worth noting that, even among this wider range of target characters, there were no characters for whom the BODY-HEART asymmetry was systematically reversed (i.e., who were generally considered to have more HEART than BODY capacities). 
 
 ##### BODY vs. MIND
 
@@ -1763,7 +1764,7 @@ Echoing Study 1d, however, the asymmetry between BODY vs. MIND  was overwhelming
 
 As among adults in Studies 1 and 2, two striking features of the relationship between HEART and MIND among adults in Study 3 (Figure 4.6, panel A3) are that scores on these scales were positively correlated (`r score_cor_print_fun(d3_ad_scored_ad, "HEART vs. MIND")`), and virtually no adults attributed more HEART than MIND to the target character they were assigned to assess. A regression analysis confirmed that _HEART_ vs. _MIND_ difference scores were substantially non-zero, in the direction of participants endorsing _MIND_ items more strongly than _HEART_ items (see Figure 4.7, panel A, and the "Intercept" row for the "HEART-MIND" comparison in Table 4.6). 
 
-Much like the BODY-HEART comparison, these regression results also suggested that the asymmetry between HEART and MIND was more pronounced for some characters than others, and particularly weak for the two inert objects (the teddy bear and the doll; see Figure 7, panel C, and the various comparisons of target characters to the grand mean for the "HEART-MIND" comparison in Table 4.6.). Indeed, visual inspection of mean scores by target character (Figure 4.6, panel A3) suggested that, in the aggregate, characters that received low _MIND_ scores also received low mean _HEART_ scores, while characters that received relatively high _MIND_ scores (e.g., the robot and all of the animate beings) varied in their mean _HEART_ scores. Again, this echoes the intriguing possibility, raised by Study 1d, that attributions of HEART and MIND may have been governed by some sort of "threshold" model, in which attributions of any substantial amount of HEART depend on the target character having a certain degree of MIND.
+Much like the BODY-HEART comparison, these regression results also suggest that the asymmetry between HEART and MIND was more pronounced for some characters than others, and particularly weak for the two inert objects (the teddy bear and the doll; see Figure 7, panel C, and the various comparisons of target characters to the grand mean for the "HEART-MIND" comparison in Table 4.6.). Indeed, visual inspection of mean scores by target character (Figure 4.6, panel A3) suggests that, in the aggregate, characters that received low _MIND_ scores also received low mean _HEART_ scores, while characters that received relatively high _MIND_ scores (e.g., the robot and all of the animate beings) varied in their mean _HEART_ scores. Again, this echoes the intriguing possibility, raised by Study 1d, that attributions of HEART and MIND may have been governed by some sort of "threshold" model, in which attributions of any substantial amount of HEART depend on the target character having a certain degree of MIND.
 
 #### Interim discussion
 
@@ -1781,7 +1782,7 @@ saveRDS(scales_efa_wdm_d3_79, file = "./stored/scales/scales_efa_wdm_d3_79")
 ```
 
 ```{r}
-d3_79_scored_ad <- score_fun(d3_79, scales_efa_wdm_d3_ad)
+d3_79_scored_ad <- score_fun(d3_79_i, scales_efa_wdm_d3_ad)
 saveRDS(d3_79_scored_ad, file = "./stored/scored_data/d3_79_scored_ad")
 ```
 
@@ -1941,7 +1942,7 @@ In Study 3, the asymmetry in 7- to 9-year-old children's _BODY_ vs. _HEART_ scor
 In addition to building on the results of Studies 1 and 2 in re-assessing conceptual representations among adults and 7- to 9-year-old children, Study 3 also provided an initial foray into this aspect of conceptual representations among younger children (4-6y of age). In Chapter III, EFA suggested that 4- to 6-year-old children have only a nascent understanding of the suites of physiological sensations, social-emotional abilities, and perceptual-cognitive capacities that I have argued form the "conceptual units" of adults' representations. Nonetheless, children in this age range may share other aspects of adults' representations of this conceptual space. How do younger children's representations of the relationships among BODY, HEART, and MIND compare to those of older children and adults? 
 
 ```{r}
-d3_46_scored_ad <- score_fun(d3_46, scales_efa_wdm_d3_ad)
+d3_46_scored_ad <- score_fun(d3_46_i, scales_efa_wdm_d3_ad)
 saveRDS(d3_46_scored_ad, file = "./stored/scored_data/d3_46_scored_ad")
 ```
 
@@ -2098,7 +2099,7 @@ To assess the size and robustness of these apparent developmental differences, I
 d3_ad7946_scored_ad_diff <- d3_ad_scored_ad_diff %>%
   full_join(d3_79_scored_ad_diff) %>%
   full_join(d3_46_scored_ad_diff) %>%
-  mutate(age_group = factor(age_group))
+  mutate_at(vars(age_group, character), funs(factor))
 contrasts(d3_ad7946_scored_ad_diff$character) <- contrasts_sum_dv09
 contrasts(d3_ad7946_scored_ad_diff$age_group) <- contrasts_dum3_agegp
 ```
@@ -2353,6 +2354,8 @@ table4.7
 
 # Study 4: A focus on early childhood (4-5y)
 
+_Note: At the time of the submission of this dissertation, the sample of 4- to 5-year-old children for Study 4 was only partially complete. All results using this sample thus be considered preliminary and not conclusive._
+
 Study 4 builds on Study 3 by providing a targeted investigation of representations of mental life in the preschool years (4-5y). In this chapter, I again focus on what this study can reveal about the relationships among the conceptual units BODY, HEART, and MIND at the earliest point in development that I have examined so far, and compare this conceptual organization to that documented among adults. As a reminder, in this chapter I analyze young children's responses with respect to the "mature" conceptual units BODY, HEART, and MIND, as defined by EFA of _adults'_ responses (see Appendix B for further analyses with respect to the conceptual units identified through EFA of children's own mental capacity attributions, as presented in Chapter III).
 
 In Study 4, `r nrow(d4_ad_wide)/2` US adults and `r nrow(d4_46_wide)/2` US children between the ages of `r summary(d4_46$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d4_46$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d4_46$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y) each assessed two target characters on 18 mental capacities, with all aspects of the experimental design tailored to be appropriate for this youngest age group. This study employed the "edge case" variant of the general approach, with participants assessing both a beetle or a robot in sequence (with order counterbalanced across participants). (See Chapter II for detailed methods.)
@@ -2366,7 +2369,7 @@ In Study 4, `r nrow(d4_ad_wide)/2` US adults and `r nrow(d4_46_wide)/2` US child
 ```{r}
 scales_efa_wdm_d4_ad <- scale_fun(efa_wdm_d4_ad, 
                                   factor_names = factor_names_efa_wdm_d4_ad)
-d4_ad_scored_ad <- score_fun(d4_ad, scales_efa_wdm_d4_ad)
+d4_ad_scored_ad <- score_fun(d4_ad_i, scales_efa_wdm_d4_ad)
 
 saveRDS(scales_efa_wdm_d4_ad, file = "./stored/scales/scales_efa_wdm_d4_ad")
 saveRDS(d4_ad_scored_ad, file = "./stored/scored_data/d4_ad_scored_ad")
@@ -2530,7 +2533,7 @@ Like adults in Studies 1-3, adults in Study 4 tended to endorse BODY and MIND mo
 ### Children (4-5y)
 
 ```{r}
-d4_46_scored_ad <- score_fun(d4_46, scales_efa_wdm_d4_ad)
+d4_46_scored_ad <- score_fun(d4_46_i, scales_efa_wdm_d4_ad)
 saveRDS(d4_46_scored_ad, file = "./stored/scored_data/d4_46_scored_ad")
 ```
 
@@ -2727,7 +2730,7 @@ ggdraw(figure4.8_cap)
 
 ### Developmental comparison
 
-The visualizations and analyses described in the previous section suggested that children's responses were generally less asymmetrical than those of adults. This is perhaps easiest to observe in Figure 4.8, row D, which presents (hypothetical) "movement" between the mean placement for a target character among children (beginning of arrow) and the mean placement for a target character among adults (arrowhead), for each pair of conceptual units. In each case, this "movement" either maintains a similar distance from the line of equivalence ($y = x$) (as with mean assessments of the robot in the BODY vs. HEART space, panel D1; and the beetle in the BODY vs. MIND space, panel D2) or moves away from the line of equivalence toward the upper left and lower right corners of the plot (as with mean assessments of the beetle in the BODY vs. HEART space, panel D1; the robot in the BODY vs. MIND space, panel D2; and both characters in the HEART vs. MIND space, panel D3). Analysis of changes in _absolute_ attributions of BODY, HEART, and MIND, is pursued in Chapter V; for the purposes of the current chapter, the primary observation of interest is that these "shifts" between child and adult assessments of these characters generally point in the direction of stable or increasing (not decreasing) asymmetries over developmental time.
+The visualizations and analyses described in the previous section suggest that children's responses were generally less asymmetrical than those of adults. This is perhaps easiest to observe in Figure 4.8, row D, which presents (hypothetical) "movement" between the mean placement for a target character among children (beginning of arrow) and the mean placement for a target character among adults (arrowhead), for each pair of conceptual units. In each case, this "movement" either maintains a similar distance from the line of equivalence ($y = x$) (as with mean assessments of the robot in the BODY vs. HEART space, panel D1; and the beetle in the BODY vs. MIND space, panel D2) or moves away from the line of equivalence toward the upper left and lower right corners of the plot (as with mean assessments of the beetle in the BODY vs. HEART space, panel D1; the robot in the BODY vs. MIND space, panel D2; and both characters in the HEART vs. MIND space, panel D3). Analysis of changes in _absolute_ attributions of BODY, HEART, and MIND, is pursued in Chapter V; for the purposes of the current chapter, the primary observation of interest is that these "shifts" between child and adult assessments of these characters generally point in the direction of stable or increasing (not decreasing) asymmetries over developmental time.
 
 To assess the size and robustness of these apparent developmental differences, I conducted formal comparisons of difference scores between conceptual units among these two age groups. I pooled data from both age groups and modified my regression analyses to include a main effect of age group (comparing children's difference scores to the baseline set by adults) and an interaction between age group and target character (assessing whether the observed differences between characters varied by age group).
 
@@ -2757,6 +2760,7 @@ summary(r_d4_ad46_scored_ad_diff_BODY_HEART)
 # r_d4_ad46_scored_ad_diff_BODY_MIND <- brm(
 #   diff ~ 1 + character * age_group + (1 | subid),
 #   data = d4_ad46_scored_ad_diff %>% filter(pair == "BODY - MIND"),
+#   control = list(adapt_delta = 0.95),
 #   cores = 4)
 # 
 # saveRDS(r_d4_ad46_scored_ad_diff_BODY_MIND,
@@ -2771,6 +2775,7 @@ summary(r_d4_ad46_scored_ad_diff_BODY_MIND)
 # r_d4_ad46_scored_ad_diff_HEART_MIND <- brm(
 #   diff ~ 1 + character * age_group + (1 | subid),
 #   data = d4_ad46_scored_ad_diff %>% filter(pair == "HEART - MIND"),
+#   control = list(adapt_delta = 0.9),
 #   cores = 4)
 # 
 # saveRDS(r_d4_ad46_scored_ad_diff_HEART_MIND,
@@ -3304,7 +3309,7 @@ figure4.10 <- plot_grid(plot_diffscores_all +
 ```
 
 ```{r}
-figure4.10_cap <- add_sub(figure4.10, str_wrap("Figure 4.10: Summaries of the relationships between attributions of BODY, HEART, and MIND for all studies. (A) Difference scores for each pair of conceptual units (ignoring target characters). Positive difference scores correspond to participants who attributed the first conceptual unit more strongly than the second; negative difference scores correspond to participants who attributed the second conceptual unit more strongly than the first. (B) Intercepts from independent Bayesian regression analyses for each pair of conceptual units and each sample of participants, accounting for differences between target characters and including random intercepts for particpipants when appropriate (Studies 1d and 2). Positive intercepts indicate samples in which participants tended to attribute the first conceptual unit more strongly than the second; negative intercepts indicate samples in which participants tended to attribute the second conceptual unit more strongly than the first. (C) Pearson correlations between scores on each of the scales (theoretical range: -1 to +1). Positive correlations indicate that higher scores in one scale were associated with higher scores in the other scale. To assist the reader in assessing effect size, the shaded area highlights values of r that correspond to scores in one scale accounting for between 10-50% of the variance of scores in the other scale. For all panels, error bars are 95% CIs and asterisks indicate CIs that do not include zero.", 115), x = 0, hjust = 0)
+figure4.10_cap <- add_sub(figure4.10, str_wrap("Figure 4.10: Summaries of the relationships between attributions of BODY, HEART, and MIND for all studies. (A) Difference scores for each pair of conceptual units (ignoring target characters). Positive difference scores correspond to participants who attributed the first conceptual unit more strongly than the second; negative difference scores correspond to participants who attributed the second conceptual unit more strongly than the first. (B) Intercepts from independent Bayesian regression analyses for each pair of conceptual units and each sample of participants, accounting for differences between target characters and including random intercepts for participants when appropriate (Studies 1d and 2). Positive intercepts indicate samples in which participants tended to attribute the first conceptual unit more strongly than the second; negative intercepts indicate samples in which participants tended to attribute the second conceptual unit more strongly than the first. (C) Pearson correlations between scores on each of the scales (theoretical range: -1 to +1). Positive correlations indicate that higher scores in one scale were associated with higher scores in the other scale. To assist the reader in assessing effect size, the shaded area highlights values of r that correspond to scores in one scale accounting for between 10-50% of the variance of scores in the other scale. For all panels, error bars are 95% CIs and asterisks indicate CIs that do not include zero.", 115), x = 0, hjust = 0)
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.4}
@@ -3425,4 +3430,7 @@ In this chapter, I explored a second aspect of conceptual representations of men
 Studies 1-4 are consistent with the following theory: By the preschool years, US children treat physiological sensations (BODY) as particularly basic or fundamental aspects of mental life, and they quickly come to see perceptual-cognitive abilities (MIND) as roughly equally "basic." In contrast, the social-emotional abilities of the HEART are perceived to be less basic, i.e., to occupy a different position in the hierarchical structure that characterizes this conceptual domain. Over the course of childhood—and extending beyond the oldest non-adult sample included in the current studies (7-9y)—these hierarchical relationships become increasingly stark, applying more universally to any kind of "being" in the world, and the degree of consensus across individuals increases. In its "mature" state, this hierarchical structure admits of virtually no exceptions: It governs mental capacity attributions to all kinds of target entities among all participants. Regardless of the degree to which a person attributes any particular mental capacity to any particular being in the world, US adults virtually never violate the rule that in order to have any social-emotional abilities (HEART), a being must also have some degree of physiological sensations (BODY) and perceptual-cognitive abilities (MIND). The analyses discussed in this chapter formed the basis of this theory and lay the foundation for future confirmatory tests and extensions of this theory. 
 
 In the next chapter, I apply the same exploratory spirit to a third and final aspect of conceptual representations of mental life: the application or deployment of these conceptual units in reasoning about various kinds of beings.
+
+
+# References
 
