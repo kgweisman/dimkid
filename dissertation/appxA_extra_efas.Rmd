@@ -1,10 +1,8 @@
 ---
 title: "Appendix A: Additional EFA solutions"
 output:
-  html_notebook:
-    toc: yes
-    toc_depth: 4
-    toc_float: yes
+  word_document:
+    reference_docx: "./word-styles-reference.docx"
 always_allow_html: yes
 ---
 
@@ -176,6 +174,7 @@ ggdraw(figureA.3_cap)
 
 ```{r}
 efa_3_d4_ad_unrot <- fa_fun(d4_ad_wide_i, 3)
+efa_2_d4_46_unrot <- fa_fun(d4_46_wide_i, 2)
 efa_3_d4_46_unrot <- fa_fun(d4_46_wide_i, 3)
 efa_4_d4_46_unrot <- fa_fun(d4_46_wide_i, 4)
 ```
@@ -187,6 +186,10 @@ plot_efa_3_d4_ad_unrot <- heatmap_fun(efa_3_d4_ad_unrot) +
   theme(legend.position = "none")
 
 # younger children
+plot_efa_2_d4_46_unrot <- heatmap_fun(efa_2_d4_46_unrot) +
+  labs(title = "Children, 4-5y", subtitle = "Unrotated 2-factor solution") +
+  theme(legend.position = "none")
+
 plot_efa_3_d4_46_unrot <- heatmap_fun(efa_3_d4_46_unrot) +
   labs(title = "Children, 4-5y", subtitle = "Unrotated 3-factor solution") +
   theme(legend.position = "none")
@@ -197,11 +200,11 @@ plot_efa_4_d4_46_unrot <- heatmap_fun(efa_4_d4_46_unrot) +
 ```
 
 ```{r}
-figureA.4 <- plot_grid(plot_efa_3_d4_ad_unrot, plot_efa_3_d4_46_unrot, 
+figureA.4 <- plot_grid(plot_efa_3_d4_ad_unrot, plot_efa_2_d4_46_unrot, plot_efa_3_d4_46_unrot, 
                        plot_efa_4_d4_46_unrot,
-                       labels = "AUTO", ncol = 3, rel_widths = c(1, 1, 1.4))
+                       labels = "AUTO", ncol = 4, rel_widths = c(1, 1, 1, 1.4))
 
-figureA.4_cap <- add_sub(figureA.4, str_wrap("Figure A.4: Factor loadings from exploratory factor analyses of Study 4 (as reported in Chapter III), before rotation. (A) Results for US adults. (B) Results for US children ages 4-5y, retaining three factors. (C) Results for US children ages 4-5y, retaining four factors. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+figureA.4_cap <- add_sub(figureA.4, str_wrap("Figure A.4: Factor loadings from exploratory factor analyses of Study 4 (as reported in Chapter III), before rotation. (A) Results for US adults. (B) Results for US children ages 4-5y, retaining two factors. (C) Results for US children ages 4-5y, retaining three factors. (D) Results for US children ages 4-5y, retaining four factors. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
 ```
 
 ```{r figureA.4, include = T, fig.width = 9, fig.asp = 0.6}
@@ -688,6 +691,7 @@ All factor retention protocols suggested retaining 3 factors for adults in Study
 
 ```{r}
 efa_3_d4_ad_oblimin <- fa_fun(d4_ad_wide_i, 3)
+efa_2_d4_46_oblimin <- fa_fun(d4_46_wide_i, 2)
 efa_3_d4_46_oblimin <- fa_fun(d4_46_wide_i, 3)
 efa_4_d4_46_oblimin <- fa_fun(d4_46_wide_i, 4)
 efa_1_d4_46_oblimin <- fa_fun(d4_46_wide_i, 1)
@@ -695,6 +699,7 @@ efa_1_d4_46_oblimin <- fa_fun(d4_46_wide_i, 1)
 
 ```{r}
 factor_names_efa_3_d4_ad_oblimin <- c("BODY", "HEART", "MIND")
+factor_names_efa_2_d4_46_oblimin <- c("BODY-HEART", "MIND-HEART")
 factor_names_efa_3_d4_46_oblimin <- c("BODY", "MIND-HEART", "HEART (negative)")
 factor_names_efa_4_d4_46_oblimin <- c("MIND-HEART", "BODY", "BODY (nausea)",
                                       "HEART (negative)")
@@ -706,6 +711,12 @@ plot_efa_3_d4_ad_oblimin <- heatmap_fun(
   efa_3_d4_ad_oblimin, factor_names = factor_names_efa_3_d4_ad_oblimin) +
   labs(title = "Study 4, Adults", 
        subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+plot_efa_2_d4_46_oblimin <- heatmap_fun(
+  efa_2_d4_46_oblimin, factor_names = factor_names_efa_2_d4_46_oblimin) +
+  labs(title = "Study 4, Children (4-6y)", 
+       subtitle = "Oblimin-transformed 2-factor solution") +
   theme(legend.position = "none")
 
 plot_efa_3_d4_46_oblimin <- heatmap_fun(
@@ -728,14 +739,15 @@ plot_efa_1_d4_46_oblimin <- heatmap_fun(
 ```
 
 ```{r}
-figureA.11 <- plot_grid(plot_efa_3_d4_ad_oblimin, plot_efa_3_d4_46_oblimin,
-                       plot_efa_4_d4_46_oblimin, plot_efa_1_d4_46_oblimin,
-                       labels = "AUTO", ncol = 4, rel_widths = c(1, 1, 1, 1))
+figureA.11 <- plot_grid(plot_efa_3_d4_ad_oblimin, plot_efa_2_d4_46_oblimin,
+                        plot_efa_3_d4_46_oblimin, plot_efa_4_d4_46_oblimin, 
+                        plot_efa_1_d4_46_oblimin,
+                       labels = "AUTO", ncol = 3, rel_widths = c(1, 1, 1, 1, 1))
 
-figureA.11_cap <- add_sub(figureA.11, str_wrap("Figure A.11: Factor loadings from exploratory factor analyses of Study 4 after oblimin transformation. See Chapter II for methods. (A) US adults. (B) US children ages 4-5y, 3-factor solution. (C) US children ages 4-5y, 4-factor solution. (D) US children ages 4-5y, 1-factor (null) solution. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+figureA.11_cap <- add_sub(figureA.11, str_wrap("Figure A.11: Factor loadings from exploratory factor analyses of Study 4 after oblimin transformation. See Chapter II for methods. (A) US adults. (B) US children ages 4-5y, 2-factor solution. (C) US children ages 4-5y, 3-factor solution. (D) US children ages 4-5y, 4-factor solution. (E) US children ages 4-5y, 1-factor (null) solution. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 200), x = 0, hjust = 0)
 ```
 
-```{r figureA.11, include = T, fig.width = 9, fig.asp = 0.6}
+```{r figureA.11, include = T, fig.width = 9, fig.asp = 1}
 ggdraw(figureA.11_cap)
 ```
 
@@ -748,6 +760,12 @@ IFcor_efa_3_d4_ad_oblimin <- IFcor_plot_fun(
   efa_3_d4_ad_oblimin, factor_names = factor_names_efa_3_d4_ad_oblimin) +
   labs(title = "Study 4, Adults", 
        subtitle = "Oblimin-transformed 3-factor solution") +
+  theme(legend.position = "none")
+
+IFcor_efa_2_d4_46_oblimin <- IFcor_plot_fun(
+  efa_2_d4_46_oblimin, factor_names = factor_names_efa_2_d4_46_oblimin) +
+  labs(title = "Study 4, Children (4-5y)", 
+       subtitle = "Oblimin-transformed 2-factor solution") +
   theme(legend.position = "none")
 
 IFcor_efa_3_d4_46_oblimin <- IFcor_plot_fun(
@@ -764,14 +782,14 @@ IFcor_efa_4_d4_46_oblimin <- IFcor_plot_fun(
 ```
 
 ```{r}
-figureA.12 <- plot_grid(IFcor_efa_3_d4_ad_oblimin, IFcor_efa_3_d4_46_oblimin,
-                        IFcor_efa_4_d4_46_oblimin,
-                        labels = "AUTO", ncol = 3, rel_widths = c(1, 1, 1.2))
+figureA.12 <- plot_grid(IFcor_efa_3_d4_ad_oblimin, IFcor_efa_2_d4_46_oblimin,
+                        IFcor_efa_3_d4_46_oblimin, IFcor_efa_4_d4_46_oblimin,
+                        labels = "AUTO", ncol = 4, rel_widths = c(1, 1, 1, 1.2))
 
-figureA.12_cap <- add_sub(figureA.12, str_wrap("Figure A.12: Inter-factor correlations from exploratory factor analyses of Study 4 after oblimin transformation. See Chapter II for methods. (A) US adults. (B) US children ages 4-5y, 3-factor solution. (C) US children ages 4-5y, 3-factor solution. Factors have been labeled with the labels 'BODY,' 'HEART,' and 'MIND,' when applicable, to facilitate comparison across studies.", 140), x = 0, hjust = 0)
+figureA.12_cap <- add_sub(figureA.12, str_wrap("Figure A.12: Inter-factor correlations from exploratory factor analyses of Study 4 after oblimin transformation. See Chapter II for methods. (A) US adults. (B) US children ages 4-5y, 2-factor solution. (C) US children ages 4-5y, 3-factor solution. (D) US children ages 4-5y, 4-factor solution. Factors have been labeled with the labels 'BODY,' 'HEART,' and 'MIND,' when applicable, to facilitate comparison across studies.", 170), x = 0, hjust = 0)
 ```
 
-```{r figureA.12, include = T, fig.width = 6, fig.asp = 0.4}
+```{r figureA.12, include = T, fig.width = 8, fig.asp = 0.3}
 ggdraw(figureA.12_cap)
 ```
 

@@ -1,10 +1,9 @@
 ---
 title: 'Chapter III: Changes in conceptual units'
 output:
-  html_notebook:
-    toc: yes
-    toc_depth: 4
-    toc_float: yes
+  word_document:
+    reference_docx: "./word-styles-reference.docx"
+always_allow_html: yes
 bibliography: ./bibliography/dissbib.bib
 csl: ./bibliography/apa.csl
 ---
@@ -934,7 +933,7 @@ Finally, the very fact that different approaches to factor retention yielded dif
 
 # Study 4: A focus on early childhood (4-5y)
 
-_Note: At the time of the submission of this dissertation, the sample of 4- to 5-year-old children for Study 4 was only partially complete. All results using this sample thus be considered preliminary and not conclusive._
+_Note: At the time of the submission of this dissertation, the sample of 4- to 5-year-old children for Study 4 was only partially complete. All results using this sample should thus be considered preliminary and not conclusive._
 
 One major limitation of Studies 2 and 3 was that the study protocol involved a rather advanced set of mental state vocabulary terms, including a variety of complex mental capacities (e.g., guilt, pride, awareness, depth perception) and using somewhat complicated syntax for some items (e.g., _sense whether something is close by or far away_, _figure out how to do things_). For 4- to 6-year-old children, in particular, some of the mental capacity items might have been outside of the range of words they normally hear in discussions of mental states—let alone the words they normally use themselves. In addition, younger children may have found some aspects of the experimental paradigm distracting (e.g., being seated in front of the experimenter's laptop computer without being allowed to use it themselves) or difficult (e.g., using a three-point scale with minimal visual scaffolding).
 

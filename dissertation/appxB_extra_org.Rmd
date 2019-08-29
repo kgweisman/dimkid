@@ -1,10 +1,8 @@
 ---
 title: "Appendix B: Additional explorations of organization"
 output:
-  html_notebook:
-    toc: yes
-    toc_depth: 4
-    toc_float: yes
+  word_document:
+    reference_docx: "./word-styles-reference.docx"
 always_allow_html: yes
 ---
 
@@ -565,7 +563,7 @@ ggdraw(figureB.2_cap)
 
 ## Study 4
 
-### Younger children (4-6y), using their own scales (three-factor solution)
+### Younger children (4-6y), using their own scales (two-factor solution)
 
 #### Scale construction
 
@@ -583,39 +581,33 @@ Following the steps described in "General analysis plan," above, yielded `r fact
 #### Visualization and analysis of asymmetries
 
 ```{r}
-plots_d4_46_scored_46_par <- relviz_fun(d4_46_scored_46_par, colors = colors02)
+plots_d4_46_scored_46_par <- relviz_fun(d4_46_scored_46_par, colors = colors09)
 ```
 
 ```{r}
-fig_d4_46_scored_46_par_plots <- plot_grid(
-  plots_d4_46_scored_46_par[[1]] + 
-    theme(legend.position = "none"),
-  plots_d4_46_scored_46_par[[2]] + 
-    theme(legend.position = "none"),
-  plots_d4_46_scored_46_par[[3]] + 
-    theme(legend.position = "none"),
-  labels = c("A1", "A2", "A3"), ncol = 3)
+fig_d4_46_scored_46_par_plots <- plot_grid(plots_d4_46_scored_46_par[[1]] + 
+                                             theme(legend.position = "none"),
+                                           labels = c("C1"), ncol = 3)
 
 fig_d4_46_scored_46_par_leg <- get_legend(
   plots_d4_46_scored_46_par[[1]] +
     theme(legend.position = "bottom", legend.direction = "horizontal") +
     scale_fill_manual("Target character", 
-                      values = colors02,
+                      values = colors09,
                       guide = guide_legend(title.position = "left",
                                            direction = "horizontal", 
-                                           ncol = 2)) +
+                                           ncol = 9)) +
     scale_color_manual("Target character",
-                       values = colors02,
+                       values = colors09,
                        guide = guide_legend(title.position = "left",
                                             direction = "horizontal",
-                                            ncol = 2)))
+                                            ncol = 9)))
 
-fig_d4_46_scored_46_par_plots_leg <- plot_grid(
-  fig_d4_46_scored_46_par_plots, fig_d4_46_scored_46_par_leg,
-  ncol = 1, rel_heights = c(1, 0.05))
+fig_d4_46_scored_46_par_plots_leg <- plot_grid(fig_d4_46_scored_46_par_plots, fig_d4_46_scored_46_par_leg,
+                                               ncol = 1, rel_heights = c(1, 0.05))
 
 fig_d4_46_scored_46_par_title <- ggdraw() + 
-  draw_label("Study 4: Children, 4-6y (using their own scales, 3-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
+  draw_label("Study 4: Children, 4-6y (using their own scales, 2-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
 
 fig_d4_46_scored_46_par_plots_leg_title <- plot_grid(
   fig_d4_46_scored_46_par_title, fig_d4_46_scored_46_par_plots_leg,
@@ -639,54 +631,24 @@ plot_d4_46_scored_46_par_diff <- diffplot_fun(d4_46_scored_46_par_diff, colors =
 ```
 
 ```{r}
-# r_d4_46_scored_46_par_diff_BODY_HEART <- brm(
+# r_d4_46_scored_46_par_diff_BODYHEART_MINDHEART <- brm(
 #   diff ~ 1 + character,
-#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - HEART"),
+#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY-HEART - MIND-HEART"),
 #   cores = 4)
 # 
-# saveRDS(r_d4_46_scored_46_par_diff_BODY_HEART,
-#         "./stored/brms_models/r_d4_46_scored_46_par_diff_BODY_HEART")
+# saveRDS(r_d4_46_scored_46_par_diff_BODYHEART_MINDHEART,
+#         "./stored/brms_models/r_d4_46_scored_46_par_diff_BODYHEART_MINDHEART")
 
-r_d4_46_scored_46_par_diff_BODY_HEART <- readRDS("./stored/brms_models/r_d4_46_scored_46_par_diff_BODY_HEART")
+r_d4_46_scored_46_par_diff_BODYHEART_MINDHEART <- readRDS("./stored/brms_models/r_d4_46_scored_46_par_diff_BODYHEART_MINDHEART")
 
-summary(r_d4_46_scored_46_par_diff_BODY_HEART)
-```
-
-```{r}
-# r_d4_46_scored_46_par_diff_BODY_MIND <- brm(
-#   diff ~ 1 + character,
-#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY - MIND"),
-#   cores = 4)
-# 
-# saveRDS(r_d4_46_scored_46_par_diff_BODY_MIND,
-#         "./stored/brms_models/r_d4_46_scored_46_par_diff_BODY_MIND")
-
-r_d4_46_scored_46_par_diff_BODY_MIND <- readRDS("./stored/brms_models/r_d4_46_scored_46_par_diff_BODY_MIND")
-
-summary(r_d4_46_scored_46_par_diff_BODY_MIND)
-```
-
-```{r}
-# r_d4_46_scored_46_par_diff_HEART_MIND <- brm(
-#   diff ~ 1 + character,
-#   data = d4_46_scored_46_par_diff %>% filter(pair == "HEART - MIND"),
-#   cores = 4)
-# 
-# saveRDS(r_d4_46_scored_46_par_diff_HEART_MIND,
-#         "./stored/brms_models/r_d4_46_scored_46_par_diff_HEART_MIND")
-
-r_d4_46_scored_46_par_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d4_46_scored_46_par_diff_HEART_MIND")
-
-summary(r_d4_46_scored_46_par_diff_HEART_MIND)
+summary(r_d4_46_scored_46_par_diff_BODYHEART_MINDHEART)
 ```
 
 ```{r}
 regtab_d4_46_scored_46_par_diff <- diff_reg_table_fun(
-  reg_list = list(r_d4_46_scored_46_par_diff_BODY_HEART,
-                  r_d4_46_scored_46_par_diff_BODY_MIND,
-                  r_d4_46_scored_46_par_diff_HEART_MIND),
-  pair_list = c("BODY - HEART", "BODY - MIND", "HEART - MIND"),
-  study_name = "Children, 4-6y (using their own scales, 3-factor solution)",
+  reg_list = list(r_d4_46_scored_46_par_diff_BODYHEART_MINDHEART),
+  pair_list = "BODY-HEART - MIND-HEART",
+  study_name = "Children, 4-6y (using their own scales, 2-factor solution)",
   char_label = c("Robot vs. GM"))
 ```
 
@@ -704,9 +666,9 @@ regtab_d4_46_scored_46_par_diff %>%
 plot_d4_46_scored_46_par_diff
 ```
 
-Visualizations of relationships among 4- to 6-year-old children's scores on the _BODY_, _HEART_, and _MIND_ scales are provided in Figure B.xx, row A. The results of Bayesian regressions comparing difference scores between conceptual units to zero, controlling for differences in assessments of the two "edge cases" that were featured as target characters in these studies, are provided in Table B.xx.
+Visualizations of relationships among 4- to 6-year-old children's scores on the _BODY-HEART_ and _MIND-HEART_ scales are provided in Figure B.xx, row B. The results of a Bayesian regression comparing difference scores between conceptual units to zero, controlling for differences in assessments of the nine "diverse characters" that were featured as target characters in these studies, are provided in Table B.xx.
 
-In these regressions, none of the asymmetries between conceptual units were reliably distinguishable from zero.
+The main take-away of this analysis is that 4- to 6-year-old children reliably endorsed _BODY-HEART_ items more strongly than _MIND-HEART_ items.
 
 ### Younger children (4-6y), using their own scales (four-factor solution)
 
