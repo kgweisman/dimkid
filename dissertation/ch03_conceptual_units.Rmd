@@ -1,9 +1,10 @@
 ---
 title: 'Chapter III: Changes in conceptual units'
 output:
-  word_document:
-    reference_docx: "./word-styles-reference.docx"
-always_allow_html: yes
+  html_notebook:
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
 bibliography: ./bibliography/dissbib.bib
 csl: ./bibliography/apa.csl
 ---
@@ -444,6 +445,10 @@ figure3.1 <- plot_grid(plot_efa_wdm_d1a_ad, plot_efa_wdm_d1b_ad,
 figure3.1_cap <- add_sub(figure3.1, str_wrap("Figure 3.1: Factor loadings from exploratory factor analyses of Studies 1a-1d (see also Weisman et al., 2017). (A-B) In Studies 1a and 1b, US adults assessed one of two 'edge case' characters (a beetle or a robot). (C) In Study 1c, US adults assess both of these 'edge cases' side by side (with left-right position counterbalanced across participants). (D) In Study 1d, US adults assessed one of 21 diverse target characters. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 250), x = 0, hjust = 0)
 ```
 
+```{r, fig.width = 11, fig.asp = 0.6}
+figure3.1
+```
+
 ```{r figure3.1, include = T, fig.width = 11, fig.asp = 0.6}
 ggdraw(figure3.1_cap)
 ```
@@ -606,6 +611,11 @@ figure3.2 <- plot_grid(plot_efa_wdm_d2_ad, plot_efa_par_d2_ad,
 
 figure3.2_cap <- add_sub(figure3.2, str_wrap("Figure 3.2: Factor loadings from exploratory factor analyses of Study 2, in which participants assessed one of two 'edge case' characters (a beetle or a robot). (A) Results for US adults, retaining 3 factors (as suggested by minimizing BIC and by the original factor retention criteria reported in Weisman et al., 2017). (B) Results for US adults, retaining 4 factors (as suggested by parallel analysis). (C) Results for US children ages 7-9y. In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 250), x = 0, hjust = 0)
 ```
+
+```{r, fig.width = 11, fig.asp = 0.6}
+figure3.2
+```
+
 
 ```{r figure3.2, include = T, fig.width = 11, fig.asp = 0.6}
 ggdraw(figure3.2_cap)
@@ -861,6 +871,10 @@ figure3.3 <- plot_grid(plot_efa_wdm_d3_ad, plot_efa_wdm_d3_79,
                        labels = "AUTO", ncol = 4, rel_widths = c(1, 1, 1, 1))
 
 figure3.3_cap <- add_sub(figure3.3, str_wrap("Figure 3.3: Factor loadings from exploratory factor analyses of Study 3, in which participants assessed one of nine diverse target characters. (A) Results for US adults. (B) Results for US children ages 7-9y. (C) Results for US children ages 4-6y, retaining three factors (as suggested by the original factor retention criteria reported in Weisman et al., 2017). (D) Results for US children ages 4-6y, retaining two factors (as suggested parallel analysis). In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r, fig.width = 9, fig.asp = 0.6}
+figure3.3
 ```
 
 ```{r figure3.3, include = T, fig.width = 9, fig.asp = 0.6}
@@ -1160,6 +1174,10 @@ figure3.4 <- plot_grid(plot_efa_wdm_d4_ad, plot_efa_par_d4_46,
                        labels = "AUTO", ncol = 4, rel_widths = c(1, 1, 1.4, 1.4))
 
 figure3.4_cap <- add_sub(figure3.4, str_wrap("Figure 3.4: Factor loadings from exploratory factor analyses of Study 4, in which participants assessed two 'edge case' target characters (a beetle and a robot), one after another (with order counterbalanced across participants). (A) Results for US adults. (B) Results for US children ages 4-5y, retaining three factors (as suggested by parallel analysis). (C) Results for US children ages 4-5y, retaining four factors (as suggested by the original factor retention criteria reported in Weisman et al., 2017). In this and all figures portraying factor loadings, factors have been plotted in the same order (BODY, HEART, MIND), when applicable, to facilitate comparison across studies. A factor loading of +1 indicates a perfectly positive relationship between mental capacity and underlying construct; a loading of -1 indicates a perfectly negative relationship.", 210), x = 0, hjust = 0)
+```
+
+```{r, fig.width = 10, fig.asp = 0.5}
+figure3.4
 ```
 
 ```{r figure3.4, include = T, fig.width = 10, fig.asp = 0.5}
@@ -1799,6 +1817,10 @@ figure3.5_cap <- add_sub(figure3.5_leg, str_wrap(paste0(
   ifelse(t_age_79$p.value < 0.001, "< 0.001",
          paste0("= ", format(round(t_age_79$p.value, 3), nsmall = 3))),
   "). (A) Total variance explained by the combination of all factors, for each solution (theoretical range: 0-100%). (B) Proportion of total variance explained by each factor, for each solution. (A) Proportion of shared variance explained by each factor, for each solution. By definition, the total shared variance explained for each solution equals 100%. Dotted lines indicate the expected value of shared variance explained if all of the factors for a given solution were of equal size."), 210), x = 0, hjust = 0)
+```
+
+```{r, fig.width = 9, fig.asp = 0.4}
+figure3.5
 ```
 
 ```{r figure3.5, include = T, fig.width = 9, fig.asp = 0.4}
