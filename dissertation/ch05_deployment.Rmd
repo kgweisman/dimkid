@@ -1,9 +1,10 @@
 ---
 title: "Chapter V: Changes in deployment of the concept"
 output:
-  word_document:
-    reference_docx: "./word-styles-reference.docx"
-always_allow_html: yes
+  html_notebook:
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
 bibliography: ./bibliography/dissbib.bib
 csl: ./bibliography/apa.csl
 ---
@@ -203,7 +204,7 @@ table5.1 <- devgp_table_fun(regtab_devgp = regtab_d2_devgp,
                             n_characters = 2, 
                             table_name = "Table 5.1", 
                             study_name = "Study 2", 
-                            age_group = "7- to 9-year-old children", 
+                            age_group = "7- to 9-year-old children and adults", 
                             n_age_groups = 1,
                             char_compare_label = "Beetle vs. GM")
 ```
@@ -455,7 +456,7 @@ table5.3 <- devgp_table_fun(regtab_devgp = regtab_d3_devgp,
                             n_characters = 9, 
                             table_name = "Table 5.3", 
                             study_name = "Study 3", 
-                            age_group = "4- to 9-year-old children",
+                            age_group = "4- to 6-year-old children, 7- to 9-year-old children, and adults",
                             n_age_groups = 2, 
                             char_compare_label = "Animate characters vs. GM")
 ```
@@ -750,7 +751,7 @@ table5.5 <- devgp_table_fun(regtab_devgp = regtab_d4_devgp,
                             n_characters = 2, 
                             table_name = "Table 5.5", 
                             study_name = "Study 4", 
-                            age_group = "4- to 5-year-old children", 
+                            age_group = "4- to 5-year-old children and adults", 
                             n_age_groups = 1,
                             char_compare_label = "Beetle vs. GM")
 ```

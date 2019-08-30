@@ -37,12 +37,11 @@ source("./scripts/stored_ch04.R")
 
 # Appendix overview
 
-In this appendix, I report additional exploratory analyses of the organization of the sets of "conceptual units" that were excluded from the main text of Chapter IV, including: (a) Visualizations and analyses of the relationships among conceptual units using scales derived from EFA of children's own responses, rather than adults' responses, for 7- to 9-year-old children in Study 3, 4- to 6-year-old children in Study 3, and 4- to 5-year-old children in Study 4; (b) Visualizations and analyses of age-related changes in difference scores between conceptual units (scored using adults' scales) for 7- to 9-year-old children in Study 2, 4- to 9-year-old children in Study 3, and 4- to 5-year-old children in Study 4; and (c) Visualizations of the joint dependency of HEART on both BODY and MIND.
-
+In this appendix, I report additional exploratory analyses of the organization of the sets of “conceptual units” that were excluded from the main text of Chapter IV, including: (a) Visualizations and analyses of the relationships among conceptual units using scales derived from EFA of children’s own responses, rather than adults’ responses, for 7- to 9-year-old children in Study 3, and 4- to 6-year-old children in Study 3; (b) Visualizations and analyses of age-related changes in difference scores between conceptual units (scored using adults’ scales) for 7- to 9-year-old children in Study 2, 4- to 9-year-old children in Study 3, and 4- to 5-year-old children in Study 4; and (c) Visualizations of the joint dependency of HEART on both BODY and MIND.
 
 # Relationships among conceptual units using scales derived from children's EFAs
 
-In Chapter IV, I used adults' EFA solution to construct BODY, HEART, and MIND scales and used these scales to assess the organization of these adult-like conceptual units among both adult and child samples. For Study 2, I also used 7- to 9-year-old children's own EFA solution to construct a separate set of scales based on children's own conceptual units and conducted a separate set of analyses of the organization of these "child-like" conceptual units. Here I present a parallel set of analyses using children's own EFA solutions (rather than adults') to assess the organization of conceptual units among both older children (7-9y of age) and younger children (4-6y of age) in Study 3, as well as among children (4-5y of age) in Study 4.
+In Chapter IV, I used adults' EFA solution to construct BODY, HEART, and MIND scales and used these scales to assess the organization of these adult-like conceptual units among both adult and child samples. For Study 2, I also used 7- to 9-year-old children's own EFA solution to construct a separate set of scales based on children's own conceptual units and conducted a separate set of analyses of the organization of these "child-like" conceptual units. Here I present a parallel set of analyses using children's own EFA solutions (rather than adults') to assess the organization of conceptual units among both older children (7-9y of age) and younger children (4-6y of age) in Study 3.
 
 ## Study 3
 
@@ -185,9 +184,9 @@ regtab_d3_79_scored_79_diff %>%
 plot_d3_79_scored_79_diff
 ```
 
-Visualizations of relationships among 7- to 9-year-old children's scores on the _BODY_, _HEART_, and _MIND_ scales are provided in Figure B.xx, row A. The results of Bayesian regressions comparing difference scores between conceptual units to zero, controlling for differences in assessments of the nine "diverse characters" that were featured as target characters in these studies, are provided in Table B.xx.
+Visualizations of relationships among 7- to 9-year-old children's scores on the _BODY_, _HEART_, and _MIND_ scales are provided in Figure B.1, row A.
 
-On the whole, these results (using _BODY_, _HEART_, and _MIND_ scales derived from EFA 7- to 9-year-old children's responses) are very similar to those presented in the main text of Chapter IV (using adults' _BODY_, _HEART_, and _MIND_ scales): Children systematically endorsed _BODY_ and _MIND_ items more strongly than _HEART_ items, but showed no systematic asymmetry between BODY and MIND. This is unsurprising, since children's and adults' scales were so similar to each other (see Table B.xx).
+On the whole, these results (using _BODY_, _HEART_, and _MIND_ scales derived from EFA 7- to 9-year-old children's responses) are very similar to those presented in the main text of Chapter IV (using adults' _BODY_, _HEART_, and _MIND_ scales): Children systematically endorsed _BODY_ and _MIND_ items more strongly than _HEART_ items, but showed no systematic asymmetry between BODY and MIND. This is unsurprising, since children's and adults' scales were so similar to each other (see Table B.1).
 
 ### Younger children (4-6y), using their own scales (three-factor solution)
 
@@ -328,7 +327,7 @@ regtab_d3_46_scored_46_wdm_diff %>%
 plot_d3_46_scored_46_wdm_diff
 ```
 
-Visualizations of relationships among 4- to 6-year-old children's scores on the _BODY\*_, _HEART\*_, and _MIND_ scales are provided in Figure B.xx, row B. The results of Bayesian regressions comparing difference scores between conceptual units to zero, controlling for differences in assessments of the nine "diverse characters" that were featured as target characters in these studies, are provided in Table B.xx.
+Visualizations of relationships among 4- to 6-year-old children's scores on the _BODY\*_, _HEART\*_, and _MIND_ scales are provided in Figure B.1, row B. 
 
 As in the results presented in the main text of Chapter IV (using adults' _BODY_, _HEART_, and _MIND_ scales), 4- to 6-year-old children systematically endorsed _BODY\*_ items more strongly than _MIND_ items. This is further evidence of a markedly un-adult-like intuition that BODY may be a more basic conceptual unit than MIND.
 
@@ -439,7 +438,7 @@ regtab_d3_46_scored_46_par_diff %>%
 plot_d3_46_scored_46_par_diff
 ```
 
-Visualizations of relationships among 4- to 6-year-old children's scores on the _BODY-HEART_ and _MIND_ scales are provided in Figure B.xx, row B. The results of a Bayesian regression comparing difference scores between conceptual units to zero, controlling for differences in assessments of the nine "diverse characters" that were featured as target characters in these studies, are provided in Table B.xx.
+Visualizations of relationships among 4- to 6-year-old children's scores on the _BODY-HEART_ and _MIND_ scales are provided in Figure B.1, row C.
 
 The main take-away of this analysis is that 4- to 6-year-old children reliably endorsed _BODY-HEART_ items more strongly than _MIND_ items.
 
@@ -510,7 +509,7 @@ tableB.1 <- altscales_study3 %>%
          `3-factor solution` = `Younger children, 4-6y (3-factor solution)`,
          `2-factor solution` = `Younger children, 4-6y (2-factor solution)`) %>%
   kable(format = "html",
-        caption = "Table B.1: Scales for each of the conceptual units (factors) identified by EFA for US Adults, older children, and younger children in Study 3 (see Chapter III). For younger children, this includes scales for both three- and two-factor EFA solutions. A checkmark indicates that a mental capacity was included in a scale for a particular sample. The conceptual units of younger children differed substantially from those of older children and adults, such that some mental capacities were included in different scales across age groups (e.g., feel scared was part of the BODY scale for older children and adults, but part of the HEART* scale for younger children). In these cases, the name of the scale is provided (rather than a checkmark).") %>%
+        caption = "Table B.1: Scales for each of the conceptual units identified by EFA for US Adults, older children, and younger children in Study 3 (see Chapter III). For younger children, this includes scales for both three- and two-factor EFA solutions. A checkmark indicates that a mental capacity was included in a scale for a particular sample. The conceptual units of younger children differed substantially from those of older children and adults, such that some mental capacities were included in different scales across age groups (e.g., feel scared was part of the BODY scale for older children and adults, but part of the HEART* scale for younger children). In these cases, the name of the scale is provided (rather than a checkmark).") %>%
   kable_styling() %>%
   group_rows("BODY scale", 1, 7) %>%
   group_rows("HEART scale", 8, 14) %>%
@@ -530,6 +529,10 @@ figureB.1 <- plot_grid(fig_d3_79_scored_79_plots_leg_title,
                        ncol = 1)
 
 figureB.1_cap <- add_sub(figureB.1, str_wrap("Figure B.1: Relationships among older and younger children's attributions of conceptual units in Study 3, scored using their own scales (see Table B.1). For younger children (4-6y of age), two sets of scores are presented: using a three-factor EFA solution (B1-B3) and using a two-factor EFA solution (C1). Plots are organized by sample and scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
+```
+
+```{r, fig.width = 5, fig.asp = 1.2}
+figureB.1
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.4}
@@ -557,422 +560,16 @@ figureB.2_plots_leg <- plot_grid(figureB.2_plots,
 figureB.2_cap <- add_sub(figureB.2_plots_leg, str_wrap("Figure B.2: Difference scores between 7- to 9-year-old children's and 4- to 6-year-old children's attributions of conceptual units in Study 3, using their own scales. For younger children (4-6y of age), this includes difference scores using the three-factor EFA solution (panel B) and difference scores using the two-factor solution (panel C; see Table B.1). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
 ```
 
+```{r, fig.width = 8, fig.asp = 0.3}
+figureB.2_plots
+```
+
 ```{r, include = T, fig.width = 8, fig.asp = 0.38}
 ggdraw(figureB.2_cap)
 ```
 
-## Study 4
-
-### Younger children (4-6y), using their own scales (two-factor solution)
-
-#### Scale construction
-
 ```{r}
-scales_efa_par_d4_46 <- scale_fun(efa_par_d4_46, 
-                                  factor_names = factor_names_efa_par_d4_46)
-saveRDS(scales_efa_par_d4_46, file = "./stored/scales/scales_efa_par_d4_46")
-
-d4_46_scored_46_par <- score_fun(d4_46, scales_efa_par_d4_46)
-saveRDS(d4_46_scored_46_par, file = "./stored/scored_data/d4_46_scored_46_par")
-```
-
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_par_d4_46)` scales of `r scales_efa_par_d4_46 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table B.1.
-
-#### Visualization and analysis of asymmetries
-
-```{r}
-plots_d4_46_scored_46_par <- relviz_fun(d4_46_scored_46_par, colors = colors09)
-```
-
-```{r}
-fig_d4_46_scored_46_par_plots <- plot_grid(plots_d4_46_scored_46_par[[1]] + 
-                                             theme(legend.position = "none"),
-                                           labels = c("C1"), ncol = 3)
-
-fig_d4_46_scored_46_par_leg <- get_legend(
-  plots_d4_46_scored_46_par[[1]] +
-    theme(legend.position = "bottom", legend.direction = "horizontal") +
-    scale_fill_manual("Target character", 
-                      values = colors09,
-                      guide = guide_legend(title.position = "left",
-                                           direction = "horizontal", 
-                                           ncol = 9)) +
-    scale_color_manual("Target character",
-                       values = colors09,
-                       guide = guide_legend(title.position = "left",
-                                            direction = "horizontal",
-                                            ncol = 9)))
-
-fig_d4_46_scored_46_par_plots_leg <- plot_grid(fig_d4_46_scored_46_par_plots, fig_d4_46_scored_46_par_leg,
-                                               ncol = 1, rel_heights = c(1, 0.05))
-
-fig_d4_46_scored_46_par_title <- ggdraw() + 
-  draw_label("Study 4: Children, 4-6y (using their own scales, 2-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
-
-fig_d4_46_scored_46_par_plots_leg_title <- plot_grid(
-  fig_d4_46_scored_46_par_title, fig_d4_46_scored_46_par_plots_leg,
-  ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 5, fig.asp = 0.4}
-# interim plot for ease of writing
-fig_d4_46_scored_46_par_plots_leg_title
-```
-
-```{r}
-d4_46_scored_46_par_diff <- diff_fun(d4_46_scored_46_par)
-contrasts(d4_46_scored_46_par_diff$character) <- contrasts_sum_edge
-
-saveRDS(d4_46_scored_46_par_diff, "./stored/diffscore_data/d4_46_scored_46_par_diff")
-```
-
-```{r}
-plot_d4_46_scored_46_par_diff <- diffplot_fun(d4_46_scored_46_par_diff, colors = colors02)
-```
-
-```{r}
-# r_d4_46_scored_46_par_diff_BODYHEART_MINDHEART <- brm(
-#   diff ~ 1 + character,
-#   data = d4_46_scored_46_par_diff %>% filter(pair == "BODY-HEART - MIND-HEART"),
-#   cores = 4)
-# 
-# saveRDS(r_d4_46_scored_46_par_diff_BODYHEART_MINDHEART,
-#         "./stored/brms_models/r_d4_46_scored_46_par_diff_BODYHEART_MINDHEART")
-
-r_d4_46_scored_46_par_diff_BODYHEART_MINDHEART <- readRDS("./stored/brms_models/r_d4_46_scored_46_par_diff_BODYHEART_MINDHEART")
-
-summary(r_d4_46_scored_46_par_diff_BODYHEART_MINDHEART)
-```
-
-```{r}
-regtab_d4_46_scored_46_par_diff <- diff_reg_table_fun(
-  reg_list = list(r_d4_46_scored_46_par_diff_BODYHEART_MINDHEART),
-  pair_list = "BODY-HEART - MIND-HEART",
-  study_name = "Children, 4-6y (using their own scales, 2-factor solution)",
-  char_label = c("Robot vs. GM"))
-```
-
-```{r}
-# interim table for ease of writing
-regtab_d4_46_scored_46_par_diff %>%
-  select(-study, -s.e.) %>%
-  filter(param == "Intercept") %>%
-  kable(digits = 2) %>%
-  kable_styling()
-```
-
-```{r, fig.width = 5, fig.asp = 0.4}
-# interim plot for ease of writing
-plot_d4_46_scored_46_par_diff
-```
-
-Visualizations of relationships among 4- to 6-year-old children's scores on the _BODY-HEART_ and _MIND-HEART_ scales are provided in Figure B.xx, row B. The results of a Bayesian regression comparing difference scores between conceptual units to zero, controlling for differences in assessments of the nine "diverse characters" that were featured as target characters in these studies, are provided in Table B.xx.
-
-The main take-away of this analysis is that 4- to 6-year-old children reliably endorsed _BODY-HEART_ items more strongly than _MIND-HEART_ items.
-
-### Younger children (4-6y), using their own scales (four-factor solution)
-
-#### Scale construction
-
-```{r}
-scales_efa_wdm_d4_46 <- scale_fun(efa_wdm_d4_46, 
-                                  factor_names = factor_names_efa_wdm_d4_46)
-saveRDS(scales_efa_wdm_d4_46, file = "./stored/scales/scales_efa_wdm_d4_46")
-
-d4_46_scored_46_wdm <- score_fun(d4_46, scales_efa_wdm_d4_46)
-saveRDS(d4_46_scored_46_wdm, file = "./stored/scored_data/d4_46_scored_46_wdm")
-```
-
-Following the steps described in "General analysis plan," above, yielded `r fact_name_fun(factor_names_efa_wdm_d4_46)` scales of `r scales_efa_wdm_d4_46 %>% count(factor) %>% summarise(mean = mean(n)) %>% select(mean) %>% as.numeric()` items each; see Table B.1.
-
-#### Visualization and analysis of asymmetries
-
-```{r}
-plots_d4_46_scored_46_wdm <- relviz_fun(d4_46_scored_46_wdm, colors = colors02)
-```
-
-```{r}
-fig_d4_46_scored_46_wdm_plots <- plot_grid(
-  plots_d4_46_scored_46_wdm[[1]] + 
-    theme(legend.position = "none"),
-  plots_d4_46_scored_46_wdm[[2]] + 
-    theme(legend.position = "none"),
-  plots_d4_46_scored_46_wdm[[3]] + 
-    theme(legend.position = "none"),
-  plots_d4_46_scored_46_wdm[[4]] + 
-    theme(legend.position = "none"),
-  plots_d4_46_scored_46_wdm[[5]] + 
-    theme(legend.position = "none"),
-  plots_d4_46_scored_46_wdm[[6]] + 
-    theme(legend.position = "none"),
-  labels = paste0("C", 1:6), ncol = 3)
-
-fig_d4_46_scored_46_wdm_leg <- get_legend(
-  plots_d4_46_scored_46_wdm[[1]] +
-    theme(legend.position = "bottom", legend.direction = "horizontal") +
-    scale_fill_manual("Target character", 
-                      values = colors02,
-                      guide = guide_legend(title.position = "left",
-                                           direction = "horizontal", 
-                                           ncol = 2)) +
-    scale_color_manual("Target character",
-                       values = colors02,
-                       guide = guide_legend(title.position = "left",
-                                            direction = "horizontal",
-                                            ncol = 2)))
-
-fig_d4_46_scored_46_wdm_plots_leg <- plot_grid(
-  fig_d4_46_scored_46_wdm_plots, fig_d4_46_scored_46_wdm_leg,
-  ncol = 1, rel_heights = c(1, 0.05))
-
-fig_d4_46_scored_46_wdm_title <- ggdraw() + 
-  draw_label("Study 4: Children, 4-6y (using their own scales, 4-factor solution)", size = 16, fontface = 'bold', x = 0, hjust = 0)
-
-fig_d4_46_scored_46_wdm_plots_leg_title <- plot_grid(
-  fig_d4_46_scored_46_wdm_title, fig_d4_46_scored_46_wdm_plots_leg,
-  ncol = 1, rel_heights = c(0.12, 1))
-```
-
-```{r, fig.width = 5, fig.asp = 0.7}
-# interim plot for ease of writing
-fig_d4_46_scored_46_wdm_plots_leg_title
-```
-
-```{r}
-d4_46_scored_46_wdm_diff <- diff_fun(d4_46_scored_46_wdm)
-contrasts(d4_46_scored_46_wdm_diff$character) <- contrasts_sum_edge
-
-saveRDS(d4_46_scored_46_wdm_diff, "./stored/diffscore_data/d4_46_scored_46_wdm_diff")
-```
-
-```{r}
-plot_d4_46_scored_46_wdm_diff <- diffplot_fun(d4_46_scored_46_wdm_diff, colors = colors02)
-```
-
-```{r}
-# r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother <- brm(
-#   diff ~ 1 + character,
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - BODY (other)"),
-#   cores = 4)
-# 
-# saveRDS(r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother,
-#         "./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother")
-
-r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother <- readRDS("./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother")
-
-summary(r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother)
-```
-
-```{r}
-# r_d4_46_scored_46_wdm_diff_BODYnausea_HEART <- brm(
-#   diff ~ 1 + character,
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - HEART*"),
-#   cores = 4)
-# 
-# saveRDS(r_d4_46_scored_46_wdm_diff_BODYnausea_HEART,
-#         "./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYnausea_HEART")
-
-r_d4_46_scored_46_wdm_diff_BODYnausea_HEART <- readRDS("./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYnausea_HEART")
-
-summary(r_d4_46_scored_46_wdm_diff_BODYnausea_HEART)
-```
-
-```{r}
-# r_d4_46_scored_46_wdm_diff_BODYother_HEART <- brm(
-#   diff ~ 1 + character,
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - HEART*"),
-#   cores = 4)
-# 
-# saveRDS(r_d4_46_scored_46_wdm_diff_BODYother_HEART,
-#         "./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYother_HEART")
-
-r_d4_46_scored_46_wdm_diff_BODYother_HEART <- readRDS("./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYother_HEART")
-
-summary(r_d4_46_scored_46_wdm_diff_BODYother_HEART)
-```
-
-```{r}
-# r_d4_46_scored_46_wdm_diff_BODYnausea_MIND <- brm(
-#   diff ~ 1 + character,
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (nausea) - MIND*"),
-#   cores = 4)
-# 
-# saveRDS(r_d4_46_scored_46_wdm_diff_BODYnausea_MIND,
-#         "./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYnausea_MIND")
-
-r_d4_46_scored_46_wdm_diff_BODYnausea_MIND <- readRDS("./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYnausea_MIND")
-
-summary(r_d4_46_scored_46_wdm_diff_BODYnausea_MIND)
-```
-
-```{r}
-# r_d4_46_scored_46_wdm_diff_BODYother_MIND <- brm(
-#   diff ~ 1 + character,
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "BODY (other) - MIND*"),
-#   cores = 4)
-# 
-# saveRDS(r_d4_46_scored_46_wdm_diff_BODYother_MIND,
-#         "./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYother_MIND")
-
-r_d4_46_scored_46_wdm_diff_BODYother_MIND <- readRDS("./stored/brms_models/r_d4_46_scored_46_wdm_diff_BODYother_MIND")
-
-summary(r_d4_46_scored_46_wdm_diff_BODYother_MIND)
-```
-
-```{r}
-# r_d4_46_scored_46_wdm_diff_HEART_MIND <- brm(
-#   diff ~ 1 + character,
-#   data = d4_46_scored_46_wdm_diff %>% filter(pair == "HEART* - MIND*"),
-#   cores = 4)
-# 
-# saveRDS(r_d4_46_scored_46_wdm_diff_HEART_MIND,
-#         "./stored/brms_models/r_d4_46_scored_46_wdm_diff_HEART_MIND")
-
-r_d4_46_scored_46_wdm_diff_HEART_MIND <- readRDS("./stored/brms_models/r_d4_46_scored_46_wdm_diff_HEART_MIND")
-
-summary(r_d4_46_scored_46_wdm_diff_HEART_MIND)
-```
-
-```{r}
-regtab_d4_46_scored_46_wdm_diff <- diff_reg_table_fun(
-  reg_list = list(r_d4_46_scored_46_wdm_diff_BODYnausea_BODYother,
-                  r_d4_46_scored_46_wdm_diff_BODYnausea_HEART,
-                  r_d4_46_scored_46_wdm_diff_BODYother_HEART,
-                  r_d4_46_scored_46_wdm_diff_BODYnausea_MIND,
-                  r_d4_46_scored_46_wdm_diff_BODYother_MIND,
-                  r_d4_46_scored_46_wdm_diff_HEART_MIND),
-  pair_list = c("BODY (nausea) - BODY (other)",
-                "BODY (nausea) - HEART*", "BODY (other) - HEART*",
-                "BODY (nausea) - MIND", "BODY (other) - MIND",
-                "HEART* - MIND"),
-  study_name = "Children, 4-6y (using their own scales, 4-factor solution)",
-  char_label = c("Robot vs. GM"))
-```
-
-```{r}
-# interim table for ease of writing
-regtab_d4_46_scored_46_wdm_diff %>%
-  select(-study, -s.e.) %>%
-  filter(param == "Intercept") %>%
-  kable(digits = 2) %>%
-  kable_styling()
-```
-
-```{r, fig.width = 5, fig.asp = 0.4}
-# interim plot for ease of writing
-plot_d4_46_scored_46_wdm_diff
-```
-
-Visualizations of relationships among 4- to 6-year-old children's scores on the _BODY\*_, _HEART\*_, and _MIND_ scales are provided in Figure B.xx, row B. The results of Bayesian regressions comparing difference scores between conceptual units to zero, controlling for differences in assessments of the nine "diverse characters" that were featured as target characters in these studies, are provided in Table B.xx.
-
-The main take-aways of this analysis are that 4- to 6-year-old children reliably endorsed _BODY (other)_ items more strongly than any other items, but showed no reliable asymmetries between the remaining conceptual units (_BODY (nausea)_, _HEART\*_, and _MIND_).
-
-### Discussion
-
-```{r}
-altscales_study3 <- bind_rows(
-  scales_efa_wdm_d4_ad %>% 
-    mutate(study = "Adults"),
-  scales_efa_par_d4_46 %>%
-    mutate(study = "Younger children, 4-6y (3-factor solution)"),
-  scales_efa_wdm_d4_46 %>%
-    mutate(study = "Younger children, 4-6y (4-factor solution)")) %>%
-  select(-c(loading, order)) %>%
-  distinct() %>%
-  mutate(study = factor(study,
-                        levels = c("Adults",
-                                   "Younger children, 4-6y (3-factor solution)",
-                                   "Younger children, 4-6y (4-factor solution)"))) %>%
-  spread(study, factor) %>%
-  mutate(ur_factor = ifelse(!is.na(`Adults`), 
-                            `Adults`, 
-                            ifelse(!is.na(`Younger children, 4-6y (3-factor solution)`),
-                                   `Younger children, 4-6y (3-factor solution)`,
-                                   `Younger children, 4-6y (4-factor solution)`))) %>%
-  left_join(scales_efa_wdm_d4_ad %>% 
-              select(capacity, order) %>% rename(order_ad = order)) %>%
-  left_join(scales_efa_par_d4_46 %>% 
-              select(capacity, order) %>% rename(order_46_par = order)) %>%
-  left_join(scales_efa_wdm_d4_46 %>% 
-              select(capacity, order) %>% rename(order_46_wdm = order)) %>%
-  arrange(ur_factor, order_ad, order_46_par, order_46_wdm) %>%
-  select(-c(ur_factor, starts_with("order")))
-```
-
-```{r}
-tableB.2 <- altscales_study3 %>%
-  mutate_all(as.character) %>%
-  # deal with younger children, 3-factor solution
-  mutate(temp1 = `Younger children, 4-6y (3-factor solution)`,
-         temp2 = gsub("\\*", "", temp1),
-         temp3 = case_when(
-           temp2 == `Adults` ~ "✓",
-           is.na(temp2) ~ "",
-           TRUE ~ temp1)) %>%
-  mutate(`Younger children, 4-6y (3-factor solution)` = temp3) %>%
-  select(-starts_with("temp")) %>%
-  # deal with younger children, 4-factor solution
-  mutate(temp1 = `Younger children, 4-6y (4-factor solution)`,
-         temp2 = gsub("\\*", "", temp1),
-         temp3 = case_when(
-           temp2 == `Adults` | 
-             temp2 == `Younger children, 4-6y (3-factor solution)` |
-             (is.na(`Adults`) & is.na(`Younger children, 4-6y (3-factor solution)`)) ~ "✓",
-           is.na(temp2) ~ "",
-           TRUE ~ temp1)) %>%
-  mutate(`Younger children, 4-6y (4-factor solution)` = temp3) %>%
-  select(-starts_with("temp")) %>%
-  mutate_at(vars(`Adults`),
-            funs(ifelse(is.na(.), "", "✓"))) %>%
-  rename(Capacity = capacity,
-         `4-factor solution` = `Younger children, 4-6y (4-factor solution)`,
-         `3-factor solution` = `Younger children, 4-6y (3-factor solution)`) %>%
-  kable(format = "html",
-        caption = "Table B.2: Scales for each of the conceptual units (factors) identified by EFA for US Adults and younger children in Study 4 (see Chapter III). For younger children, this includes scales for both three- and four-factor EFA solutions. A checkmark indicates that a mental capacity was included in a scale for a particular sample. The conceptual units of younger children in the four-factor solution differed substantially from those of adults, such that some mental capacities were included in different scales across age groups. In these cases, the name of the scale is provided (rather than a checkmark).") %>%
-  kable_styling() %>%
-  group_rows("BODY scale", 1, 5) %>%
-  group_rows("HEART scale", 6, 10) %>%
-  group_rows("MIND scale", 11, 15) %>%
-  add_header_above(c(" " = 2,
-                     "Younger children, 4-6y" = 2))
-```
-
-```{r tableB.2, include = T}
-tableB.2
-```
-
-```{r}
-figureB.3 <- plot_grid(fig_d4_46_scored_46_par_plots_leg_title,
-                       fig_d4_46_scored_46_wdm_plots_leg_title,
-                       rel_heights = c(1, 2), ncol = 1)
-
-figureB.3_cap <- add_sub(figureB.3, str_wrap("Figure B.3: Relationships among younger children's attributions of conceptual units in Study 4, scored using their own scales (see Table B.2). Two sets of scores are presented: using a three-factor EFA solution (A1-A3) and using a four-factor EFA solution (B1-B6). Plots are organized by sample and scale used (rows) and by pair of conceptual units (columns). For each conceptual unit, scores could range from 0-1. Individual participants are plotted as small, translucent circles, and mean scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted.", 110), x = 0, hjust = 0)
-```
-
-```{r, include = T, fig.width = 5, fig.asp = 1.4}
-ggdraw(figureB.3_cap)
-```
-
-```{r}
-figureB.4_plots <- plot_grid(
-  plot_d4_46_scored_46_par_diff + 
-    labs(title = "Study 4: Children, 4-6y\n(scored using their own scales, 3-factor solution)") +
-    theme(legend.position = "none"), 
-  plot_d4_46_scored_46_wdm_diff + 
-    labs(title = "Study 4: Children, 4-6y\n(scored using their own scales, 4-factor solution)") +
-    theme(legend.position = "none"), 
-  ncol = 2, rel_widths = c(1, 2),
-  labels = "AUTO")
-
-figureB.4_plots_leg <- plot_grid(figureB.4_plots,
-                                 get_legend(plot_d4_46_scored_46_par_diff),
-                                 ncol = 1, rel_heights = c(1, 0.1))
-
-figureB.4_cap <- add_sub(figureB.4_plots_leg, str_wrap("Figure B.4: Difference scores between 4- to 6-year-old children's attributions of conceptual units in Study 4, using their own scales. This includes difference scores using the four-factor EFA solution (panel A) and difference scores using the three-factor solution (panel B; see Table B.2). For each conceptual unit, scores could range from 0-1, such that difference scores could range from -1 to +1. Individual participants are plotted as small, translucent circles, and mean difference scores by character are plotted as larger, solid diamonds. Error bars are 95% bootstrapped confidence intervals. The dotted line corresponds to equal endorsements of the two conceptual units plotted (i.e., a difference score of 0).", 180), x = 0, hjust = 0)
-```
-
-```{r, include = T, fig.width = 8, fig.asp = 0.38}
-ggdraw(figureB.4_cap)
+# NOTE: see previous versions of this notebook for study 4
 ```
 
 
@@ -1096,7 +693,7 @@ tableB.3
 plot_d2_79age_scored_ad_diff
 ```
 
-The main take-aways of these analyses are that, among 7- to 9-year-old children in Study 2, _BODY_ vs. _HEART_ difference scores did not vary systematically with age, but both _BODY_ vs. _MIND_ and _HEART_ vs. _MIND_ difference scores became increasingly adult-like with age. See "Exact age (centered)" rows in Table B.3, and see Figure B.5, row A, for a visualization of difference scores over age.
+The main takeaways of these analyses are that, among 7- to 9-year-old children in Study 2, _BODY_ vs. _HEART_ difference scores did not vary systematically with age, but both _BODY_ vs. _MIND_ and _HEART_ vs. _MIND_ difference scores became increasingly adult-like with age. See "Exact age (centered)" rows in Table B.3, and see Figure B.3for a visualization of difference scores over age.
 
 ## Study 3
 
@@ -1228,7 +825,7 @@ tableB.4
 plot_d3_4679age_scored_ad_diff
 ```
 
-The main take-aways of these analyses are that, among 4- to 9-year-old children in Study 3, all three difference scores (_BODY_ vs. _HEART_, _BODY_ vs. _MIND_, and _HEART_ vs. _MIND_) became increasingly adult-like with age. See "Exact age (centered)" rows in Table B.B, and see Figure B.5, row A, for a visualization of difference scores over age.
+The main takeaways of these analyses are that, among 4- to 9-year-old children in Study 3, all three difference scores (_BODY_ vs. _HEART_, _BODY_ vs. _MIND_, and _HEART_ vs. _MIND_) became increasingly adult-like with age. See "Exact age (centered)" rows in Table B.B, and see Figure B.3for a visualization of difference scores over age.
 
 ## Study 4
 
@@ -1344,27 +941,31 @@ tableB.5
 plot_d4_46age_scored_ad_diff
 ```
 
-The main take-aways of these analyses are that, among 4- to 5-year-old children in Study 4, difference scores did not vary systematically with age. This is not entirely surprising given the smaller sample size and more restricted age range included in this study. See "Exact age (centered)" rows in Table B.5, and see Figure B.5, row A, for a visualization of difference scores over age.
+The main takeaways of these analyses are that, among 4- to 5-year-old children in Study 4, difference scores did not vary systematically with age. This is not entirely surprising given the smaller sample size and more restricted age range included in this study. See "Exact age (centered)" rows in Table B.5, and see Figure B.3for a visualization of difference scores over age.
 
 ```{r}
-figureB.5_plots <- plot_grid(plot_d2_79age_scored_ad_diff,
+figureB.3_plots <- plot_grid(plot_d2_79age_scored_ad_diff,
                              plot_d3_4679age_scored_ad_diff,
                              plot_d4_46age_scored_ad_diff,
                              ncol = 1)
 ```
 
 ```{r}
-figureB.5_cap <- add_sub(figureB.5_plots, str_wrap("Figure B.5: Changes in difference scores with age among (A) 7- to 9-year-old children in Study 2, (B) 4- to 9-year-old children in Study 3, and (C) 4- to 5-year-old children in Study 4. Plots are organized by sample and scale used (rows) and by pair of conceptual units (columns). All difference scored were calculating using adults' scales for that study; adults' mean difference score (collapsing across target characters) is plotted on the far right of each plot (error bars are 95% bootstrapped confidence intervals).", 110), x = 0, hjust = 0)
+figureB.3_cap <- add_sub(figureB.3_plots, str_wrap("Figure B.3: Changes in difference scores with age among (A) 7- to 9-year-old children in Study 2, (B) 4- to 9-year-old children in Study 3, and (C) 4- to 5-year-old children in Study 4. Plots are organized by sample and scale used (rows) and by pair of conceptual units (columns). All difference scored were calculating using adults' scales for that study; adults' mean difference score (collapsing across target characters) is plotted on the far right of each plot (error bars are 95% bootstrapped confidence intervals).", 110), x = 0, hjust = 0)
+```
+
+```{r, fig.width = 5, fig.asp = 1.2}
+figureB.3_plots
 ```
 
 ```{r, include = T, fig.width = 5, fig.asp = 1.4}
-ggdraw(figureB.5_cap)
+ggdraw(figureB.3_cap)
 ```
 
 
 # The joint dependency of HEART on both BODY and MIND
 
-A particularly robust and reliable finding reported in the main text of Chapter IV was that US adults virtually never endorsed HEART more strongly than either BODY or MIND. (US children between the ages of 4-9y also demonstrated increasingly adult-like asymmetries in their BODY, HEART, and MIND attributions with age.) I argued in that chapter that this pattern of findings is consitent with the possibility that adults' mental capacity attributions are governed by an intuitive theory of mental life specifying that, in order for a being to have the social-emotional abilities of the HEART, it must also have the physiological sensations of the BODY _and_ the perceptual-cognitive abilities of the mind. 
+A particularly robust and reliable finding reported in the main text of Chapter IV was that US adults virtually never endorsed HEART more strongly than either BODY or MIND. (US children between the ages of 4-9y also demonstrated increasingly adult-like asymmetries in their BODY, HEART, and MIND attributions with age.) I argued in that chapter that this pattern of findings is consistent with the possibility that adults' mental capacity attributions are governed by an intuitive theory of mental life specifying that, in order for a being to have the social-emotional abilities of the HEART, it must also have the physiological sensations of the BODY _and_ the perceptual-cognitive abilities of the mind. 
 
 I illustrated support for this hypothesis with a visualization of participants' _BODY_, _HEART_, and _MIND_ scores, which demonstrated that, among adults in Studies 1-4, strong endorsements of _HEART_ abilities only occurred among participants who also gave strong endorsements of _both_ _BODY_ and _MIND_ abilities (see Figure 4.11, top row). These tendencies appeared to be weaker among children (middle and bottom rows).
 

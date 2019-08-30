@@ -1,9 +1,10 @@
 ---
 title: "Chapter IV: Changes in organization of conceptual units"
 output:
-  word_document:
-    reference_docx: "./word-styles-reference.docx"
-always_allow_html: yes
+  html_notebook:
+    toc: yes
+    toc_depth: 4
+    toc_float: yes
 bibliography: ./bibliography/dissbib.bib
 csl: ./bibliography/apa.csl
 ---
@@ -70,7 +71,7 @@ I use these three-factor adult solutions to assess datasets from both adults and
 
 For the first sample of "older" children (7-9y of age, Study 2), I also briefly consider a second set of conceptual units: BODY, HEART, and MIND as defined by EFAs of the children's own responses (rather than adults' responses). Because the EFAs for older children and adults are so similar (see Chapter II and Table 4.10), the outcomes of these two approaches to constructing _BODY_, _HEART_, and _MIND_ scales should yield very similar results. (Indeed, for the second sample of "older" children, Study 3, the scales that would emerge from EFA of their responses are identical to the scales that emerge from EFA of adult responses, with the exception of a single item on the _BODY_ scale; see Table 4.10.)
 
-For "younger" children (4-6y of age, Study 3; 4-5y of age, Study 4), I have chosen _not_ to examine the various sets of two to four conceptual units that would be defined by EFAs of children's own responses.  As discussed at length in Chapter II, EFAs of younger children's responses were less robust and reliable than those of older children or adults, with different factor retention protocols generating different EFA solutions. For the purposes of the current chapter, this would mean assessing multiple additional sets of conceptual units for each of these samples. I have chosen to prioritize comparability across samples and studies over completeness in the main text of this chapter; the interested reader can find these alternative analyses in Appendix B. 
+For "younger" children (4-6y of age, Study 3; 4-5y of age, Study 4), I have chosen _not_ to examine the various sets of two to four conceptual units that would be defined by EFAs of children's own responses.  As discussed at length in Chapter II, EFAs of younger children's responses were less robust and reliable than those of older children or adults, with different factor retention protocols generating different EFA solutions. For the purposes of the current chapter, this would mean assessing multiple additional sets of conceptual units for each of these samples. I have chosen to prioritize comparability across samples and studies over completeness in the main text of this chapter; the interested reader can find these alternative analyses (for Study 3 only) in Appendix B. 
 
 This is not the only way to approach "scoring" participants on these conceptual units. For example, instead of constructing scales to capture each conceptual unit, I could have examined factor scores—summaries of each factor (conceptual unit) based on a participant's responses to all mental capacities and the relationships between all mental capacities and all factors included in that EFA solution. However, much like _z_-scores, factor scores indicate where a participant falls in relation to other participants in the sample, and do not provide the kind of absolute score that is key to my goal in this chapter, which is to analyze relationships among factors in terms of the extent to which individual participants indicated that target characters "possessed" the conceptual units BODY, HEART, and MIND, and to compare these scores across samples and studies (rather than only across participants within a sample). (Indeed, factor are designed to be symmetrical around zero, which precludes the kind of analyses of _asymmetries_ between "scores" for BODY, HEART, and MIND that are the backbone of this chapter.)
 
@@ -195,7 +196,7 @@ table4.1 <- scales_study1 %>%
             funs(ifelse(is.na(.), "", "✓"))) %>%
   rename(Capacity = capacity) %>%
   kable(format = "html", 
-        caption = "Table 4.1: Scales for each of the conceptual units (factors) identified by EFA for US Adults in Studies 1a-1d (see Chapter III). A checkmark indicates that a mental capacity was included in a scale for a particular study.") %>%  
+        caption = "Table 4.1: Scales for each of the conceptual units identified by EFA for US Adults in Studies 1a-1d (see Chapter III). A checkmark indicates that a mental capacity was included in a scale for a particular study.") %>%  
   kable_styling() %>%
   group_rows("BODY scale", 1, 9) %>%
   group_rows("HEART scale", 10, 17) %>%
@@ -1348,7 +1349,7 @@ Both visual inspection and formal analyses of the relationships among BODY, HEAR
 
 ### Children (7-9y), using children's own scales
 
-The previous analyses made use of _BODY_, _HEART_, and _MIND_ scores derived from EFAs of adults' mental capacity representations to examine the relationships among these conceptual units among both adults and children. But Chapter III suggested that, while 7- to 9-year-old children's conceptual units were very similar to those of adults, they were not exactly identical. What would would the relationships among BODY, HEART, and MIND look like if they were assessed using scales derived from children's own responses, rather than adults'? Here I briefly consider this possibility for children in Study 2; for parallel analyses for children in Studies 3 and 4, see Appendix B. 
+The previous analyses made use of _BODY_, _HEART_, and _MIND_ scores derived from EFAs of adults' mental capacity representations to examine the relationships among these conceptual units among both adults and children. But Chapter III suggested that, while 7- to 9-year-old children's conceptual units were very similar to those of adults, they were not exactly identical. What would would the relationships among BODY, HEART, and MIND look like if they were assessed using scales derived from children's own responses, rather than adults'? Here I briefly consider this possibility for children in Study 2; for parallel analyses for children in Study 3, see Appendix B. 
 
 #### Scale construction
 
@@ -2399,7 +2400,7 @@ table4.7
 
 _Note: At the time of the submission of this dissertation, the sample of 4- to 5-year-old children for Study 4 was only partially complete. All results using this sample should thus be considered preliminary and not conclusive._
 
-Study 4 builds on Study 3 by providing a targeted investigation of representations of mental life in the preschool years (4-5y). In this chapter, I again focus on what this study can reveal about the relationships among the conceptual units BODY, HEART, and MIND at the earliest point in development that I have examined so far, and compare this conceptual organization to that documented among adults. As a reminder, in this chapter I analyze young children's responses with respect to the "mature" conceptual units BODY, HEART, and MIND, as defined by EFA of _adults'_ responses (see Appendix B for further analyses with respect to the conceptual units identified through EFA of children's own mental capacity attributions, as presented in Chapter III).
+Study 4 builds on Study 3 by providing a targeted investigation of representations of mental life in the preschool years (4-5y). In this chapter, I again focus on what this study can reveal about the relationships among the conceptual units BODY, HEART, and MIND at the earliest point in development that I have examined so far, and compare this conceptual organization to that documented among adults. As a reminder, in this chapter I analyze young children's responses with respect to the "mature" conceptual units BODY, HEART, and MIND, as defined by EFA of _adults'_ responses.
 
 In Study 4, `r nrow(d4_ad_wide)/2` US adults and `r nrow(d4_46_wide)/2` US children between the ages of `r summary(d4_46$age)["Min."] %>% round(2) %>% format(nsmall = 2)`-`r summary(d4_46$age)["Max."] %>% round(2) %>% format(nsmall = 2)` years (median: `r summary(d4_46$age)["Median"] %>% round(2) %>% format(nsmall = 2)`y) each assessed two target characters on 18 mental capacities, with all aspects of the experimental design tailored to be appropriate for this youngest age group. This study employed the "edge case" variant of the general approach, with participants assessing both a beetle or a robot in sequence (with order counterbalanced across participants). (See Chapter II for detailed methods.)
 
@@ -3046,7 +3047,7 @@ table4.10 <- scales_study2 %>%
          `Children, 7-9y` = `Study 3: Children, 7-9y`,
          `Adults` = `Study 4: Adults`) %>%
   kable(format = "html",
-        caption = "Table 4.10: Scales for each of the conceptual units (factors) identified by EFA for US Adults in Studies 2-4 and for 7- to 9-year-old children in Studies 2 and 3. (See Appendix B for alternative scales based on younger children's EFA results, for Studies 3 and 4.) A checkmark indicates that a mental capacity was included in a scale for a particular sample.") %>%
+        caption = "Table 4.10: Scales for each of the conceptual units identified by EFA for US Adults in Studies 2-4 and for 7- to 9-year-old children in Studies 2 and 3. (See Appendix B for alternative scales based on younger children's EFA results for Study 3.) A checkmark indicates that a mental capacity was included in a scale for a particular sample.") %>%
   kable_styling() %>%
   add_header_above(c(" " = 1,
                      "Study 2" = 2,
