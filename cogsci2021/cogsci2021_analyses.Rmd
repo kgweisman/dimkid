@@ -1,0 +1,2564 @@
+---
+title: "CogSci 2021"
+subtitle: "Emotions as the product of body and mind: The hierarchical structure of folk concepts of mental life among US adults and children"
+output: html_notebook
+---
+
+```{r global_options, include = F}
+knitr::opts_chunk$set(fig.width = 3, fig.asp = 0.67,
+                      include = F, echo = F)
+```
+
+```{r}
+setwd("../dissertation/")
+# run ur-setup script (which runs other scripts)
+source("./scripts/_SETUP.R")
+
+# load in EFAs & names from Chapters III & IV
+source("./scripts/stored_ch03.R")
+source("./scripts/stored_ch04.R")
+```
+
+```{r}
+library(cluster)
+library(factoextra)
+```
+
+# Difference scores (planned analyses)
+
+## Adults
+
+### Study 1a
+
+```{r}
+r1a_BH <- lm(diff ~ 1 + character,
+          data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+summary(r1a_BH)
+confint(r1a_BH)
+```
+
+```{r}
+r1a_MH <- lm(diff ~ 1 + character,
+          data = d1a_ad_scored_ad_diff %>% filter(pair == "HEART - MIND") %>%
+            mutate(diff = -1 * diff))
+summary(r1a_MH)
+confint(r1a_MH)
+```
+
+```{r}
+r1a_MB <- lm(diff ~ 1 + character,
+          data = d1a_ad_scored_ad_diff %>% filter(pair == "BODY - MIND") %>%
+            mutate(diff = -1 * diff))
+summary(r1a_MB)
+confint(r1a_MB)
+```
+
+### Study 1b
+
+```{r}
+r1b_BH <- lm(diff ~ 1 + character,
+          data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+summary(r1b_BH)
+confint(r1b_BH)
+```
+
+```{r}
+r1b_MH <- lm(diff ~ 1 + character,
+          data = d1b_ad_scored_ad_diff %>% filter(pair == "HEART - MIND") %>%
+            mutate(diff = -1 * diff))
+summary(r1b_MH)
+confint(r1b_MH)
+```
+
+```{r}
+r1b_MB <- lm(diff ~ 1 + character,
+          data = d1b_ad_scored_ad_diff %>% filter(pair == "BODY - MIND") %>%
+            mutate(diff = -1 * diff))
+summary(r1b_MB)
+confint(r1b_MB)
+```
+
+### Study 1c
+
+```{r}
+r1c_BH <- lmer(diff ~ 1 + character + (1 | subid),
+               data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+summary(r1c_BH)
+confint(r1c_BH)
+```
+
+```{r}
+r1c_MH <- lmer(diff ~ 1 + character + (1 | subid),
+               data = d1c_ad_scored_ad_diff %>% filter(pair == "HEART - MIND") %>%
+                 mutate(diff = -1 * diff))
+summary(r1c_MH)
+confint(r1c_MH)
+```
+
+```{r}
+r1c_MB <- lmer(diff ~ 1 + character + (1 | subid),
+               data = d1c_ad_scored_ad_diff %>% filter(pair == "BODY - MIND") %>%
+                 mutate(diff = -1 * diff))
+summary(r1c_MB)
+confint(r1c_MB)
+```
+
+### Study 1d
+
+```{r}
+r1d_BH <- lm(diff ~ 1 + character,
+          data = d1d_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+summary(r1d_BH)
+confint(r1d_BH)
+```
+
+```{r}
+r1d_MH <- lm(diff ~ 1 + character,
+          data = d1d_ad_scored_ad_diff %>% filter(pair == "HEART - MIND") %>%
+            mutate(diff = -1 * diff))
+summary(r1d_MH)
+confint(r1d_MH)
+```
+
+```{r}
+r1d_MB <- lm(diff ~ 1 + character,
+          data = d1d_ad_scored_ad_diff %>% filter(pair == "BODY - MIND") %>%
+            mutate(diff = -1 * diff))
+summary(r1d_MB)
+confint(r1d_MB)
+```
+
+### Study 2
+
+```{r}
+r2_BH <- lm(diff ~ 1 + character,
+          data = d2_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+summary(r2_BH)
+confint(r2_BH)
+```
+
+```{r}
+r2_MH <- lm(diff ~ 1 + character,
+          data = d2_ad_scored_ad_diff %>% filter(pair == "HEART - MIND") %>%
+            mutate(diff = -1 * diff))
+summary(r2_MH)
+confint(r2_MH)
+```
+
+```{r}
+r2_MB <- lm(diff ~ 1 + character,
+          data = d2_ad_scored_ad_diff %>% filter(pair == "BODY - MIND") %>%
+            mutate(diff = -1 * diff))
+summary(r2_MB)
+confint(r2_MB)
+```
+
+
+### Study 3
+
+```{r}
+r3_BH <- lm(diff ~ 1 + character,
+          data = d3_ad_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+summary(r3_BH)
+confint(r3_BH)
+```
+
+```{r}
+r3_MH <- lm(diff ~ 1 + character,
+          data = d3_ad_scored_ad_diff %>% filter(pair == "HEART - MIND") %>%
+            mutate(diff = -1 * diff))
+summary(r3_MH)
+confint(r3_MH)
+```
+
+```{r}
+r3_MB <- lm(diff ~ 1 + character,
+          data = d3_ad_scored_ad_diff %>% filter(pair == "BODY - MIND") %>%
+            mutate(diff = -1 * diff))
+summary(r3_MB)
+confint(r3_MB)
+```
+
+## Children
+
+### Study 2
+
+```{r}
+r2ch_BH <- lm(diff ~ 1 + scale(age, scale = F) * character,
+          data = d2_79_scored_ad_diff %>% filter(pair == "BODY - HEART") %>%
+            left_join(d2_79 %>% distinct(subid, age)))
+summary(r2ch_BH)
+confint(r2ch_BH)
+```
+
+```{r}
+r2ch_MH <- lm(diff ~ 1 + scale(age, scale = F) * character,
+          data = d2_79_scored_ad_diff %>% filter(pair == "HEART - MIND") %>%
+            mutate(diff = -1 * diff) %>%
+            left_join(d2_79 %>% distinct(subid, age)))
+summary(r2ch_MH)
+confint(r2ch_MH)
+```
+
+```{r}
+r2ch_MB <- lm(diff ~ 1 + scale(age, scale = F) * character,
+          data = d2_79_scored_ad_diff %>% filter(pair == "BODY - MIND") %>%
+            mutate(diff = -1 * diff) %>%
+            left_join(d2_79 %>% distinct(subid, age)))
+summary(r2ch_MB)
+confint(r2ch_MB)
+```
+
+
+### Study 3
+
+```{r}
+d3_4679age_scored_ad_diff <- full_join(d3_46_scored_ad_diff, 
+                                       d3_79_scored_ad_diff) %>%
+  left_join(full_join(d3_46 %>% distinct(subid, age),
+                      d3_79 %>% distinct(subid, age)))
+```
+
+```{r}
+r3ch_BH <- lm(diff ~ 1 + scale(age, scale = F) * character,
+              data = d3_4679age_scored_ad_diff %>% filter(pair == "BODY - HEART"))
+summary(r3ch_BH)
+confint(r3ch_BH)
+```
+
+```{r}
+r3ch_MH <- lm(diff ~ 1 + scale(age, scale = F) * character,
+              data = d3_4679age_scored_ad_diff %>% filter(pair == "HEART - MIND") %>%
+                mutate(diff = -1 * diff))
+summary(r3ch_MH)
+confint(r3ch_MH)
+```
+
+```{r}
+r3ch_MB <- lm(diff ~ 1 + scale(age, scale = F) * character,
+              data = d3_4679age_scored_ad_diff %>% filter(pair == "BODY - MIND") %>%
+                mutate(diff = -1 * diff))
+summary(r3ch_MB)
+confint(r3ch_MB)
+```
+
+
+# Joint dependency
+
+## Adults
+
+```{r}
+r4 <- lmer(HEART ~ BODY * MIND + (1 | character) + (1 | study/subid),
+           data = scores_all %>% spread(factor, score) %>%
+             filter(age_group == "Adults",
+                    !grepl("Study 4", study)))
+
+summary(r4)
+confint(r4)
+```
+
+## Children
+
+```{r}
+r4ch <- lmer(HEART ~ BODY * MIND * scale(age, scale = F) 
+             + (1 | character) + (1 | study),
+           data = scores_all %>% spread(factor, score) %>%
+             filter(age_group != "Adults",
+                    !grepl("Study 4", study)) %>%
+             left_join(bind_rows(d2_79 %>% distinct(age, subid),
+                                 d3_79 %>% distinct(age, subid),
+                                 d3_46 %>% distinct(age, subid))))
+
+summary(r4ch)
+confint(r4ch)
+```
+
+
+# Plots
+```{r}
+d2_ad79_scored_ad_diff <- full_join(d2_79_scored_ad_diff, 
+                                    d2_ad_scored_ad_diff) %>%
+  left_join(d2_79 %>% distinct(subid, age))
+
+d3_ad7946_scored_ad_diff <- d3_4679age_scored_ad_diff %>%
+  full_join(d3_ad_scored_ad_diff)
+```
+
+
+```{r}
+temp <- bind_rows(d1a_ad_scored_ad_diff,
+                  d1b_ad_scored_ad_diff,
+                  d1c_ad_scored_ad_diff,
+                  d1d_ad_scored_ad_diff,
+                  d2_ad79_scored_ad_diff,
+                  d3_ad7946_scored_ad_diff) %>%
+  mutate(pair = gsub("\\-", "minus", as.character(pair)),
+         diff2 = case_when(pair != "BODY minus HEART" ~ diff * -1,
+                           TRUE ~ diff),
+         pair2 = case_when(pair == "HEART minus MIND" ~ "MIND minus HEART",
+                           pair == "BODY minus MIND" ~ "MIND minus BODY",
+                           TRUE ~ pair),
+         pair2 = factor(pair2, 
+                        levels = c("BODY minus HEART", 
+                                   "MIND minus HEART", 
+                                   "MIND minus BODY")),
+         age_group2 = recode(age_group,
+                                    "adults" = "Adults",
+                                    "children46" = "Children",
+                                    "children79" = "Children"),
+         study = gsub("\\:.*$", "", study)) %>%
+  distinct()
+```
+
+```{r, fig.width = 4, fig.asp = 0.4}
+temp %>%
+  mutate(age_group2 = factor(age_group2,
+                             levels = c("Children", "Adults"),
+                             labels = c("children", "adults"))) %>%
+  ggplot(aes(#x = gsub("Study ", "S", study), 
+             x = study,
+             y = diff2, group = age_group2)) +
+  facet_grid(~pair2) +
+  # geom_jitter(height = 0, alpha = 0.2, size = 0.4, color = "dodgerblue") + 
+  # geom_jitter(height = 0.01, alpha = 1, size = 0.1, color = "lightblue") + 
+  # geom_jitter(height = 0.005, alpha = 0.5, size = 0.1) + 
+  geom_point(aes(color = age_group2, shape = age_group2),
+             position = position_jitterdodge(jitter.height = 0.02,
+                                             jitter.width = 0.5,
+                                             dodge.width = 0.75), 
+             alpha = 0.85, size = 0.2) + 
+  geom_hline(yintercept = 0, lty = 1, size = 0.2, color = "darkred") +
+  geom_pointrange(data = . %>%
+                    group_by(study, pair2, age_group2) %>%
+                    multi_boot_standard(col = "diff2") %>%
+                    ungroup(),
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, 
+                      shape = age_group2),
+                  show.legend = F,
+                  position = position_dodge(width = 0.75), 
+                  fatten = 3) +
+  scale_color_brewer(palette = "Paired") +
+  scale_shape_manual(values = c(17, 16)) +
+  theme_bw() +
+  # theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  # theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1),
+  #       legend.position = "bottom") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1),
+        axis.title.x = element_blank(),
+        legend.position = "bottom") +
+  guides(color = guide_legend(override.aes = list(size = 2, alpha = 1)),
+         shape = guide_legend(override.aes = list(size = 2, alpha = 1))) +
+  labs(#title = "Adults", 
+       # x = "Study",
+       x = NULL,
+       y = "Difference score", 
+       color = "Age group", shape = "Age group")
+ggsave("fig1.pdf")
+```
+
+```{r, fig.width = 4, fig.asp = 0.4}
+temp %>%
+  filter(study %in% c("Study 2", "Study 3")) %>%
+  left_join(bind_rows(d2_79 %>% distinct(subid, age),
+                      d3_79 %>% distinct(subid, age),
+                      d3_46 %>% distinct(subid, age))) %>%
+  ggplot(aes(x = age, y = diff2, group = age_group2)) +
+  facet_grid(gsub("Study ", "S", study) ~ pair2) +
+  geom_point(data = . %>% filter(age_group2 == "Children"),
+             aes(color = age_group2, shape = age_group2),
+             alpha = 1, size = 0.2) + 
+  geom_jitter(data = . %>% filter(age_group2 == "Adults"),
+             aes(x = 12, color = age_group2, shape = age_group2),
+             alpha = 1, size = 0.2,
+             height = 0) + 
+  geom_hline(yintercept = 0, lty = 1, size = 0.2, color = "darkred") +
+  geom_smooth(aes(fill = age_group2),
+              color = "black", size = 0.5, alpha = 0.75,
+              method = "lm", show.legend = F) +
+  geom_pointrange(data = . %>%
+                    filter(age_group2 == "Adults") %>%
+                    group_by(study, pair2, age_group2) %>%
+                    multi_boot_standard(col = "diff2") %>%
+                    ungroup(),
+                  aes(x = 12, y = mean, ymin = ci_lower, ymax = ci_upper,
+                      shape = age_group2),
+                  show.legend = F,
+                  position = position_dodge(width = 0.75),
+                  fatten = 1.5) +
+  # scale_color_brewer(palette = "Pastel1", aesthetics = c("color", "fill")) +
+  scale_x_continuous(breaks = seq(4, 12, 2),
+                     labels = c("4", "6", "8", "10", "Adults")) +
+  theme_bw() +
+  # theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  # theme(axis.text.x = element_text(angle = 60, hjust = 1, vjust = 1),
+  #       legend.position = "bottom") +
+  guides(color = guide_legend(override.aes = list(size = 2, alpha = 1)),
+         fill = guide_legend(override.aes = list(size = 2, alpha = 1))) +
+  labs(#title = "Adults", 
+       # x = "Study",
+       x = "Age (years)",
+       y = "Difference score", 
+       color = "Age group", fill = "Age group", shape = "Age group")
+```
+
+```{r}
+temp2 <- bind_rows(d1a_ad_scored_ad,
+                   d1b_ad_scored_ad,
+                   d1c_ad_scored_ad,
+                   d1d_ad_scored_ad,
+                   d2_ad_scored_ad,
+                   d2_79_scored_ad,
+                   d3_ad_scored_ad,
+                   d3_79_scored_ad,
+                   d3_46_scored_ad) %>%
+  mutate(study = gsub("\\:.*$", "", study),
+         age_group = case_when(
+           grepl("children", age_group) ~ "Children (Studies 2-3)",
+           grepl("adults", age_group) ~ "Adults (Studies 1a-1d, 2, and 3)"),
+         age_group = factor(age_group,
+                            levels = c("Children (Studies 2-3)", 
+                                       "Adults (Studies 1a-1d, 2, and 3)"))) %>%
+         # age_group = factor(age_group,
+         #                    levels = c("children46", "children79", "adults"),
+         #                    labels = c("Children, 4-6y (Study 3)",
+         #                               "Children, 7-9y (Studies 2-3)",
+         #                               "Adults (Studies 1a-1d, 2, and 3)"))) %>%
+  distinct() %>%
+  spread(factor, score)
+```
+
+```{r, fig.width = 1.94, fig.asp = 1.5}
+temp2 %>%
+  arrange(HEART) %>%
+  ggplot(aes(x = BODY, y = MIND, color = HEART, size = HEART)) +
+  facet_wrap(~ age_group, ncol = 1) +
+  # facet_grid(. ~ age_group) +
+  geom_jitter(alpha = 0.6, width = 0.025, height = 0.025) + #, size = 0.025) +
+  scale_size_continuous(breaks = seq(0, 1, 0.1),
+                        range = c(0.05, 2)) +
+  scale_color_gradient(low = "black", high = "#ae017e",
+                       breaks = seq(0, 1, 0.1)) +
+  # theme(legend.position = "top") +
+  labs(x = "BODY score", y = "MIND score", 
+       color = "HEART\nscore", size = "HEART\nscore") +
+  guides(color = guide_legend(override.aes = list(alpha = 1))) #,
+                             # byrow = T, nrow = 1),
+         # size = guide_legend(byrow = T, nrow = 1)) #+
+  # coord_equal()
+ggsave("fig2.pdf")
+```
+
+# New analyses after feedback on CogSci submission
+
+
+## Agnes clustering of difference scores
+
+### Study 2
+
+#### Children
+
+```{r}
+d2_79_wide <- d2_79_scored_ad_diff %>%
+  distinct(subid, pair, diff) %>%
+  spread(pair, diff) %>%
+  column_to_rownames("subid")
+```
+
+```{r, fig.width = 15, fig.asp = 0.5}
+d2_79_agnes <- dist(d2_79_wide, method = "euclidean") %>% 
+  agnes(method = "ward")
+
+# agglomerative coefficient
+d2_79_agnes$ac # strong clustering structure!
+
+# plot(d2_79_agnes)
+pltree(d2_79_agnes, hang = -1, main = "Dendrogram of agnes")
+rect.hclust(d2_79_agnes, k = 4, border = 2:5)
+```
+
+```{r}
+# # methods to assess
+# m <- c( "average", "single", "complete", "ward")
+# names(m) <- c( "average", "single", "complete", "ward")
+# 
+# # function to compute coefficient
+# ac <- function(x) {
+#   agnes(d2_79_wide, method = x)$ac
+# }
+# 
+# map_dbl(m, ac)
+# ##   average    single  complete      ward 
+# ## 0.7379371 0.6276128 0.8531583 0.9346210
+```
+
+```{r}
+fviz_nbclust(d2_79_wide, FUN = hcut, method = "silhouette")
+fviz_nbclust(d2_79_wide, FUN = hcut, method = "wss")
+fviz_nbclust(d2_79_wide, FUN = hcut, method = "gap_stat")
+```
+
+```{r}
+d2_79_agnes_subgroups <- cutree(d2_79_agnes, k = 4)
+d2_79_agnes_sub <- d2_79_wide %>%
+  mutate(cluster = d2_79_agnes_subgroups) %>%
+  rownames_to_column("subid") %>%
+  left_join(d2_79_scored_ad_diff) %>%
+  left_join(d2_79 %>% distinct(subid, age))
+```
+
+```{r}
+fviz_cluster(list(data = d2_79_wide, cluster = d2_79_agnes_subgroups))
+```
+```{r}
+# do clusters differ in age? yes!
+d2_79_agnes_sub %>%
+  ggplot(aes(x = cluster, y = age, color = character)) +
+  geom_point(position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, alpha = 0.25) +
+  geom_pointrange(data = . %>% 
+                    group_by(cluster, character) %>%
+                    multi_boot_standard(col = "age", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                  size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(cluster) %>%
+                    multi_boot_standard(col = "age", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, size = 0.75)
+```
+
+```{r}
+# do clusters differ in character distribution? yes!
+d2_79_agnes_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(3, 2, 4, 1),
+                              labels = c("young beetle", 
+                                         "old beetle", 
+                                         "young robot",
+                                         "old robot"))) %>%
+  ggplot(aes(x = cluster_ord, fill = character)) +
+  geom_bar(position = "fill") +
+  labs(x = "cluster", y = "proportion")
+```
+
+
+```{r}
+# what are the different clusters?
+d2_79_agnes_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(3, 2, 4, 1),
+                              labels = c("young beetle", 
+                                         "old beetle", 
+                                         "young robot",
+                                         "old robot")),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  ggplot(aes(x = cluster_ord, y = diff, color = character)) +
+  facet_grid(~ pair) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  geom_point(position = position_jitterdodge(jitter.height = 0, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, alpha = 0.25) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord, character) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                  size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, size = 0.75) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) + 
+  labs(x = "cluster", y = "difference score")
+```
+
+```{r}
+# what are the different clusters?
+d2_79_agnes_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(3, 2, 4, 1),
+                              labels = c("young beetle", 
+                                         "old beetle", 
+                                         "young robot",
+                                         "old robot")),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  ggplot(aes(x = pair, y = diff, color = character)) +
+  facet_grid(~ cluster_ord) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  geom_point(position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, 
+             alpha = 0.8) +
+  # geom_pointrange(data = . %>%
+  #                   group_by(pair, cluster_ord, character) %>%
+  #                   multi_boot_standard(col = "diff", na.rm = T) %>%
+  #                   ungroup,
+  #                 aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+  #                 size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, 
+                  size = 0.5) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(x = NULL, y = "difference score")
+```
+
+
+#### Children and adults
+
+```{r}
+d2_79ad_wide <- d2_ad79_scored_ad_diff %>%
+  distinct(subid, pair, diff) %>%
+  spread(pair, diff) %>%
+  column_to_rownames("subid")
+```
+
+```{r, fig.width = 15, fig.asp = 0.5}
+d2_79ad_agnes <- dist(d2_79ad_wide, method = "euclidean") %>% 
+  agnes(method = "ward")
+
+# agglomerative coefficient
+d2_79ad_agnes$ac # strong clustering structure!
+
+# plot(d2_79ad_agnes)
+pltree(d2_79ad_agnes, hang = -1, main = "Dendrogram of agnes")
+rect.hclust(d2_79ad_agnes, k = 3, border = 2:5)
+```
+
+```{r}
+# # methods to assess
+# m <- c( "average", "single", "complete", "ward")
+# names(m) <- c( "average", "single", "complete", "ward")
+# 
+# # function to compute coefficient
+# ac <- function(x) {
+#   agnes(d2_79ad_wide, method = x)$ac
+# }
+# 
+# map_dbl(m, ac)
+# ##   average    single  complete      ward 
+# ## 0.7379371 0.6276128 0.8531583 0.9346210
+```
+
+```{r}
+fviz_nbclust(d2_79ad_wide, FUN = hcut, method = "silhouette")
+fviz_nbclust(d2_79ad_wide, FUN = hcut, method = "wss")
+fviz_nbclust(d2_79ad_wide, FUN = hcut, method = "gap_stat")
+```
+
+```{r}
+d2_79ad_agnes_subgroups <- cutree(d2_79ad_agnes, k = 3)
+d2_79ad_agnes_sub <- d2_79ad_wide %>%
+  mutate(cluster = d2_79ad_agnes_subgroups) %>%
+  rownames_to_column("subid") %>%
+  left_join(d2_ad79_scored_ad_diff) %>%
+  left_join(full_join(d2_79 %>% distinct(subid, age_group, age),
+                      d2_ad %>% distinct(subid, age_group, age)))
+```
+
+```{r}
+fviz_cluster(list(data = d2_79ad_wide, cluster = d2_79ad_agnes_subgroups))
+```
+
+```{r}
+# do clusters differ in age groups? yes!
+d2_79ad_agnes_sub %>%
+  ggplot(aes(x = cluster, alpha = age_group, fill = character, color = character)) +
+  facet_grid(. ~ age_group) +
+  geom_bar(position = "stack") + 
+  scale_alpha_manual(values = c(0.8, 0.2))
+
+d2_79ad_agnes_sub %>%
+  ggplot(aes(x = cluster, alpha = age_group, fill = character, color = character)) +
+  # facet_grid(. ~ character) +
+  geom_bar(position = "fill") + 
+  scale_alpha_manual(values = c(0.8, 0.2))
+```
+
+
+```{r}
+# do clusters differ in age, among children? yes!
+d2_79ad_agnes_sub %>%
+  ggplot(aes(x = cluster, y = age, color = character)) +
+  geom_point(position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, alpha = 0.25) +
+  geom_pointrange(data = . %>% 
+                    group_by(cluster, character) %>%
+                    multi_boot_standard(col = "age", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                  size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(cluster) %>%
+                    multi_boot_standard(col = "age", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, size = 0.75)
+```
+
+```{r}
+# do clusters differ in character distribution? yes!
+d2_79ad_agnes_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(1, 2, 3),
+                              labels = c("adult robot", 
+                                         "adult beetle", 
+                                         "child"))) %>%
+  ggplot(aes(x = cluster_ord, fill = character)) +
+  geom_bar(position = "fill") +
+  labs(x = "cluster", y = "proportion")
+
+d2_79ad_agnes_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(1, 2, 3),
+                              labels = c("adult robot", 
+                                         "adult beetle", 
+                                         "child"))) %>%
+  ggplot(aes(x = cluster_ord, 
+             alpha = age_group, fill = character, color = character)) +
+  geom_bar(position = "fill") + 
+  labs(x = "cluster", y = "proportion") +
+  scale_alpha_manual(values = c(0.8, 0.2))
+```
+
+
+```{r}
+# what are the different clusters?
+d2_79ad_agnes_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(1, 2, 3),
+                              labels = c("adult robot", 
+                                         "adult beetle", 
+                                         "child")),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  ggplot(aes(x = cluster_ord, y = diff, color = character, shape = age_group)) +
+  facet_grid(~ pair) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  geom_point(position = position_jitterdodge(jitter.height = 0, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, alpha = 0.25) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord, character, age_group) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                  size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord, age_group) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  size = 0.75) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) + 
+  labs(x = "cluster", y = "difference score")
+```
+
+```{r}
+# what are the different clusters?
+d2_79ad_agnes_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(1, 2, 3),
+                              labels = c("adult robot", 
+                                         "adult beetle", 
+                                         "child")),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  ggplot(aes(x = pair, y = diff, color = character, shape = age_group)) +
+  facet_grid(~ cluster_ord) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  geom_point(position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, 
+             alpha = 0.8) +
+  # geom_pointrange(data = . %>%
+  #                   group_by(pair, cluster_ord, character, age_group) %>%
+  #                   multi_boot_standard(col = "diff", na.rm = T) %>%
+  #                   ungroup,
+  #                 aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+  #                 size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord, age_group) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  # shape = 15, 
+                  size = 0.5) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(x = NULL, y = "difference score")
+```
+
+```{r}
+d2_79ad_agnes_sub_percent_children <- d2_79ad_agnes_sub %>%
+  mutate(age_group = factor(age_group,
+                            levels = c("children46", "children79", "adults"),
+                            labels = c("4-6y", "7-9y", "adults")),
+         age_group2 = recode_factor(age_group,
+                                    "4-6y" = "children",
+                                    "7-9y" = "children",
+                                    "adults" = "adults")) %>%
+  distinct(cluster, age_group, age_group2, subid) %>%
+  count(cluster, age_group2) %>%
+  group_by(cluster) %>%
+  mutate(prop = n/sum(n)) %>%
+  ungroup() %>%
+  select(-n) %>%
+  spread(age_group2, prop)
+
+d2_79ad_agnes_sub_median_child_age <- d2_79ad_agnes_sub %>%
+  filter(age_group != "adults") %>%
+  distinct(cluster, subid, age) %>%
+  group_by(cluster) %>%
+  summarise(median = median(age, na.rm = T),
+            mean = mean(age, na.rm = T),
+            min = min(age, na.rm = T),
+            max = max(age, na.rm = T)) %>%
+  ungroup()
+
+d2_79ad_agnes_sub_percent_anim <- d2_79ad_agnes_sub %>%
+  distinct(cluster, subid, character) %>%
+  mutate(anim = case_when(character %in% c("computer", "robot", 
+                                           "doll", "teddy bear") ~ "inanimate", 
+                          character %in% c("beetle", "mouse", 
+                                           "bird", "goat", "elephant") ~ "animate",
+                          TRUE ~ NA_character_)) %>%
+  count(cluster, anim) %>%
+  complete(anim, nesting(cluster), fill = list(n = 0)) %>%
+  group_by(cluster) %>%
+  mutate(prop = n/sum(n)) %>%
+  ungroup() %>%
+  select(-n) %>%
+  spread(anim, prop)
+```
+
+```{r}
+# what are the different clusters?
+fig4a <- d2_79ad_agnes_sub %>%
+  mutate(age_group = factor(age_group,
+                            levels = c("children46", "children79", "adults"),
+                            labels = c("4-6y", "7-9y", "adults")),
+         age_group2 = recode_factor(age_group,
+                                    "4-6y" = "children",
+                                    "7-9y" = "children",
+                                    "adults" = "adults")) %>%
+  left_join(d2_79ad_agnes_sub_percent_children %>%
+              rename_at(vars(-cluster), ~paste("percent", ., sep = "_"))) %>%
+  left_join(d2_79ad_agnes_sub_median_child_age %>%
+              rename_at(vars(-cluster), ~paste("age", ., sep = "_"))) %>%
+  left_join(d2_79ad_agnes_sub_percent_anim %>%
+              rename_at(vars(-cluster), ~paste("percent", ., sep = "_"))) %>%
+  mutate(cluster_ord = factor(cluster, 
+                              levels = c(3, 2, 1),
+                              labels = c("Cluster A", "Cluster B", "Cluster C")),
+         facet_lab = paste0(cluster_ord, ": ",
+                            100*round(percent_children, 2), "% children"),
+         # percent_children = paste0("Percent children: ", 
+         #                          100*round(percent_children, 2), "%"),
+         age_median = paste0("Median child age: ", 
+                            format(round(age_median, 2), nsmall = 2), "y"),
+         percent_inanimate = paste0("Percent inanimate: ", 
+                                  100*round(percent_inanimate, 2), "%"),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  arrange(age_group2, desc(character), subid) %>%
+  ggplot(aes(x = pair, y = diff, color = character, shape = age_group2)) +
+  facet_grid(cols = vars(reorder(facet_lab, cluster_ord), age_median)) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  # geom_line(aes(group = subid),
+  #           position = position_jitterdodge(jitter.height = 0.01, 
+  #                                            jitter.width = 0.9,
+  #                                            dodge.width = 0.5),
+  #           alpha = 0.5) +
+  geom_point(aes(group = age_group2),
+             position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.4,
+                                             dodge.width = 0.5),
+             # size = 0.15, 
+             size = 0.7,
+             alpha = 0.8) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord, facet_lab, age_median, 
+                             percent_inanimate, age_group2) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  # shape = 15, 
+                  fatten = 3,
+                  position = position_dodge(width = 0.5),
+                  size = 0.5) +
+  scale_shape_manual(values = c(17, 16)) +
+  # scale_colour_hue(h = c(0, 270)) +
+  # scale_color_brewer(palette = "Spectral") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(x = NULL, y = "Difference score",
+       color = "Target character", shape = "Age group",
+       caption = "Error bars are bootstrapped 95% CIs")
+fig4a
+```
+
+### Study 3
+
+#### Children
+```{r}
+d3_4679_wide <- d3_4679age_scored_ad_diff %>%
+  distinct(subid, pair, diff) %>%
+  spread(pair, diff) %>%
+  column_to_rownames("subid")
+```
+
+```{r, fig.width = 15, fig.asp = 0.5}
+d3_4679_agnes <- dist(d3_4679_wide, method = "euclidean") %>% 
+  agnes(method = "ward")
+
+# agglomerative coefficient
+d3_4679_agnes$ac # strong clustering structure!
+
+# plot(d3_4679_agnes)
+pltree(d3_4679_agnes, hang = -1, main = "Dendrogram of agnes")
+rect.hclust(d3_4679_agnes, k = 4, border = 2:5)
+```
+
+```{r}
+# # methods to assess
+# m <- c( "average", "single", "complete", "ward")
+# names(m) <- c( "average", "single", "complete", "ward")
+# 
+# # function to compute coefficient
+# ac <- function(x) {
+#   agnes(d3_4679_wide, method = x)$ac
+# }
+# 
+# map_dbl(m, ac)
+# ##   average    single  complete      ward 
+# ## 0.7379371 0.6276128 0.8531583 0.9346210
+```
+
+```{r}
+fviz_nbclust(d3_4679_wide, FUN = hcut, method = "silhouette")
+fviz_nbclust(d3_4679_wide, FUN = hcut, method = "wss")
+fviz_nbclust(d3_4679_wide, FUN = hcut, method = "gap_stat")
+```
+
+```{r}
+d3_4679_agnes_subgroups <- cutree(d3_4679_agnes, k = 3)
+d3_4679_agnes_sub <- d3_4679_wide %>%
+  mutate(cluster = d3_4679_agnes_subgroups) %>%
+  rownames_to_column("subid") %>%
+  left_join(d3_4679age_scored_ad_diff)
+```
+
+
+```{r}
+fviz_cluster(list(data = d3_4679_wide, cluster = d3_4679_agnes_subgroups))
+```
+```{r}
+# do clusters differ in age? yes!
+d3_4679_agnes_sub %>%
+  ggplot(aes(x = cluster, y = age, color = character)) +
+  geom_point(position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, alpha = 0.25) +
+  geom_pointrange(data = . %>% 
+                    group_by(cluster, character) %>%
+                    multi_boot_standard(col = "age", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                  size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(cluster) %>%
+                    multi_boot_standard(col = "age", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, size = 0.75) +
+  scale_color_viridis_d()
+```
+
+```{r}
+# do clusters differ in character distribution? yes!
+d3_4679_agnes_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(1, 2, 3),
+                              labels = c("youngest", "middle / inanimate", "oldest"))) %>%
+  ggplot(aes(x = cluster_ord, fill = character)) +
+  geom_bar(position = "fill") +
+  scale_fill_viridis_d() + 
+  labs(x = "cluster", y = "proportion")
+```
+
+
+```{r}
+# what are the different clusters?
+d3_4679_agnes_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(1, 2, 3),
+                              labels = c("youngest", "middle / inanimate", "oldest")),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  ggplot(aes(x = cluster_ord, y = diff, color = character)) +
+  facet_grid(~ pair) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  geom_point(position = position_jitterdodge(jitter.height = 0, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, alpha = 0.25) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord, character) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                  size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, size = 0.75) +
+  scale_color_viridis_d() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) + 
+  labs(x = "cluster", y = "difference score")
+```
+
+```{r}
+# what are the different clusters?
+d3_4679_agnes_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(1, 2, 3),
+                              labels = c("youngest", "middle / inanimate", "oldest")),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  ggplot(aes(x = pair, y = diff, color = character)) +
+  facet_grid(~ cluster_ord) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  geom_point(position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, 
+             alpha = 0.8) +
+  # geom_pointrange(data = . %>%
+  #                   group_by(pair, cluster_ord, character) %>%
+  #                   multi_boot_standard(col = "diff", na.rm = T) %>%
+  #                   ungroup,
+  #                 aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+  #                 size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, 
+                  size = 0.5) +
+  scale_color_viridis_d() +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(x = NULL, y = "difference score")
+```
+
+
+
+
+
+#### Children and adults
+
+```{r}
+d3_4679ad_wide <- d3_ad7946_scored_ad_diff %>%
+  distinct(subid, pair, diff) %>%
+  spread(pair, diff) %>%
+  column_to_rownames("subid")
+```
+
+```{r, fig.width = 15, fig.asp = 0.5}
+d3_4679ad_agnes <- dist(d3_4679ad_wide, method = "euclidean") %>% 
+  agnes(method = "ward")
+
+# agglomerative coefficient
+d3_4679ad_agnes$ac # strong clustering structure!
+
+# plot(d3_4679ad_agnes)
+pltree(d3_4679ad_agnes, hang = -1, main = "Dendrogram of agnes")
+rect.hclust(d3_4679ad_agnes, k = 3, border = 2:5)
+```
+
+```{r}
+# # methods to assess
+# m <- c( "average", "single", "complete", "ward")
+# names(m) <- c( "average", "single", "complete", "ward")
+# 
+# # function to compute coefficient
+# ac <- function(x) {
+#   agnes(d3_4679ad_wide, method = x)$ac
+# }
+# 
+# map_dbl(m, ac)
+# ##   average    single  complete      ward 
+# ## 0.7379371 0.6276128 0.8531583 0.9346210
+```
+
+```{r}
+fviz_nbclust(d3_4679ad_wide, FUN = hcut, method = "silhouette")
+fviz_nbclust(d3_4679ad_wide, FUN = hcut, method = "wss")
+fviz_nbclust(d3_4679ad_wide, FUN = hcut, method = "gap_stat")
+```
+
+```{r}
+d3_4679ad_agnes_subgroups <- cutree(d3_4679ad_agnes, k = 3)
+d3_4679ad_agnes_sub <- d3_4679ad_wide %>%
+  mutate(cluster = d3_4679ad_agnes_subgroups) %>%
+  rownames_to_column("subid") %>%
+  left_join(d3_ad7946_scored_ad_diff) %>%
+  left_join(bind_rows(d3_46 %>% distinct(subid, age_group, age),
+                      d3_79 %>% distinct(subid, age_group, age),
+                      d3_ad %>% distinct(subid, age_group, age))) %>%
+  mutate(age_group = factor(age_group,
+                            levels = c("adults", "children79", "children46")))
+```
+
+```{r}
+fviz_cluster(list(data = d3_4679ad_wide, cluster = d3_4679ad_agnes_subgroups))
+```
+
+```{r}
+# do clusters differ in age groups? yes!
+d3_4679ad_agnes_sub %>%
+  ggplot(aes(x = cluster, alpha = age_group, fill = character, color = character)) +
+  facet_grid(. ~ age_group) +
+  geom_bar(position = "stack") + 
+  scale_alpha_manual(values = c(0.8, 0.3, 0.1))
+
+d3_4679ad_agnes_sub %>%
+  ggplot(aes(x = cluster, alpha = age_group, fill = character, color = character)) +
+  # facet_grid(. ~ character) +
+  geom_bar(position = "fill") + 
+  scale_alpha_manual(values = c(0.8, 0.3, 0.1))
+```
+
+
+```{r}
+# do clusters differ in age, among children? yes!
+d3_4679ad_agnes_sub %>%
+  ggplot(aes(x = cluster, y = age, color = character)) +
+  geom_point(position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, alpha = 0.25) +
+  geom_pointrange(data = . %>% 
+                    group_by(cluster, character) %>%
+                    multi_boot_standard(col = "age", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                  size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(cluster) %>%
+                    multi_boot_standard(col = "age", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, size = 0.75)
+```
+
+```{r}
+# do clusters differ in character distribution? yes!
+d3_4679ad_agnes_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(1, 2, 3),
+                              labels = c("child", 
+                                         "adult tech", 
+                                         "adult animate"))) %>%
+  ggplot(aes(x = cluster_ord, fill = character)) +
+  geom_bar(position = "fill") +
+  labs(x = "cluster", y = "proportion")
+
+d3_4679ad_agnes_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(1, 2, 3),
+                              labels = c("child", 
+                                         "adult tech", 
+                                         "adult animate"))) %>%
+  ggplot(aes(x = cluster_ord, 
+             alpha = age_group, fill = character, color = character)) +
+  geom_bar(position = "fill") + 
+  labs(x = "cluster", y = "proportion") +
+  scale_alpha_manual(values = c(0.8, 0.3, 0.1))
+```
+
+
+```{r}
+# what are the different clusters?
+d3_4679ad_agnes_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(1, 2, 3),
+                              labels = c("child", 
+                                         "adult tech", 
+                                         "adult animate")),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  ggplot(aes(x = cluster_ord, y = diff, color = character, shape = age_group)) +
+  facet_grid(~ pair) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  geom_point(position = position_jitterdodge(jitter.height = 0, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, alpha = 0.25) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord, character, age_group) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                  size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord, age_group) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  size = 0.75) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) + 
+  labs(x = "cluster", y = "difference score")
+```
+
+```{r}
+d3_4679ad_agnes_sub_percent_children <- d3_4679ad_agnes_sub %>%
+  mutate(age_group = factor(age_group,
+                            levels = c("children46", "children79", "adults"),
+                            labels = c("4-6y", "7-9y", "adults")),
+         age_group2 = recode_factor(age_group,
+                                    "4-6y" = "children",
+                                    "7-9y" = "children",
+                                    "adults" = "adults")) %>%
+  distinct(cluster, age_group, age_group2, subid) %>%
+  count(cluster, age_group2) %>%
+  group_by(cluster) %>%
+  mutate(prop = n/sum(n)) %>%
+  ungroup() %>%
+  select(-n) %>%
+  spread(age_group2, prop)
+
+d3_4679ad_agnes_sub_median_child_age <- d3_4679ad_agnes_sub %>%
+  filter(age_group != "adults") %>%
+  distinct(cluster, subid, age) %>%
+  group_by(cluster) %>%
+  summarise(median = median(age, na.rm = T),
+            mean = mean(age, na.rm = T),
+            min = min(age, na.rm = T),
+            max = max(age, na.rm = T)) %>%
+  ungroup()
+
+d3_4679ad_agnes_sub_percent_anim <- d3_4679ad_agnes_sub %>%
+  distinct(cluster, subid, character) %>%
+  mutate(anim = case_when(character %in% c("computer", "robot", 
+                                           "doll", "teddy bear") ~ "inanimate", 
+                          character %in% c("beetle", "mouse", 
+                                           "bird", "goat", "elephant") ~ "animate",
+                          TRUE ~ NA_character_)) %>%
+  count(cluster, anim) %>%
+  complete(anim, nesting(cluster), fill = list(n = 0)) %>%
+  group_by(cluster) %>%
+  mutate(prop = n/sum(n)) %>%
+  ungroup() %>%
+  select(-n) %>%
+  spread(anim, prop)
+```
+
+```{r}
+# what are the different clusters?
+d3_4679ad_agnes_sub %>%
+  mutate(age_group = factor(age_group,
+                            levels = c("children46", "children79", "adults"),
+                            labels = c("4-6y", "7-9y", "adults")),
+         age_group2 = recode_factor(age_group,
+                                    "4-6y" = "children",
+                                    "7-9y" = "children",
+                                    "adults" = "adults")) %>%
+  left_join(d3_4679ad_agnes_sub_percent_children %>%
+              rename_at(vars(-cluster), ~paste("percent", ., sep = "_"))) %>%
+  left_join(d3_4679ad_agnes_sub_median_child_age %>%
+              rename_at(vars(-cluster), ~paste("age", ., sep = "_"))) %>%
+  left_join(d3_4679ad_agnes_sub_percent_anim %>%
+              rename_at(vars(-cluster), ~paste("percent", ., sep = "_"))) %>%
+  mutate(cluster_ord = factor(cluster, 
+                              levels = c(1, 2, 3),
+                              labels = c("Cluster 1", "Cluster 2", "Cluster 3")),
+         percent_children = paste0("Percent children: ", 
+                                  100*round(percent_children, 2), "%"),
+         age_median = paste0("Median child age: ", 
+                            format(round(age_median, 2), nsmall = 2), "y"),
+         percent_inanimate = paste0("Percent inanimate: ", 
+                                  100*round(percent_inanimate, 2), "%"),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  ggplot(aes(x = pair, y = diff, color = character, shape = age_group2)) +
+  facet_grid(cols = vars(cluster_ord, percent_children, age_median, percent_inanimate)) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  geom_point(aes(group = age_group2),
+             position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.4,
+                                             dodge.width = 0.5),
+             # size = 0.15, 
+             size = 0.5,
+             alpha = 0.8) +
+  # geom_pointrange(data = . %>%
+  #                   group_by(pair, cluster_ord, character, age_group) %>%
+  #                   multi_boot_standard(col = "diff", na.rm = T) %>%
+  #                   ungroup,
+  #                 aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+  #                 size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord, percent_children, age_median, 
+                             percent_inanimate, age_group2) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  # shape = 15, 
+                  position = position_dodge(width = 0.5),
+                  size = 0.5) +
+  scale_shape_manual(values = c(17, 16)) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(x = NULL, y = "Difference score",
+       color = "Target character", shape = "Age group",
+       caption = "Error bars are bootstrapped 95% CIs")
+```
+
+
+
+```{r}
+# what are the different clusters?
+fig4b <- d3_4679ad_agnes_sub %>%
+  mutate(age_group = factor(age_group,
+                            levels = c("children46", "children79", "adults"),
+                            labels = c("4-6y", "7-9y", "adults")),
+         age_group2 = recode_factor(age_group,
+                                    "4-6y" = "children",
+                                    "7-9y" = "children",
+                                    "adults" = "adults")) %>%
+  left_join(d3_4679ad_agnes_sub_percent_children %>%
+              rename_at(vars(-cluster), ~paste("percent", ., sep = "_"))) %>%
+  left_join(d3_4679ad_agnes_sub_median_child_age %>%
+              rename_at(vars(-cluster), ~paste("age", ., sep = "_"))) %>%
+  left_join(d3_4679ad_agnes_sub_percent_anim %>%
+              rename_at(vars(-cluster), ~paste("percent", ., sep = "_"))) %>%
+  mutate(cluster_ord = factor(cluster, 
+                              levels = c(1, 3, 2),
+                              labels = c("Cluster A", "Cluster B", "Cluster C")),
+         facet_lab = paste0(cluster_ord, ": ",
+                            100*round(percent_children, 2), "% children"),
+         # percent_children = paste0("Percent children: ", 
+         #                          100*round(percent_children, 2), "%"),
+         age_median = paste0("Median child age: ", 
+                            format(round(age_median, 2), nsmall = 2), "y"),
+         percent_inanimate = paste0("Percent inanimate: ", 
+                                  100*round(percent_inanimate, 2), "%"),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  arrange(age_group2, desc(character), subid) %>%
+  ggplot(aes(x = pair, y = diff, color = character, shape = age_group2)) +
+  facet_grid(cols = vars(reorder(facet_lab, cluster_ord), age_median)) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  # geom_line(aes(group = subid),
+  #           position = position_jitterdodge(jitter.height = 0.01, 
+  #                                            jitter.width = 0.9,
+  #                                            dodge.width = 0.5),
+  #           alpha = 0.5) +
+  geom_point(aes(group = age_group2),
+             position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.9,
+                                             dodge.width = 0.5),
+             # size = 0.15, 
+             size = 0.7,
+             alpha = 0.8) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord, facet_lab, age_median, 
+                             percent_inanimate, age_group2) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  # shape = 15, 
+                  fatten = 3,
+                  position = position_dodge(width = 0.5),
+                  size = 0.5) +
+  scale_shape_manual(values = c(17, 16)) +
+  scale_colour_hue(h = c(0, 270)) +
+  # scale_color_brewer(palette = "Spectral") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(x = NULL, y = "Difference score",
+       color = "Target character", shape = "Age group",
+       caption = "Error bars are bootstrapped 95% CIs")
+fig4b
+```
+
+```{r, fig.width = 4, fig.asp = 0.38}
+fig4b +   
+  # facet_grid(cols = vars(cluster_ord, percent_children, age_median)) +
+  theme(legend.box = "horizontal") +
+  labs(caption = NULL)
+```
+
+```{r}
+library(cowplot)
+```
+
+```{r, fig.width = 4, fig.asp = 1}
+plot_grid(fig4a, fig4b, nrow = 2, labels = c("A", "B"))
+```
+
+```{r, fig.width = 4, fig.asp = 0.7}
+plot_grid(fig4a + #theme(legend.position = "top") +
+            theme(axis.text.x = element_blank()) +
+            labs(title = "Study 2", caption = NULL), 
+          fig4b + #theme(legend.position = "top") +
+            guides(shape = guide_none()) + 
+            labs(title = "Study 3", caption = NULL), 
+          nrow = 2, #labels = c("Study 2", "Study 3"),
+          rel_heights = c(1, 1.3))
+ggsave("fig3.pdf")
+```
+
+
+# UMAP
+
+```{r}
+library(umap)
+```
+
+```{r}
+custom.config = umap.defaults
+custom.config$n_neighbors = 30
+
+d2_79ad_umap <- umap(d2_79ad_wide, config = custom.config)
+```
+
+```{r}
+d2_79ad_umap$layout %>%
+  data.frame() %>%
+  rownames_to_column("subid") %>%
+  left_join(bind_rows(d2_79 %>% distinct(subid, character, age_group, age),
+                      d2_ad %>% distinct(subid, character, age_group))) %>%
+  mutate(age_group = factor(age_group,
+                            levels = c("children46", "children79", "adults"),
+                            labels = c("4-6y", "7-9y", "adults")),
+         anim = case_when(character %in% c("computer", "robot",
+                                           "doll", "teddy bear") ~ "inanimate",
+                          character %in% c("beetle", "bird", "mouse",
+                                           "goat", "elephant") ~ "animate")) %>%
+  arrange(age_group, character, subid) %>%
+  ggplot(aes(x = X1, y = X2, 
+             color = age_group,
+             fill = age_group)) +
+  geom_point(alpha = 0.8, shape = 19, size = .1) +
+  # scale_color_brewer(palette = "Set1", aesthetics = c("color", "fill"),
+  #                    drop = FALSE) +
+  scale_color_viridis_d(drop = FALSE, aesthetics = c("color", "fill", drop = FALSE)) +
+  guides(fill = guide_legend(override.aes = list(alpha = 1, size = 1))) +
+  theme(legend.position = "top") +
+  coord_equal()
+
+d2_79ad_umap$layout %>%
+  data.frame() %>%
+  rownames_to_column("subid") %>%
+  left_join(bind_rows(d2_79 %>% distinct(subid, character, age_group, age),
+                      d2_ad %>% distinct(subid, character, age_group))) %>%
+  mutate(age_group = factor(age_group,
+                            levels = c("children46", "children79", "adults"),
+                            labels = c("4-6y", "7-9y", "adults")),
+         anim = case_when(character %in% c("computer", "robot",
+                                           "doll", "teddy bear") ~ "inanimate",
+                          character %in% c("beetle", "bird", "mouse",
+                                           "goat", "elephant") ~ "animate")) %>%
+  arrange(age_group, character, subid) %>%
+  ggplot(aes(x = X1, y = X2, 
+             color = anim,
+             fill = anim)) +
+  geom_point(alpha = 0.8, shape = 19, size = .1) +
+  scale_color_brewer(palette = "Set2", aesthetics = c("color", "fill"), 
+                     drop = FALSE, direction = -1) +
+  guides(fill = guide_legend(override.aes = list(alpha = 1, size = 1))) +
+  theme(legend.position = "top") +
+  coord_equal()
+```
+
+
+```{r}
+custom.config = umap.defaults
+custom.config$n_neighbors = 30
+
+d3_4679ad_umap <- umap(d3_4679ad_wide, config = custom.config)
+```
+
+```{r}
+d3_4679ad_umap$layout %>%
+  data.frame() %>%
+  rownames_to_column("subid") %>%
+  left_join(bind_rows(d3_46 %>% distinct(subid, character, age_group, age),
+                      d3_79 %>% distinct(subid, character, age_group, age),
+                      d3_ad %>% distinct(subid, character, age_group))) %>%
+  mutate(age_group = factor(age_group,
+                            levels = c("children46", "children79", "adults"),
+                            labels = c("4-6y", "7-9y", "adults")),
+         anim = case_when(character %in% c("computer", "robot",
+                                           "doll", "teddy bear") ~ "inanimate",
+                          character %in% c("beetle", "bird", "mouse",
+                                           "goat", "elephant") ~ "animate")) %>%
+  arrange(age_group, character, subid) %>%
+  ggplot(aes(x = X1, y = X2, 
+             color = age_group,
+             fill = age_group)) +
+  geom_point(alpha = 0.8, shape = 19, size = .1) +
+  # scale_color_brewer(palette = "Set1", aesthetics = c("color", "fill"),
+  #                    drop = FALSE) +
+  scale_color_viridis_d(drop = FALSE, aesthetics = c("color", "fill", drop = FALSE)) +
+  guides(fill = guide_legend(override.aes = list(alpha = 1, size = 1))) +
+  theme(legend.position = "top") +
+  coord_equal()
+
+d3_4679ad_umap$layout %>%
+  data.frame() %>%
+  rownames_to_column("subid") %>%
+  left_join(bind_rows(d3_46 %>% distinct(subid, character, age_group, age),
+                      d3_79 %>% distinct(subid, character, age_group, age),
+                      d3_ad %>% distinct(subid, character, age_group))) %>%
+  mutate(age_group = factor(age_group,
+                            levels = c("children46", "children79", "adults"),
+                            labels = c("4-6y", "7-9y", "adults")),
+         anim = case_when(character %in% c("computer", "robot",
+                                           "doll", "teddy bear") ~ "inanimate",
+                          character %in% c("beetle", "bird", "mouse",
+                                           "goat", "elephant") ~ "animate")) %>%
+  arrange(age_group, character, subid) %>%
+  ggplot(aes(x = X1, y = X2, 
+             color = anim,
+             fill = anim)) +
+  geom_point(alpha = 0.8, shape = 19, size = .1) +
+  scale_color_brewer(palette = "Set2", aesthetics = c("color", "fill"), direction = -1) +
+  guides(fill = guide_legend(override.aes = list(alpha = 1, size = 1))) +
+  theme(legend.position = "top") +
+  coord_equal()
+```
+
+## Raw data?
+
+```{r}
+custom.config = umap.defaults
+custom.config$n_neighbors = 30
+
+d3_4679ad_raw_umap <- umap(bind_rows(d3_46_wide, d3_79_wide, d3_ad_wide) %>%
+                             remove_missing(), 
+                           config = custom.config)
+```
+
+```{r}
+d3_4679ad_raw_umap$layout %>%
+  data.frame() %>%
+  rownames_to_column("subid") %>%
+  mutate(subid = gsub("_.*$", "", subid)) %>%
+  left_join(bind_rows(d3_46 %>% distinct(subid, character, age_group, age),
+                      d3_79 %>% distinct(subid, character, age_group, age),
+                      d3_ad %>% distinct(subid, character, age_group))) %>%
+  mutate(age_group = factor(age_group,
+                            levels = c("children46", "children79", "adults"),
+                            labels = c("4-6y", "7-9y", "adults")),
+         anim = case_when(character %in% c("computer", "robot",
+                                           "doll", "teddy bear") ~ "inanimate",
+                          character %in% c("beetle", "bird", "mouse",
+                                           "goat", "elephant") ~ "animate")) %>%
+  arrange(age_group, character, subid) %>%
+  ggplot(aes(x = X1, y = X2, 
+             color = age_group,
+             fill = age_group)) +
+  geom_point(alpha = 0.8, shape = 19, size = .1) +
+  # scale_color_brewer(palette = "Set1", aesthetics = c("color", "fill"),
+  #                    drop = FALSE) +
+  scale_color_viridis_d(drop = FALSE, aesthetics = c("color", "fill", drop = FALSE)) +
+  guides(fill = guide_legend(override.aes = list(alpha = 1, size = 1))) +
+  theme(legend.position = "top") +
+  coord_equal()
+
+d3_4679ad_raw_umap$layout %>%
+  data.frame() %>%
+  rownames_to_column("subid") %>%
+  mutate(subid = gsub("_.*$", "", subid)) %>%
+  left_join(bind_rows(d3_46 %>% distinct(subid, character, age_group, age),
+                      d3_79 %>% distinct(subid, character, age_group, age),
+                      d3_ad %>% distinct(subid, character, age_group))) %>%
+  mutate(age_group = factor(age_group,
+                            levels = c("children46", "children79", "adults"),
+                            labels = c("4-6y", "7-9y", "adults")),
+         anim = case_when(character %in% c("computer", "robot",
+                                           "doll", "teddy bear") ~ "inanimate",
+                          character %in% c("beetle", "bird", "mouse",
+                                           "goat", "elephant") ~ "animate")) %>%
+  arrange(age_group, character, subid) %>%
+  ggplot(aes(x = X1, y = X2, 
+             color = anim,
+             fill = anim)) +
+  geom_point(alpha = 0.8, shape = 19, size = .1) +
+  scale_color_brewer(palette = "Set2", aesthetics = c("color", "fill"), direction = -1) +
+  guides(fill = guide_legend(override.aes = list(alpha = 1, size = 1))) +
+  theme(legend.position = "top") +
+  coord_equal()
+```
+
+```{r}
+temp <- agnes(bind_rows(d3_46_wide, d3_79_wide, d3_ad_wide) %>%
+                remove_missing())
+```
+
+
+# HDBSCAN
+
+```{r}
+library("dbscan")
+```
+
+## Study 2
+
+```{r}
+hdbscan_d2 <- hdbscan(d2_79ad_wide, minPts = 10)
+```
+
+```{r}
+plot(d2_79ad_wide, col = hdbscan_d2$cluster+2)
+# plot(hdbscan_d2$hc)
+```
+
+```{r}
+d2_79ad_wide %>%
+  rownames_to_column("subid") %>%
+  mutate(cluster = hdbscan_d2$cluster) %>%
+  gather(pair, diff, -c(subid, cluster)) %>%
+  left_join(bind_rows(d2_79 %>% distinct(subid, age_group, age, character),
+                      d2_ad %>% distinct(subid, age_group, character))) %>%
+  distinct(cluster, age_group, subid) %>%
+  count(cluster, age_group) %>%
+  complete(age_group, nesting(cluster), fill = list(n = 0)) %>%
+  group_by(cluster) %>%
+  mutate(prop = n/sum(n)) %>%
+  ungroup() %>%
+  select(-n) %>%
+  spread(age_group, prop)
+  
+d2_79ad_wide %>%
+  rownames_to_column("subid") %>%
+  mutate(cluster = hdbscan_d2$cluster) %>%
+  gather(pair, diff, -c(subid, cluster)) %>%
+  left_join(bind_rows(d2_79 %>% distinct(subid, age_group, age, character),
+                      d2_ad %>% distinct(subid, age_group, character))) %>%
+  filter(age_group != "adults") %>%
+  distinct(cluster, subid, age) %>%
+  group_by(cluster) %>%
+  summarise(median = median(age, na.rm = T),
+            mean = mean(age, na.rm = T),
+            min = min(age, na.rm = T),
+            max = max(age, na.rm = T))
+```
+
+```{r, fig.width = 4, fig.asp = 0.4}
+d2_79ad_wide %>%
+  rownames_to_column("subid") %>%
+  mutate(cluster = hdbscan_d2$cluster) %>%
+  gather(pair, diff, -c(subid, cluster)) %>%
+  left_join(bind_rows(d2_79 %>% distinct(subid, age_group, age, character),
+                      d2_ad %>% distinct(subid, age_group, character))) %>%
+  ggplot(aes(x = pair, y = diff, shape = age_group, color = character)) + 
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  facet_wrap(~ cluster) +
+  geom_point(aes(group = age_group),
+             position = position_jitterdodge(dodge.width = 0.5,
+                                             jitter.width = 0.4,
+                                             jitter.height = 0),
+             alpha = 0.5) +
+  geom_pointrange(data = . %>%
+                    group_by(cluster, pair, age_group) %>%
+                    multi_boot_standard(col = "diff", na.rm = T),
+                  aes(group = age_group, y = mean, ymin = ci_lower, ymax = ci_upper),
+                  position = position_dodge(width = 0.5),
+                  color = "black") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(x = NULL, y = "Difference score", shape = "Target character", color = "Age group",
+       caption = "Error bars are bootstrapped 95% CIs")
+```
+
+## Study 3
+
+```{r}
+hdbscan_d3 <- hdbscan(d3_4679ad_wide, minPts = 10)
+```
+
+```{r}
+plot(d3_4679ad_wide, col = hdbscan_d3$cluster+2)
+# plot(hdbscan_d3$hc)
+```
+
+```{r}
+d3_4679ad_wide %>%
+  rownames_to_column("subid") %>%
+  mutate(cluster = hdbscan_d3$cluster) %>%
+  gather(pair, diff, -c(subid, cluster)) %>%
+  left_join(bind_rows(d3_46 %>% distinct(subid, age_group, age, character),
+                      d3_79 %>% distinct(subid, age_group, age, character),
+                      d3_ad %>% distinct(subid, age_group, character))) %>%
+  distinct(cluster, age_group, subid) %>%
+  count(cluster, age_group) %>%
+  complete(age_group, nesting(cluster), fill = list(n = 0)) %>%
+  group_by(cluster) %>%
+  mutate(prop = n/sum(n)) %>%
+  ungroup() %>%
+  select(-n) %>%
+  spread(age_group, prop)
+  
+d3_4679ad_wide %>%
+  rownames_to_column("subid") %>%
+  mutate(cluster = hdbscan_d3$cluster) %>%
+  gather(pair, diff, -c(subid, cluster)) %>%
+  left_join(bind_rows(d3_46 %>% distinct(subid, age_group, age, character),
+                      d3_79 %>% distinct(subid, age_group, age, character),
+                      d3_ad %>% distinct(subid, age_group, character))) %>%
+  filter(age_group != "adults") %>%
+  distinct(cluster, subid, age) %>%
+  group_by(cluster) %>%
+  summarise(n = n(),
+            median = median(age, na.rm = T),
+            mean = mean(age, na.rm = T),
+            min = min(age, na.rm = T),
+            max = max(age, na.rm = T))
+```
+
+```{r, fig.width = 4, fig.asp = 0.4}
+d3_4679ad_wide %>%
+  rownames_to_column("subid") %>%
+  mutate(cluster = hdbscan_d3$cluster) %>%
+  gather(pair, diff, -c(subid, cluster)) %>%
+  left_join(bind_rows(d3_46 %>% distinct(subid, age_group, age, character),
+                      d3_79 %>% distinct(subid, age_group, age, character),
+                      d3_ad %>% distinct(subid, age_group, character))) %>%
+  mutate(cluster = factor(cluster, levels = c(2, 0, 1)),
+         age_group2 = case_when(age_group == "adults" ~ "adults",
+                                grepl("children", age_group) ~ "children")) %>%
+  ggplot(aes(x = pair, y = diff, shape = age_group2, color = character)) + 
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  facet_wrap(~ cluster) +
+  geom_point(aes(group = age_group2),
+             position = position_jitterdodge(dodge.width = 0.5,
+                                             jitter.width = 0.4,
+                                             jitter.height = 0),
+             alpha = 0.5) +
+  geom_pointrange(data = . %>%
+                    group_by(cluster, pair, age_group2) %>%
+                    multi_boot_standard(col = "diff", na.rm = T),
+                  aes(group = age_group2, y = mean, ymin = ci_lower, ymax = ci_upper),
+                  position = position_dodge(width = 0.5),
+                  color = "black") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(x = NULL, y = "Difference score", color = "Target character", shape = "Age group",
+       caption = "Error bars are bootstrapped 95% CIs")
+```
+
+
+# More clustering
+
+## Agnes clustering of raw scores
+
+### Study 2
+
+#### Children
+
+```{r}
+d2_79_wide_raw <- d2_79_scored_ad %>%
+  distinct(subid, factor, score) %>%
+  spread(factor, score) %>%
+  column_to_rownames("subid")
+```
+
+```{r, fig.width = 15, fig.asp = 0.5}
+d2_79_agnes_raw <- dist(d2_79_wide_raw, method = "euclidean") %>% 
+  agnes(method = "ward")
+
+# agglomerative coefficient
+d2_79_agnes_raw$ac # strong clustering structure!
+
+# plot(d2_79_agnes_raw)
+pltree(d2_79_agnes_raw, hang = -1, main = "Dendrogram of agnes")
+# rect.hclust(d2_79_agnes_raw, k = 4, border = 2:5)
+```
+
+```{r}
+# # methods to assess
+# m <- c( "average", "single", "complete", "ward")
+# names(m) <- c( "average", "single", "complete", "ward")
+# 
+# # function to compute coefficient
+# ac <- function(x) {
+#   agnes(d2_79_wide_raw, method = x)$ac
+# }
+# 
+# map_dbl(m, ac)
+# ##   average    single  complete      ward 
+# ## 0.7379371 0.6276128 0.8531583 0.9346210
+```
+
+```{r}
+fviz_nbclust(d2_79_wide_raw, FUN = hcut, method = "silhouette")
+fviz_nbclust(d2_79_wide_raw, FUN = hcut, method = "wss")
+fviz_nbclust(d2_79_wide_raw, FUN = hcut, method = "gap_stat")
+```
+
+```{r}
+d2_79_agnes_raw_subgroups <- cutree(d2_79_agnes_raw, k = 2)
+d2_79_agnes_raw_sub <- d2_79_wide_raw %>%
+  mutate(cluster = d2_79_agnes_raw_subgroups) %>%
+  rownames_to_column("subid") %>%
+  left_join(d2_79_scored_ad_diff) %>%
+  left_join(d2_79 %>% distinct(subid, age))
+```
+
+```{r}
+fviz_cluster(list(data = d2_79_wide_raw, cluster = d2_79_agnes_raw_subgroups))
+```
+```{r}
+# do clusters differ in age? yes!
+d2_79_agnes_raw_sub %>%
+  ggplot(aes(x = cluster, y = age, color = character)) +
+  geom_point(position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, alpha = 0.25) +
+  geom_pointrange(data = . %>% 
+                    group_by(cluster, character) %>%
+                    multi_boot_standard(col = "age", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                  size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(cluster) %>%
+                    multi_boot_standard(col = "age", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, size = 0.75)
+```
+
+```{r}
+# do clusters differ in character distribution? yes!
+d2_79_agnes_raw_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(2, 1),
+                              labels = c("younger", 
+                                         "older"))) %>%
+  ggplot(aes(x = cluster_ord, fill = character)) +
+  geom_bar(position = "fill") +
+  labs(x = "cluster", y = "proportion")
+```
+
+
+```{r}
+# what are the different clusters?
+d2_79_agnes_raw_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(2, 1),
+                              labels = c("younger", "older")),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  ggplot(aes(x = cluster_ord, y = diff, color = character)) +
+  facet_grid(~ pair) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  geom_point(position = position_jitterdodge(jitter.height = 0, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, alpha = 0.25) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord, character) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                  size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, size = 0.75) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) + 
+  labs(x = "cluster", y = "difference score")
+```
+
+```{r}
+# what are the different clusters?
+d2_79_agnes_raw_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(2, 1),
+                              labels = c("younger", "older")),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  ggplot(aes(x = pair, y = diff, color = character)) +
+  facet_grid(~ cluster_ord) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  geom_point(position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, 
+             alpha = 0.8) +
+  # geom_pointrange(data = . %>%
+  #                   group_by(pair, cluster_ord, character) %>%
+  #                   multi_boot_standard(col = "diff", na.rm = T) %>%
+  #                   ungroup,
+  #                 aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+  #                 size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, 
+                  size = 0.5) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(x = NULL, y = "difference score")
+```
+
+#### Adults
+
+```{r}
+d2_ad_wide_raw <- d2_ad_scored_ad %>%
+  distinct(subid, factor, score) %>%
+  spread(factor, score) %>%
+  column_to_rownames("subid")
+```
+
+```{r, fig.width = 15, fig.asp = 0.5}
+d2_ad_agnes_raw <- dist(d2_ad_wide_raw, method = "euclidean") %>% 
+  agnes(method = "ward")
+
+# agglomerative coefficient
+d2_ad_agnes_raw$ac # strong clustering structure!
+
+# plot(d2_ad_agnes_raw)
+pltree(d2_ad_agnes_raw, hang = -1, main = "Dendrogram of agnes")
+# rect.hclust(d2_ad_agnes_raw, k = 4, border = 2:5)
+```
+
+```{r}
+# # methods to assess
+# m <- c( "average", "single", "complete", "ward")
+# names(m) <- c( "average", "single", "complete", "ward")
+# 
+# # function to compute coefficient
+# ac <- function(x) {
+#   agnes(d2_ad_wide_raw, method = x)$ac
+# }
+# 
+# map_dbl(m, ac)
+# ##   average    single  complete      ward 
+# ## 0.7379371 0.6276128 0.8531583 0.9346210
+```
+
+```{r}
+fviz_nbclust(d2_ad_wide_raw, FUN = hcut, method = "silhouette")
+fviz_nbclust(d2_ad_wide_raw, FUN = hcut, method = "wss")
+fviz_nbclust(d2_ad_wide_raw, FUN = hcut, method = "gap_stat")
+```
+
+```{r}
+d2_ad_agnes_raw_subgroups <- cutree(d2_ad_agnes_raw, k = 2)
+d2_ad_agnes_raw_sub <- d2_ad_wide_raw %>%
+  mutate(cluster = d2_ad_agnes_raw_subgroups) %>%
+  rownames_to_column("subid") %>%
+  left_join(d2_ad_scored_ad_diff) %>%
+  left_join(d2_ad %>% distinct(subid, age))
+```
+
+```{r}
+fviz_cluster(list(data = d2_ad_wide_raw, cluster = d2_ad_agnes_raw_subgroups))
+```
+```{r}
+# do clusters differ in age? no?
+d2_ad_agnes_raw_sub %>%
+  ggplot(aes(x = cluster, y = age, color = character)) +
+  geom_point(position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, alpha = 0.25) +
+  geom_pointrange(data = . %>% 
+                    group_by(cluster, character) %>%
+                    multi_boot_standard(col = "age", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                  size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(cluster) %>%
+                    multi_boot_standard(col = "age", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, size = 0.75)
+```
+
+```{r}
+# do clusters differ in character distribution? yes!
+d2_ad_agnes_raw_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(2, 1),
+                              labels = c("beetle", 
+                                         "robot"))) %>%
+  ggplot(aes(x = cluster_ord, fill = character)) +
+  geom_bar(position = "fill") +
+  labs(x = "cluster", y = "proportion")
+```
+
+
+```{r}
+# what are the different clusters?
+d2_ad_agnes_raw_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(2, 1),
+                              labels = c("beetle", "robot")),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  ggplot(aes(x = cluster_ord, y = diff, color = character)) +
+  facet_grid(~ pair) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  geom_point(position = position_jitterdodge(jitter.height = 0, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, alpha = 0.25) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord, character) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                  size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, size = 0.75) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) + 
+  labs(x = "cluster", y = "difference score")
+```
+
+```{r}
+# what are the different clusters?
+d2_ad_agnes_raw_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(2, 1),
+                              labels = c("beetle", "robot")),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  ggplot(aes(x = pair, y = diff, color = character)) +
+  facet_grid(~ cluster_ord) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  geom_point(position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, 
+             alpha = 0.8) +
+  # geom_pointrange(data = . %>%
+  #                   group_by(pair, cluster_ord, character) %>%
+  #                   multi_boot_standard(col = "diff", na.rm = T) %>%
+  #                   ungroup,
+  #                 aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+  #                 size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, 
+                  size = 0.5) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(x = NULL, y = "difference score")
+```
+
+
+### Study 3
+
+#### Children
+
+```{r}
+d3_4679_wide_raw <- d3_46_scored_ad %>%
+  full_join(d3_79_scored_ad) %>%
+  distinct(age_group, subid, factor, score) %>%
+  select(-age_group) %>%
+  spread(factor, score) %>%
+  column_to_rownames("subid")
+```
+
+```{r, fig.width = 15, fig.asp = 0.5}
+d3_4679_agnes_raw <- dist(d3_4679_wide_raw, method = "euclidean") %>% 
+  agnes(method = "ward")
+
+# agglomerative coefficient
+d3_4679_agnes_raw$ac # strong clustering structure!
+
+# plot(d3_4679_agnes_raw)
+pltree(d3_4679_agnes_raw, hang = -1, main = "Dendrogram of agnes")
+# rect.hclust(d3_4679_agnes_raw, k = 4, border = 2:5)
+```
+
+```{r}
+# # methods to assess
+# m <- c( "average", "single", "complete", "ward")
+# names(m) <- c( "average", "single", "complete", "ward")
+# 
+# # function to compute coefficient
+# ac <- function(x) {
+#   agnes(d3_4679_wide_raw, method = x)$ac
+# }
+# 
+# map_dbl(m, ac)
+# ##   average    single  complete      ward 
+# ## 0.7379371 0.6276128 0.8531583 0.9346210
+```
+
+```{r}
+fviz_nbclust(d3_4679_wide_raw, FUN = hcut, method = "silhouette")
+fviz_nbclust(d3_4679_wide_raw, FUN = hcut, method = "wss")
+fviz_nbclust(d3_4679_wide_raw, FUN = hcut, method = "gap_stat")
+```
+
+```{r}
+d3_4679_agnes_raw_subgroups <- cutree(d3_4679_agnes_raw, k = 4)
+d3_4679_agnes_raw_sub <- d3_4679_wide_raw %>%
+  mutate(cluster = d3_4679_agnes_raw_subgroups) %>%
+  rownames_to_column("subid") %>%
+  left_join(d3_4679age_scored_ad_diff)
+```
+
+```{r}
+fviz_cluster(list(data = d3_4679_wide_raw, cluster = d3_4679_agnes_raw_subgroups))
+```
+```{r}
+# do clusters differ in age? maybe...?
+d3_4679_agnes_raw_sub %>%
+  ggplot(aes(x = cluster, y = age, color = character)) +
+  geom_point(position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, alpha = 0.25) +
+  # geom_pointrange(data = . %>% 
+  #                   group_by(cluster, character) %>%
+  #                   multi_boot_standard(col = "age", na.rm = T) %>%
+  #                   ungroup,
+  #                 aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+  #                 size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(cluster) %>%
+                    multi_boot_standard(col = "age", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, size = 0.75) +
+  scale_color_viridis_d()
+```
+
+```{r}
+# do clusters differ in character distribution? yes!
+d3_4679_agnes_raw_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(1, 2, 3, 4),
+                              labels = c("younger / animate", 
+                                         "middle / inanimate", 
+                                         "middle / animate", 
+                                         "oldest"))) %>%
+  ggplot(aes(x = cluster_ord, fill = character)) +
+  geom_bar(position = "fill") +
+  scale_fill_viridis_d() + 
+  labs(x = "cluster", y = "proportion")
+```
+
+
+```{r}
+# what are the different clusters?
+d3_4679_agnes_raw_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(1, 2, 3, 4),
+                              labels = c("younger / animate", 
+                                         "middle / inanimate", 
+                                         "middle / animate", 
+                                         "oldest")),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  ggplot(aes(x = cluster_ord, y = diff, color = character)) +
+  facet_grid(~ pair) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  geom_point(position = position_jitterdodge(jitter.height = 0, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, alpha = 0.25) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord, character) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                  size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, size = 0.75) +
+  scale_color_viridis_d() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) + 
+  labs(x = "cluster", y = "difference score")
+```
+
+```{r}
+# what are the different clusters?
+d3_4679_agnes_raw_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(1, 2, 3, 4),
+                              labels = c("younger / animate", 
+                                         "middle / inanimate", 
+                                         "middle / animate", 
+                                         "oldest")),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  ggplot(aes(x = pair, y = diff, color = character)) +
+  facet_grid(~ cluster_ord) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  geom_point(position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, 
+             alpha = 0.8) +
+  # geom_pointrange(data = . %>%
+  #                   group_by(pair, cluster_ord, character) %>%
+  #                   multi_boot_standard(col = "diff", na.rm = T) %>%
+  #                   ungroup,
+  #                 aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+  #                 size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, 
+                  size = 0.5) +
+  scale_color_viridis_d() +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(x = NULL, y = "difference score")
+```
+
+```{r}
+# r_d3a <- glmer(cluster ~ scale(age, scale = F) * anim + (1 | character), 
+#                data = d3_4679_agnes_raw_sub %>% 
+#                  mutate(cluster = cluster - 1,
+#                         anim = case_when(character %in% c("computer", "robot", "doll",
+#                                                           "teddy bear") ~ "inanimate",
+#                                          character %in% c("beetle", "bird", 
+#                                                           "mouse", "goat", 
+#                                                           "elephant") ~ "animate",
+#                                          TRUE ~ NA_character_),
+#                         anim = factor(anim, levels = c("inanimate", "animate"))), 
+#                family = "binomial")
+# 
+# summary(r_d3a)
+```
+
+Animate more likely to be in cluster one, and this became more pronounced with age.
+
+#### Adults
+
+```{r}
+d3_ad_wide_raw <- d3_ad_scored_ad %>%
+  distinct(age_group, subid, factor, score) %>%
+  select(-age_group) %>%
+  spread(factor, score) %>%
+  column_to_rownames("subid")
+```
+
+```{r, fig.width = 15, fig.asp = 0.5}
+d3_ad_agnes_raw <- dist(d3_ad_wide_raw, method = "euclidean") %>% 
+  agnes(method = "ward")
+
+# agglomerative coefficient
+d3_ad_agnes_raw$ac # strong clustering structure!
+
+# plot(d3_ad_agnes_raw)
+pltree(d3_ad_agnes_raw, hang = -1, main = "Dendrogram of agnes")
+# rect.hclust(d3_ad_agnes_raw, k = 4, border = 2:5)
+```
+
+```{r}
+# # methods to assess
+# m <- c( "average", "single", "complete", "ward")
+# names(m) <- c( "average", "single", "complete", "ward")
+# 
+# # function to compute coefficient
+# ac <- function(x) {
+#   agnes(d3_ad_wide_raw, method = x)$ac
+# }
+# 
+# map_dbl(m, ac)
+# ##   average    single  complete      ward 
+# ## 0.7379371 0.6276128 0.8531583 0.9346210
+```
+
+```{r}
+fviz_nbclust(d3_ad_wide_raw, FUN = hcut, method = "silhouette")
+fviz_nbclust(d3_ad_wide_raw, FUN = hcut, method = "wss")
+fviz_nbclust(d3_ad_wide_raw, FUN = hcut, method = "gap_stat")
+```
+
+```{r}
+d3_ad_agnes_raw_subgroups <- cutree(d3_ad_agnes_raw, k = 2)
+d3_ad_agnes_raw_sub <- d3_ad_wide_raw %>%
+  mutate(cluster = d3_ad_agnes_raw_subgroups) %>%
+  rownames_to_column("subid") %>%
+  left_join(d3_ad_scored_ad_diff) %>%
+  left_join(d3_ad %>% distinct(subid, age))
+```
+
+```{r}
+fviz_cluster(list(data = d3_ad_wide_raw, cluster = d3_ad_agnes_raw_subgroups))
+```
+```{r}
+# do clusters differ in age? maybe...?
+d3_ad_agnes_raw_sub %>%
+  ggplot(aes(x = cluster, y = age, color = character)) +
+  geom_point(position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, alpha = 0.25) +
+  # geom_pointrange(data = . %>% 
+  #                   group_by(cluster, character) %>%
+  #                   multi_boot_standard(col = "age", na.rm = T) %>%
+  #                   ungroup,
+  #                 aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+  #                 size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(cluster) %>%
+                    multi_boot_standard(col = "age", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, size = 0.75) +
+  scale_color_viridis_d()
+```
+
+```{r}
+# do clusters differ in character distribution? yes!
+d3_ad_agnes_raw_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(2, 1),
+                              labels = c("animate", "inanimate"))) %>%
+  ggplot(aes(x = cluster_ord, fill = character)) +
+  geom_bar(position = "fill") +
+  scale_fill_viridis_d() + 
+  labs(x = "cluster", y = "proportion")
+```
+
+
+```{r}
+# what are the different clusters?
+d3_ad_agnes_raw_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(2, 1),
+                              labels = c("animate", "inanimate")),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  ggplot(aes(x = cluster_ord, y = diff, color = character)) +
+  facet_grid(~ pair) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  geom_point(position = position_jitterdodge(jitter.height = 0, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, alpha = 0.25) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord, character) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+                  size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, size = 0.75) +
+  scale_color_viridis_d() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) + 
+  labs(x = "cluster", y = "difference score")
+```
+
+```{r}
+# what are the different clusters?
+d3_ad_agnes_raw_sub %>%
+  mutate(cluster_ord = factor(cluster, levels = c(2, 1),
+                              labels = c("animate", "inanimate")),
+         pair = recode_factor(pair, 
+                              "BODY - HEART" = "BODY - HEART",
+                              "HEART - MIND" = "MIND - HEART",
+                              "BODY - MIND" = "MIND - BODY"),
+         diff = case_when(pair == "BODY - HEART" ~ diff,
+                          TRUE ~ -1 * diff)) %>%
+  ggplot(aes(x = pair, y = diff, color = character)) +
+  facet_grid(~ cluster_ord) +
+  geom_hline(yintercept = 0, lty = 2, color = "darkred") +
+  geom_point(position = position_jitterdodge(jitter.height = 0.01, 
+                                             jitter.width = 0.2,
+                                             dodge.width = 0.5),
+             size = 0.15, 
+             alpha = 0.8) +
+  # geom_pointrange(data = . %>%
+  #                   group_by(pair, cluster_ord, character) %>%
+  #                   multi_boot_standard(col = "diff", na.rm = T) %>%
+  #                   ungroup,
+  #                 aes(y = mean, ymin = ci_lower, ymax = ci_upper),
+  #                 size = 0.25, position = position_dodge(width = 0.5)) +
+  geom_pointrange(data = . %>% 
+                    group_by(pair, cluster_ord) %>%
+                    multi_boot_standard(col = "diff", na.rm = T) %>%
+                    ungroup,
+                  aes(y = mean, ymin = ci_lower, ymax = ci_upper, color = NULL),
+                  shape = 15, 
+                  size = 0.5) +
+  scale_color_viridis_d() +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
+  labs(x = NULL, y = "difference score")
+```
+
+```{r}
+r_d3b <- glmer(cluster ~ scale(age, scale = F) * anim + (1 | character), 
+               data = d3_ad_agnes_raw_sub %>% 
+                 distinct(subid, cluster, character, age) %>%
+                 mutate(cluster = cluster - 1,
+                        anim = case_when(character %in% c("computer", "robot", "doll",
+                                                          "teddy bear") ~ "inanimate",
+                                         character %in% c("beetle", "bird", 
+                                                          "mouse", "goat", 
+                                                          "elephant") ~ "animate",
+                                         TRUE ~ NA_character_),
+                        anim = factor(anim, levels = c("inanimate", "animate"))), 
+               family = "binomial")
+
+summary(r_d3b)
+
+r_d3c <- glmer(cluster ~ anim + (1 | character), 
+               data = d3_ad_agnes_raw_sub %>% 
+                 distinct(subid, cluster, character) %>%
+                 mutate(cluster = cluster - 1,
+                        anim = case_when(character %in% c("computer", "robot", "doll",
+                                                          "teddy bear") ~ "inanimate",
+                                         character %in% c("beetle", "bird", 
+                                                          "mouse", "goat", 
+                                                          "elephant") ~ "animate",
+                                         TRUE ~ NA_character_),
+                        anim = factor(anim, levels = c("inanimate", "animate"))), 
+               family = "binomial")
+
+summary(r_d3c)
+```
+
+
+## Summary
+
+```{r}
+c(d2_79_agnes$ac, d3_4679_agnes$ac, 
+  d2_79_agnes_raw$ac, d3_4679_agnes_raw$ac)
+```
+
+```{r}
+d2_79ad_agnes_sub %>% 
+  # filter(cluster == 1) %>% 
+  mutate(diff_neg = ifelse(diff < 0, T, F)) %>% 
+  count(cluster, subid, diff_neg) %>% 
+  complete(diff_neg, nesting(cluster, subid), fill = list(n = 0)) %>% 
+  spread(diff_neg, n) %>%
+  mutate(atleastone = ifelse(`TRUE` > 0, TRUE, FALSE)) %>%
+  count(cluster, atleastone) %>%
+  group_by(cluster) %>%
+  mutate(prop = n/sum(n))
+
+d2_79ad_agnes_sub %>% 
+  # filter(cluster == 1) %>% 
+  mutate(diff_neg = ifelse(diff < 0, T, F)) %>% 
+  count(cluster, subid, diff_neg) %>% 
+  complete(diff_neg, nesting(cluster, subid), fill = list(n = 0)) %>% 
+  spread(diff_neg, n) %>%
+  group_by(cluster) %>%
+  summarise(mean = mean(`TRUE`))
+```
+
+```{r}
+d3_4679ad_agnes_sub %>% 
+  # filter(cluster == 3) %>% 
+  mutate(diff_neg = ifelse(diff < 0, T, F)) %>% 
+  count(cluster, subid, diff_neg) %>% 
+  complete(diff_neg, nesting(cluster, subid), fill = list(n = 0)) %>% 
+  spread(diff_neg, n) %>%
+  mutate(atleastone = ifelse(`TRUE` > 0, TRUE, FALSE)) %>%
+  count(cluster, atleastone) %>%
+  group_by(cluster) %>%
+  mutate(prop = n/sum(n))
+
+d3_4679ad_agnes_sub %>% 
+  # filter(cluster == 3) %>% 
+  mutate(diff_neg = ifelse(diff < 0, T, F)) %>% 
+  count(cluster, subid, diff_neg) %>% 
+  complete(diff_neg, nesting(cluster, subid), fill = list(n = 0)) %>% 
+  spread(diff_neg, n) %>%
+  group_by(cluster) %>%
+  summarise(mean = mean(`TRUE`))
+```
